@@ -7,7 +7,9 @@ function DonorReg(){
 
             <label for="Gender"> Gender: </label>
             <input type="radio" id="Male" name="Gender" value=""/>
-            <input type="radio" id="Female" name="Gender" value=""/> <br/>
+            <label for="Male">Male</label>
+            <input type="radio" id="Female" name="Gender" value=""/> 
+            <label htmlFor="Female">Female</label><br/>
 
             <label for="BGroup">Blood Group: </label>
             <select name="BloodGrp" id="BloodGrp">
