@@ -17,7 +17,6 @@
 }
 
 .navibar-img {
-    margin-right: 100px;
     cursor: pointer;
     transition: 0.5s;
 }
@@ -28,6 +27,7 @@
 }
 
 ul{
+    margin-left: 50px;
     flex: 1;
     list-style: none;
     font-style: none;
@@ -43,6 +43,7 @@ ul li {
     color:rgb(195, 195, 195) ;
     transition: 0.2s
 }
+
 ul li a {
     text-decoration: none;
     color: inherit;
