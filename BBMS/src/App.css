@@ -7,7 +7,6 @@
 
 .container{
   width: 100vw;
-  height: 100vh;
   background-color: rgb(195, 195, 195);
   transition: 0.5s;
   display: flex;

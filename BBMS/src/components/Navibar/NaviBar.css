@@ -1,5 +1,5 @@
 .navibar {
-    position: fixed;
+    position: absolute;
     width: 100%;
     height: 11%;
     background-color: rgb(77, 77, 77);
