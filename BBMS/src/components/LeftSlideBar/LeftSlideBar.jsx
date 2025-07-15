@@ -1,42 +1,53 @@
-import React from 'react'
-import { IoMdLogIn } from "react-icons/io";
-import { FaRegCircleUser } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { IoMdLogOut } from 'react-icons/io';
+import { FaUserCircle, FaHistory, FaNotesMedical, FaHandsHelping, FaBars } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import './LeftSlideBar.css';
 
+const LeftSlideBar = ({ theme }) => {
+  const [isOpen, setIsOpen] = useState(true);
 
-const LeftSlideBar = ({theme, setTheme}) => {
+  const toggleSidebar = () => setIsOpen(!isOpen);
+
   return (
-    <div className="left-slide-bar">
-        <div className='left-slide-bar-profile'>
-            <FaRegCircleUser className='left-slide-bar-profile' size='80'/>
+    <>
+      <div className={`sidebar-toggle-btn ${theme}`} onClick={toggleSidebar}>
+        <FaBars size={24} />
+      </div>
+
+      <div className={`left-slide-bar ${theme} ${isOpen ? 'open' : 'closed'}`}>
+
+        <div className="profile-section">
+          
+          {isOpen && <><FaUserCircle size={80} />
+          <h4>User Name</h4></>}
         </div>
 
-        <div className='left-slide-bar-box'>
-            <Link>Profile Info</Link>
+        <div className="nav-links">
+          <Link to="#">
+            <FaUserCircle size={30}/>
+            {isOpen && <span>Profile Info</span>}
+          </Link>
+          <Link to="#">
+            <FaHistory size={30}/>
+            {isOpen && <span>Donation History</span>}
+          </Link>
+          <Link to="#">
+            <FaHandsHelping size={30}/>
+            {isOpen && <span>Request Donation</span>}
+          </Link>
+          <Link to="#">
+            <FaNotesMedical size={30}/>
+            {isOpen && <span>Medical Records</span>}
+          </Link>
+          <Link to="#" className="logout-link">
+            <IoMdLogOut size={30}/>
+            {isOpen && <span>Log Out</span>}
+          </Link>
         </div>
+      </div>
+    </>
+  );
+};
 
-        <div className='left-slide-bar-box'>
-            <Link>View my Donation History</Link>
-        </div>
-
-        <div className='left-slide-bar-box'>
-            <Link>Request for Blood Donation</Link>
-        </div>
-
-        <div className='left-slide-bar-box'>
-            <Link>Medical Recodes</Link>
-        </div>
-
-        <div className='left-slide-bar-box'>
-            <Link className="left-slide-bar-logout-row">
-                <IoMdLogIn className='left-slide-bar-log-out' size='30'/> 
-                <p>Log out</p>
-            </Link>
-        </div>
-
-    </div>
-  )
-}
-
-export default LeftSlideBar
+export default LeftSlideBar;

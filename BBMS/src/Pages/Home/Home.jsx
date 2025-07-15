@@ -7,7 +7,7 @@ const Home = ({ theme, setTheme }) => {
   return (
     <div>
       <LeftSlideBar theme={theme} setTheme={setTheme}  />
-      <NaviBar theme={theme} setTheme={setTheme} />
+      {/* <NaviBar theme={theme} setTheme={setTheme} /> */}
       
       <h1>Welcome to the Blood Bank Management System</h1>
     </div>
