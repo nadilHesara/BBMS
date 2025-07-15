@@ -21,7 +21,7 @@ function App() {
             <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
             <Route path='/donorReg' element={<DonorReg theme={theme} setTheme={setTheme} />} />
             <Route path='/login' element={<Login theme={theme} setTheme={setTheme} />} />
-            <Route path="/compReg" element={<CompReg />} />
+            <Route path="/compReg" element={<CompReg theme={theme} setTheme={setTheme} />}  />
         </Routes>
       </Router>
     </div>
