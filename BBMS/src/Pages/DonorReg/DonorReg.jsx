@@ -1,29 +1,20 @@
-import NaviBar from "../components/Navibar/NaviBar";
+import NaviBar from "../../components/Navibar/NaviBar";
 
 function DonorReg({ theme, setTheme }) {
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Submitted Donor Info:", formData);
-    // TODO: Add API call here later
-  };
-
   return (
     <form>
       <NaviBar theme={theme} setTheme={setTheme} />
       <h1>Donor Registration</h1>
       <label for="Dname"> Donor Name: </label>
-      <input type="text" id="Dname" name="Dname"></input><br />
+      <input type="text" id="Dname" name="Dname"></input>
+      <br />
 
       <label for="Gender"> Gender: </label>
       <input type="radio" id="Male" name="Gender" value="" />
       <label for="Male">Male</label>
       <input type="radio" id="Female" name="Gender" value="" />
-      <label htmlFor="Female">Female</label><br />
+      <label htmlFor="Female">Female</label>
+      <br />
 
       <label for="BGroup">Blood Group: </label>
       <select name="BloodGrp" id="BloodGrp">
@@ -36,41 +27,40 @@ function DonorReg({ theme, setTheme }) {
         <option value="B-">B-</option>
         <option value="O-">O-</option>
         <option value="AB-">AB-</option>
-      </select><br />
+      </select>
+      <br />
 
       <label for="NIC"> NIC Number: </label>
-      <input type="text" id="NIC" name="NIC"></input><br />
+      <input type="text" id="NIC" name="NIC"></input>
+      <br />
 
       <label for="DOB"> Date of Birth: </label>
-      <input type="date" id="DOB" name="DOB"></input><br />
-
+      <input type="date" id="DOB" name="DOB"></input>
+      <br />
 
       <label for="Telephone"> Telephone: </label>
-      <input type="tel" id="Telephone" name="Telephone"></input><br />
-
+      <input type="tel" id="Telephone" name="Telephone"></input>
+      <br />
 
       <label for="Address1"> Address Line 1: </label>
-      <input type="text" id="Address1" name="Address1"></input><br />
+      <input type="text" id="Address1" name="Address1"></input>
+      <br />
 
       <label for="Address2"> Address Line 2: </label>
-      <input type="text" id="Address2" name="Address2"></input><br />
+      <input type="text" id="Address2" name="Address2"></input>
+      <br />
 
       <label for="Address3"> Address Line 3: </label>
-      <input type="text" id="Address3" name="Address3"></input><br />
+      <input type="text" id="Address3" name="Address3"></input>
+      <br />
 
       <label for="District"> District: </label>
-      <input type="text" id="District" name="District"></input><br />
-
+      <input type="text" id="District" name="District"></input>
+      <br />
 
       <input type="submit" value="Save"></input>
-
-
-
     </form>
   );
 }
 
-export default DonorReg
-
-
-
+export default DonorReg;
