@@ -2,8 +2,10 @@ import NaviBar from "../../components/Navibar/NaviBar";
 
 function DonorReg({ theme, setTheme }) {
   return (
-    <form>
+    <div>
       <NaviBar theme={theme} setTheme={setTheme} />
+    <form>
+      
       <h1>Donor Registration</h1>
       <label for="Dname"> Donor Name: </label>
       <input type="text" id="Dname" name="Dname"></input>
@@ -60,6 +62,7 @@ function DonorReg({ theme, setTheme }) {
 
       <input type="submit" value="Save"></input>
     </form>
+    </div>
   );
 }
 
