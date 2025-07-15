@@ -43,6 +43,10 @@ ul li {
     color:rgb(195, 195, 195) ;
     transition: 0.2s
 }
+ul li a {
+    text-decoration: none;
+    color: inherit;
+}
 
 ul li:hover {
     color: rgb(255, 255, 255);
