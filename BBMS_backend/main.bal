@@ -1,3 +1,4 @@
+import ballerina/sql;
 import ballerina/time;
 import ballerinax/mysql;
 import ballerinax/mysql.driver as _;
@@ -58,10 +59,85 @@ public type Campaign record {
     time:Utc end_time;
 };
 
+configurable string HOST = ?;
+configurable int PORT = ?;
+configurable string USER = ?;
+configurable string PASSWORD = ?;
+configurable string DATABASE = ?;
+
 final mysql:Client dbClient = check new (
-    host = "localhost",
-    port = 3306,
-    user = "root",
-    password = "316497",
-    database = "bbms"
+    host = HOST,
+    port = PORT,
+    user = USER,
+    password = PASSWORD,
+    database = DATABASE
 );
+
+isolated function addDoner(Doner doner) returns int|error {
+
+    sql:ExecutionResult result = check dbClient->execute(
+        `INSERT INTO Doner(doner_id, name, gender, blood_group, nic_no, tele, address_line1, address_line2, address_line3, District)
+        VALUES(
+            ${doner.doner_id},
+            ${doner.name}, 
+            ${doner.gender}, 
+            ${doner.blood_group}, 
+            ${doner.nic_no},
+            ${doner.tele}, 
+            ${doner.address_line1}, 
+            ${doner.address_line2}, 
+            ${doner.address_line3}, 
+            ${doner.District}
+        ) 
+        `);
+    int|string? lastInsertId = result.lastInsertId;
+    if lastInsertId is int {
+        return lastInsertId;
+    } else {
+        return error("Unable to obtain last insert ID");
+    }
+}
+
+isolated function getDoner(string id) returns Doner|error {
+    Doner doner = check dbClient->queryRow(
+        `SELECT * FROM Doner WHERE doner_id = ${id}`
+    );
+    return doner;
+}
+
+isolated function getAllDoners() returns Doner[]|error {
+    Doner[] doners = [];
+    stream<Doner, error?> resultStream = dbClient->query(
+        `SELECT * FROM Doners`
+    );
+    check from Doner doner in resultStream
+        do {
+            doners.push(doner);
+        };
+    check resultStream.close();
+    return doners;
+}
+
+isolated function updateEmployee(Doner doner) returns int|error {
+    sql:ExecutionResult result = check dbClient->execute(`
+        UPDATE Doner SET
+            doner_id = ${doner.doner_id}, 
+            name = ${doner.name},
+            gender = ${doner.gender},
+            blood_group = ${doner.blood_group},
+            nic_no = ${doner.nic_no}, 
+            tele = ${doner.tele},
+            address_line1 = ${doner.address_line1},
+            address_line2 = ${doner.address_line2},
+            address_line3 = ${doner.address_line3},
+            District = ${doner.District}
+        WHERE employee_id = ${doner.doner_id}  
+    `);
+
+    int|string? lastInsertId = result.lastInsertId;
+    if lastInsertId is int {
+        return lastInsertId;
+    } else {
+        return error("Unable to obtain last insert ID");
+    }
+}
