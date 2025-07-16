@@ -19,11 +19,11 @@ function DonorReg({ theme, setTheme }) {
 
           <h1>Donor Registration</h1>
           <label for="Dname"> Donor Name: </label>
-          <input type="text" id="Dname" name="Dname"></input>
+          <input type="text" id="Dname" name="Dname" required></input>
           <br />
 
           <label for="Gender"> Gender: </label>
-          <input type="radio" id="Male" name="Gender" value="" />
+          <input type="radio" id="Male" name="Gender" value="" required/>
           <label for="Male">Male</label>
           <input type="radio" id="Female" name="Gender" value="" />
           <label htmlFor="Female">Female</label>
@@ -44,15 +44,15 @@ function DonorReg({ theme, setTheme }) {
           <br />
 
           <label for="NIC"> NIC Number: </label>
-          <input type="text" id="NIC" name="NIC"></input>
+          <input type="text" id="NIC" name="NIC" required></input>
           <br />
 
           <label for="DOB"> Date of Birth: </label>
-          <input type="date" id="DOB" name="DOB"></input>
+          <input type="date" id="DOB" name="DOB" required></input>
           <br />
 
           <label for="Telephone"> Telephone: </label>
-          <input type="tel" id="Telephone" name="Telephone"></input>
+          <input type="tel" id="Telephone" name="Telephone" required></input>
           <br />
           <div style={{ display: "flex", alignItems: "flex-start" }}>
             <label htmlFor="Address" style={{ width: "130px", paddingTop: "5px" }}>
@@ -60,14 +60,14 @@ function DonorReg({ theme, setTheme }) {
             </label>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
-              <input type="text" id="Address1" name="Address1" placeholder="Address Line 1" />
-              <input type="text" id="Address2" name="Address2" placeholder="Address Line 2" />
+              <input type="text" id="Address1" name="Address1" placeholder="Address Line 1" required/>
+              <input type="text" id="Address2" name="Address2" placeholder="Address Line 2" required/>
               <input type="text" id="Address3" name="Address3" placeholder="Address Line 3" />
             </div>
           </div>
 
           <label for="District"> District: </label>
-          <select id="District" name="District">
+          <select id="District" name="District" required>
             <option value="">-- Select District --</option>
             {districts.map((district, index) => (
               <option key={index} value={district}>{district}</option>
