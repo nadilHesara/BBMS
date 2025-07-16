@@ -1,7 +1,10 @@
 import NaviBar from "../../components/Navibar/NaviBar";
 import './DonorReg.css'
+import { useNavigate } from "react-router-dom";
 
 function DonorReg({ theme, setTheme }) {
+
+  const navigate = useNavigate();
 
   const districts = [
     "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha",
@@ -15,7 +18,10 @@ function DonorReg({ theme, setTheme }) {
     <div>
       <NaviBar theme={theme} setTheme={setTheme} />
       <div className={theme == 'light' ? "donor-reg" : "donor-reg dark"}>
-        <form>
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          navigate('/login');
+        }}>
 
           <h1>Donor Registration</h1>
           <label for="Dname"> Donor Name: </label>
@@ -76,7 +82,8 @@ function DonorReg({ theme, setTheme }) {
           <br />
 
 
-          <input type="submit" value="Register"></input>
+
+          <input type="submit" value="Register"/>
         </form>
       </div>
     </div>

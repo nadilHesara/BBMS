@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import './Login.css';
 import NaviBar from '../../components/Navibar/NaviBar';
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import { Link } from 'react-router-dom';
+
 
 
 const Login = ({ theme, setTheme }) => {
@@ -39,7 +41,7 @@ const Login = ({ theme, setTheme }) => {
 
         if (rememberMe) {
           localStorage.setItem("rememberedUsername", username);
-          localStorage.setItem("rememberedPassword", password);
+
         } else {
           localStorage.removeItem("rememberedUsername");
           localStorage.removeItem("rememberedPassword");
@@ -62,12 +64,24 @@ const Login = ({ theme, setTheme }) => {
         <label>
           <input type="checkbox" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />Remember Me
         </label>
-        <br/>
+        <br />
 
 
 
 
         <input type="submit" value="Login"></input>
+
+        <div className="login-links">
+          <p>
+            <Link to="/">Forgot Password?</Link>
+          </p>
+          <p>
+            Don't have an account? <Link to="/donorReg">Register now</Link>
+          </p>
+        </div>
+
+
+
 
       </form>
     </div>
