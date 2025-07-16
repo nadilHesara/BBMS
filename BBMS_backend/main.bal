@@ -1,3 +1,4 @@
+import ballerina/http;
 import ballerina/sql;
 import ballerina/time;
 import ballerinax/mysql;
@@ -76,7 +77,7 @@ final mysql:Client dbClient = check new (
 isolated function addDoner(Doner doner) returns int|error {
 
     sql:ExecutionResult result = check dbClient->execute(
-        `INSERT INTO Doner(doner_id, name, gender, blood_group, nic_no, tele, address_line1, address_line2, address_line3, District)
+                `INSERT INTO Doner(doner_id, name, gender, blood_group, nic_no, tele, address_line1, address_line2, address_line3, District)
         VALUES(
             ${doner.doner_id},
             ${doner.name}, 
@@ -108,7 +109,7 @@ isolated function getDoner(string id) returns Doner|error {
 isolated function getAllDoners() returns Doner[]|error {
     Doner[] doners = [];
     stream<Doner, error?> resultStream = dbClient->query(
-        `SELECT * FROM Doners`
+        `SELECT * FROM Doner`
     );
     check from Doner doner in resultStream
         do {
@@ -118,7 +119,7 @@ isolated function getAllDoners() returns Doner[]|error {
     return doners;
 }
 
-isolated function updateEmployee(Doner doner) returns int|error {
+isolated function updateDoners(Doner doner) returns int|error {
     sql:ExecutionResult result = check dbClient->execute(`
         UPDATE Doner SET
             doner_id = ${doner.doner_id}, 
@@ -140,4 +141,34 @@ isolated function updateEmployee(Doner doner) returns int|error {
     } else {
         return error("Unable to obtain last insert ID");
     }
+}
+
+// Assume your previous DB code is in a module `db`
+// For this example, put your DB functions in the same file or import accordingly
+
+service /doners on new http:Listener(8080) {
+
+    // CORS preflight handler
+    resource function options .() returns http:Response {
+        http:Response res = new;
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        return res;
+    }
+
+    // POST /doners
+    resource function post .(http:Request req) returns http:Response|error {
+        json payload = check req.getJsonPayload();
+        Doner doner = check <Doner>payload;
+
+        int id = check addDoner(doner);
+
+        http:Response res = new;
+        res.statusCode = 201;
+        res.setPayload({message: "Doner added successfully"});
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        return res;
+    }
+
 }
