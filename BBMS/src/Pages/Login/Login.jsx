@@ -1,12 +1,89 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useEffect } from 'react';
 import './Login.css';
 import NaviBar from '../../components/Navibar/NaviBar';
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import { Link } from 'react-router-dom';
+
+
 
 const Login = ({ theme, setTheme }) => {
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+
+
+  const [show, setShow] = useState(false)
+
+
+  useEffect(() => {
+    const savedUsername = localStorage.getItem("rememberedUsername");
+    const savedPassword = localStorage.getItem("rememberedPassword");
+
+    if (savedUsername && savedPassword) {
+      setUsername(savedUsername);
+      setPassword(savedPassword);
+      setRememberMe(true);
+    }
+  }, []);
+
+
+  function toggleShow() {
+    setShow(!show)
+  }
+
   return (
     <div>
       <NaviBar theme={theme} setTheme={setTheme} />
-      <h1>Login</h1>
+      <form onSubmit={(e) => {
+        e.preventDefault();
+
+        if (rememberMe) {
+          localStorage.setItem("rememberedUsername", username);
+
+        } else {
+          localStorage.removeItem("rememberedUsername");
+          localStorage.removeItem("rememberedPassword");
+        }
+
+        // Perform login logic here
+        alert('Login submitted!');
+      }}>
+        <h1>Donor Login</h1>
+        <label for="Username"> Username: </label>
+        <input type="text" id="Username" name="Username" value={username} onChange={(e) => setUsername(e.target.value)}></input>
+        <br />
+
+        <label for="pwd">Password:</label>
+        <input type={show ? "text" : "password"} id="pwd" name="pwd" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+        {show ? <AiFillEyeInvisible onClick={() => toggleShow()} /> : <AiFillEye onClick={() => toggleShow()} />}
+        <br />
+
+
+        <label>
+          <input type="checkbox" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />Remember Me
+        </label>
+        <br />
+
+
+
+
+        <input type="submit" value="Login"></input>
+
+        <div className="login-links">
+          <p>
+            <Link to="/">Forgot Password?</Link>
+          </p>
+          <p>
+            Don't have an account? <Link to="/donorReg">Register now</Link>
+          </p>
+        </div>
+
+
+
+
+      </form>
     </div>
   )
 }

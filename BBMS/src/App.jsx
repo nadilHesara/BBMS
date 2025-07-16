@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home/Home";
 import Login from "./Pages/Login/Login";
-import CompReg from "./Pages/CompReg/CompReg";
+import CampReg from "./Pages/CampReg/CampReg";
 
 import "./App.css";
 
@@ -22,7 +22,7 @@ function App() {
             <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
             <Route path='/donorReg' element={<DonorReg theme={theme} setTheme={setTheme} />} />
             <Route path='/login' element={<Login theme={theme} setTheme={setTheme} />} />
-            <Route path="/compReg" element={<CompReg theme={theme} setTheme={setTheme} />}  />
+            <Route path="/campReg" element={<CampReg theme={theme} setTheme={setTheme} />}  />
         </Routes>
       </Router>
     </div>
