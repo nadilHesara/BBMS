@@ -1,93 +1,112 @@
+/* ===== Base Styles ===== */
 .navibar {
-    position: fixed;
-    width: 100%;
-    height: 11%;
-    background-color: rgb(77, 77, 77);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 40px 50px;
-    top: 0;
-    left: 0;
-    transition: 0.5s;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  z-index: 1000;
+  transition: background-color 0.4s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.dark .navibar {
-    background-color: rgb(195, 195, 195);
+/* ===== Dark Mode ===== */
+.navibar.dark {
+  background: rgba(25, 25, 25, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* ===== Logo and Brand ===== */
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo-text {
+  font-size: 22px;
+  font-weight: 700;
+  color: rgb(0, 0, 0);
+  transition: color 0.3s;
+}
+
+.navibar.dark .logo-text {
+  color: rgb(255, 255, 255);
+}
+
+/* ===== Navigation Links ===== */
+.nav-links {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(0, 0, 0);
+  transition: all 0.3s ease;
+}
+
+.navibar.dark .nav-links li a {
+  color: rgb(255, 255, 255);
+}
+
+.nav-links li a:hover {
+  color: #ff4c4c;
+  transform: scale(1.05);
+}
+
+/* ===== Icons Section (Right) ===== */
+.user-toggle-icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.toggle-icon,
+.user-icon {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.toggle-icon:hover,
+.user-icon:hover {
+  transform: scale(1.1);
+}
+
+/* ===== Image Style (e.g., Blood Drop Icon) ===== */
 .navibar-img {
-    cursor: pointer;
-    transition: 0.5s;
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
 .navibar-img:hover {
-    transform: scale(1.05);
-    transition: 0.5s;
+  transform: scale(1.1);
 }
 
-ul{
-    margin-left: 50px;
-    flex: 1;
-    list-style: none;
-    font-style: none;
-}
+/* ===== Responsive for Mobile ===== */
+@media screen and (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
 
-ul li {
-    display: inline-block;
-    margin: 1vh 5vh;
-    font-size: 3vh;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    color:rgb(195, 195, 195) ;
-    transition: 0.2s
-}
+  .logo-text {
+    display: none;
+  }
 
-ul li a {
-    text-decoration: none;
-    color: inherit;
-}
-
-ul li:hover {
-    color: rgb(255, 255, 255);
-    transition: 0.2s;
-    transform: scale(1.1);
-}
-
-.dark ul li:hover {
-    color: rgb(0, 0, 0);
-    transition: 0.2s;
-}
-
-.dark ul li {
-    color: rgb(77, 77, 77);
-}
-
-.user-icon{
-    cursor: pointer;
-    transition: 0.5s;
-}
-
-.user-icon:hover {
-    transform: scale(1.1);
-    transition: 0.5s;
-}
-
-.toggle-icon{
-    cursor: pointer;
-    transition: 0.5s;
-}
-
-.toggle-icon:hover {
-    transform: scale(1.1);
-    transition: 0.5s;
-}
-
-.user-toggle-icons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 30px;
+  .navibar {
+    padding: 0 20px;
+  }
 }

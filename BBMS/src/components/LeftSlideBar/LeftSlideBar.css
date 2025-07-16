@@ -60,13 +60,13 @@
 }
 
 /* Nav links */
-.nav-links {
+.slide-bar-nav-links {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.nav-links a {
+.slide-bar-nav-links a {
   display: flex;
   align-items: center;
   gap: 14px;
@@ -82,7 +82,7 @@
   color: #eee;
 }
 
-.nav-links a:hover {
+.slide-bar-nav-links a:hover {
   background: rgba(0, 0, 0, 0.05);
   transform: translateX(5px);
 }
@@ -106,7 +106,7 @@
     width: 60px;
   }
 
-  .nav-links a span,
+  .slide-bar-nav-links a span,
   .profile-section h4 {
     display: none;
   }

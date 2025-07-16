@@ -23,7 +23,7 @@ const LeftSlideBar = ({ theme }) => {
           <h4>User Name</h4></>}
         </div>
 
-        <div className="nav-links">
+        <div className="slide-bar-nav-links">
           <Link to="#">
             <FaUserCircle size={30}/>
             {isOpen && <span>Profile Info</span>}
