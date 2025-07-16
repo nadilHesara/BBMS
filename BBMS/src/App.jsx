@@ -3,12 +3,8 @@ import { useState, useEffect } from "react";
 import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home/Home";
 import Login from "./Pages/Login/Login";
-<<<<<<< HEAD
 import CampReg from "./Pages/CampReg/CampReg";
-=======
-import CompReg from "./Pages/CompReg/CompReg";
 
->>>>>>> cdf67643c477603d23b48562639bc419dd479f4a
 import "./App.css";
 
 function App() {
