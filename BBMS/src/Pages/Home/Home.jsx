@@ -15,7 +15,7 @@ const Home = ({ theme, setTheme }) => {
       <div>
         Planning on organizing a blood donation campaign....
         <br />
-        <Link to='/compReg'>Register</Link>
+        <Link to='/campReg'>Register</Link>
 
       </div>
     </div>
