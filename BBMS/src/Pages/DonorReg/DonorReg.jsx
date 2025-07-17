@@ -1,43 +1,107 @@
-import NaviBar from "../../components/Navibar/NaviBar";
-import './DonorReg.css'
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import NaviBar from "../../components/Navibar/NaviBar";
+import "./DonorReg.css";
 
 function DonorReg({ theme, setTheme }) {
 
-  const navigate = useNavigate();
+  const [doner, setDoner] = useState({
+    doner_id: "D001",
+    name: "",
+    gender: "",
+    blood_group: "",
+    nic_no: "",
+    dob: "",
+    tele: "",
+    address_line1: "",
+    address_line2: "",
+    address_line3: "",
+    District: "",
+  });
+
+  const handleChange = (e) => {
+    setDoner({
+      ...doner,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("");
+
+    try {
+      const response = await fetch("http://localhost:9191/donorReg", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(doner)
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setMessage("Your Username is  : " + (doner.nic_no));
+
+        alert("Donor added successfully!");
+
+      } else {
+        setMessage("Error: " + (result.message || JSON.stringify(result)));
+        console.error("Error response:", result);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error.message);
+      alert("Submission failed. Check server and data.");
+      setMessage("Submission failed. Check server and data.");
+    }
+  };
 
   const districts = [
-    "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha",
-    "Hambantota", "Jaffna", "Kalutara", "Kandy", "Kegalle", "Kilinochchi", "Kurunegala",
-    "Mannar", "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya", "Polonnaruwa",
-    "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
+    "Ampara",
+    "Anuradhapura",
+    "Badulla",
+    "Batticaloa",
+    "Colombo",
+    "Galle",
+    "Gampaha",
+    "Hambantota",
+    "Jaffna",
+    "Kalutara",
+    "Kandy",
+    "Kegalle",
+    "Kilinochchi",
+    "Kurunegala",
+    "Mannar",
+    "Matale",
+    "Matara",
+    "Monaragala",
+    "Mullaitivu",
+    "Nuwara Eliya",
+    "Polonnaruwa",
+    "Puttalam",
+    "Ratnapura",
+    "Trincomalee",
+    "Vavuniya",
   ];
-
 
   return (
     <div>
       <NaviBar theme={theme} setTheme={setTheme} />
-      <div className={theme == 'light' ? "donor-reg" : "donor-reg dark"}>
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          navigate('/login');
-        }}>
-
+      <div className={theme === "light" ? "donor-reg" : "donor-reg dark"}>
+        <form onSubmit={handleSubmit}>
           <h1>Donor Registration</h1>
-          <label for="Dname"> Donor Name: </label>
-          <input type="text" id="Dname" name="Dname" required></input>
+          <label htmlFor="name">Donor Name:</label>
+          <input type="text" name="name" onChange={handleChange} required />
+          <label>Gender:</label>
+
+          <input type="radio" name="gender" value="Male" onChange={handleChange} required />{" "}  Male
+          <input type="radio" name="gender" value="Female" onChange={handleChange} />{" "} Female
           <br />
 
-          <label for="Gender"> Gender: </label>
-          <input type="radio" id="Male" name="Gender" value="" required/>
-          <label for="Male">Male</label>
-          <input type="radio" id="Female" name="Gender" value="" />
-          <label htmlFor="Female">Female</label>
-          <br />
-
-          <label for="BGroup">Blood Group: </label>
-          <select name="BloodGrp" id="BloodGrp">
-            <option value="-">--Select Blood Group--</option>
+          <label>Blood Group:</label>
+          <select name="blood_group" onChange={handleChange}>
+            <option value="">--Select--</option>
             <option value="A+">A+</option>
             <option value="B+">B+</option>
             <option value="O+">O+</option>
@@ -47,43 +111,38 @@ function DonorReg({ theme, setTheme }) {
             <option value="O-">O-</option>
             <option value="AB-">AB-</option>
           </select>
+
+          <label htmlFor="nic_no">NIC Number:</label>
+          <input type="text" name="nic_no" onChange={handleChange} required />
+
+          <label htmlFor="dob">Date of Birth:</label>
+          <input type="date" name="dob" onChange={handleChange} required />
+
+          <label htmlFor="tele">Telephone:</label>
+          <input type="text" name="tele" onChange={handleChange} required />
+
+          <label>Address:</label>
+          <input type="text" name="address_line1" placeholder="Line 1" onChange={handleChange} required />
+          <input type="text" name="address_line2" placeholder="Line 2" onChange={handleChange} />
+          <input type="text" name="address_line3" placeholder="Line 3" onChange={handleChange} />
           <br />
 
-          <label for="NIC"> NIC Number: </label>
-          <input type="text" id="NIC" name="NIC" required></input>
-          <br />
-
-          <label for="DOB"> Date of Birth: </label>
-          <input type="date" id="DOB" name="DOB" required></input>
-          <br />
-
-          <label for="Telephone"> Telephone: </label>
-          <input type="tel" id="Telephone" name="Telephone" required></input>
-          <br />
-          <div style={{ display: "flex", alignItems: "flex-start" }}>
-            <label htmlFor="Address" style={{ width: "130px", paddingTop: "5px" }}>
-              Address:
-            </label>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
-              <input type="text" id="Address1" name="Address1" placeholder="Address Line 1" required/>
-              <input type="text" id="Address2" name="Address2" placeholder="Address Line 2" required/>
-              <input type="text" id="Address3" name="Address3" placeholder="Address Line 3" />
-            </div>
-          </div>
-
-          <label for="District"> District: </label>
-          <select id="District" name="District" required>
-            <option value="">-- Select District --</option>
-            {districts.map((district, index) => (
-              <option key={index} value={district}>{district}</option>
+          <label>District:</label>
+          <select name="District" onChange={handleChange} required>
+            <option value="">-- Select --</option>
+            {districts.map((d, i) => (
+              <option key={i} value={d}>
+                {d}
+              </option>
             ))}
           </select>
+
           <br />
+          <input type="submit" value="Register" />
 
+          <p>{message}</p>  <br />
+          <p>Default Password is your phone number</p>
 
-
-          <input type="submit" value="Register"/>
         </form>
       </div>
     </div>
