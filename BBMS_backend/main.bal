@@ -1,4 +1,5 @@
 import ballerina/http;
+import ballerina/io;
 import ballerina/sql;
 import ballerina/time;
 import ballerinax/mysql;
@@ -10,9 +11,10 @@ public type Doner record {
     string gender;
     string? blood_group;
     string nic_no;
-    int tele;
+    string dob;
+    string tele;
     string address_line1;
-    string? address_line2;
+    string address_line2;
     string? address_line3;
     string District;
 };
@@ -74,34 +76,80 @@ final mysql:Client dbClient = check new (
     database = DATABASE
 );
 
-isolated function addDoner(Doner doner) returns int|error {
+public type DonerID record {
+    string? DonerID;
+};
 
-    sql:ExecutionResult result = check dbClient->execute(
-                `INSERT INTO Doner(doner_id, name, gender, blood_group, nic_no, tele, address_line1, address_line2, address_line3, District)
-        VALUES(
-            ${doner.doner_id},
-            ${doner.name}, 
-            ${doner.gender}, 
-            ${doner.blood_group}, 
-            ${doner.nic_no},
-            ${doner.tele}, 
-            ${doner.address_line1}, 
-            ${doner.address_line2}, 
-            ${doner.address_line3}, 
-            ${doner.District}
-        ) 
-        `);
-    int|string? lastInsertId = result.lastInsertId;
-    if lastInsertId is int {
-        return lastInsertId;
-    } else {
-        return error("Unable to obtain last insert ID");
+isolated function donerIdIncriment(string currentId) returns string {
+    string prefix = currentId[0].toString(); // Get the first character as prefix
+    string numericPart = currentId.substring(1); // Get the numeric part
+
+    int numericValue = checkpanic int:fromString(numericPart);
+    numericValue += 1;
+
+    string newNumeric = padWithZeros(numericValue, 3); // e.g., "002"
+
+    string nextId = prefix + newNumeric;
+    io:println("Next ID: " + nextId); // Output: D002
+    return nextId;
+}
+
+// Pads an integer with leading zeros to make a fixed width string
+isolated function padWithZeros(int number, int width) returns string {
+    string numStr = number.toString();
+    int numZeros = width - numStr.length();
+    if (numZeros <= 0) {
+        return numStr;
     }
+    string zeros = "";
+    foreach int i in 0 ..< numZeros {
+        zeros += "0";
+    }
+
+    return zeros + numStr;
+}
+
+isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
+    DonerID d = check dbClient->queryRow(
+    `SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`
+    );
+
+    string? lastId = d.DonerID;
+    string newDonerId;
+
+    if lastId is string {
+        newDonerId = donerIdIncriment(lastId);
+    }
+    else {
+        newDonerId = "D001";
+    }
+
+    Doner newDoner = doner.clone();
+    newDoner.doner_id = newDonerId;
+    sql:ParameterizedQuery insertQuery = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District)
+        VALUES(
+            ${newDoner.doner_id},
+            ${newDoner.name},
+            ${newDoner.gender},
+            ${newDoner.blood_group},
+            ${newDoner.nic_no},
+            ${newDoner.dob},
+            ${newDoner.tele},
+            ${newDoner.address_line1},
+            ${newDoner.address_line2},
+            ${newDoner.address_line3},
+            ${newDoner.District}
+        )`;
+    sql:ExecutionResult|error result = dbClient->execute(insertQuery);
+
+    return result;
+
 }
 
 isolated function getDoner(string id) returns Doner|error {
-    Doner doner = check dbClient->queryRow(
-        `SELECT * FROM Doner WHERE doner_id = ${id}`
+    Doner
+    doner = check dbClient->queryRow(
+    `        SELECT * FROM        Doner WHERE        doner_id = ${id}        `
     );
     return doner;
 }
@@ -109,7 +157,7 @@ isolated function getDoner(string id) returns Doner|error {
 isolated function getAllDoners() returns Doner[]|error {
     Doner[] doners = [];
     stream<Doner, error?> resultStream = dbClient->query(
-        `SELECT * FROM Doner`
+        `        SELECT * FROM        Doner        `
     );
     check from Doner doner in resultStream
         do {
@@ -121,19 +169,19 @@ isolated function getAllDoners() returns Doner[]|error {
 
 isolated function updateDoners(Doner doner) returns int|error {
     sql:ExecutionResult result = check dbClient->execute(`
-        UPDATE Doner SET
+        UPDATE Doner        SET
             doner_id = ${doner.doner_id}, 
-            name = ${doner.name},
-            gender = ${doner.gender},
-            blood_group = ${doner.blood_group},
-            nic_no = ${doner.nic_no}, 
-            tele = ${doner.tele},
-            address_line1 = ${doner.address_line1},
-            address_line2 = ${doner.address_line2},
-            address_line3 = ${doner.address_line3},
-            District = ${doner.District}
-        WHERE employee_id = ${doner.doner_id}  
-    `);
+                name = ${doner.name},
+                gender = ${doner.gender},
+                blood_group = ${doner.blood_group},
+                nic_no = ${doner.nic_no}, 
+                tele = ${doner.tele},
+                address_line1 = ${doner.address_line1},
+                address_line2 = ${doner.address_line2},
+                address_line3 = ${doner.address_line3},
+                District = ${doner.District}
+        WHERE doner_id = ${doner.doner_id}
+        `);
 
     int|string? lastInsertId = result.lastInsertId;
     if lastInsertId is int {
@@ -143,32 +191,43 @@ isolated function updateDoners(Doner doner) returns int|error {
     }
 }
 
-// Assume your previous DB code is in a module `db`
+// Assume your previous DB code is in a module `        db        `
 // For this example, put your DB functions in the same file or import accordingly
 
-service /doners on new http:Listener(8080) {
+@http:ServiceConfig {
+    cors: {
+        allowOrigins: ["http://localhost:5173"],
+        allowMethods: ["POST", "OPTIONS"]
+    }
+}
+
+service /donorReg on new http:Listener(9191) {
 
     // CORS preflight handler
-    resource function options .() returns http:Response {
-        http:Response res = new;
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
-        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-        return res;
-    }
+    // resource function options .() returns http:Response {
+    //     http:Response res = new;
+    //     res.setHeader("Access-Control-Allow-Origin", "*");
+    //     res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
+    //     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    //     return res;
+    // }
 
     // POST /doners
-    resource function post .(http:Request req) returns http:Response|error {
-        json payload = check req.getJsonPayload();
-        Doner doner = check <Doner>payload;
+    isolated resource function post .(@http:Payload Doner doner) returns json|error {
+        sql:ExecutionResult|error result = check addDoner(doner);
+        if result is sql:ExecutionResult {
+            int|string? lastInsertId = result.lastInsertId;
+            if lastInsertId is int {
+                return {
+                    "message": "Doner added successfully",
+                    "doner_id": lastInsertId
+                };
+            } else {
+                return {"message": "Donor added, but no ID returned"};
+            }
+        } else {
+            return result;
+        }
 
-        int id = check addDoner(doner);
-
-        http:Response res = new;
-        res.statusCode = 201;
-        res.setPayload({message: "Doner added successfully"});
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        return res;
     }
-
 }
