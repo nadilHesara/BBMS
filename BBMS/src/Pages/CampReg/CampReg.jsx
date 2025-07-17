@@ -1,18 +1,20 @@
 import NaviBar from "../../components/Navibar/NaviBar";
+import "./CampReg.css";
 
-function CompReg({ theme, setTheme }) {
+function CampReg({ theme, setTheme }) {
   return (
     <>
       <NaviBar theme={theme} setTheme={setTheme} />
-    <form>
-      <h1>Campaign Registration</h1>
-      <label for="OrgName"> Organizer Name: </label>
-      <input type="text" id="OrgName" name="OrgName"></input>
-      <br />
+      <div className="campreg-container">
+        <form>
+          <h1>Campaign Registration</h1>
+          <label for="OrgName"> Organizer Name: </label>
+          <input type="text" id="OrgName" name="OrgName"></input>
+          <br />
 
-      <label for="District"> District: </label>
-      <input type="text" id="District" name="District"></input>
-      <br />
+        <label for="District"> District: </label>
+        <input type="text" id="District" name="District"></input>
+        <br />
 
       <label for="address"> Address: </label>
       <input type="text" id="address" name="address"  />
@@ -29,24 +31,25 @@ function CompReg({ theme, setTheme }) {
 
       <br />
 
-      <label for="startTime"> Starting Time : </label>
-      <input type="time" id="startTime" name="startTime"></input>
-      <br />
+          <label for="startTime"> Starting Time : </label>
+          <input type="time" id="startTime" name="startTime"></input>
+          <br />
 
-      <label for="endTime"> Ending Time : </label>
-      <input type="time" id="endTime" name="endTime"></input>
-      <br />
+          <label for="endTime"> Ending Time : </label>
+          <input type="time" id="endTime" name="endTime"></input>
+          <br />
 
-      <label for="contactNo"> Contact Number: </label>
-      <input type="text" id="contactNo" name="contactNo"  />
-      <br />
-      <label for="email"> Email Address: </label>
-      <input type="text" id="email" name="email"  />
-      <br />
-      <input type="submit" value="Save"></input>
-    </form>
+          <label for="contactNo"> Contact Number: </label>
+          <input type="text" id="contactNo" name="contactNo"  />
+          <br />
+          <label for="email"> Email Address: </label>
+          <input type="text" id="email" name="email"  />
+          <br />
+          <input type="submit" value="Save"></input>
+        </form>
+      </div>
     </>
   );
 }
 
-export default CompReg;
+export default CampReg;

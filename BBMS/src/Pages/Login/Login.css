@@ -1,13 +1,115 @@
+
+
+
 .login-links {
   margin-top: 10px;
   text-align: center;
 }
 
-.login-links a {
+.forgot-pw-link a {
   color: #007bff;
   text-decoration: none;
+
+}
+
+.register-link a {
+  color: #007bff;
+  text-decoration: none;
+
+}
+
+.forgot-pw-link {
+  margin-top: 10px;
+  margin-left: 14px;
+}
+
+.register-link {
+  margin-top: 10px;
+  text-align: center;
 }
 
 .login-links a:hover {
   text-decoration: underline;
 }
+
+
+
+form label {
+  font-size: 16px;
+  font-weight: 540;
+  padding: 15px;
+  margin-bottom: 10px;
+  color: rgb(77, 77, 77);
+  display: inline-block;
+  width: 130px;
+  
+}
+
+
+form {
+  background-color: #f2f2f2;
+  padding: 30px 40px;
+  width: 500px;
+  margin: 120px auto 50px auto;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+
+form input[type="text"],
+form input[type="password"],
+form input[type="date"],
+form input[type="tel"],
+form select {
+  width: 60%;
+  padding: 5px;
+  font-size: 15px;
+  border-radius: 5px;
+  border: 1px solid black;
+  margin-bottom: 20px;
+}
+
+
+input#pwd {
+  padding-right: 30px;
+}
+
+
+form svg {
+  position: relative;
+  left: -30px;
+  top: 2px;
+  cursor: pointer;
+}
+
+
+form {
+  position: relative;
+}
+
+
+form label input[type="checkbox"] {
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+
+form label {
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 10px;
+}
+
+
+form label:has(input[type="checkbox"]) {
+  
+  display: contents;
+  align-items:  center;
+  gap: 3px;
+  margin-left: 1px;
+  margin-bottom: 5px;
+ 
+}
+
+
+

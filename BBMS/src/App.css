@@ -5,14 +5,26 @@
   font-family: sans-serif;
 }
 
-.container{
-  width: 100vw;
-  background-color: rgb(195, 195, 195);
-  transition: 0.5s;
+.app-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  height: 100vh;
+}
+
+.main-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+
+.content-area {
+  margin-top: 60px; /* NaviBar height */
+  margin-left: 200px; /* LeftSlideBar width */
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: calc(100vh - 60px);
 }
 
 .dark{

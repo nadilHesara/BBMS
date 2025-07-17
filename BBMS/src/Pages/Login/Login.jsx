@@ -41,13 +41,14 @@ const Login = ({ theme, setTheme }) => {
 
         if (rememberMe) {
           localStorage.setItem("rememberedUsername", username);
+          localStorage.setItem("rememberedPassword", password);
 
         } else {
           localStorage.removeItem("rememberedUsername");
           localStorage.removeItem("rememberedPassword");
         }
 
-        // Perform login logic here
+        
         alert('Login submitted!');
       }}>
         <h1>Donor Login</h1>
@@ -66,22 +67,20 @@ const Login = ({ theme, setTheme }) => {
         </label>
         <br />
 
-
-
-
-        <input type="submit" value="Login"></input>
-
-        <div className="login-links">
+        <div className="forgot-pw-link">
           <p>
             <Link to="/">Forgot Password?</Link>
-          </p>
-          <p>
-            Don't have an account? <Link to="/donorReg">Register now</Link>
           </p>
         </div>
 
 
 
+        <input type="submit" value="Login"></input>
+        <div className="register-link">
+          <p>
+            Don't have an account? <Link to="/donorReg">Register now</Link>
+          </p>
+        </div>
 
       </form>
     </div>
