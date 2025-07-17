@@ -1,0 +1,10 @@
+body{
+    overflow-y: auto;
+}
+
+.campreg-container {
+  height: calc(100vh - 100px);
+  box-sizing: border-box;
+}
+
+

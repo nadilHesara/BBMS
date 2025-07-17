@@ -93,3 +93,7 @@ form input[type="submit"]:hover {
         opacity: 1;
     }
 }
+
+.donor-reg{
+    height: calc(100vh - 100px);
+}
