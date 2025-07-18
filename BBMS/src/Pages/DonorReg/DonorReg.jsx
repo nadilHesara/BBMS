@@ -27,7 +27,6 @@ function DonorReg({ theme, setTheme }) {
   };
 
   const [message, setMessage] = useState("");
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -58,32 +57,9 @@ function DonorReg({ theme, setTheme }) {
   };
 
   const districts = [
-    "Ampara",
-    "Anuradhapura",
-    "Badulla",
-    "Batticaloa",
-    "Colombo",
-    "Galle",
-    "Gampaha",
-    "Hambantota",
-    "Jaffna",
-    "Kalutara",
-    "Kandy",
-    "Kegalle",
-    "Kilinochchi",
-    "Kurunegala",
-    "Mannar",
-    "Matale",
-    "Matara",
-    "Monaragala",
-    "Mullaitivu",
-    "Nuwara Eliya",
-    "Polonnaruwa",
-    "Puttalam",
-    "Ratnapura",
-    "Trincomalee",
-    "Vavuniya",
-  ];
+    "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara", "Kandy",
+    "Kegalle", "Kilinochchi", "Kurunegala", "Mannar", "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya", "Polonnaruwa",
+    "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",];
 
   return (
     <div>
@@ -140,12 +116,12 @@ function DonorReg({ theme, setTheme }) {
           <br />
           <input type="submit" value="Register" />
 
-          <p>{message}</p>  <br />
-          <p>Default Password is your phone number</p>
+          < p > {message}</p>  <br />
+          <p>{message == "Your Username is  : " + (doner.nic_no) ? "Default Password is your phone number" : ""}</p>
 
         </form>
       </div>
-    </div>
+    </div >
   );
 }
 

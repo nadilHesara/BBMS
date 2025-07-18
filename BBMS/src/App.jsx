@@ -1,11 +1,11 @@
 import DonorReg from "./Pages/DonorReg/DonorReg";
 import { useState, useEffect } from "react";
-import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home/Home";
 import Login from "./Pages/Login/Login";
 import CampReg from "./Pages/CampReg/CampReg";
+import Dashboard from "./Pages/Dashboard/Dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import "./App.css";
 
 function App() {
@@ -20,10 +20,11 @@ function App() {
     <div className={theme === "light" ? "container" : "container dark"}>
       <Router>
         <Routes>
-            <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
-            <Route path='/donorReg' element={<DonorReg theme={theme} setTheme={setTheme} />} />
-            <Route path='/login' element={<Login theme={theme} setTheme={setTheme} />} />
-            <Route path="/campReg" element={<CampReg theme={theme} setTheme={setTheme} />}  />
+          <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
+          <Route path='/donorReg' element={<DonorReg theme={theme} setTheme={setTheme} />} />
+          <Route path='/login' element={<Login theme={theme} setTheme={setTheme} />} />
+          <Route path="/campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
+          <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />} />
         </Routes>
       </Router>
     </div>
