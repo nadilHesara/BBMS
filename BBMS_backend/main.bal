@@ -117,58 +117,48 @@ isolated function padWithZeros(int number, int width) returns string {
     return zeros + numStr;
 }
 
-// isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
-//     // check if a doner with the same NIC already exists
-//     sql:ParameterizedQuery query = `SELECT * FROM Doner WHERE NICNo=${doner.nic_no} ;`;
-//     Doner|error donerResult = check dbClient->queryRow(query);
-//     if donerResult is Doner {
-//         if donerResult.nic_no == doner.nic_no {
-//             return error("Doner with this NIC already exists");
-//         }
-//     }
-//     // Generate a new DonerID
-//     DonerID d = check dbClient->queryRow(
-//         `SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`
-//         );
-//     string? lastId = d.DonerID;
-//     string newDonerId;
-//     if lastId is string {
-//         newDonerId = IdIncriment(lastId);
-//     }
-//     else {
-//         newDonerId = "D001";
-//     }
-//     // Create a new Doner record with the new DonerID
-//     Doner newDoner = doner.clone();
-//     newDoner.doner_id = newDonerId;
-//     sql:ParameterizedQuery addDoner = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District)
-//         VALUES(
-//             ${newDoner.doner_id},
-//             ${newDoner.name},
-//             ${newDoner.gender},
-//             ${newDoner.blood_group},
-//             ${newDoner.nic_no},
-//             ${newDoner.dob},
-//             ${newDoner.tele},
-//             ${newDoner.address_line1},
-//             ${newDoner.address_line2},
-//             ${newDoner.address_line3},
-//             ${newDoner.District}
-//         )`;
+isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
+    // Generate a new DonerID
+    DonerID d = check dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
+    string? lastId = d.DonerID;
+    string newDonerId;
+    if lastId is string {
+        newDonerId = IdIncriment(lastId);
+    }
+    else {
+        newDonerId = "D001";
+    }
+    // Create a new Doner record with the new DonerID
+    Doner newDoner = doner.clone();
+    newDoner.doner_id = newDonerId;
+    sql:ParameterizedQuery addDoner = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District)
+        VALUES(
+            ${newDoner.doner_id},
+            ${newDoner.name},
+            ${newDoner.gender},
+            ${newDoner.blood_group},
+            ${newDoner.nic_no},
+            ${newDoner.dob},
+            ${newDoner.tele},
+            ${newDoner.address_line1},
+            ${newDoner.address_line2},
+            ${newDoner.address_line3},
+            ${newDoner.District}
+        )`;
 
-//     sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , DonerID  , UserType) 
-//             VALUES(
-//             ${newDoner.nic_no},
-//             ${newDoner.tele},
-//             ${newDoner.doner_id},
-//             "Doner")`;
+    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , DonerID  , UserType) 
+            VALUES(
+            ${newDoner.nic_no},
+            ${newDoner.tele},
+            ${newDoner.doner_id},
+            "Doner")`;
 
-//     sql:ExecutionResult|error result = dbClient->execute(addDoner);
-//     sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
+    sql:ExecutionResult|error result = dbClient->execute(addDoner);
+    sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
 
-//     return result;
+    return result;
 
-// }
+}
 
 isolated function getDoner(string id) returns Doner|error {
     Doner
@@ -230,49 +220,6 @@ isolated function toBinaryString(string numStr) returns string|error {
     }
 
     return binary;
-}
-
-isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
-    // Generate a new DonerID
-    DonerID d = check dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
-    string? lastId = d.DonerID;
-    string newDonerId;
-    if lastId is string {
-        newDonerId = IdIncriment(lastId);
-    }
-    else {
-        newDonerId = "D001";
-    }
-    // Create a new Doner record with the new DonerID
-    Doner newDoner = doner.clone();
-    newDoner.doner_id = newDonerId;
-    sql:ParameterizedQuery addDoner = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District)
-        VALUES(
-            ${newDoner.doner_id},
-            ${newDoner.name},
-            ${newDoner.gender},
-            ${newDoner.blood_group},
-            ${newDoner.nic_no},
-            ${newDoner.dob},
-            ${newDoner.tele},
-            ${newDoner.address_line1},
-            ${newDoner.address_line2},
-            ${newDoner.address_line3},
-            ${newDoner.District}
-        )`;
-
-    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , DonerID  , UserType) 
-            VALUES(
-            ${newDoner.nic_no},
-            ${newDoner.tele},
-            ${newDoner.doner_id},
-            "Doner")`;
-
-    sql:ExecutionResult|error result = dbClient->execute(addDoner);
-    sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
-
-    return result;
-
 }
 
 isolated function checkPassword(string username, string password) returns boolean|error {
