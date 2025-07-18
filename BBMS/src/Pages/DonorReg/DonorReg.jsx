@@ -123,8 +123,10 @@ function DonorReg({ theme, setTheme }) {
 
           <label>Address:</label>
           <input type="text" name="address_line1" placeholder="Line 1" onChange={handleChange} required />
-          <input type="text" name="address_line2" placeholder="Line 2" onChange={handleChange} />
-          <input type="text" name="address_line3" placeholder="Line 3" onChange={handleChange} />
+          <div className="address-lines">
+            <input type="text" name="address_line2" placeholder="Line 2" onChange={handleChange} />
+            <input type="text" name="address_line3" placeholder="Line 3" onChange={handleChange} />
+          </div>
           <br />
 
           <label>District:</label>
