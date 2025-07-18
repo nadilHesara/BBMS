@@ -3,7 +3,7 @@ import './Home.css';
 import NaviBar from '../../components/Navibar/NaviBar';
 import { Link } from 'react-router-dom';
 import LeftSlideBar from '../../components/LeftSlideBar/LeftSlideBar';
-import{ useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 const Home = ({ theme, setTheme }) => {
@@ -14,15 +14,13 @@ const Home = ({ theme, setTheme }) => {
   return (
     <div className='app-container'>
       <NaviBar theme={theme} setTheme={setTheme} />
-      
+
       <div className='main-layout'>
-        <LeftSlideBar theme={theme} setTheme={setTheme} />
- 
         <div className='content-area'>
           <h1>Welcome to the Blood Bank Management System</h1>
           <div>
             Planning on organizing a blood donation campaign....
-            <button onClick={handleClick} className='btn btn-primary' style={{ marginLeft:"50px"}}>Register</button>
+            <button onClick={handleClick} className='btn btn-primary' style={{ marginLeft: "50px" }}>Register</button>
             <br /><br />
             <p>Be someone's hope. Donate blood</p>
           </div>

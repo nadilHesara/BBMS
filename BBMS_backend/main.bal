@@ -19,11 +19,20 @@ public type Doner record {
     string District;
 };
 
-public type Login record {
+type Login record {
+    @sql:Column {name: "UserName"}
     string user_name;
+
+    @sql:Column {name: "Password"}
     string password;
+
+    @sql:Column {name: "DonerID"}
     string? doner_id;
+
+    @sql:Column {name: "HospitalID"}
     string? hospital_id;
+
+    @sql:Column {name: "UserType"}
     string user_type;
 };
 
@@ -80,17 +89,16 @@ public type DonerID record {
     string? DonerID;
 };
 
-isolated function donerIdIncriment(string currentId) returns string {
+isolated function IdIncriment(string currentId) returns string {
     string prefix = currentId[0].toString(); // Get the first character as prefix
     string numericPart = currentId.substring(1); // Get the numeric part
 
     int numericValue = checkpanic int:fromString(numericPart);
     numericValue += 1;
 
-    string newNumeric = padWithZeros(numericValue, 3); // e.g., "002"
+    string newNumeric = padWithZeros(numericValue, 3);
 
     string nextId = prefix + newNumeric;
-    io:println("Next ID: " + nextId); // Output: D002
     return nextId;
 }
 
@@ -110,23 +118,20 @@ isolated function padWithZeros(int number, int width) returns string {
 }
 
 isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
-    DonerID d = check dbClient->queryRow(
-    `SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`
-    );
-
+    // Generate a new DonerID
+    DonerID d = check dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
     string? lastId = d.DonerID;
     string newDonerId;
-
     if lastId is string {
-        newDonerId = donerIdIncriment(lastId);
+        newDonerId = IdIncriment(lastId);
     }
     else {
         newDonerId = "D001";
     }
-
+    // Create a new Doner record with the new DonerID
     Doner newDoner = doner.clone();
     newDoner.doner_id = newDonerId;
-    sql:ParameterizedQuery insertQuery = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District)
+    sql:ParameterizedQuery addDoner = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District)
         VALUES(
             ${newDoner.doner_id},
             ${newDoner.name},
@@ -140,7 +145,16 @@ isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
             ${newDoner.address_line3},
             ${newDoner.District}
         )`;
-    sql:ExecutionResult|error result = dbClient->execute(insertQuery);
+
+    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , DonerID  , UserType) 
+            VALUES(
+            ${newDoner.nic_no},
+            ${newDoner.tele},
+            ${newDoner.doner_id},
+            "Doner")`;
+
+    sql:ExecutionResult|error result = dbClient->execute(addDoner);
+    sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
 
     return result;
 
@@ -148,8 +162,8 @@ isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
 
 isolated function getDoner(string id) returns Doner|error {
     Doner
-    doner = check dbClient->queryRow(
-    `        SELECT * FROM        Doner WHERE        doner_id = ${id}        `
+    doner = check dbClient->queryRow(`
+        SELECT * FROM Doner WHERE doner_id = ${id}`
     );
     return doner;
 }
@@ -157,7 +171,7 @@ isolated function getDoner(string id) returns Doner|error {
 isolated function getAllDoners() returns Doner[]|error {
     Doner[] doners = [];
     stream<Doner, error?> resultStream = dbClient->query(
-        `        SELECT * FROM        Doner        `
+        ` SELECT * FROM Doner `
     );
     check from Doner doner in resultStream
         do {
@@ -169,19 +183,19 @@ isolated function getAllDoners() returns Doner[]|error {
 
 isolated function updateDoners(Doner doner) returns int|error {
     sql:ExecutionResult result = check dbClient->execute(`
-        UPDATE Doner        SET
-            doner_id = ${doner.doner_id}, 
+UPDATE  Doner  SET
+ doner_id = ${doner.doner_id},
                 name = ${doner.name},
                 gender = ${doner.gender},
                 blood_group = ${doner.blood_group},
-                nic_no = ${doner.nic_no}, 
+                nic_no = ${doner.nic_no},
                 tele = ${doner.tele},
                 address_line1 = ${doner.address_line1},
                 address_line2 = ${doner.address_line2},
                 address_line3 = ${doner.address_line3},
                 District = ${doner.District}
-        WHERE doner_id = ${doner.doner_id}
-        `);
+            WHERE  doner_id = ${doner.doner_id}
+    `);
 
     int|string? lastInsertId = result.lastInsertId;
     if lastInsertId is int {
@@ -191,26 +205,52 @@ isolated function updateDoners(Doner doner) returns int|error {
     }
 }
 
-// Assume your previous DB code is in a module `        db        `
+isolated function toBinaryString(string numStr) returns string|error {
+    int originalNum = check int:fromString(numStr);
+
+    if originalNum == 0 {
+        return "0";
+    }
+    int mutableNum = originalNum;
+    string binary = "";
+
+    while mutableNum > 0 {
+        binary = (mutableNum % 2).toString() + binary;
+        mutableNum = mutableNum / 2;
+    }
+
+    return binary;
+}
+
+isolated function checkPassword(string username, string password) returns boolean|error {
+    sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username} AND Password = CAST(${password} AS BINARY));`;
+    Login|error result = check dbClient->queryRow(query);
+    io:println(result);
+    if result is Login {
+        io:println("Input Username : " + username + " Input password : " + password);
+        io:println("DB Username : " + result.user_name + " DB password : " + result.password);
+
+        return (result.user_name == username && result.password == password);
+
+    } else {
+        return false;
+    }
+}
+
+// Assume your previous DB code is in a module ` db `
 // For this example, put your DB functions in the same file or import accordingly
+listener http:Listener listener9191 = new (9191);
 
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
-        allowMethods: ["POST", "OPTIONS"]
+        allowMethods: ["POST", "GET", "OPTIONS"],
+        allowHeaders: ["Content-Type"],
+        allowCredentials: true
     }
 }
 
-service /donorReg on new http:Listener(9191) {
-
-    // CORS preflight handler
-    // resource function options .() returns http:Response {
-    //     http:Response res = new;
-    //     res.setHeader("Access-Control-Allow-Origin", "*");
-    //     res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
-    //     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    //     return res;
-    // }
+service /donorReg on listener9191 {
 
     // POST /doners
     isolated resource function post .(@http:Payload Doner doner) returns json|error {
@@ -229,5 +269,25 @@ service /donorReg on new http:Listener(9191) {
             return result;
         }
 
+    }
+}
+
+type LoginRequest record {
+    string username;
+    string password;
+};
+
+service /login on listener9191 {
+    isolated resource function post .(@http:Payload LoginRequest loginReq) returns json|error {
+        boolean|error result = check checkPassword(loginReq.username, loginReq.password);
+        if result is boolean {
+            if result {
+                return {"message": "Login successful"};
+            } else {
+                return {"message": "Invalid username or password"};
+            }
+        } else {
+            return result;
+        }
     }
 }
