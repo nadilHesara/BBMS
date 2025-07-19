@@ -37,11 +37,20 @@ type Login record {
 };
 
 public type Hospital record {
+    @sql:Column {name: "HospitalID"}
     string hospital_id;
+
+    @sql:Column {name: "Name"}
     string name;
+
+    @sql:Column {name: "Address"}
     string address;
+
+    @sql:Column {name: "District"}
     string District;
-    int contact_no;
+
+    @sql:Column {name: "Contact"}
+    string contact_no;
 };
 
 public type Donates record {
@@ -222,18 +231,37 @@ isolated function toBinaryString(string numStr) returns string|error {
     return binary;
 }
 
-isolated function checkPassword(string username, string password) returns boolean|error {
-    sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username} AND Password = CAST(${password} AS BINARY));`;
+isolated function checkPassword(string username, string password) returns json|error {
+    sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username});`;
     Login|error result = check dbClient->queryRow(query);
-    io:println(result);
     if result is Login {
+
         io:println("Input Username : " + username + " Input password : " + password);
         io:println("DB Username : " + result.user_name + " DB password : " + result.password);
 
-        return (result.user_name == username && result.password == password);
-
+        if (result.user_name == username && result.password == password) {
+            if result.doner_id is string {
+                return {
+                    "message": "Login successful",
+                    "doner_id": result.doner_id,
+                    "user_type": result.user_type
+                };
+            }
+            else {
+                return {
+                    "message": "Login successful",
+                    "hospital_id": result.hospital_id,
+                    "user_type": result.user_type
+                };
+            }
+        } else {
+            return {
+                "message": "Login faild",
+                "error": "Invalid username or password"
+            };
+        }
     } else {
-        return false;
+        return result;
     }
 }
 
@@ -244,9 +272,7 @@ listener http:Listener listener9191 = new (9191);
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
-        allowMethods: ["POST", "GET", "OPTIONS"],
-        allowHeaders: ["Content-Type"],
-        allowCredentials: true
+        allowMethods: ["POST", "GET", "OPTIONS"]
     }
 }
 
@@ -277,17 +303,28 @@ type LoginRequest record {
     string password;
 };
 
-service /login on listener9191 {
-    isolated resource function post .(@http:Payload LoginRequest loginReq) returns json|error {
-        boolean|error result = check checkPassword(loginReq.username, loginReq.password);
-        if result is boolean {
-            if result {
-                return {"message": "Login successful"};
-            } else {
-                return {"message": "Invalid username or password"};
-            }
-        } else {
-            return result;
-        }
+@http:ServiceConfig {
+    cors: {
+        allowOrigins: ["http://localhost:5173"],
+        allowMethods: ["POST", "GET", "OPTIONS"]
     }
 }
+service /login on listener9191 {
+
+    isolated resource function post .(@http:Payload LoginRequest loginReq) returns http:Response|error {
+        json|error result = check checkPassword(loginReq.username, loginReq.password);
+        http:Response res = new;
+        json body;
+        if result is json {
+            body = result;
+        } else {
+            body = {Error: "Error checking password: "};
+        }
+        res.setPayload(body);
+        // res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+        // res.setHeader("Access-Control-Allow-Credentials", "true");
+        io:println(body);
+        return res;
+    }
+}
+
