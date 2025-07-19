@@ -1,5 +1,5 @@
 import ballerina/http;
-import ballerina/io;
+// import ballerina/io;
 import ballerina/sql;
 import ballerina/time;
 import ballerinax/mysql;
@@ -335,10 +335,6 @@ isolated function checkPassword(string username, string password) returns json|e
     sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username});`;
     Login|error result = check dbClient->queryRow(query);
     if result is Login {
-
-        io:println("Input Username : " + username + " Input password : " + password);
-        io:println("DB Username : " + result.user_name + " DB password : " + result.password);
-
         if (result.user_name == username && result.password == password) {
             if result.doner_id is string {
                 return {
