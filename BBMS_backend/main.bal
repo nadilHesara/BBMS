@@ -331,18 +331,37 @@ isolated function toBinaryString(string numStr) returns string|error {
     return binary;
 }
 
-isolated function checkPassword(string username, string password) returns boolean|error {
-    sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username} );`;
+isolated function checkPassword(string username, string password) returns json|error {
+    sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username});`;
     Login|error result = check dbClient->queryRow(query);
-    io:println(result);
     if result is Login {
+
         io:println("Input Username : " + username + " Input password : " + password);
         io:println("DB Username : " + result.user_name + " DB password : " + result.password);
 
-        return (result.user_name == username && result.password == password);
-
+        if (result.user_name == username && result.password == password) {
+            if result.doner_id is string {
+                return {
+                    "message": "Login successful",
+                    "doner_id": result.doner_id,
+                    "user_type": result.user_type
+                };
+            }
+            else {
+                return {
+                    "message": "Login successful",
+                    "hospital_id": result.hospital_id,
+                    "user_type": result.user_type
+                };
+            }
+        } else {
+            return {
+                "message": "Login faild",
+                "error": "Invalid username or password"
+            };
+        }
     } else {
-        return false;
+        return result;
     }
 }
 
@@ -420,18 +439,11 @@ service /hospitalReg on listener9191 {
         allowCredentials: true
     }
 }
-
 service /login on listener9191 {
+
     isolated resource function post .(@http:Payload LoginRequest loginReq) returns json|error {
-        boolean|error result = check checkPassword(loginReq.username, loginReq.password);
-        if result is boolean {
-            if result {
-                return {"message": "Login successful"};
-            } else {
-                return {"message": "Invalid username or password"};
-            }
-        } else {
-            return result;
-        }
+        json|error result = check checkPassword(loginReq.username, loginReq.password);
+        return result;
     }
 }
+
