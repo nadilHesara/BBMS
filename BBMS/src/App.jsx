@@ -4,14 +4,11 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home/Home";
 import Login from "./Pages/Login/Login";
 import CampReg from "./Pages/CampReg/CampReg";
-<<<<<<< HEAD
 import HospitalReg from "./Pages/HospitalReg/HospitalReg";
-// import 'bootstrap/dist/css/bootstrap.min.css';
-
-=======
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
->>>>>>> origin/main
+
 import "./App.css";
 
 function App() {
@@ -26,19 +23,13 @@ function App() {
     <div className={theme === "light" ? "container" : "container dark"}>
       <Router>
         <Routes>
-<<<<<<< HEAD
             <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
             <Route path='/donorReg' element={<DonorReg theme={theme} setTheme={setTheme} />} />
             <Route path='/login' element={<Login theme={theme} setTheme={setTheme} />} />
             <Route path="/campReg" element={<CampReg theme={theme} setTheme={setTheme} />}  />
             <Route path="/hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />}  />
-=======
-          <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
-          <Route path='/donorReg' element={<DonorReg theme={theme} setTheme={setTheme} />} />
-          <Route path='/login' element={<Login theme={theme} setTheme={setTheme} />} />
-          <Route path="/campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
-          <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />} />
->>>>>>> origin/main
+            <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />} />
+
         </Routes>
       </Router>
     </div>

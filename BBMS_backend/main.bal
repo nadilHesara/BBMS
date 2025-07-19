@@ -37,11 +37,20 @@ type Login record {
 };
 
 public type Hospital record {
+    @sql:Column {name: "HospitalID"}
     string hospital_id;
+
+    @sql:Column {name: "Name"}
     string name;
+
+    @sql:Column {name: "Address"}
     string address;
+
+    @sql:Column {name: "District"}
     string District;
-    int contact_no;
+
+    @sql:Column {name: "Contact"}
+    string contact_no;
 };
 
 public type Donates record {
@@ -89,6 +98,9 @@ public type DonerID record {
     string? DonerID;
 };
 
+public type HospitalID record {
+    string? HospitalID;
+};
 isolated function IdIncriment(string currentId) returns string {
     string prefix = currentId[0].toString(); // Get the first character as prefix
     string numericPart = currentId.substring(1); // Get the numeric part
@@ -160,6 +172,44 @@ isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
 
 }
 
+
+isolated function addHospital(Hospital hospital) returns sql:ExecutionResult|error {
+    // Generate a new DonerID
+    HospitalID h = check dbClient->queryRow(`SELECT HospitalID FROM Hospital ORDER BY HospitalID DESC LIMIT 1`);
+    string? lastId = h.HospitalID;
+    string newHospitalId;
+    if lastId is string {
+        newHospitalId = IdIncriment(lastId);
+    }
+    else {
+        newHospitalId = "H001";
+    }
+    // Create a new Doner record with the new DonerID
+    Hospital newHospital = hospital.clone();
+    newHospital.hospital_id = newHospitalId;
+    sql:ParameterizedQuery addHospital = `INSERT INTO Hospital(HospitalID, Name, Address, District, Contact)
+        VALUES(
+            ${newHospital.hospital_id},
+            ${newHospital.name},
+            ${newHospital.address},
+            ${newHospital.District},
+            ${newHospital.contact_no}
+           
+        )`;
+
+    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , HospitalID  , UserType) 
+            VALUES(
+            ${newHospital.hospital_id},
+            ${newHospital.contact_no},
+            ${newHospital.hospital_id},
+            "Hospital")`;
+
+    sql:ExecutionResult|error result = dbClient->execute(addHospital);
+    sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
+
+    return result;
+
+}
 isolated function getDoner(string id) returns Doner|error {
     Doner
     doner = check dbClient->queryRow(`
@@ -167,6 +217,16 @@ isolated function getDoner(string id) returns Doner|error {
     );
     return doner;
 }
+
+
+isolated function getHospital(string id) returns Hospital|error {
+    Hospital
+    hospital = check dbClient->queryRow(`
+        SELECT * FROM Hospital WHERE hospital_id = ${id}`
+    );
+    return hospital;
+}
+
 
 isolated function getAllDoners() returns Doner[]|error {
     Doner[] doners = [];
@@ -180,6 +240,21 @@ isolated function getAllDoners() returns Doner[]|error {
     check resultStream.close();
     return doners;
 }
+
+
+isolated function getAllHospitals() returns Hospital[]|error {
+    Hospital[] hospitals = [];
+    stream<Hospital, error?> resultStream = dbClient->query(
+        ` SELECT * FROM Hospital `
+    );
+    check from Hospital hospital in resultStream
+        do {
+            hospitals.push(hospital);
+        };
+    check resultStream.close();
+    return hospitals;
+}
+
 
 isolated function updateDoners(Doner doner) returns int|error {
     sql:ExecutionResult result = check dbClient->execute(`
@@ -204,6 +279,27 @@ UPDATE  Doner  SET
         return error("Unable to obtain last insert ID");
     }
 }
+
+
+isolated function updateHospitals(Hospital hospital) returns int|error {
+    sql:ExecutionResult result = check dbClient->execute(`
+UPDATE  Hospital  SET
+ hospital_id = ${hospital.hospital_id},
+                name = ${hospital.name},
+                address = ${hospital.address},
+                District = ${hospital.District},
+                contact = ${hospital.contact_no},
+            WHERE  hospital_id = ${hospital.hospital_id}
+    `);
+
+    int|string? lastInsertId = result.lastInsertId;
+    if lastInsertId is int {
+        return lastInsertId;
+    } else {
+        return error("Unable to obtain last insert ID");
+    }
+}
+
 
 isolated function toBinaryString(string numStr) returns string|error {
     int originalNum = check int:fromString(numStr);
@@ -243,8 +339,8 @@ listener http:Listener listener9191 = new (9191);
 
 @http:ServiceConfig {
     cors: {
-        allowOrigins: ["http://localhost:5173"],
-        allowMethods: ["POST", "GET", "OPTIONS"],
+        allowOrigins: ["http://localhost:5174"],
+        allowMethods: ["POST","GET","OPTIONS"],
         allowHeaders: ["Content-Type"],
         allowCredentials: true
     }
@@ -272,10 +368,53 @@ service /donorReg on listener9191 {
     }
 }
 
+@http:ServiceConfig {
+    cors: {
+        allowOrigins: ["http://localhost:5173"],
+        allowMethods: ["POST", "GET", "OPTIONS"],
+        allowHeaders: ["Content-Type"],
+        allowCredentials: true
+    }
+}
+
+
+
+
+service /hospitalReg on listener9191 {
+
+    isolated resource function post .(@http:Payload Hospital hospital) returns json|error {
+        sql:ExecutionResult|error result = check addHospital(hospital);
+        if result is sql:ExecutionResult {
+            int|string? lastInsertId = result.lastInsertId;
+            if lastInsertId is int {
+                return {
+                    "message": "Hospital added successfully",
+                    "hospital_id": lastInsertId
+                };
+            } else {
+                return {"message": "Hospital added, but no ID returned"};
+            }
+        } else {
+            return result;
+        }
+
+    }
+}
+
+
 type LoginRequest record {
     string username;
     string password;
 };
+
+@http:ServiceConfig {
+    cors: {
+        allowOrigins: ["http://localhost:5173"],
+        allowMethods: ["POST", "GET", "OPTIONS"],
+        allowHeaders: ["Content-Type"],
+        allowCredentials: true
+    }
+}
 
 service /login on listener9191 {
     isolated resource function post .(@http:Payload LoginRequest loginReq) returns json|error {

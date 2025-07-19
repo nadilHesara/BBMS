@@ -8,11 +8,9 @@ function HospitalReg({ theme, setTheme }) {
     const [hospital, setHospital] = useState({
         hospital_id: "H001",
         name: "",
-        address_line1: "",
-        address_line2: "",
-        address_line3: "",
+        address: "",
         District: "",
-        tele: "",
+        contact_no: "",
     });
 
     const handleChange = (e) => {
@@ -30,6 +28,7 @@ function HospitalReg({ theme, setTheme }) {
 
         try {
             const response = await fetch("http://localhost:9191/hospitalReg", {
+
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -95,10 +94,10 @@ function HospitalReg({ theme, setTheme }) {
                         <label>Address:</label>
                         
                         <input type="text" name="address_line1" placeholder="Line 1" onChange={handleChange} required />
-                        <div className="address-lines">
+                    {/*     <div className="address-lines">
                         <input type="text" name="address_line2" placeholder="Line 2" onChange={handleChange} />
                         <input type="text" name="address_line3" placeholder="Line 3" onChange={handleChange} />
-                         </div>
+                         </div> */}
                         <br />
                    
 
@@ -124,7 +123,7 @@ function HospitalReg({ theme, setTheme }) {
                     <input type="submit" value="Register" />
 
                     <p>{message}</p>  <br />
-                    <p>Default Password is your phone number</p>
+                    <p>{message == "Username is  : " + (hospital.hospital_id) && "Default Password is hospital phone number" }</p>
 
                 </form>
             </div>

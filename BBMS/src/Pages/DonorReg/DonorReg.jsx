@@ -39,21 +39,30 @@ function DonorReg({ theme, setTheme }) {
         },
         body: JSON.stringify(doner)
       });
+
       const result = await response.json();
+
       if (response.ok) {
         setMessage("Your Username is  : " + (doner.nic_no));
-
         alert("Donor added successfully!");
+
+      } else if (result.message.match(/Duplicate entry '.*?'/)) {
+        const errorMsg = "NIC number already registered.";
+        setMessage("Error: " + errorMsg);
+        alert(errorMsg); // Optional: show an alert too
+        console.error("Duplicate NIC error:", result);
 
       } else {
         setMessage("Error: " + (result.message || JSON.stringify(result)));
         console.error("Error response:", result);
       }
+
     } catch (error) {
       console.error("Error submitting form:", error.message);
       alert("Submission failed. Check server and data.");
       setMessage("Submission failed. Check server and data.");
     }
+
   };
 
   const districts = [
@@ -119,7 +128,7 @@ function DonorReg({ theme, setTheme }) {
           <input type="submit" value="Register" />
 
           < p > {message}</p>  <br />
-          <p>{message == "Your Username is  : " + (doner.nic_no) ? "Default Password is your phone number" : ""}</p>
+          <p>{message == "Username is  : " + (doner.nic_no) && "Default Password is phone number" }</p>
 
         </form>
       </div>
