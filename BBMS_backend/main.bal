@@ -242,23 +242,20 @@ isolated function checkPassword(string username, string password) returns json|e
         if (result.user_name == username && result.password == password) {
             if result.doner_id is string {
                 return {
-                    "message": "Login successful",
+                    "message": "Doner Login successful",
                     "doner_id": result.doner_id,
                     "user_type": result.user_type
                 };
             }
             else {
                 return {
-                    "message": "Login successful",
+                    "message": "Hospital Login successful",
                     "hospital_id": result.hospital_id,
                     "user_type": result.user_type
                 };
             }
         } else {
-            return {
-                "message": "Login faild",
-                "error": "Invalid username or password"
-            };
+            return error("Invalid username or password");
         }
     } else {
         return result;
@@ -277,7 +274,6 @@ listener http:Listener listener9191 = new (9191);
 }
 
 service /donorReg on listener9191 {
-
     // POST /doners
     isolated resource function post .(@http:Payload Doner doner) returns json|error {
         sql:ExecutionResult|error result = check addDoner(doner);
@@ -294,7 +290,6 @@ service /donorReg on listener9191 {
         } else {
             return result;
         }
-
     }
 }
 
@@ -310,21 +305,16 @@ type LoginRequest record {
     }
 }
 service /login on listener9191 {
-
-    isolated resource function post .(@http:Payload LoginRequest loginReq) returns http:Response|error {
+    // POST /login
+    isolated
+    resource function post .(@http:Payload LoginRequest loginReq) returns json|error {
         json|error result = check checkPassword(loginReq.username, loginReq.password);
-        http:Response res = new;
-        json body;
+        io:println("Login result: ", result);
         if result is json {
-            body = result;
+            return result;
         } else {
-            body = {Error: "Error checking password: "};
+            return result;
         }
-        res.setPayload(body);
-        // res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
-        // res.setHeader("Access-Control-Allow-Credentials", "true");
-        io:println(body);
-        return res;
     }
 }
 

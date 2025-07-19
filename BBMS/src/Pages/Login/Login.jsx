@@ -8,9 +8,9 @@ import { Link } from 'react-router-dom';
 
 const Login = ({ theme, setTheme }) => {
   const login = localStorage.getItem("login");
-  const [isLogin, setIsLogin] = useState(login === "true");
+  const [isLogin, setIsLogin] = useState(login ? login : "");
   useEffect(() => {
-    localStorage.setItem("login", isLogin.toString())
+    localStorage.setItem("login", isLogin)
   }, [isLogin]);
 
   const [username, setUsername] = useState('');
@@ -29,7 +29,7 @@ const Login = ({ theme, setTheme }) => {
       setPassword(savedPassword);
       setRememberMe(true);
     }
-  }, []);
+  }, [login]);
 
 
   function toggleShow() {
@@ -62,9 +62,10 @@ const Login = ({ theme, setTheme }) => {
 
       const result = await response.json();
       if (response.ok) {
-        setMessage("Login successful!");
+        setMessage(result.message);
         alert("Login successful to" + username + " !");
-        setIsLogin(true);
+        console.log("Login successful to " + result.user_type + " !");
+        setIsLogin(result.user_type);
 
       } else {
         setMessage("Error: " + (result.message || JSON.stringify(result)));
