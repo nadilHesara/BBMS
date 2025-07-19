@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import './Login.css';
 import NaviBar from '../../components/Navibar/NaviBar';
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 
 const Login = ({ theme, setTheme }) => {
+  const navigate = useNavigate();
+
   const login = localStorage.getItem("login");
   const [isLogin, setIsLogin] = useState(login ? login : "");
   useEffect(() => {
@@ -66,6 +68,7 @@ const Login = ({ theme, setTheme }) => {
         alert("Login successful to" + username + " !");
         console.log("Login successful to " + result.user_type + " !");
         setIsLogin(result.user_type);
+        navigate("/dashboard", { state: { userType: result.user_type } });
 
       } else {
         setMessage("Error: " + (result.message || JSON.stringify(result)));
