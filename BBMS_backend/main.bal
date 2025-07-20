@@ -38,26 +38,16 @@ type Login record {
 
 public type Hospital record {
     @sql:Column {name: "HospitalID"}
-    @sql:Column {name: "HospitalID"}
     string hospital_id;
-
-    @sql:Column {name: "Name"}
 
     @sql:Column {name: "Name"}
     string name;
 
     @sql:Column {name: "Address"}
-
-    @sql:Column {name: "Address"}
     string address;
 
     @sql:Column {name: "District"}
-
-    @sql:Column {name: "District"}
     string District;
-
-    @sql:Column {name: "Contact"}
-    string contact_no;
 
     @sql:Column {name: "Contact"}
     string contact_no;
@@ -399,10 +389,6 @@ service /donorReg on listener9191 {
     }
 }
 
-type LoginRequest record {
-    string username;
-    string password;
-};
 
 @http:ServiceConfig {
     cors: {
@@ -415,12 +401,7 @@ service /login on listener9191 {
     isolated
     resource function post .(@http:Payload LoginRequest loginReq) returns json|error {
         json|error result = check checkPassword(loginReq.username, loginReq.password);
-        if result is json {
-            return result;
-        } else {
-            return result;
-        }
-
+        return result;
     }
 }
 
