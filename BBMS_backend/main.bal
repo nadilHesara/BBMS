@@ -1,5 +1,6 @@
 import ballerina/http;
 // import ballerina/io;
+// import ballerina/io;
 import ballerina/sql;
 import ballerina/time;
 import ballerinax/mysql;
@@ -364,10 +365,8 @@ listener http:Listener listener9191 = new (9191);
 
 @http:ServiceConfig {
     cors: {
-        allowOrigins: ["http://localhost:5174"],
-        allowMethods: ["POST","GET","OPTIONS"],
-        allowHeaders: ["Content-Type"],
-        allowCredentials: true
+        allowOrigins: ["http://localhost:5173"],
+        allowMethods: ["POST", "GET", "OPTIONS"]
     }
 }
 
@@ -425,14 +424,13 @@ service /hospitalReg on listener9191 {
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
-        allowMethods: ["POST", "GET", "OPTIONS"],
-        allowHeaders: ["Content-Type"],
-        allowCredentials: true
+        allowMethods: ["POST", "GET", "OPTIONS"]
     }
 }
 service /login on listener9191 {
-
-    isolated resource function post .(@http:Payload LoginRequest loginReq) returns json|error {
+    // POST /login
+    isolated
+    resource function post .(@http:Payload LoginRequest loginReq) returns json|error {
         json|error result = check checkPassword(loginReq.username, loginReq.password);
         return result;
     }
