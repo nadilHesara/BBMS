@@ -5,11 +5,13 @@ import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import "./DonorReg.css";
 
 function DonorReg({ theme, setTheme }) {
+  const navigate = useNavigate();
 
   const [doner, setDoner] = useState({
     doner_id: "D001",
     name: "",
     username: "",
+    email: "",
     gender: "",
     blood_group: "",
     nic_no: "",
@@ -22,12 +24,17 @@ function DonorReg({ theme, setTheme }) {
     password: ""
   });
 
-  const [show, setShow] = useState(false)
-  const [username, setUsername] = useState('');
+  const [show, setShow] = useState([false, false]);
+
+  const [conformPassword, setConformPassword] = useState('');
   const [password, setPassword] = useState('');
 
-  function toggleShow() {
-    setShow(!show)
+  function toggleShow(n) {
+    if (n == 1) {
+      setShow([show[0], !show[1]]);
+    } else {
+      setShow([!show[0], show[1]]);
+    }
   }
 
   const handleChange = (e) => {
@@ -38,10 +45,19 @@ function DonorReg({ theme, setTheme }) {
   };
 
   const [message, setMessage] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-
+    if (password != conformPassword) {
+      setMessage("Password is miss match!");
+      return;
+    } else {
+      setDoner({
+        ...doner,
+        ["password"]: password
+      })
+    }
     try {
       const response = await fetch("http://localhost:9191/donorReg", {
         method: "POST",
@@ -56,6 +72,7 @@ function DonorReg({ theme, setTheme }) {
       if (response.ok) {
         setMessage("Donor Registration Successful!");
         alert("Donor added successfully!");
+        navigate("/login");
 
       } else if (result.message.match(/Duplicate entry '.*?'/)) {
         const errorMsg = "Username already registered.";
@@ -100,6 +117,9 @@ function DonorReg({ theme, setTheme }) {
           <input type="text" name="username" onChange={handleChange} required />
           <br />
 
+          <label htmlFor="email">Email: </label>
+          <input type="email" name="email" onChange={handleChange} required />
+          <br />
 
           <label>Blood Group:</label>
           <select name="blood_group" onChange={handleChange}>
@@ -143,25 +163,23 @@ function DonorReg({ theme, setTheme }) {
 
           <br />
 
-
           <label htmlFor="pwd">Password: </label>
-          <input type={show ? "text" : "password"} id="pwd" name="pwd" value={password} onChange={(e) => setPassword(e.target.value)}></input>
-          {show ? <AiFillEyeInvisible onClick={() => toggleShow()} size={20} /> : <AiFillEye onClick={() => toggleShow()} size={20} />}
+          <input type={show[0] ? "text" : "password"} id="pwd" name="pwd" onChange={(e) => setPassword(e.target.value)}></input>
+          {show[0] ? <AiFillEyeInvisible onClick={() => toggleShow(0)} size={20} /> : <AiFillEye onClick={() => toggleShow(0)} size={20} />}
           <br />
 
 
           <label htmlFor="pwdconfirm">Confirm Password: </label>
-          <input type={show ? "text" : "password"} id="pwdconfirm" name="pwdconfirm" value={password} onChange={(e) => setPassword(e.target.value)}></input>
-          {show ? <AiFillEyeInvisible onClick={() => toggleShow()} size={20} /> : <AiFillEye onClick={() => toggleShow()} size={20} />}
+          <input type={show[1] ? "text" : "password"} id="pwdconfirm" name="pwdconfirm" onChange={(e) => setConformPassword(e.target.value)}></input>
+          {show[1] ? <AiFillEyeInvisible onClick={() => toggleShow(1)} size={20} /> : <AiFillEye onClick={() => toggleShow(1)} size={20} />}
           <br />
-
           <input type="submit" value="Register" />
-
-          < p > {message}</p>  <br />
-          {/* <p>{message == "Username is  : " + (doner.nic_no) && "Default Password is phone number"}</p> */}
-
+          <div className="message">
+            <p style={message == "Password is miss match!" ? { color: "red" } : { color: "black" }}>{message}</p>
+          </div>
         </form>
-      </div>
+
+      </div >
     </div >
   );
 }
