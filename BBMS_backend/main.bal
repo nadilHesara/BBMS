@@ -80,6 +80,19 @@ public type Campaign record {
     time:Utc end_time;
 };
 
+public type DonerID record {
+    string? DonerID;
+};
+
+public type HospitalID record {
+    string? HospitalID;
+};
+
+type LoginRequest record {
+    string username;
+    string password;
+};
+
 configurable string HOST = ?;
 configurable int PORT = ?;
 configurable string USER = ?;
@@ -94,13 +107,6 @@ final mysql:Client dbClient = check new (
     database = DATABASE
 );
 
-public type DonerID record {
-    string? DonerID;
-};
-
-public type HospitalID record {
-    string? HospitalID;
-};
 isolated function IdIncriment(string currentId) returns string {
     string prefix = currentId[0].toString(); // Get the first character as prefix
     string numericPart = currentId.substring(1); // Get the numeric part
@@ -131,13 +137,16 @@ isolated function padWithZeros(int number, int width) returns string {
 
 isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
     // Generate a new DonerID
-    DonerID d = check dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
-    string? lastId = d.DonerID;
+    DonerID|error d =  dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
     string newDonerId;
-    if lastId is string {
-        newDonerId = IdIncriment(lastId);
-    }
-    else {
+    if d is DonerID {
+        string? lastId = d.DonerID;
+        if lastId is string{
+            newDonerId = IdIncriment(lastId);
+        }else{
+            newDonerId = "D001";
+        }
+    }else {
         newDonerId = "D001";
     }
     // Create a new Doner record with the new DonerID
@@ -174,16 +183,21 @@ isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
 
 
 isolated function addHospital(Hospital hospital) returns sql:ExecutionResult|error {
-    // Generate a new DonerID
-    HospitalID h = check dbClient->queryRow(`SELECT HospitalID FROM Hospital ORDER BY HospitalID DESC LIMIT 1`);
-    string? lastId = h.HospitalID;
+    // Generate a new HOSPITAL ID
+    
+    HospitalID|error h =  dbClient->queryRow(`SELECT HospitalID FROM Hospital ORDER BY HospitalID DESC LIMIT 1`);
     string newHospitalId;
-    if lastId is string {
-        newHospitalId = IdIncriment(lastId);
-    }
-    else {
+    if h is HospitalID {
+        string? lastId = h.HospitalID;
+        if lastId is string{
+            newHospitalId = IdIncriment(lastId);
+        }else {
+            newHospitalId = "H001";
+        }
+    } else {
         newHospitalId = "H001";
     }
+
     // Create a new Doner record with the new DonerID
     Hospital newHospital = hospital.clone();
     newHospital.hospital_id = newHospitalId;
@@ -208,7 +222,6 @@ isolated function addHospital(Hospital hospital) returns sql:ExecutionResult|err
     sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
 
     return result;
-
 }
 isolated function getDoner(string id) returns Doner|error {
     Doner
@@ -319,7 +332,7 @@ isolated function toBinaryString(string numStr) returns string|error {
 }
 
 isolated function checkPassword(string username, string password) returns boolean|error {
-    sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username} AND Password = CAST(${password} AS BINARY));`;
+    sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username} );`;
     Login|error result = check dbClient->queryRow(query);
     io:println(result);
     if result is Login {
@@ -377,9 +390,6 @@ service /donorReg on listener9191 {
     }
 }
 
-
-
-
 service /hospitalReg on listener9191 {
 
     isolated resource function post .(@http:Payload Hospital hospital) returns json|error {
@@ -401,11 +411,6 @@ service /hospitalReg on listener9191 {
     }
 }
 
-
-type LoginRequest record {
-    string username;
-    string password;
-};
 
 @http:ServiceConfig {
     cors: {
