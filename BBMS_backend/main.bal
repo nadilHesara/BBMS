@@ -153,6 +153,10 @@ isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
     // Create a new Doner record with the new DonerID
     Doner newDoner = doner.clone();
     newDoner.doner_id = newDonerId;
+    if newDoner.blood_group is string && newDoner.blood_group == "" {
+        newDoner.blood_group = ();
+    }
+
     sql:ParameterizedQuery addDoner = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District)
         VALUES(
             ${newDoner.doner_id},
@@ -202,6 +206,7 @@ isolated function addHospital(Hospital hospital) returns sql:ExecutionResult|err
     // Create a new Doner record with the new DonerID
     Hospital newHospital = hospital.clone();
     newHospital.hospital_id = newHospitalId;
+
     sql:ParameterizedQuery addHospital = `INSERT INTO Hospital(HospitalID, Name, Address, District, Contact)
         VALUES(
             ${newHospital.hospital_id},
