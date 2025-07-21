@@ -36,7 +36,7 @@ public type Hospital record {
 };
 
 public type Donates record {
-    int donate_id;
+    string donate_id;
     string doner_id;
     int campain_id;
     time:Utc donate_time;
@@ -47,9 +47,9 @@ public type Donates record {
 };
 
 public type Campaign record {
-    int campain_id;
+    string campain_id;
     string district;
-    time:Date date;
+    string date;
     string org_name;
     string org_tele;
     string org_email;
@@ -58,8 +58,8 @@ public type Campaign record {
     string? add_line3;
     int? doner_count;
     int? blood_quantity;
-    time:Utc start_time;
-    time:Utc end_time;
+    string start_time;
+    string end_time;
 };
 
 configurable string HOST = ?;
@@ -80,7 +80,7 @@ public type DonerID record {
     string? DonerID;
 };
 
-isolated function donerIdIncriment(string currentId) returns string {
+isolated function IDIncrement(string currentId) returns string {
     string prefix = currentId[0].toString(); // Get the first character as prefix
     string numericPart = currentId.substring(1); // Get the numeric part
 
@@ -118,7 +118,7 @@ isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
     string newDonerId;
 
     if lastId is string {
-        newDonerId = donerIdIncriment(lastId);
+        newDonerId = IDIncrement(lastId);
     }
     else {
         newDonerId = "D001";
@@ -191,17 +191,50 @@ isolated function updateDoners(Doner doner) returns int|error {
     }
 }
 
+isolated function addCamp(Campaign campaign) returns sql:ExecutionResult|error {
+    string? lastID = check dbClient->queryRow(`SELECT CampaignID FROM campaign ORDER BY CampaignID DESC LIMIT 1`);
+    string newID;
+
+    if lastID is string{
+        newID = IDIncrement(lastID);
+    }else{
+        newID = "C001";
+    }
+
+    campaign.campain_id = newID;
+    sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, BloodQuantity, StartTime, EndTime)
+            VALUES (
+                ${campaign.campain_id},
+                ${campaign.district},
+                ${campaign.date},
+                ${campaign.org_name},
+                ${campaign.org_tele},
+                ${campaign.org_email},
+                ${campaign.add_line1},
+                ${campaign.add_line2},
+                ${campaign.add_line3},
+                ${campaign.doner_count},
+                ${campaign.blood_quantity},
+                ${campaign.start_time},
+                ${campaign.end_time}
+            )`;
+    sql:ExecutionResult|error result = dbClient->execute(query);
+
+    return result;
+}
+
 // Assume your previous DB code is in a module `        db        `
 // For this example, put your DB functions in the same file or import accordingly
 
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
-        allowMethods: ["POST", "OPTIONS"]
+        allowMethods: ["GET","POST", "OPTIONS"],
+        allowHeaders: ["Content-type"]
     }
 }
 
-service /donorReg on new http:Listener(9191) {
+service / on new http:Listener(9191) {
 
     // CORS preflight handler
     // resource function options .() returns http:Response {
@@ -213,7 +246,7 @@ service /donorReg on new http:Listener(9191) {
     // }
 
     // POST /doners
-    isolated resource function post .(@http:Payload Doner doner) returns json|error {
+    isolated resource function post donorReg(@http:Payload Doner doner) returns json|error {
         sql:ExecutionResult|error result = check addDoner(doner);
         if result is sql:ExecutionResult {
             int|string? lastInsertId = result.lastInsertId;
@@ -230,4 +263,30 @@ service /donorReg on new http:Listener(9191) {
         }
 
     }
+
+    isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
+        sql:ExecutionResult|error result = check addCamp(campaign);
+        if result is sql:ExecutionResult {
+            int|string? lastInsertId = result.lastInsertId;
+            if lastInsertId is int {
+                return {
+                    "message": "Campaign added successfully",
+                    "campaign_id": lastInsertId
+                };
+            } else {
+                return {"message": "Campaign added, but no ID returned"};
+            }
+        } else {
+            return result;
+        }
+    }
+
+    isolated resource function get campReg() returns json|error {
+        return{
+            "message":"This is the GET method"
+        };
+    }
+
+
+
 }
