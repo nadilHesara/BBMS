@@ -7,7 +7,7 @@ import CampReg from "./Pages/CampReg/CampReg";
 import HospitalReg from "./Pages/HospitalReg/HospitalReg";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Dashboard from "./Pages/Dashboard/Dashboard";
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 import "./App.css";
 
