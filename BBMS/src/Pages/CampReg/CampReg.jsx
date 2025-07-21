@@ -60,6 +60,10 @@ function CampReg({ theme, setTheme }) {
 
 
   }
+  const districts = [
+    "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara", "Kandy",
+    "Kegalle", "Kilinochchi", "Kurunegala", "Mannar", "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya", "Polonnaruwa",
+    "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",];
 
 
   return (
@@ -69,15 +73,22 @@ function CampReg({ theme, setTheme }) {
         <form  onSubmit={handleSubmit}>
           <h1>Campaign Registration</h1>
           <label htmlFor="org_name"> Organizer Name: </label>
-          <input type="text" id="org_name" name="org_name" onChange={handleChange}></input>
+          <input type="text" id="org_name" name="org_name" onChange={handleChange} required></input>
           <br />
 
-        <label htmlFor="district"> District: </label>
-        <input type="text" id="district" name="district" onChange={handleChange}></input>
+        <label > District: </label>
+        <select name="district" >
+          <option value="">---Select---</option>
+          {districts.map((city,index)=>(
+            <option key={index} value={city} > {city} </option>
+          ))}
+        </select>
         <br />
 
+        
+
       <label> Address: </label>
-      <input type="text" id="add_line1" name="add_line1"  onChange={handleChange}/>
+      <input type="text" id="add_line1" name="add_line1"  onChange={handleChange} required/>
       <input type="text" id="add_line2" name="add_line2"  onChange={handleChange}/>
       <input type="text" id="add_line3" name="add_line3" onChange={handleChange} />
       
@@ -85,32 +96,32 @@ function CampReg({ theme, setTheme }) {
 
 
       <label htmlFor="date">Expected Date : </label>
-      <input type="date" id="date" name="date" onChange={handleChange}></input>
+      <input type="date" id="date" name="date" onChange={handleChange} required></input>
       <br />
 
       <label htmlFor="doner_count"> Number of donations </label>
-      <input type="number" id="doner_count" name="doner_count" placeholder="Enter the expected number of donars" onChange={handleNumberChange} />
+      <input type="number" id="doner_count" name="doner_count" placeholder="Enter the expected number of donars" onChange={handleNumberChange} required />
 
       <br />
 
       <label htmlFor="blood_quantity"> Expected blood qunatity(pints) </label>
-      <input type="number" id="blood_quantity" name="blood_quantity" placeholder="Number of pints" onChange={handleNumberChange} />
+      <input type="number" id="blood_quantity" name="blood_quantity" placeholder="Number of pints" onChange={handleNumberChange} required/>
 
       <br />
 
           <label htmlFor="start_time"> Starting Time : </label>
-          <input type="text" id="start_time" name="start_time" onChange={handleChange}></input>
+          <input type="text" id="start_time" name="start_time" onChange={handleChange} placeholder="HH:MM" required ></input>
           <br />
 
           <label htmlFor="end_time"> Ending Time : </label>
-          <input type="text" id="end_time" name="end_time" onChange={handleChange}></input>
+          <input type="time" id="end_time" name="end_time" onChange={handleChange} placeholder="HH:MM" required></input>
           <br />
 
           <label htmlFor="org_tele"> Contact Number: </label>
-          <input type="text" id="org_tele" name="org_tele" onChange={handleChange} />
+          <input type="text" id="org_tele" name="org_tele" onChange={handleChange} required/>
           <br />
           <label htmlFor="org_email"> Email Address: </label>
-          <input type="text" id="org_email" name="org_email" onChange={handleChange} />
+          <input type="text" id="org_email" name="org_email" onChange={handleChange} required />
           <br />
           <input type="submit" value="Save"></input>
         </form>
