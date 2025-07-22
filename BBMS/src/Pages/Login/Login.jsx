@@ -65,7 +65,7 @@ const Login = ({ theme, setTheme }) => {
       const result = await response.json();
       if (response.ok) {
         setMessage(result.message);
-        alert("Login successful to" + username + " !");
+        alert("Login successful to " + username + " !");
         console.log("Login successful to " + result.user_type + " !");
         setIsLogin(result.user_type);
         navigate("/dashboard", { state: { userType: result.user_type } });

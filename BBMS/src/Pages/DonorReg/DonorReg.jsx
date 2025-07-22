@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NaviBar from "../../components/Navibar/NaviBar";
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import districts from '../../SharedData/Districts';
+import bloodgrp from '../../SharedData/bloodgrp';
 import "./DonorReg.css";
 
 function DonorReg({ theme, setTheme }) {
@@ -8,6 +11,7 @@ function DonorReg({ theme, setTheme }) {
   const [doner, setDoner] = useState({
     doner_id: "D001",
     name: "",
+    username: "",
     gender: "",
     blood_group: "",
     nic_no: "",
@@ -17,7 +21,16 @@ function DonorReg({ theme, setTheme }) {
     address_line2: "",
     address_line3: "",
     District: "",
+    password: ""
   });
+
+  const [show, setShow] = useState(false)
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  function toggleShow() {
+    setShow(!show)
+  }
 
   const handleChange = (e) => {
     setDoner({
@@ -39,27 +52,36 @@ function DonorReg({ theme, setTheme }) {
         },
         body: JSON.stringify(doner)
       });
-      const result = await response.json();
-      if (response.ok) {
-        setMessage("Your Username is  : " + (doner.nic_no));
 
+      const result = await response.json();
+
+      if (response.ok) {
+        setMessage("Donor Registration Successful!");
         alert("Donor added successfully!");
+
+      } else if (result.message.match(/Duplicate entry '.*?'/)) {
+        const errorMsg = "Username already registered.";
+        setMessage("Error: " + errorMsg);
+        alert(errorMsg); // Optional: show an alert too
+        console.error("Duplicate Username Error:", result);
 
       } else {
         setMessage("Error: " + (result.message || JSON.stringify(result)));
         console.error("Error response:", result);
       }
+
     } catch (error) {
       console.error("Error submitting form:", error.message);
       alert("Submission failed. Check server and data.");
       setMessage("Submission failed. Check server and data.");
     }
+
   };
 
-  const districts = [
+  {/*const districts = [
     "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara", "Kandy",
     "Kegalle", "Kilinochchi", "Kurunegala", "Mannar", "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya", "Polonnaruwa",
-    "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",];
+    "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",];*/}
 
   return (
     <div>
@@ -71,21 +93,24 @@ function DonorReg({ theme, setTheme }) {
           <input type="text" name="name" onChange={handleChange} required />
           <label>Gender:</label>
 
+
           <input type="radio" name="gender" value="Male" onChange={handleChange} required />{" "}  Male
           <input type="radio" name="gender" value="Female" onChange={handleChange} />{" "} Female
           <br />
 
+          <label htmlFor="username">Username: </label>
+          <input type="text" name="username" onChange={handleChange} required />
+          <br />
+
+
           <label>Blood Group:</label>
           <select name="blood_group" onChange={handleChange}>
             <option value="">--Select--</option>
-            <option value="A+">A+</option>
-            <option value="B+">B+</option>
-            <option value="O+">O+</option>
-            <option value="AB+">AB+</option>
-            <option value="A-">A-</option>
-            <option value="B-">B-</option>
-            <option value="O-">O-</option>
-            <option value="AB-">AB-</option>
+            {bloodgrp.map((b, i) => (
+              <option key={i} value={b}>
+                {b}
+              </option>
+            ))}
           </select>
 
           <label htmlFor="nic_no">NIC Number:</label>
@@ -99,8 +124,10 @@ function DonorReg({ theme, setTheme }) {
 
           <label>Address:</label>
           <input type="text" name="address_line1" placeholder="Line 1" onChange={handleChange} required />
-          <input type="text" name="address_line2" placeholder="Line 2" onChange={handleChange} />
-          <input type="text" name="address_line3" placeholder="Line 3" onChange={handleChange} />
+          <div className="address-lines">
+            <input type="text" name="address_line2" placeholder="Line 2" onChange={handleChange} />
+            <input type="text" name="address_line3" placeholder="Line 3" onChange={handleChange} />
+          </div>
           <br />
 
           <label>District:</label>
@@ -114,10 +141,23 @@ function DonorReg({ theme, setTheme }) {
           </select>
 
           <br />
+
+
+          <label htmlFor="pwd">Password: </label>
+          <input type={show ? "text" : "password"} id="pwd" name="pwd" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+          {show ? <AiFillEyeInvisible onClick={() => toggleShow()} size={20} /> : <AiFillEye onClick={() => toggleShow()} size={20} />}
+          <br />
+
+
+          <label htmlFor="pwdconfirm">Confirm Password: </label>
+          <input type={show ? "text" : "password"} id="pwdconfirm" name="pwdconfirm" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+          {show ? <AiFillEyeInvisible onClick={() => toggleShow()} size={20} /> : <AiFillEye onClick={() => toggleShow()} size={20} />}
+          <br />
+
           <input type="submit" value="Register" />
 
           < p > {message}</p>  <br />
-          <p>{message == "Your Username is  : " + (doner.nic_no) ? "Default Password is your phone number" : ""}</p>
+          {/* <p>{message == "Username is  : " + (doner.nic_no) && "Default Password is phone number"}</p> */}
 
         </form>
       </div>
