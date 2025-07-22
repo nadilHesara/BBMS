@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { IoMdLogOut } from 'react-icons/io';
-import { FaUserCircle, FaHistory, FaNotesMedical, FaHandsHelping, FaBars } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import './LeftSlideBar.css';
+import React, { useEffect, useState } from "react";
+import { IoMdLogOut } from "react-icons/io";
+import {
+  FaUserCircle,
+  FaHistory,
+  FaNotesMedical,
+  FaHandsHelping,
+  FaBars,
+} from "react-icons/fa";
+import { Link } from "react-router-dom";
+import "./LeftSlideBar.css";
 
-const LeftSlideBar = ({ theme, userType, username}) => {
+const LeftSlideBar = ({ theme, userType, username }) => {
   const currunt_possition = localStorage.getItem("currunt_possition");
 
   const [isOpen, setIsOpen] = useState(
@@ -17,77 +23,90 @@ const LeftSlideBar = ({ theme, userType, username}) => {
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-  function SelectUser(userType){ 
-    if (userType=="Doner"){
-      return <div className="slide-bar-nav-links">
-          <Link to="#">
-            <FaUserCircle size={30} />
-            {isOpen && <span>Profile Info</span>}
-          </Link>
-          <Link to="#">
-            <FaHistory size={30} />
-            {isOpen && <span>Donation History</span>}
-          </Link>
-          <Link to="#">
-            <FaHandsHelping size={30} />
-            {isOpen && <span>Request Donation</span>}
-          </Link>
-          <Link to="#">
-            <FaNotesMedical size={30} />
-            {isOpen && <span>Medical Records</span>}
-          </Link>
-          <Link to="#" className="logout-link">
-            <IoMdLogOut size={30} />
-            {isOpen && <span>Log Out</span>}
-          </Link>
-        </div>
-  }else if(userType=="Hospital"){
-       return <div className="slide-bar-nav-links">
-          <Link to="#">
-            <FaUserCircle size={30} />
-            {isOpen && <span>Profile Info</span>}
-          </Link>
-          <Link to="#">
-            <FaHistory size={30} />
-            {isOpen && <span>Donation History</span>}
-          </Link>
-          <Link to="#">
-            <FaHandsHelping size={30} />
-            {isOpen && <span>Request Donation</span>}
-          </Link>
-          <Link to="#">
-            <FaNotesMedical size={30} />
-            {isOpen && <span>Medical Records</span>}
-          </Link>
-          <Link to="#" className="logout-link">
-            <IoMdLogOut size={30} />
-            {isOpen && <span>Log Out</span>}
-          </Link>
-        </div>
-        }
-        else{
-             return <div className="slide-bar-nav-links">
-          <Link to="#">
-            <FaUserCircle size={30} />
-            {isOpen && <span>Profile Info</span>}
-          </Link>
-          <Link to="#">
-            <FaHistory size={30} />
-            {isOpen && <span>Donation History</span>}
-          </Link>
-          <Link to="#">
-            <FaHandsHelping size={30} />
-            {isOpen && <span>Request Donation</span>}
-          </Link>
-          <Link to="#">
-            <FaNotesMedical size={30} />
-            {isOpen && <span>Medical Records</span>}
-          </Link>
-          <Link to="#" className="logout-link">
-            <IoMdLogOut size={30} />
-            {isOpen && <span>Log Out</span>}
-          </Link>
-        </div>
+  function SelectUser(userType) {
+    if (userType == "Doner") {
+      return (
+        <>
+          <div className="slide-bar-nav-links">
+            <Link to="profileInfo">
+              <FaUserCircle size={30} />
+              {isOpen && <span>Profile Info</span>}
+            </Link>
+
+            <Link to="#">
+              <FaHistory size={30} />
+              {isOpen && <span>Donation History</span>}
+            </Link>
+            <Link to="#">
+              <FaHandsHelping size={30} />
+              {isOpen && <span>Request Donation</span>}
+            </Link>
+            <Link to="#">
+              <FaNotesMedical size={30} />
+              {isOpen && <span>Medical Records</span>}
+            </Link>
+            <Link to="#" className="logout-link">
+              <IoMdLogOut size={30} />
+              {isOpen && <span>Log Out</span>}
+            </Link>
+          </div>
+        </>
+      );
+    } else if (userType == "Hospital") {
+      return (
+        <>
+          <div className="slide-bar-nav-links">
+            <Link to="#">
+              <FaUserCircle size={30} />
+              {isOpen && <span>Profile Info</span>}
+            </Link>
+            <Link to="#">
+              <FaHistory size={30} />
+              {isOpen && <span>Donation History</span>}
+            </Link>
+            <Link to="#">
+              <FaHandsHelping size={30} />
+              {isOpen && <span>Request Donation</span>}
+            </Link>
+            <Link to="#">
+              <FaNotesMedical size={30} />
+              {isOpen && <span>Medical Records</span>}
+            </Link>
+            <Link to="#" className="logout-link">
+              <IoMdLogOut size={30} />
+              {isOpen && <span>Log Out</span>}
+            </Link>
+          </div>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <div className="slide-bar-nav-links">
+            <Link to="/ProfileInfo">
+              <FaUserCircle size={30} />
+              {isOpen && <span>Profile Info</span>}
+            </Link>
+            <Link to="#">
+              <FaHistory size={30} />
+              {isOpen && <span>Donation History</span>}
+            </Link>
+            <Link to="#">
+              <FaHandsHelping size={30} />
+              {isOpen && <span>Request Donation</span>}
+            </Link>
+            <Link to="#">
+              <FaNotesMedical size={30} />
+              {isOpen && <span>Medical Records</span>}
+            </Link>
+            <Link to="#" className="logout-link">
+              <IoMdLogOut size={30} />
+              {isOpen && <span>Log Out</span>}
+            </Link>
+          </div>
+        </>
+      );
+    }
   }
 
   return (
@@ -96,18 +115,19 @@ const LeftSlideBar = ({ theme, userType, username}) => {
         <FaBars size={24} />
       </div>
 
-      <div className={`left-slide-bar ${theme} ${isOpen ? 'open' : 'closed'}`}>
-
+      <div className={`left-slide-bar ${theme} ${isOpen ? "open" : "closed"}`}>
         <div className="profile-section">
-
-          {isOpen && <><FaUserCircle size={80} />
-            <h4>{username}</h4></>}
+          {isOpen && (
+            <>
+              <FaUserCircle size={80} />
+              <h4>{username}</h4>
+            </>
+          )}
         </div>
-          {SelectUser(userType)}
-
+        {SelectUser(userType)}
       </div>
     </>
   );
 };
-}
+
 export default LeftSlideBar;

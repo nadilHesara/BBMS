@@ -8,7 +8,7 @@ body {
   justify-content: center;
   align-items: center;
   display: flex;
-  max-height: 100vh;
+  max-height: auto;
 }
 
 code {
