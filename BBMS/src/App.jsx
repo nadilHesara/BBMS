@@ -8,6 +8,7 @@ import CampReg from "./Pages/CampReg/CampReg";
 import HospitalReg from "./Pages/HospitalReg/HospitalReg";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import ProfileInfo from "./Pages/ProfileInfo/ProfileInfo";
+import AvailableBloodStocks from "./Pages/AvailableBloodStocks/AvailableBloodStocks";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -16,8 +17,7 @@ function App() {
   const current_theme = localStorage.getItem("current_theme");
   const [theme, setTheme] = useState(current_theme || "light");
 
-  const [userType] = useState("Doner"); // ✅ NOTE: spelling here matches Doner
-  const [username] = useState("Guest");
+
 
   useEffect(() => {
     localStorage.setItem("current_theme", theme);
@@ -40,6 +40,7 @@ function App() {
           >
             <Route index element={<h1>Welcome to Dashboard Page</h1>} />
             <Route path="profileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
+             <Route path="AvailableBloodStocks" element={<AvailableBloodStocks theme={theme} setTheme={setTheme}/>} />
           </Route>
         </Routes>
       </Router>

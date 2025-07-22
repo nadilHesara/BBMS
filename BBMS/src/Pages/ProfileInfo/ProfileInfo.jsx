@@ -1,10 +1,28 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import NaviBar from '../../components/Navibar/NaviBar';
 import districts from '../../SharedData/Districts';
 import { FaUserCircle } from 'react-icons/fa';
 import "./ProfileInfo.css"
+import { use } from 'react';
 
 function ProfileInfo({theme,setTheme}){
+
+  const userData = localStorage.getItem("userData");
+  const userType = localStorage.getItem("userType");
+
+  const [hospital,setHospital] = useState({
+    hospital_id: "",
+    name: "City  Hospital",
+    District: "",
+    contact_no: "",
+    address_line1: "",
+    address_line2: "",
+    address_line3: "",
+    username: "",
+    password: "", 
+    email: ""
+  });
+
 
   const [doner, setDoner] = useState({
     doner_id: "D001",
@@ -21,6 +39,18 @@ function ProfileInfo({theme,setTheme}){
     Password:"",
     ProfileImage: null
   });
+
+  useEffect(()=>{
+    console.log(userType);
+    if (userType=="Doner"){
+      setDoner(userType);
+    }
+    else if (userType=="Hospital"){
+      setHospital(userData);
+    }
+    console.log(hospital? hospital:doner);
+    
+  },[userData])
 
   const[password,setPassword] = useState({
     current_password: "",
@@ -127,14 +157,22 @@ function ProfileInfo({theme,setTheme}){
             </div>
 
 
-          <label htmlFor="name">Donor Name:</label>
-          <input type="text" name="name" defaultValue={doner.name} onChange={handleChange} required/>  
+          <label htmlFor="name">{userType=="Doner"? "Doner ": "Hospital "}Name:</label>
+          <input type="text" name="name" defaultValue={doner.name} onChange={handleChange} required/>
+
+          <label htmlFor="username">Username: </label>
+          <input type="text" name="username" onChange={handleChange} required />
+          <br />  
 
           <label>Gender:</label>
 
           <input type="radio" name="gender" value="Male" onChange={handleChange} checked={doner.gender==="Male"} required />{" "}  Male
           <input type="radio" name="gender" value="Female" onChange={handleChange} checked={doner.gender==="Female"} />{" "} Female
           <br/>
+
+          <label htmlFor="email">Email: </label>
+          <input type="email" name="email" onChange={handleChange} required />
+          <br />
 
           <label>Blood Group: </label>
           <input type="text" value={doner.blood_group} readOnly title="This field cannot be changed"/>
@@ -151,8 +189,8 @@ function ProfileInfo({theme,setTheme}){
           <label>Address:</label>
           <input type="text" name="address_line1" defaultValue={doner.address_line1} onChange={handleChange} required />
           <div className='address-lines'>
-          <input type="text" name="address_line2" Value={doner.address_line2 || ""} placeholder={!doner.address_line2 ? "Line 2" : ""} onChange={handleChange}/>
-          <input type="text" name="address_line3" Value={doner.address_line3 || ""} placeholder={!doner.address_line3 ? "Line 3" : ""} onChange={handleChange} />
+          <input type="text" name="address_line2" value={doner.address_line2 || ""} placeholder={!doner.address_line2 ? "Line 2" : ""} onChange={handleChange}/>
+          <input type="text" name="address_line3" value={doner.address_line3 || ""} placeholder={!doner.address_line3 ? "Line 3" : ""} onChange={handleChange} />
           </div>
           <br/>
 

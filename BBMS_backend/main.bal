@@ -355,8 +355,8 @@ isolated function addHospital(Hospital hospital) returns json|error {
 
     sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , HospitalID  , UserType) 
             VALUES(
-            ${newHospital.hospital_id},
-            ${newHospital.contact_no},
+            ${newHospital.username},
+            ${newHospital.password},
             ${newHospital.hospital_id},
             "Hospital")`;
 
@@ -379,7 +379,7 @@ isolated function getHospital(string? id = (), string? username = (), string? em
 
     if id is string {
         hospital = check dbClient->queryRow(`
-            SELECT * FROM Hospital WHERE DonerID = ${id}`
+            SELECT * FROM Hospital WHERE HospitalID = ${id}`
             );
     } else if username is string {
         hospital = check dbClient->queryRow(`

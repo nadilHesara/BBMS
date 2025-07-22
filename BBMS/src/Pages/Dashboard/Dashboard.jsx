@@ -10,12 +10,11 @@ const Dashboard = ({ theme, setTheme }) => {
   const userId = localStorage.getItem("userId");
   const userType = localStorage.getItem("userType");
 
-  console.log("User Id :" + userId + "      User Type :" + userType);
-
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    localStorage.setItem("userData",userData);
     if (!userId || !userType) return;
 
     fetch(
@@ -26,8 +25,8 @@ const Dashboard = ({ theme, setTheme }) => {
         return res.json();
       })
       .then((data) => {
-        console.log("Dashboard data:", data);
         setUserData(data);
+
       })
       .catch((err) => {
         console.error("Error fetching dashboard data:", err.message);
@@ -44,7 +43,7 @@ const Dashboard = ({ theme, setTheme }) => {
         <LeftSlideBar theme={theme} userType={userType} username="Guest" />
         <div className="content-area">
           <Outlet />
-          <pre>{JSON.stringify(userData, null, 2)}</pre>
+          {/* <pre>{JSON.stringify(userData, null, 2)}</pre> */}
         </div>
       </div>
     </>

@@ -42,14 +42,17 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               <FaHistory size={30} />
               {isOpen && <span>Donation History</span>}
             </Link>
+
             <Link to="#">
               <FaHandsHelping size={30} />
               {isOpen && <span>Request Donation</span>}
             </Link>
+
             <Link to="#">
               <FaNotesMedical size={30} />
               {isOpen && <span>Medical Records</span>}
             </Link>
+
             <Link to="/login" className="logout-link" onClick={()=> LoggingOut()}>
               <IoMdLogOut size={30} />
               {isOpen && <span>Log Out</span>}
@@ -61,22 +64,36 @@ const LeftSlideBar = ({ theme, userType, username }) => {
       return (
         <>
           <div className="slide-bar-nav-links">
-            <Link to="#">
+            <Link to="profileInfo">
               <FaUserCircle size={30} />
               {isOpen && <span>Profile Info</span>}
             </Link>
-            <Link to="#">
+
+            <Link to="AvailableBloodStocks">
               <FaHistory size={30} />
-              {isOpen && <span>Donation History</span>}
+              {isOpen && <span>Available Blood Stock</span>}
             </Link>
+
             <Link to="#">
               <FaHandsHelping size={30} />
-              {isOpen && <span>Request Donation</span>}
+              {isOpen && <span>Add Campaign</span>}
             </Link>
+
             <Link to="#">
               <FaNotesMedical size={30} />
-              {isOpen && <span>Medical Records</span>}
+              {isOpen && <span>Ongoing Campaign</span>}
             </Link>
+
+              <Link to="#">
+              <FaNotesMedical size={30} />
+              {isOpen && <span>Campaign History</span>}
+            </Link>
+
+              <Link to="#">
+              <FaNotesMedical size={30} />
+              {isOpen && <span>Donor Register</span>}
+            </Link>
+
             <Link to="/login" className="logout-link" onClick={()=> LoggingOut()}>
               <IoMdLogOut size={30} />
               {isOpen && <span>Log Out</span>}
@@ -90,20 +107,34 @@ const LeftSlideBar = ({ theme, userType, username }) => {
           <div className="slide-bar-nav-links">
             <Link to="/ProfileInfo">
               <FaUserCircle size={30} />
-              {isOpen && <span>Profile Info</span>}
+              {isOpen && <span>Available Blood Stock</span>}
             </Link>
+
             <Link to="#">
               <FaHistory size={30} />
-              {isOpen && <span>Donation History</span>}
+              {isOpen && <span>Add Campaign</span>}
             </Link>
+
             <Link to="#">
               <FaHandsHelping size={30} />
-              {isOpen && <span>Request Donation</span>}
+              {isOpen && <span>Ongoing Campaign</span>}
             </Link>
+
             <Link to="#">
               <FaNotesMedical size={30} />
-              {isOpen && <span>Medical Records</span>}
+              {isOpen && <span>Campaign History</span>}
             </Link>
+
+            <Link to="#">
+              <FaNotesMedical size={30} />
+              {isOpen && <span>Donor Register</span>}
+            </Link>
+
+            <Link to="#">
+              <FaNotesMedical size={30} />
+              {isOpen && <span>Hospital Register</span>}
+            </Link>
+
             <Link to="/login" className="logout-link" onClick={()=> LoggingOut()}>
               <IoMdLogOut size={30} />
               {isOpen && <span>Log Out</span>}

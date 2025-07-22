@@ -54,6 +54,8 @@ function HospitalReg({ theme, setTheme }) {
                 ...hospital,
                 ["password"]: password
             })
+            console.log(password);
+            
         }
         try {
             const response = await fetch("http://localhost:9191/hospitalReg", {
