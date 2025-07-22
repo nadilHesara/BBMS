@@ -32,7 +32,7 @@ const LeftSlideBar = ({ theme }) => {
         </div>
 
         <div className="slide-bar-nav-links">
-          <Link to="#">
+          <Link to="/ProfileInfo">
             <FaUserCircle size={30} />
             {isOpen && <span>Profile Info</span>}
           </Link>

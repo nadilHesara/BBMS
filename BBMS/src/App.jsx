@@ -8,6 +8,7 @@ import HospitalReg from "./Pages/HospitalReg/HospitalReg";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ProfileInfo from "./Pages/ProfileInfo/ProfileInfo"
 
 import "./App.css";
 
@@ -29,6 +30,7 @@ function App() {
             <Route path="/campReg" element={<CampReg theme={theme} setTheme={setTheme} />}  />
             <Route path="/hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />}  />
             <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />} />
+            <Route path="/profileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme}/>}/>
 
         </Routes>
       </Router>
