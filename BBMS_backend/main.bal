@@ -410,7 +410,7 @@ listener http:Listener listener9191 = new (9191);
 
 service /donorReg on listener9191 {
     // POST /doners
-    isolated resource function post donorReg(@http:Payload Doner doner) returns json|error {
+    isolated resource function post .(@http:Payload Doner doner) returns json|error {
         sql:ExecutionResult|error result = check addDoner(doner);
         if result is sql:ExecutionResult {
             int|string? lastInsertId = result.lastInsertId;
@@ -459,7 +459,7 @@ service /hospitalReg on listener9191 {
 
 service /campReg on listener9191 {
 
-    isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
+    isolated resource function post .(@http:Payload Campaign campaign) returns json|error {
         sql:ExecutionResult|error result = check addCamp(campaign);
         if result is sql:ExecutionResult {
             int|string? lastInsertId = result.lastInsertId;
