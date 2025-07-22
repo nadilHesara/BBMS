@@ -21,6 +21,11 @@ const LeftSlideBar = ({ theme, userType, username }) => {
     localStorage.setItem("currunt_possition", isOpen.toString());
   }, [isOpen]);
 
+ const LoggingOut = () =>{
+     localStorage.removeItem("userId");
+    localStorage.removeItem("userType");
+ }
+
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   function SelectUser(userType) {
@@ -45,7 +50,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               <FaNotesMedical size={30} />
               {isOpen && <span>Medical Records</span>}
             </Link>
-            <Link to="#" className="logout-link">
+            <Link to="/login" className="logout-link" onClick={()=> LoggingOut()}>
               <IoMdLogOut size={30} />
               {isOpen && <span>Log Out</span>}
             </Link>
@@ -72,7 +77,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               <FaNotesMedical size={30} />
               {isOpen && <span>Medical Records</span>}
             </Link>
-            <Link to="#" className="logout-link">
+            <Link to="/login" className="logout-link" onClick={()=> LoggingOut()}>
               <IoMdLogOut size={30} />
               {isOpen && <span>Log Out</span>}
             </Link>
@@ -99,7 +104,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               <FaNotesMedical size={30} />
               {isOpen && <span>Medical Records</span>}
             </Link>
-            <Link to="#" className="logout-link">
+            <Link to="/login" className="logout-link" onClick={()=> LoggingOut()}>
               <IoMdLogOut size={30} />
               {isOpen && <span>Log Out</span>}
             </Link>

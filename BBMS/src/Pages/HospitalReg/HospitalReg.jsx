@@ -81,40 +81,10 @@ function HospitalReg({ theme, setTheme }) {
         }
     };
 
-<<<<<<< HEAD
-    {/*const districts = [
-        "Ampara",
-        "Anuradhapura",
-        "Badulla",
-        "Batticaloa",
-        "Colombo",
-        "Galle",
-        "Gampaha",
-        "Hambantota",
-        "Jaffna",
-        "Kalutara",
-        "Kandy",
-        "Kegalle",
-        "Kilinochchi",
-        "Kurunegala",
-        "Mannar",
-        "Matale",
-        "Matara",
-        "Monaragala",
-        "Mullaitivu",
-        "Nuwara Eliya",
-        "Polonnaruwa",
-        "Puttalam",
-        "Ratnapura",
-        "Trincomalee",
-        "Vavuniya",
-    ];*/}
-=======
     const districts = [
         "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara", "Kandy",
         "Kegalle", "Kilinochchi", "Kurunegala", "Mannar", "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya", "Polonnaruwa",
         "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",];
->>>>>>> thilokya
 
     return (
         <div>

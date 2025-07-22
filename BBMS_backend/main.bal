@@ -243,7 +243,7 @@ isolated function addDoner(Doner doner) returns json|error {
 
     sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , DonerID  , UserType) 
             VALUES(
-            ${newDoner.nic_no},
+            ${newDoner.username},
             ${newDoner.tele},
             ${newDoner.doner_id},
             "Doner")`;
