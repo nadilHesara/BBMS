@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NaviBar from "../../components/Navibar/NaviBar";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import districts from '../../SharedData/Districts';
+import bloodgrp from '../../SharedData/bloodgrp';
 import "./DonorReg.css";
 
 function DonorReg({ theme, setTheme }) {
@@ -76,10 +78,10 @@ function DonorReg({ theme, setTheme }) {
 
   };
 
-  const districts = [
+  {/*const districts = [
     "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara", "Kandy",
     "Kegalle", "Kilinochchi", "Kurunegala", "Mannar", "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya", "Polonnaruwa",
-    "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",];
+    "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",];*/}
 
   return (
     <div>
@@ -104,14 +106,11 @@ function DonorReg({ theme, setTheme }) {
           <label>Blood Group:</label>
           <select name="blood_group" onChange={handleChange}>
             <option value="">--Select--</option>
-            <option value="A+">A+</option>
-            <option value="B+">B+</option>
-            <option value="O+">O+</option>
-            <option value="AB+">AB+</option>
-            <option value="A-">A-</option>
-            <option value="B-">B-</option>
-            <option value="O-">O-</option>
-            <option value="AB-">AB-</option>
+            {bloodgrp.map((b, i) => (
+              <option key={i} value={b}>
+                {b}
+              </option>
+            ))}
           </select>
 
           <label htmlFor="nic_no">NIC Number:</label>
