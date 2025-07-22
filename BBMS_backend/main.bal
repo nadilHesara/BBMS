@@ -1,4 +1,6 @@
+import ballerina/random;
 import ballerina/http;
+import ballerina/email;
 // import ballerina/io;
 import ballerina/sql;
 import ballerina/time;
@@ -200,6 +202,71 @@ isolated function toBinaryString(string numStr) returns string|error {
     return binary;
 }
 
+isolated function generatePassword(int length = 12) returns string|error {
+    string letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    string digits = "0123456789";
+    string symbols = "!@#$%&*?";
+    string allChars = letters + digits + symbols;
+    int totalChars = allChars.length();
+
+    string password = "";
+
+    // Add 1 random letter
+    int letterIndex = check random:createIntInRange(0, letters.length() - 1);
+    password += letters[letterIndex].toString();
+
+    // Add 1 random digit
+    int digitIndex = check random:createIntInRange(0, digits.length() - 1);
+    password += digits[digitIndex].toString();
+
+    // Add 1 random symbol
+    int symbolIndex = check random:createIntInRange(0, symbols.length() - 1);
+    password += symbols[symbolIndex].toString();
+
+    // Fill the rest of the password
+    foreach int i in 0 ..< (length - 3) {
+        int randIndex = check random:createIntInRange(0, totalChars - 1);
+        password += allChars[randIndex].toString();
+    }
+    return  randomize(password);
+}
+
+isolated function randomize(string text) returns string|error {
+    byte[] chars = text.toBytes();
+    int n = chars.length();
+
+    // Shuffle using Fisher–Yates
+    foreach int i in 0 ..< n - 1 {
+        int j = check random:createIntInRange(i, n - 1);
+        byte temp = chars[i];
+        chars[i] = chars[j];
+        chars[j] = temp;
+    }
+
+    return  string:fromBytes(chars);
+}
+
+isolated function sendEmail(string toEmail, string password, string username) returns error? {
+
+    string emailBody = "This is auto genarated email do not reply to this. \n" +
+                        "Your user name is "+username+". \n" +
+                        "You password of the BBMS acount is "+ password+".";
+
+    email:SmtpClient smtpClient = check new (
+        host = "smtp.gmail.com",
+        port = 465,
+        username = "thilokyabusness@gmail.com",         // <-- Replace with your email
+        password = "xbcq ajjd gsvr pgag"            // <-- Use app password (for Gmail)
+    );
+
+    email:Message message = {
+        to: [toEmail],
+        subject: "New password from BBMS App",
+        body: emailBody
+    };
+    check smtpClient->sendMessage(message);
+}
+
 // ########################################### DB functios Doner  ###########################################
 
 isolated function addDoner(Doner doner) returns json|error {
@@ -338,7 +405,8 @@ isolated function addHospital(Hospital hospital) returns json|error {
     // Create a new Hospital record with the new Hospital Id
     Hospital newHospital = hospital.clone();
     newHospital.hospital_id = newHospitalId;
-
+    newHospital.password = check generatePassword(12);
+    
     sql:ParameterizedQuery addHospital = `INSERT INTO Hospital(HospitalID, Name, District, Contact, AddressLine1, AddressLine2, AddressLine3, Username, Password, Email)
         VALUES(
             ${newHospital.hospital_id},
@@ -349,14 +417,15 @@ isolated function addHospital(Hospital hospital) returns json|error {
             ${newHospital.address_line2},
             ${newHospital.address_line3},
             ${newHospital.username},
-            ${newHospital.password},
             ${newHospital.email}
         )`;
 
+    error? e = sendEmail(newHospital.email, newHospital.password, newHospital.username);
+
     sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , HospitalID  , UserType) 
             VALUES(
-            ${newHospital.hospital_id},
-            ${newHospital.contact_no},
+            ${newHospital.username},
+            ${newHospital.password},
             ${newHospital.hospital_id},
             "Hospital")`;
 
@@ -492,18 +561,58 @@ service / on listener9191 {
     }
 }
 service /dashboard on listener9191 {
-    resource function get . (@http:Query string user_id, @http:Query string user_type)
-        returns Doner|Hospital|error {
+    resource function get . (@http:Query string user_id, @http:Query string user_type) returns json|error {
+        json body={
+            "userId" : "",
+            "userName":"",
+            "Email": "",
+            "gender":"",
+            "bloodGroup": "",
+            "NicNo":"",
+            "Dob": "",
+            "Telephone": "",
+            "AddressLine1" : "",
+            "AddressLine2" : "",
+            "AddressLine3" :"",
+            "District" : ""
+        };
         if user_type == "Doner"{
             Doner|error doner = getDoner(id = user_id);
-            return doner;
-        }
-    
-        if user_type == "Hospital"{
+            if doner is Doner{
+                body = {
+                    userId : doner.doner_id,
+                    userName : doner.username,
+                    Email : doner.email,
+                    gender : doner.gender,
+                    bloodGroup : doner.blood_group,
+                    NicNo : doner.nic_no,
+                    Dob : doner.dob,
+                    Telephone : doner.tele,
+                    AddressLine1 : doner.address_line3,
+                    AddressLine2 : doner.address_line2,
+                    AddressLine3 : doner.address_line1,
+                    District : doner.District
+                };
+            } else {
+                return doner;
+            }
+        } else if user_type == "Hospital"{
             Hospital|error hospital = getHospital(id = user_id);
-            return hospital;
+            if hospital is Hospital{
+                body = {
+                    userId : hospital.hospital_id,
+                    userName : hospital.username,
+                    Email : hospital.email,
+                    Telephone : hospital.contact_no,
+                    AddressLine1 : hospital.address_line3,
+                    AddressLine2 : hospital.address_line2,
+                    AddressLine3 : hospital.address_line1,
+                    District : hospital.District
+                };
+            } else {
+                return hospital;
+            }
         }
-
-        return error("User is not exist");
+        return body;
     }
 }

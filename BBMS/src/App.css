@@ -1,32 +1,12 @@
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: sans-serif;
-}
 
-.app-container {
+.container {
+  min-height: 100%;
+  background-color: rgb(249, 239, 226);
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  margin-top: 11vh;
 }
 
-.main-layout {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-
-.content-area {
-  margin-top: 60px; /* NaviBar height */
-  margin-left: 200px; /* LeftSlideBar width */
-  padding: 24px;
-  flex: 1;
-  overflow-y: auto;
-  min-height: calc(100vh - 60px);
-}
-
-.dark{
+.dark {
   background-color: rgb(77, 77, 77);
 }

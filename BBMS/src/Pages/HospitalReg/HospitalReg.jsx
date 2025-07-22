@@ -18,7 +18,7 @@ function HospitalReg({ theme, setTheme }) {
         address_line3: "",
         District: "",
         contact_no: "",
-        password: ""
+        Password: ""
     });
 
     const [show, setShow] = useState([false, false]);
@@ -52,12 +52,11 @@ function HospitalReg({ theme, setTheme }) {
         } else {
             setHospital({
                 ...hospital,
-                ["password"]: password
+                ["Password"]: password
             })
         }
         try {
             const response = await fetch("http://localhost:9191/hospitalReg", {
-
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -67,7 +66,6 @@ function HospitalReg({ theme, setTheme }) {
             const result = await response.json();
             if (response.ok) {
                 setMessage("Hospital Registration Successful!");
-                alert("Hospital added successfully!");
                 navigate("/login");
 
             } else {
@@ -76,15 +74,9 @@ function HospitalReg({ theme, setTheme }) {
             }
         } catch (error) {
             console.error("Error submitting form:", error.message);
-            alert("Submission failed. Check server and data.");
             setMessage("Submission failed. Check server and data.");
         }
     };
-
-    const districts = [
-        "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara", "Kandy",
-        "Kegalle", "Kilinochchi", "Kurunegala", "Mannar", "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya", "Polonnaruwa",
-        "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",];
 
     return (
         <div>
