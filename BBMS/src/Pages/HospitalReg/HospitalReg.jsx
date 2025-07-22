@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NaviBar from "../../components/Navibar/NaviBar";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import districts from '../../SharedData/Districts';
 import "./HospitalReg.css";
 
 function HospitalReg({ theme, setTheme }) {
@@ -65,7 +66,7 @@ function HospitalReg({ theme, setTheme }) {
         }
     };
 
-    const districts = [
+    {/*const districts = [
         "Ampara",
         "Anuradhapura",
         "Badulla",
@@ -91,7 +92,7 @@ function HospitalReg({ theme, setTheme }) {
         "Ratnapura",
         "Trincomalee",
         "Vavuniya",
-    ];
+    ];*/}
 
     return (
         <div>
