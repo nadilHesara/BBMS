@@ -154,6 +154,7 @@ final mysql:Client dbClient = check new (
 );
 
 // #################################### functions ###############################################
+
 isolated function IdIncriment(string currentId) returns string {
     string prefix = currentId[0].toString(); // Get the first character as prefix
     string numericPart = currentId.substring(1); // Get the numeric part
@@ -200,7 +201,8 @@ isolated function toBinaryString(string numStr) returns string|error {
 }
 
 // ########################################### DB functios Doner  ###########################################
-isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
+
+isolated function addDoner(Doner doner) returns json|error {
     // Generate a new DonerID
     DonerID|error d = dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
     string newDonerId;
@@ -249,11 +251,17 @@ isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
     sql:ExecutionResult|error result = dbClient->execute(addDoner);
     sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
 
-    return result;
-
+    if result is error && loginResult is error {
+        return error("Doner already exist!");
+    }
+    else if result is error && loginResult is sql:ExecutionResult { 
+        return error("Please enter valid data") ;
+    }else {
+        return {"message":"Doner adedd sucsessfully!"};
+    }
 }
 
-isolated function getDoner(string id, string username, string email) returns Doner|error {
+isolated function getDoner(string? id = (), string? username = (), string? email = ()) returns Doner|error {
     Doner|error doner;
     if id is string {
         doner = check dbClient->queryRow(`
@@ -263,10 +271,13 @@ isolated function getDoner(string id, string username, string email) returns Don
         doner = check dbClient->queryRow(`
             SELECT * FROM Doner WHERE Username = ${username}`
         );
-    } else if username is string {
+    } else if email is string {
         doner = check dbClient->queryRow(`
             SELECT * FROM Doner WHERE Email = ${email}`
         );
+    }
+    else {
+        doner = error("Doner does't exist");
     }
 
     return doner;
@@ -307,12 +318,12 @@ isolated function updateDoners(Doner doner) returns sql:ExecutionResult|error {
 }
 
 // ################################# DB Hopital Functions ######################################
-isolated function addHospital(Hospital hospital) returns sql:ExecutionResult|error {
+isolated function addHospital(Hospital hospital) returns json|error {
     // Generate a new HOSPITAL ID
 
     HospitalID|error h = dbClient->queryRow(`SELECT HospitalID FROM Hospital ORDER BY HospitalID DESC LIMIT 1`);
     string newHospitalId;
-    
+
     if h is HospitalID {
         string? lastId = h.HospitalID;
         if lastId is string {
@@ -352,23 +363,34 @@ isolated function addHospital(Hospital hospital) returns sql:ExecutionResult|err
     sql:ExecutionResult|error result = dbClient->execute(addHospital);
     sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
 
-    return result;
+    if result is error && loginResult is error {
+        return error("Hospital already exist!");
+    }
+    else if result is error && loginResult is sql:ExecutionResult { 
+        return error("Please enter valid data") ;
+    }else {
+        return {"message":"Hospital adedd sucsessfully!"};
+    }
 }
 
-isolated function getHospital(string id, string username, string email) returns Hospital|error {
+isolated function getHospital(string? id = (), string? username = (), string? email = ()) returns Hospital|error {
+
     Hospital|error hospital;
+
     if id is string {
         hospital = check dbClient->queryRow(`
             SELECT * FROM Hospital WHERE DonerID = ${id}`
-        );
+            );
     } else if username is string {
         hospital = check dbClient->queryRow(`
             SELECT * FROM Hospital WHERE Username = ${username}`
-        );
-    } else if username is string {
+            );
+    } else if email is string {
         hospital = check dbClient->queryRow(`
             SELECT * FROM Hospital WHERE Email = ${email}`
-        );
+            );
+    } else {
+        hospital = error("Hospital does't exist");
     }
 
     return hospital;
@@ -390,15 +412,15 @@ isolated function getAllHospitals() returns Hospital[]|error {
 isolated function updateHospitals(Hospital hospital) returns sql:ExecutionResult|error {
     sql:ExecutionResult|error result = check dbClient->execute(`
         UPDATE Hospital SET
-            Name = ${doner.name},
-            District = ${doner.gender},
-            Conatct = ${doner.blood_group},
-            AddressLine1 = ${doner.address_line1},
-            AddressLine2 = ${doner.address_line2},
-            AddressLine3 = ${doner.address_line3},
-            Username = ${doner.username},
-            Password = ${doner.password},
-        WHERE  (HospitalID = ${doner.doner_id} || Username = ${doner.username} || Email = ${doner.email})
+            Name = ${hospital.name},
+            District = ${hospital.District},
+            Conatct = ${hospital.contact_no},
+            AddressLine1 = ${hospital.address_line1},
+            AddressLine2 = ${hospital.address_line2},
+            AddressLine3 = ${hospital.address_line3},
+            Username = ${hospital.username},
+            Password = ${hospital.password},
+        WHERE  (HospitalID = ${hospital.hospital_id} || Username = ${hospital.username} || Email = ${hospital.email})
     `);
     return result;
 }
@@ -446,20 +468,8 @@ listener http:Listener listener9191 = new (9191);
 service /donorReg on listener9191 {
     // POST /doners
     isolated resource function post .(@http:Payload Doner doner) returns json|error {
-        sql:ExecutionResult|error result = check addDoner(doner);
-        if result is sql:ExecutionResult {
-            int|string? lastInsertId = result.lastInsertId;
-            if lastInsertId is int {
-                return {
-                    "message": "Doner added successfully",
-                    "doner_id": lastInsertId
-                };
-            } else {
-                return {"message": "Donor added, but no ID returned"};
-            }
-        } else {
-            return result;
-        }
+        json|error result = check addDoner(doner);
+        return result;
     }
 }
 
@@ -475,21 +485,8 @@ service /donorReg on listener9191 {
 service /hospitalReg on listener9191 {
 
     isolated resource function post .(@http:Payload Hospital hospital) returns json|error {
-        sql:ExecutionResult|error result = check addHospital(hospital);
-        if result is sql:ExecutionResult {
-            int|string? lastInsertId = result.lastInsertId;
-            if lastInsertId is int {
-                return {
-                    "message": "Hospital added successfully",
-                    "hospital_id": lastInsertId
-                };
-            } else {
-                return {"message": "Hospital added, but no ID returned"};
-            }
-        } else {
-            return result;
-        }
-
+        json|error result = check addHospital(hospital);
+        return result;
     }
 }
 
@@ -502,10 +499,16 @@ service /hospitalReg on listener9191 {
 
 service /login on listener9191 {
     // POST /login
-    isolated
-    resource function post .(@http:Payload LoginRequest loginReq) returns json|error {
+    isolated resource function post .(@http:Payload LoginRequest loginReq) returns json|error {
         json|error result = check checkPassword(loginReq.username, loginReq.password);
         return result;
     }
 }
 
+service /dashboard on listener9191 {
+    // GET /dashboard
+    isolated resource function get doner(string user_id) returns Doner|error {
+        Doner|error doner = getDoner(id = user_id);
+        return doner;
+    }
+}
