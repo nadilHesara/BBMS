@@ -29,6 +29,7 @@ function App() {
             <Route path="/campReg" element={<CampReg theme={theme} setTheme={setTheme} />}  />
             <Route path="/hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />}  />
             <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />} />
+            <Route path="/profileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme}/>}/>
 
         </Routes>
       </Router>
