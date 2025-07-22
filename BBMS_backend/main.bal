@@ -465,30 +465,25 @@ listener http:Listener listener9191 = new (9191);
     }
 }
 
-service /donorReg on listener9191 {
+service / on listener9191 {
     // POST /doners
-    isolated resource function post .(@http:Payload Doner doner) returns json|error {
+    isolated resource function post donorReg(@http:Payload Doner doner) returns json|error {
         json|error result = check addDoner(doner);
         return result;
     }
-}
 
-@http:ServiceConfig {
-    cors: {
-        allowOrigins: ["http://localhost:5173"],
-        allowMethods: ["POST", "GET", "OPTIONS"],
-        allowHeaders: ["Content-Type"],
-        allowCredentials: true
-    }
-}
-
-service /hospitalReg on listener9191 {
-
-    isolated resource function post .(@http:Payload Hospital hospital) returns json|error {
+    isolated resource function post hospitalReg(@http:Payload Hospital hospital) returns json|error {
         json|error result = check addHospital(hospital);
         return result;
     }
+
+    isolated resource function post login(@http:Payload LoginRequest loginReq) returns json|error {
+        json|error result = check checkPassword(loginReq.username, loginReq.password);
+        return result;
+    }
+
 }
+
 
 @http:ServiceConfig {
     cors: {
@@ -496,19 +491,19 @@ service /hospitalReg on listener9191 {
         allowMethods: ["POST", "GET", "OPTIONS"]
     }
 }
-
-service /login on listener9191 {
-    // POST /login
-    isolated resource function post .(@http:Payload LoginRequest loginReq) returns json|error {
-        json|error result = check checkPassword(loginReq.username, loginReq.password);
-        return result;
-    }
-}
-
 service /dashboard on listener9191 {
-    // GET /dashboard
-    isolated resource function get doner(string user_id) returns Doner|error {
-        Doner|error doner = getDoner(id = user_id);
-        return doner;
+    resource function get . (@http:Query string user_id, @http:Query string user_type)
+        returns Doner|Hospital|error {
+        if user_type == "Doner"{
+            Doner|error doner = getDoner(id = user_id);
+            return doner;
+        }
+    
+        if user_type == "Hospital"{
+            Hospital|error hospital = getHospital(id = user_id);
+            return hospital;
+        }
+
+        return error("User is not exist");
     }
 }

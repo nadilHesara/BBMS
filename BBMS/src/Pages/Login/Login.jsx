@@ -9,11 +9,12 @@ import { Link, useNavigate } from 'react-router-dom';
 const Login = ({ theme, setTheme }) => {
   const navigate = useNavigate();
 
-  const login = localStorage.getItem("login");
-  const [isLogin, setIsLogin] = useState(login ? login : "");
+  const login = localStorage.getItem("userType");
+  const [userType, setUserType] = useState(login ? login : "");
+
   useEffect(() => {
-    localStorage.setItem("login", isLogin)
-  }, [isLogin]);
+    localStorage.setItem("userType", userType)
+  }, [userType]);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -43,6 +44,9 @@ const Login = ({ theme, setTheme }) => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    if(login){
+      setMessage("Your are already login to "+userType+".")
+    }
 
     try {
       const response = await fetch("http://localhost:9191/login", {
@@ -65,13 +69,12 @@ const Login = ({ theme, setTheme }) => {
       const result = await response.json();
       if (response.ok) {
         setMessage(result.message);
-        alert("Login successful to " + username + " !");
         console.log("Login successful to " + result.user_type + " !");
-        setIsLogin(result.user_type);
+        setUserType(result.user_type);
         navigate("/dashboard", {
           state: {
             userType: result.user_type,
-            userId: result.userId
+            userId: result.user_id
           }
         });
 
@@ -81,7 +84,6 @@ const Login = ({ theme, setTheme }) => {
       }
     } catch (error) {
       console.error("Error login form :", error.message);
-      alert("Login failed. Check server and data.");
       setMessage("Login failed. Check server and data.");
     }
   }
