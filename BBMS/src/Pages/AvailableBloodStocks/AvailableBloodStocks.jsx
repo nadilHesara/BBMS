@@ -45,7 +45,7 @@ function AvailableBloodStocks() {
           return (
             <div
               key={item.type}
-              className="bg-white shadow rounded-xl p-4 flex flex-col justify-between"
+              className="blood-stock-card"
             >
               <div className="text-lg font-semibold">🩸 {item.type}</div>
               <div className="text-2xl font-bold">{item.units} Units</div>

@@ -1,32 +1,40 @@
 .blood-card-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 1rem; 
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
   margin-bottom: 2rem;
+  border-radius: 0.75rem;
+    overflow: hidden;
 
-
-  
   @media (min-width: 768px) {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
 
+.blood-stock-card {
+  background-color: white;
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* shadow */
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .blood-chart-container {
   background-color: white;
   padding: 1rem;
-  border-radius: 0.75rem; 
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
-  margin-bottom: 2rem; 
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
 }
-
 
 .blood-chart-title {
-  font-size: 1.25rem; 
-  font-weight: 600; 
-  margin-bottom: 0.5rem; 
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
-
 
 .status-critical {
   background-color: #ef4444; /* Tailwind red-500 */
