@@ -55,7 +55,7 @@ public type Hospital record {
 };
 
 public type Donates record {
-    int donate_id;
+    string donate_id;
     string doner_id;
     int campain_id;
     time:Utc donate_time;
@@ -66,9 +66,9 @@ public type Donates record {
 };
 
 public type Campaign record {
-    int campain_id;
+    string campain_id;
     string district;
-    time:Date date;
+    string date;
     string org_name;
     string org_tele;
     string org_email;
@@ -77,8 +77,8 @@ public type Campaign record {
     string? add_line3;
     int? doner_count;
     int? blood_quantity;
-    time:Utc start_time;
-    time:Utc end_time;
+    string start_time;
+    string end_time;
 };
 
 public type DonerID record {
@@ -108,7 +108,8 @@ final mysql:Client dbClient = check new (
     database = DATABASE
 );
 
-isolated function IdIncriment(string currentId) returns string {
+isolated function IDIncrement(string currentId) returns string {
+
     string prefix = currentId[0].toString(); // Get the first character as prefix
     string numericPart = currentId.substring(1); // Get the numeric part
 
@@ -143,7 +144,7 @@ isolated function addDoner(Doner doner) returns sql:ExecutionResult|error {
     if d is DonerID {
         string? lastId = d.DonerID;
         if lastId is string{
-            newDonerId = IdIncriment(lastId);
+            newDonerId = IDIncrement(lastId);
         }else{
             newDonerId = "D001";
         }
@@ -195,7 +196,7 @@ isolated function addHospital(Hospital hospital) returns sql:ExecutionResult|err
     if h is HospitalID {
         string? lastId = h.HospitalID;
         if lastId is string{
-            newHospitalId = IdIncriment(lastId);
+            newHospitalId = IDIncrement(lastId);
         }else {
             newHospitalId = "H001";
         }
@@ -299,6 +300,39 @@ UPDATE  Doner  SET
     }
 }
 
+isolated function addCamp(Campaign campaign) returns sql:ExecutionResult|error {
+    string? lastID = check dbClient->queryRow(`SELECT CampaignID FROM campaign ORDER BY CampaignID DESC LIMIT 1`);
+    string newID;
+
+    if lastID is string{
+        newID = IDIncrement(lastID);
+    }else{
+        newID = "C001";
+    }
+
+    campaign.campain_id = newID;
+    sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, BloodQuantity, StartTime, EndTime)
+            VALUES (
+                ${campaign.campain_id},
+                ${campaign.district},
+                ${campaign.date},
+                ${campaign.org_name},
+                ${campaign.org_tele},
+                ${campaign.org_email},
+                ${campaign.add_line1},
+                ${campaign.add_line2},
+                ${campaign.add_line3},
+                ${campaign.doner_count},
+                ${campaign.blood_quantity},
+                ${campaign.start_time},
+                ${campaign.end_time}
+            )`;
+    sql:ExecutionResult|error result = dbClient->execute(query);
+
+    return result;
+}
+
+// Assume your previous DB code is in a module `        db        `
 
 isolated function updateHospitals(Hospital hospital) returns int|error {
     sql:ExecutionResult result = check dbClient->execute(`
@@ -318,7 +352,6 @@ UPDATE  Hospital  SET
         return error("Unable to obtain last insert ID");
     }
 }
-
 
 isolated function toBinaryString(string numStr) returns string|error {
     int originalNum = check int:fromString(numStr);
@@ -421,7 +454,26 @@ service /hospitalReg on listener9191 {
         } else {
             return result;
         }
+    }
+}
 
+service /campReg on listener9191 {
+
+    isolated resource function post .(@http:Payload Campaign campaign) returns json|error {
+        sql:ExecutionResult|error result = check addCamp(campaign);
+        if result is sql:ExecutionResult {
+            int|string? lastInsertId = result.lastInsertId;
+            if lastInsertId is int {
+                return {
+                    "message": "Campaign added successfully",
+                    "campaign_id": lastInsertId
+                };
+            } else {
+                return {"message": "Campaign added, but no ID returned"};
+            }
+        } else {
+            return result;
+        }
     }
 }
 
