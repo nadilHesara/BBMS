@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
-
 import DonorReg from "./Pages/DonorReg/DonorReg";
 import Home from "./Pages/Home/Home";
 import Login from "./Pages/Login/Login";
@@ -34,10 +33,7 @@ function App() {
           <Route path="/hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
 
           {/* NESTED ROUTE for /dashboard */}
-          <Route
-            path="/dashboard"
-            element={<Dashboard theme={theme} setTheme={setTheme} />}
-          >
+          <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />}>
             <Route index element={<h1>Welcome to Dashboard Page</h1>} />
             <Route path="profileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
              <Route path="AvailableBloodStocks" element={<AvailableBloodStocks theme={theme} setTheme={setTheme}/>} />
