@@ -93,12 +93,21 @@ form input[type="submit"]:hover {
     }
 }
 
-.hospital-reg{
+.hospital-reg {
     height: calc(100vh - 100px);
-    
+
 }
 
-
-.address-lines{
+.address-lines {
     margin-left: 130px;
+}
+
+.message {
+    width: 100%;
+    display: flex;
+    font-size: 18px;
+    justify-items: center;
+    align-items: center;
+    padding-top: 2vh;
+    flex-direction: column;
 }
