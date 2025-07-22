@@ -4,7 +4,7 @@ import { FaUserCircle, FaHistory, FaNotesMedical, FaHandsHelping, FaBars } from 
 import { Link } from 'react-router-dom';
 import './LeftSlideBar.css';
 
-const LeftSlideBar = ({ theme }) => {
+const LeftSlideBar = ({ theme, userType, username}) => {
   const currunt_possition = localStorage.getItem("currunt_possition");
 
   const [isOpen, setIsOpen] = useState(
@@ -17,21 +17,9 @@ const LeftSlideBar = ({ theme }) => {
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-  return (
-    <>
-      <div className={`sidebar-toggle-btn ${theme}`} onClick={toggleSidebar}>
-        <FaBars size={24} />
-      </div>
-
-      <div className={`left-slide-bar ${theme} ${isOpen ? 'open' : 'closed'}`}>
-
-        <div className="profile-section">
-
-          {isOpen && <><FaUserCircle size={80} />
-            <h4>User Name</h4></>}
-        </div>
-
-        <div className="slide-bar-nav-links">
+  function SelectUser(userType){ 
+    if (userType=="Doner"){
+      return <div className="slide-bar-nav-links">
           <Link to="#">
             <FaUserCircle size={30} />
             {isOpen && <span>Profile Info</span>}
@@ -53,9 +41,73 @@ const LeftSlideBar = ({ theme }) => {
             {isOpen && <span>Log Out</span>}
           </Link>
         </div>
+  }else if(userType=="Hospital"){
+       return <div className="slide-bar-nav-links">
+          <Link to="#">
+            <FaUserCircle size={30} />
+            {isOpen && <span>Profile Info</span>}
+          </Link>
+          <Link to="#">
+            <FaHistory size={30} />
+            {isOpen && <span>Donation History</span>}
+          </Link>
+          <Link to="#">
+            <FaHandsHelping size={30} />
+            {isOpen && <span>Request Donation</span>}
+          </Link>
+          <Link to="#">
+            <FaNotesMedical size={30} />
+            {isOpen && <span>Medical Records</span>}
+          </Link>
+          <Link to="#" className="logout-link">
+            <IoMdLogOut size={30} />
+            {isOpen && <span>Log Out</span>}
+          </Link>
+        </div>
+        }
+        else{
+             return <div className="slide-bar-nav-links">
+          <Link to="#">
+            <FaUserCircle size={30} />
+            {isOpen && <span>Profile Info</span>}
+          </Link>
+          <Link to="#">
+            <FaHistory size={30} />
+            {isOpen && <span>Donation History</span>}
+          </Link>
+          <Link to="#">
+            <FaHandsHelping size={30} />
+            {isOpen && <span>Request Donation</span>}
+          </Link>
+          <Link to="#">
+            <FaNotesMedical size={30} />
+            {isOpen && <span>Medical Records</span>}
+          </Link>
+          <Link to="#" className="logout-link">
+            <IoMdLogOut size={30} />
+            {isOpen && <span>Log Out</span>}
+          </Link>
+        </div>
+  }
+
+  return (
+    <>
+      <div className={`sidebar-toggle-btn ${theme}`} onClick={toggleSidebar}>
+        <FaBars size={24} />
+      </div>
+
+      <div className={`left-slide-bar ${theme} ${isOpen ? 'open' : 'closed'}`}>
+
+        <div className="profile-section">
+
+          {isOpen && <><FaUserCircle size={80} />
+            <h4>{username}</h4></>}
+        </div>
+          {SelectUser(userType)}
+
       </div>
     </>
   );
 };
-
+}
 export default LeftSlideBar;
