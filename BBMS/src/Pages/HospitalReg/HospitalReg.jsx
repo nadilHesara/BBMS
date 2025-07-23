@@ -18,21 +18,12 @@ function HospitalReg({ theme, setTheme }) {
         address_line3: "",
         District: "",
         contact_no: "",
-        Password: ""
+        password: ""
     });
 
     const [show, setShow] = useState([false, false]);
 
-    const [conformPassword, setConformPassword] = useState("");
-    const [password, setPassword] = useState("");
 
-    function toggleShow(n) {
-        if (n == 1) {
-            setShow([show[0], !show[1]]);
-        } else {
-            setShow([!show[0], show[1]]);
-        }
-    }
 
     const handleChange = (e) => {
         setHospital({
@@ -121,21 +112,15 @@ function HospitalReg({ theme, setTheme }) {
                     <label htmlFor="tele">Telephone:</label>
                     <input type="text" name="tele" onChange={handleChange} required />
 
-
-                    <label htmlFor="pwd">Password: </label>
-                    <input type={show[0] ? "text" : "password"} id="pwd" name="pwd" onChange={(e) => setPassword(e.target.value)}></input>
-                    {show[0] ? <AiFillEyeInvisible onClick={() => toggleShow(0)} size={20} /> : <AiFillEye onClick={() => toggleShow(0)} size={20} />}
-                    <br />
-
-                    <label htmlFor="pwdconfirm">Confirm Password: </label>
-                    <input type={show[1] ? "text" : "password"} id="pwdconfirm" name="pwdconfirm" onChange={(e) => setConformPassword(e.target.value)}></input>
-                    {show[1] ? <AiFillEyeInvisible onClick={() => toggleShow(1)} size={20} /> : <AiFillEye onClick={() => toggleShow(1)} size={20} />}
-                    <br />
-
                     <input type="submit" value="Register" />
+                    
+                    {message && 
                     <div className="message">
-                        <p style={message == "Password is miss match!" ? { color: "red" } : { color: "black" }}>{message}</p>
+                        <p style={message == "Password is miss match!" ? { color: "red" } : { color: "black" }}>{message}</p><br />
+                        <p>Your password was send to your email!</p>
                     </div>
+                    }
+
                 </form>
             </div>
         </div>
