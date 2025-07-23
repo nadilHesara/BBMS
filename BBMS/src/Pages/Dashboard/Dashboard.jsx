@@ -6,7 +6,7 @@ import "./Dashboard.css";
 import { useEffect, useState } from "react";
 
 const Dashboard = ({ theme, setTheme }) => {
-  const location = useLocation();
+  
   const userId = localStorage.getItem("userId");
   const userType = localStorage.getItem("userType");
 
