@@ -37,17 +37,9 @@ function HospitalReg({ theme, setTheme }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
-        if (password != conformPassword) {
-            setMessage("Password is miss match!");
-            return;
-        } else {
-            setHospital({
-                ...hospital,
-                ["Password"]: password
-            })
-            console.log(password);
+        
             
-        }
+        
         try {
             const response = await fetch("http://localhost:9191/hospitalReg", {
                 method: "POST",
