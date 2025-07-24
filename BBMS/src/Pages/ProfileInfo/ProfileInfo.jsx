@@ -9,10 +9,11 @@ function ProfileInfo({theme,setTheme}){
 
   const userData = localStorage.getItem("userData");
   const userType = localStorage.getItem("userType");
+  const userId = localStorage.getItem("userId");
 
   const [hospital,setHospital] = useState({
     hospital_id: "",
-    name: "City  Hospital",
+    name: "",
     District: "",
     contact_no: "",
     address_line1: "",
@@ -20,9 +21,9 @@ function ProfileInfo({theme,setTheme}){
     address_line3: "",
     username: "",
     password: "", 
-    email: ""
+    email: "",
+    profileImage: ''
   });
-
 
   const [doner, setDoner] = useState({
     doner_id: "D001",
@@ -36,8 +37,10 @@ function ProfileInfo({theme,setTheme}){
     address_line2: "",
     address_line3: "",
     District: "",
-    Password:"",
-    ProfileImage: null
+    username:",",
+    password:"",
+    email:"",
+    profileImage: ''
   });
 
   useEffect(()=>{
@@ -56,19 +59,36 @@ function ProfileInfo({theme,setTheme}){
     current_password: "",
     new_password: "",
     conf_password: "",
-    
   })
 
-  
+  fetch(`http://localhost:9191/dashboard/profileInfo?user_id=${userId}&user_type=${userType}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+
+    body: userType === "Doner" ? JSON.stringify(doner) : JSON.stringify(hospital)
+    
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Failed to update user info");
+    return res.json();
+  })
+  .then(data => {
+    console.log("Update success response:");
+    alert(data.message);
+  })
+  .catch(error => {
+    console.error("Update failed:", error);
+  });
+
   const [message, setMessage] = useState("");
 
   const fileInputRef = useRef(null);
 
   const handlepasswordChange = (e) => {const {name,value} = e.target;
-  {setPassword(prevPassword => ({...prevPassword,[name]:value}))}
-
+    {setPassword(prevPassword => ({...prevPassword,[name]:value}))}
   };
-
 
   const handleImageChange = (e) => {const file = e.target.files[0];
     if (file) {
@@ -90,7 +110,6 @@ function ProfileInfo({theme,setTheme}){
 
     }));
   };
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -118,7 +137,7 @@ function ProfileInfo({theme,setTheme}){
   return(
     <div>
 
-      {/* <NaviBar theme={theme} setTheme={setTheme} /> */}
+      <NaviBar theme={theme} setTheme={setTheme} />
 
       <div className={theme === "light" ? "profile-info" : "profile-info dark"}>
 
