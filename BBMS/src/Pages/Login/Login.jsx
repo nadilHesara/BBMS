@@ -72,7 +72,7 @@ const Login = ({ theme, setTheme }) => {
         console.log("Login successful to " + result.user_type + " !");
         setUserType(result.user_type);
         navigate("/dashboard");
-          localStorage.setItem("userId", result.user_id); // or whatever key name you use
+        localStorage.setItem("userId", result.user_id); // or whatever key name you use
         localStorage.setItem("userType", result.user_type);
 
 

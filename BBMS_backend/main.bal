@@ -45,10 +45,13 @@ public type Doner record {
     string username;
 
     @sql:Column {name: "Password"}
-    string password;
+    string? password;
 
     @sql:Column {name: "Email"}
     string email;
+    
+    @sql:Column {name: "ProfileImage"}
+    string profileImage?;
 };
 
 type Login record {
@@ -98,6 +101,9 @@ public type Hospital record {
 
     @sql:Column {name: "Email"}
     string email;
+
+    @sql:Column {name: "ProfileImage"}
+    string profileImage?;
 
 };
 
@@ -364,22 +370,19 @@ isolated function getAllDoners() returns Doner[]|error {
     return doners;
 }
 
-isolated function updateDoners(Doner doner) returns sql:ExecutionResult|error {
+isolated function updateDoner(Doner doner) returns sql:ExecutionResult|error {
     sql:ExecutionResult|error result = check dbClient->execute(`
         UPDATE  Doner  SET
             DonerName = ${doner.name},
             Gender = ${doner.gender},
-            BloodGroup = ${doner.blood_group},
-            NICNo = ${doner.nic_no},
             DoB =${doner.dob},
             Telephone = ${doner.tele},
             AddressLine1 = ${doner.address_line1},
             AddressLine2 = ${doner.address_line2},
             AddressLine3 = ${doner.address_line3},
             District = ${doner.District},
-            Username = ${doner.username},
-            Password = ${doner.password},
-        WHERE  (DonerID = ${doner.doner_id} || Username = ${doner.username} || Email = ${doner.email})
+            ProfileImage = ${doner.profileImage}
+        WHERE  (DonerID = ${doner.doner_id} AND Username = ${doner.username} AND Email = ${doner.email})
     `);
     return result;
 }
@@ -480,7 +483,7 @@ isolated function getAllHospitals() returns Hospital[]|error {
     return hospitals;
 }
 
-isolated function updateHospitals(Hospital hospital) returns sql:ExecutionResult|error {
+isolated function updateHospital(Hospital hospital) returns sql:ExecutionResult|error {
     sql:ExecutionResult|error result = check dbClient->execute(`
         UPDATE Hospital SET
             Name = ${hospital.name},
@@ -489,9 +492,8 @@ isolated function updateHospitals(Hospital hospital) returns sql:ExecutionResult
             AddressLine1 = ${hospital.address_line1},
             AddressLine2 = ${hospital.address_line2},
             AddressLine3 = ${hospital.address_line3},
-            Username = ${hospital.username},
-            Password = ${hospital.password},
-        WHERE  (HospitalID = ${hospital.hospital_id} || Username = ${hospital.username} || Email = ${hospital.email})
+            ProfileImage = ${hospital.profileImage}
+        WHERE  (HospitalID = ${hospital.hospital_id} AND Username = ${hospital.username} AND Email = ${hospital.email})
     `);
     return result;
 }
@@ -558,11 +560,12 @@ service / on listener9191 {
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
-        allowMethods: ["POST", "GET", "OPTIONS"]
+        allowMethods: ["POST", "GET","PUT", "OPTIONS"]
     }
 }
 
 service /dashboard on listener9191 {
+
     resource function get .(@http:Query string user_id, @http:Query string user_type) returns json|error {
         json body={
             "userId" : "",
@@ -619,4 +622,34 @@ service /dashboard on listener9191 {
         }
         return body;
     }
+    
+    resource function put profileInfo(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
+        if user_type == "Doner" {
+            Doner|error doner =  <Doner> user_data;
+            if doner is Doner{
+                sql:ExecutionResult|error result = updateDoner(doner);
+                if result is sql:ExecutionResult{
+                    return {"message" : "Doner updated successfully"} ;
+                }else {
+                    return result;
+                }
+            }else {
+                return doner;
+            }
+            
+        }else if user_type == "Hospital" {
+            Hospital|error hospital =  <Hospital> user_data;
+            if hospital is Hospital{
+                sql:ExecutionResult|error result = updateHospital(hospital);
+                if result is sql:ExecutionResult{
+                    return {"message" : "Doner updated successfully"} ;
+                }else {
+                    return result;
+                }
+            }else {
+                return hospital;
+            }
+        }
+    }
+
 }

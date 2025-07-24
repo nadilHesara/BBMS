@@ -24,10 +24,12 @@ const LeftSlideBar = ({ theme, userType, username }) => {
     localStorage.setItem("currunt_possition", isOpen.toString());
   }, [isOpen]);
 
- const LoggingOut = () =>{
-     localStorage.removeItem("userId");
+  const LoggingOut = () => {
+    localStorage.removeItem("userId");
     localStorage.removeItem("userType");
- }
+    localStorage.removeItem("userData");
+    navigate("/login", { replace: true });
+  };
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -57,7 +59,11 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               {isOpen && <span>Medical Records</span>}
             </Link>
 
-            <Link to="/login" className="logout-link" onClick={()=> LoggingOut()}>
+            <Link
+              to="/login"
+              className="logout-link"
+              onClick={() => LoggingOut()}
+            >
               <IoMdLogOut size={30} />
               {isOpen && <span>Log Out</span>}
             </Link>
@@ -89,17 +95,21 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               {isOpen && <span>Ongoing Campaign</span>}
             </Link>
 
-              <Link to="#">
+            <Link to="#">
               <FaNotesMedical size={30} />
               {isOpen && <span>Campaign History</span>}
             </Link>
 
-              <Link to="#">
+            <Link to="#">
               <FaNotesMedical size={30} />
               {isOpen && <span>Donor Register</span>}
             </Link>
 
-            <Link to="/login" className="logout-link" onClick={()=> LoggingOut()}>
+            <Link
+              to="/login"
+              className="logout-link"
+              onClick={() => LoggingOut()}
+            >
               <IoMdLogOut size={30} />
               {isOpen && <span>Log Out</span>}
             </Link>
@@ -141,7 +151,11 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               {isOpen && <span>Hospital Register</span>}
             </Link>
 
-            <Link to="/login" className="logout-link" onClick={()=> LoggingOut()}>
+            <Link
+              to="/login"
+              className="logout-link"
+              onClick={() => LoggingOut()}
+            >
               <IoMdLogOut size={30} />
               {isOpen && <span>Log Out</span>}
             </Link>
