@@ -8,6 +8,7 @@ import HospitalReg from "./Pages/HospitalReg/HospitalReg";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import ProfileInfo from "./Pages/ProfileInfo/ProfileInfo";
 import AvailableBloodStocks from "./Pages/AvailableBloodStocks/AvailableBloodStocks";
+import PageNotFound from "./Pages/PageNotFound/PageNotFound";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -29,7 +30,7 @@ function App() {
           <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
           <Route path="/donorReg" element={<DonorReg theme={theme} setTheme={setTheme} />} />
           <Route path="/login" element={<Login theme={theme} setTheme={setTheme} />} />
-          <Route path="/campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
+          <Route path="campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
           <Route path="/hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
 
           {/* NESTED ROUTE for /dashboard */}
@@ -38,6 +39,7 @@ function App() {
             <Route path="profileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
              <Route path="AvailableBloodStocks" element={<AvailableBloodStocks theme={theme} setTheme={setTheme}/>} />
           </Route>
+          <Route path="*" element={<PageNotFound theme={theme} setTheme={setTheme} />} />
         </Routes>
       </Router>
     </div>
