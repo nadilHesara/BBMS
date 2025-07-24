@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const Home = ({ theme, setTheme }) => {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate('/campReg')
+    navigate('.campReg')
   }
   return (
     <div className='app-container'>
