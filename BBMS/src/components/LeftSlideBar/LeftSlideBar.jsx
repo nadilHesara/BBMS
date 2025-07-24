@@ -7,10 +7,13 @@ import {
   FaHandsHelping,
   FaBars,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
+
+import { Link , useNavigate} from "react-router-dom";
 import "./LeftSlideBar.css";
 
 const LeftSlideBar = ({ theme, userType, username }) => {
+
+  const navigate = useNavigate();
   const currunt_possition = localStorage.getItem("currunt_possition");
 
   const [isOpen, setIsOpen] = useState(
@@ -32,6 +35,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
 
   function SelectUser(userType) {
     if (userType == "Doner") {
+
       return (
         <>
           <div className="slide-bar-nav-links">
@@ -66,6 +70,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
           </div>
         </>
       );
+
     } else if (userType == "Hospital") {
       return (
         <>
@@ -111,7 +116,8 @@ const LeftSlideBar = ({ theme, userType, username }) => {
           </div>
         </>
       );
-    } else {
+
+    } else if(userType == "Admin") {
       return (
         <>
           <div className="slide-bar-nav-links">
@@ -156,6 +162,8 @@ const LeftSlideBar = ({ theme, userType, username }) => {
           </div>
         </>
       );
+    } else{
+      navigate("/login");
     }
   }
 

@@ -417,10 +417,11 @@ isolated function addHospital(Hospital hospital) returns json|error {
             ${newHospital.address_line2},
             ${newHospital.address_line3},
             ${newHospital.username},
+            ${newHospital.password},
             ${newHospital.email}
         )`;
 
-    error? e = sendEmail(newHospital.email, newHospital.password, newHospital.username);
+    
 
     sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , HospitalID  , UserType) 
             VALUES(
@@ -438,6 +439,7 @@ isolated function addHospital(Hospital hospital) returns json|error {
     else if result is error && loginResult is sql:ExecutionResult { 
         return error("Please enter valid data") ;
     }else {
+        error? e = sendEmail(newHospital.email, newHospital.password, newHospital.username);
         return {"message":"Hospital adedd sucsessfully!"};
     }
 }
@@ -553,15 +555,15 @@ service / on listener9191 {
 
 }
 
-
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
         allowMethods: ["POST", "GET", "OPTIONS"]
     }
 }
+
 service /dashboard on listener9191 {
-    resource function get . (@http:Query string user_id, @http:Query string user_type) returns json|error {
+    resource function get .(@http:Query string user_id, @http:Query string user_type) returns json|error {
         json body={
             "userId" : "",
             "userName":"",
@@ -576,6 +578,7 @@ service /dashboard on listener9191 {
             "AddressLine3" :"",
             "District" : ""
         };
+
         if user_type == "Doner"{
             Doner|error doner = getDoner(id = user_id);
             if doner is Doner{
@@ -596,6 +599,7 @@ service /dashboard on listener9191 {
             } else {
                 return doner;
             }
+
         } else if user_type == "Hospital"{
             Hospital|error hospital = getHospital(id = user_id);
             if hospital is Hospital{
