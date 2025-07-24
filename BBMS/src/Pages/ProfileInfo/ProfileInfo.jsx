@@ -331,5 +331,6 @@ function ProfileInfo({ theme, setTheme }) {
     </div>
   );
 }
+}
 
 export default ProfileInfo;
