@@ -498,6 +498,8 @@ isolated function updateHospital(Hospital hospital) returns sql:ExecutionResult|
     return result;
 }
 
+
+
 // ################################# DB check password ###################################
 
 isolated function checkPassword(string username, string password) returns json|error {
@@ -527,6 +529,43 @@ isolated function checkPassword(string username, string password) returns json|e
     }
 }
 
+isolated function addCamp(Campaign campaign) returns json|error {
+    string? lastID = check dbClient->queryRow(`SELECT CampaignID FROM campaign ORDER BY CampaignID DESC LIMIT 1`);
+    string newID;
+
+    if lastID is string{
+        newID = IdIncriment(lastID);
+    }else{
+        newID = "C001";
+    }
+
+    campaign.campain_id = newID;
+    sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, BloodQuantity, StartTime, EndTime)
+            VALUES (
+                ${campaign.campain_id},
+                ${campaign.district},
+                ${campaign.date},
+                ${campaign.org_name},
+                ${campaign.org_tele},
+                ${campaign.org_email},
+                ${campaign.add_line1},
+                ${campaign.add_line2},
+                ${campaign.add_line3},
+                ${campaign.doner_count},
+                ${campaign.blood_quantity},
+                ${campaign.start_time},
+                ${campaign.end_time}
+            )`;
+
+    sql:ExecutionResult|error result = dbClient->execute(query);
+
+    if result is error  {
+        return error("Failed");
+    }else {
+        return {"message":"Campaign adedd sucsessfully!"};
+    }
+}
+
 // ############################################# Service functions ###############################################
 
 listener http:Listener listener9191 = new (9191);
@@ -547,6 +586,11 @@ service / on listener9191 {
 
     isolated resource function post hospitalReg(@http:Payload Hospital hospital) returns json|error {
         json|error result = check addHospital(hospital);
+        return result;
+    }
+
+    isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
+        json|error result = check addCamp(campaign);
         return result;
     }
 

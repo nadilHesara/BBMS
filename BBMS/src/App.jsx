@@ -30,7 +30,7 @@ function App() {
           <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
           <Route path="/donorReg" element={<DonorReg theme={theme} setTheme={setTheme} />} />
           <Route path="/login" element={<Login theme={theme} setTheme={setTheme} />} />
-          <Route path="campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
+          <Route path="/campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
           <Route path="/hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
 
           {/* NESTED ROUTE for /dashboard */}
