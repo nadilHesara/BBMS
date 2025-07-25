@@ -1,6 +1,6 @@
-import ballerina/random;
-import ballerina/http;
 import ballerina/email;
+import ballerina/http;
+import ballerina/random;
 // import ballerina/io;
 import ballerina/sql;
 import ballerina/time;
@@ -49,7 +49,7 @@ public type Doner record {
 
     @sql:Column {name: "Email"}
     string email;
-    
+
     @sql:Column {name: "ProfileImage"}
     string profileImage?;
 };
@@ -147,6 +147,17 @@ type LoginRequest record {
     string password;
 };
 
+type bloodData record {
+    string? A_plus;
+    string? B_plus;
+    string? O_plus;
+    string? AB_plus;
+    string? A_minus;
+    string? B_minus;
+    string? O_minus;
+    string? AB_minus;
+};
+
 configurable string HOST = ?;
 configurable int PORT = ?;
 configurable string USER = ?;
@@ -234,7 +245,7 @@ isolated function generatePassword(int length = 12) returns string|error {
         int randIndex = check random:createIntInRange(0, totalChars - 1);
         password += allChars[randIndex].toString();
     }
-    return  randomize(password);
+    return randomize(password);
 }
 
 isolated function randomize(string text) returns string|error {
@@ -249,20 +260,20 @@ isolated function randomize(string text) returns string|error {
         chars[j] = temp;
     }
 
-    return  string:fromBytes(chars);
+    return string:fromBytes(chars);
 }
 
 isolated function sendEmail(string toEmail, string password, string username) returns error? {
 
     string emailBody = "This is auto genarated email do not reply to this. \n" +
-                        "Your user name is "+username+". \n" +
-                        "You password of the BBMS acount is "+ password+".";
+                        "Your user name is " + username + ". \n" +
+                        "You password of the BBMS acount is " + password + ".";
 
     email:SmtpClient smtpClient = check new (
         host = "smtp.gmail.com",
         port = 465,
-        username = "thilokyabusness@gmail.com",         // <-- Replace with your email
-        password = "xbcq ajjd gsvr pgag"            // <-- Use app password (for Gmail)
+        username = "thilokyabusness@gmail.com", // <-- Replace with your email
+        password = "xbcq ajjd gsvr pgag" // <-- Use app password (for Gmail)
     );
 
     email:Message message = {
@@ -327,10 +338,10 @@ isolated function addDoner(Doner doner) returns json|error {
     if result is error && loginResult is error {
         return error("Doner already exist!");
     }
-    else if result is error && loginResult is sql:ExecutionResult { 
-        return error("Please enter valid data") ;
-    }else {
-        return {"message":"Doner adedd sucsessfully!"};
+    else if result is error && loginResult is sql:ExecutionResult {
+        return error("Please enter valid data");
+    } else {
+        return {"message": "Doner adedd sucsessfully!"};
     }
 }
 
@@ -409,7 +420,7 @@ isolated function addHospital(Hospital hospital) returns json|error {
     Hospital newHospital = hospital.clone();
     newHospital.hospital_id = newHospitalId;
     newHospital.password = check generatePassword(12);
-    
+
     sql:ParameterizedQuery addHospital = `INSERT INTO Hospital(HospitalID, Name, District, Contact, AddressLine1, AddressLine2, AddressLine3, Username, Password, Email)
         VALUES(
             ${newHospital.hospital_id},
@@ -424,8 +435,6 @@ isolated function addHospital(Hospital hospital) returns json|error {
             ${newHospital.email}
         )`;
 
-    
-
     sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , HospitalID  , UserType) 
             VALUES(
             ${newHospital.username},
@@ -439,11 +448,11 @@ isolated function addHospital(Hospital hospital) returns json|error {
     if result is error && loginResult is error {
         return error("Hospital already exist!");
     }
-    else if result is error && loginResult is sql:ExecutionResult { 
-        return error("Please enter valid data") ;
-    }else {
+    else if result is error && loginResult is sql:ExecutionResult {
+        return error("Please enter valid data");
+    } else {
         error? e = sendEmail(newHospital.email, newHospital.password, newHospital.username);
-        return {"message":"Hospital adedd sucsessfully!"};
+        return {"message": "Hospital adedd sucsessfully!"};
     }
 }
 
@@ -498,7 +507,7 @@ isolated function updateHospital(Hospital hospital) returns sql:ExecutionResult|
     return result;
 }
 
-// ################################# DB check password ###################################
+// ################################# DB password functions ###################################
 
 isolated function checkPassword(string username, string password) returns json|error {
     sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username});`;
@@ -526,6 +535,46 @@ isolated function checkPassword(string username, string password) returns json|e
         return result;
     }
 }
+
+isolated function changePassword(string userType, string username , string newPassword , string previousPassword) returns json|error{
+    json|error password = checkPassword(username , previousPassword);
+    if password is error{return password;}
+    sql:ExecutionResult|error result = dbClient->queryRow(`UPDATE ${userType}  set Password = ${newPassword} where Username = ${username} ;`);
+    if result is sql:ExecutionResult{
+        sql:ExecutionResult|error loginResult = dbClient->queryRow(`UPDATE login  set Password = ${newPassword} where Username = ${username} ;`);
+        if loginResult is sql:ExecutionResult{
+            return {"Message" : "Password Changed sucssesfull"};
+        }
+    }
+    return error("Password changed unsucssesfull");
+}
+
+isolated function resetPassword(string userType, string? username = (), string? email = (), string? nicNo = ()) returns json|error {
+    string newPassword = check generatePassword(12);
+    string? Username = username;
+    Doner|Hospital|error result ;
+    if userType == "Doner" {
+        result = dbClient->queryRow(`SELECT * from doner where ( Email =${email} || NICNo = ${nicNo});`);
+        
+    }else if userType == "Hospital" {
+        result = dbClient->queryRow(`SELECT * from doner where Email =${email};`);
+    }else {
+        result = error("Incorrect type");
+    }
+
+    if result is error{
+        return result;
+    }
+
+    Username = result.username;
+    string? previousPassword = result.password;
+    if Username is string && previousPassword is string{
+        return changePassword(userType, Username,newPassword, previousPassword);
+    }
+
+    return error("Incorrect user");
+}
+
 
 // ############################################# Service functions ###############################################
 
@@ -560,61 +609,61 @@ service / on listener9191 {
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
-        allowMethods: ["POST", "GET","PUT", "OPTIONS"]
+        allowMethods: ["POST", "GET", "PUT", "OPTIONS"]
     }
 }
 
 service /dashboard on listener9191 {
 
     resource function get .(@http:Query string user_id, @http:Query string user_type) returns json|error {
-        json body={
-            "userId" : "",
-            "userName":"",
+        json body = {
+            "userId": "",
+            "userName": "",
             "Email": "",
-            "gender":"",
+            "gender": "",
             "bloodGroup": "",
-            "NicNo":"",
+            "NicNo": "",
             "Dob": "",
             "Telephone": "",
-            "AddressLine1" : "",
-            "AddressLine2" : "",
-            "AddressLine3" :"",
-            "District" : ""
+            "AddressLine1": "",
+            "AddressLine2": "",
+            "AddressLine3": "",
+            "District": ""
         };
 
-        if user_type == "Doner"{
+        if user_type == "Doner" {
             Doner|error doner = getDoner(id = user_id);
-            if doner is Doner{
+            if doner is Doner {
                 body = {
-                    userId : doner.doner_id,
-                    userName : doner.username,
-                    Email : doner.email,
-                    gender : doner.gender,
-                    bloodGroup : doner.blood_group,
-                    NicNo : doner.nic_no,
-                    Dob : doner.dob,
-                    Telephone : doner.tele,
-                    AddressLine1 : doner.address_line3,
-                    AddressLine2 : doner.address_line2,
-                    AddressLine3 : doner.address_line1,
-                    District : doner.District
+                    userId: doner.doner_id,
+                    userName: doner.username,
+                    Email: doner.email,
+                    gender: doner.gender,
+                    bloodGroup: doner.blood_group,
+                    NicNo: doner.nic_no,
+                    Dob: doner.dob,
+                    Telephone: doner.tele,
+                    AddressLine1: doner.address_line3,
+                    AddressLine2: doner.address_line2,
+                    AddressLine3: doner.address_line1,
+                    District: doner.District
                 };
             } else {
                 return doner;
             }
 
-        } else if user_type == "Hospital"{
+        } else if user_type == "Hospital" {
             Hospital|error hospital = getHospital(id = user_id);
-            if hospital is Hospital{
+            if hospital is Hospital {
                 body = {
-                    userId : hospital.hospital_id,
-                    userName : hospital.username,
-                    Email : hospital.email,
-                    Telephone : hospital.contact_no,
-                    AddressLine1 : hospital.address_line3,
-                    AddressLine2 : hospital.address_line2,
-                    AddressLine3 : hospital.address_line1,
-                    District : hospital.District
+                    userId: hospital.hospital_id,
+                    userName: hospital.username,
+                    Email: hospital.email,
+                    Telephone: hospital.contact_no,
+                    AddressLine1: hospital.address_line3,
+                    AddressLine2: hospital.address_line2,
+                    AddressLine3: hospital.address_line1,
+                    District: hospital.District
                 };
             } else {
                 return hospital;
@@ -622,31 +671,31 @@ service /dashboard on listener9191 {
         }
         return body;
     }
-    
-    resource function put profileInfo(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
+
+    resource function put profileInfo(@http:Query string user_id, @http:Query string user_type, @http:Payload json user_data) returns json|error {
         if user_type == "Doner" {
-            Doner|error doner =  <Doner> user_data;
-            if doner is Doner{
+            Doner|error doner = <Doner>user_data;
+            if doner is Doner {
                 sql:ExecutionResult|error result = updateDoner(doner);
-                if result is sql:ExecutionResult{
-                    return {"message" : "Doner updated successfully"} ;
-                }else {
+                if result is sql:ExecutionResult {
+                    return {"message": "Doner updated successfully"};
+                } else {
                     return result;
                 }
-            }else {
+            } else {
                 return doner;
             }
-            
-        }else if user_type == "Hospital" {
-            Hospital|error hospital =  <Hospital> user_data;
-            if hospital is Hospital{
+
+        } else if user_type == "Hospital" {
+            Hospital|error hospital = <Hospital>user_data;
+            if hospital is Hospital {
                 sql:ExecutionResult|error result = updateHospital(hospital);
-                if result is sql:ExecutionResult{
-                    return {"message" : "Doner updated successfully"} ;
-                }else {
+                if result is sql:ExecutionResult {
+                    return {"message": "Doner updated successfully"};
+                } else {
                     return result;
                 }
-            }else {
+            } else {
                 return hospital;
             }
         }
