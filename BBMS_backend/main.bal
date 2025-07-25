@@ -451,7 +451,7 @@ isolated function addHospital(Hospital hospital) returns json|error {
     else if result is error && loginResult is sql:ExecutionResult {
         return error("Please enter valid data");
     } else {
-        error? e = sendEmail(newHospital.email, newHospital.password, newHospital.username);
+        _ = check sendEmail(newHospital.email, newHospital.password, newHospital.username);
         return {"message": "Hospital adedd sucsessfully!"};
     }
 }
@@ -536,45 +536,61 @@ isolated function checkPassword(string username, string password) returns json|e
     }
 }
 
-isolated function changePassword(string userType, string username , string newPassword , string previousPassword) returns json|error{
-    json|error password = checkPassword(username , previousPassword);
-    if password is error{return password;}
-    sql:ExecutionResult|error result = dbClient->queryRow(`UPDATE ${userType}  set Password = ${newPassword} where Username = ${username} ;`);
-    if result is sql:ExecutionResult{
-        sql:ExecutionResult|error loginResult = dbClient->queryRow(`UPDATE login  set Password = ${newPassword} where Username = ${username} ;`);
-        if loginResult is sql:ExecutionResult{
-            return {"Message" : "Password Changed sucssesfull"};
-        }
+isolated function changePassword(string userType, string username, string newPassword, string previousPassword) returns json|error {
+    json|error oldPasswordCheck = checkPassword(username, previousPassword);
+    if oldPasswordCheck is error {
+        return oldPasswordCheck;
     }
-    return error("Password changed unsucssesfull");
+
+    // Build parameterized query (safe interpolation)
+    sql:ExecutionResult|error userUpdateResult;
+    if userType == "Doner" {
+        userUpdateResult = dbClient->execute(`UPDATE Doner SET Password = ${newPassword} WHERE Username = ${username}`);
+    }else if userType == "Hospital" {
+        userUpdateResult = dbClient->execute(`UPDATE Hospital SET Password = ${newPassword} WHERE Username = ${username}`);
+    }else {
+        userUpdateResult = error("User type is different!");
+    }
+
+    if userUpdateResult is sql:ExecutionResult {
+        sql:ParameterizedQuery updateLoginQuery = `UPDATE login SET Password = ${newPassword} WHERE Username = ${username}`;
+        sql:ExecutionResult|error loginUpdateResult = dbClient->execute(updateLoginQuery);
+
+        if loginUpdateResult is sql:ExecutionResult {
+            return { "Message": "Password changed successfully" };
+        } else {
+            return loginUpdateResult;
+        }
+    } else {
+        return userUpdateResult;
+    }
 }
 
-isolated function resetPassword(string userType, string? username = (), string? email = (), string? nicNo = ()) returns json|error {
+isolated function resetPassword(string userType, string userInfo) returns json|error {
     string newPassword = check generatePassword(12);
-    string? Username = username;
     Doner|Hospital|error result ;
     if userType == "Doner" {
-        result = dbClient->queryRow(`SELECT * from doner where ( Email =${email} || NICNo = ${nicNo});`);
+        result = dbClient->queryRow(`SELECT * from Doner where ( Username = ${userInfo} || Email =${userInfo} || NICNo = ${userInfo} || Telephone = ${userInfo});`);
         
     }else if userType == "Hospital" {
-        result = dbClient->queryRow(`SELECT * from doner where Email =${email};`);
+        result = dbClient->queryRow(`SELECT * from Hospital where (Username = ${userInfo} || Email =${userInfo} || Contact = ${userInfo});`);
     }else {
         result = error("Incorrect type");
     }
-
     if result is error{
         return result;
     }
 
-    Username = result.username;
-    string? previousPassword = result.password;
-    if Username is string && previousPassword is string{
+    string? Username = result.username;
+    string? previousPassword = result.password; 
+    string? Email = result.email;
+
+    if Username is string && previousPassword is string && Email is string{
+        _ = check sendEmail(Email,newPassword,Username);
         return changePassword(userType, Username,newPassword, previousPassword);
     }
-
     return error("Incorrect user");
 }
-
 
 // ############################################# Service functions ###############################################
 
