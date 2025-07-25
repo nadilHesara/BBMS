@@ -12,6 +12,7 @@ import PageNotFound from "./Pages/PageNotFound/PageNotFound";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import ChangePassword from "./Pages/ChangePassword/ChangePassword";
 
 function App() {
   const current_theme = localStorage.getItem("current_theme");
@@ -38,6 +39,7 @@ function App() {
             <Route index element={<h1>Welcome to Dashboard Page</h1>} />
             <Route path="profileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
              <Route path="AvailableBloodStocks" element={<AvailableBloodStocks theme={theme} setTheme={setTheme}/>} />
+             <Route path="ChangePassword" element={<ChangePassword theme={theme} setTheme={setTheme}/>}/>
           </Route>
           <Route path="*" element={<PageNotFound theme={theme} setTheme={setTheme} />} />
         </Routes>

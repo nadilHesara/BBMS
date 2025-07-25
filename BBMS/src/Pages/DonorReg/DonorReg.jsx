@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NaviBar from "../../components/Navibar/NaviBar";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
@@ -8,6 +8,9 @@ import "./DonorReg.css";
 
 function DonorReg({ theme, setTheme }) {
   const navigate = useNavigate();
+  const [userType,_] = useState(localStorage.getItem("userType") ? localStorage.getItem("userType"):undefined);
+  console.log(userType);
+
 
   const [doner, setDoner] = useState({
     doner_id: "D001",
@@ -157,6 +160,10 @@ function DonorReg({ theme, setTheme }) {
 
           <br />
 
+          
+
+{   userType == undefined && 
+          <>
           <label htmlFor="pwd">Password: </label>
           <input type={show[0] ? "text" : "password"} id="pwd" name="pwd" onChange={(e) => setPassword(e.target.value)}></input>
           {show[0] ? <AiFillEyeInvisible onClick={() => toggleShow(0)} size={20} /> : <AiFillEye onClick={() => toggleShow(0)} size={20} />}
@@ -167,6 +174,9 @@ function DonorReg({ theme, setTheme }) {
           <input type={show[1] ? "text" : "password"} id="pwdconfirm" name="pwdconfirm" onChange={(e) => setConformPassword(e.target.value)}></input>
           {show[1] ? <AiFillEyeInvisible onClick={() => toggleShow(1)} size={20} /> : <AiFillEye onClick={() => toggleShow(1)} size={20} />}
           <br />
+          
+          </>}
+
           <input type="submit" value="Register" />
           <div className="message">
             <p style={message == "Password is miss match!" ? { color: "red" } : { color: "black" }}>{message}</p>

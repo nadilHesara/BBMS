@@ -4,16 +4,23 @@ import districts from "../../SharedData/Districts";
 import { FaUserCircle } from "react-icons/fa";
 import "./ProfileInfo.css";
 import { use } from "react";
+import ChangePassword from "../ChangePassword/ChangePassword";
 
 function ProfileInfo({ theme, setTheme }) {
   const userData = localStorage.getItem("userData");
   const userType = localStorage.getItem("userType");
+
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   const [password, setPassword] = useState({
     current_password: "",
     new_password: "",
     conf_password: "",
   });
+
+  const HandleToggle = () => {
+    setShowChangePassword((prev) => !prev);
+  };
 
   const [message, setMessage] = useState("");
 
@@ -137,10 +144,16 @@ function ProfileInfo({ theme, setTheme }) {
             name="name"
             defaultValue={userData.name}
             onChange={handleChange}
-            required
+            // required
           />
           <label htmlFor="username">Username: </label>
-          <input type="text" name="username"defaultValue={userData.userName} onChange={handleChange} required />
+          <input
+            type="text"
+            name="username"
+            defaultValue={userData.userName}
+            onChange={handleChange}
+            //required
+          />
           <br />
           <label>Gender:</label>
           <input
@@ -149,7 +162,7 @@ function ProfileInfo({ theme, setTheme }) {
             value="Male"
             onChange={handleChange}
             checked={userData.gender === "Male"}
-            required
+            //required
           />{" "}
           Male
           <input
@@ -162,7 +175,13 @@ function ProfileInfo({ theme, setTheme }) {
           Female
           <br />
           <label htmlFor="email">Email: </label>
-          <input type="email" name="email" defaultValue={userData.Email} onChange={handleChange} required />
+          <input
+            type="email"
+            name="email"
+            defaultValue={userData.Email}
+            onChange={handleChange}
+            //required
+          />
           <br />
           <label>Blood Group: </label>
           <input
@@ -177,7 +196,7 @@ function ProfileInfo({ theme, setTheme }) {
             name="nic_no"
             defaultValue={userData.NicNo}
             onChange={handleChange}
-            required
+            //required
           />
           <label> Date of Birth: </label>
           <input
@@ -192,7 +211,7 @@ function ProfileInfo({ theme, setTheme }) {
             name="tele"
             defaultValue={userData.Telephone}
             onChange={handleChange}
-            required
+            //required
           />
           <label>Address:</label>
           <input
@@ -200,7 +219,7 @@ function ProfileInfo({ theme, setTheme }) {
             name="address_line1"
             defaultValue={userData.AddressLine1}
             onChange={handleChange}
-            required
+            // required
           />
           <div className="address-lines">
             <input
@@ -224,7 +243,7 @@ function ProfileInfo({ theme, setTheme }) {
             name="District"
             value={userData.District || ""}
             onChange={handleChange}
-            required
+            //required
           >
             <option value=""> -- Select -- </option>
             {districts.map((d, i) => (
@@ -233,7 +252,8 @@ function ProfileInfo({ theme, setTheme }) {
               </option>
             ))}
           </select>
-          <label>Current Password:</label>
+          {/* {showChangePassword && <ChangePassword />} */}
+          {/* <label>Current Password:</label>
           <input
             type="password"
             name="current_password"
@@ -253,9 +273,22 @@ function ProfileInfo({ theme, setTheme }) {
             required={password.new_password.trim() !== ""}
             disabled={password.new_password.trim() === ""}
           />
-          <br />
-          <input type="submit" value="Save Changes" />
-          <br />
+          <br /> */}
+
+
+          <div className="button-row">
+            <input className="save-btn" type="submit" value="Save Changes" />
+            <button
+              type="button"
+              onClick={HandleToggle}
+              className="change-pwd-btn"
+            >
+              Change Password
+            </button>
+          </div>
+
+
+         
           <br />
           {message && <p>{message}</p>}
         </form>
