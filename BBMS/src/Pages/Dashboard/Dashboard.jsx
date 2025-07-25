@@ -14,7 +14,7 @@ const Dashboard = ({ theme, setTheme }) => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
 
-  // ✅ Redirect to login if not logged in
+  
   useEffect(() => {
     console.log(userId + "    " + userType);
 
@@ -23,7 +23,7 @@ const Dashboard = ({ theme, setTheme }) => {
     }
   }, [userId, userType, navigate]);
 
-  // ✅ Fetch user data
+  
   useEffect(() => {
     if (!userId || !userType) return;
 
@@ -35,7 +35,7 @@ const Dashboard = ({ theme, setTheme }) => {
       .then((data) => {
         console.log(data)
         setUserData(data);
-        localStorage.setItem("userData", JSON.stringify(data)); // ✅ Store it as a string
+        localStorage.setItem("userData", JSON.stringify(data));
       })
       .catch((err) => {
         console.error("Error fetching dashboard data:", err.message);
@@ -43,7 +43,7 @@ const Dashboard = ({ theme, setTheme }) => {
       });
   }, [userId, userType]);
 
-  // ✅ Prevent back button navigation to dashboard after logout
+
   useEffect(() => {
     const handleBackButton = () => {
       if (!userId || !userType) {
