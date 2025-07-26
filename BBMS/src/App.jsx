@@ -31,13 +31,13 @@ function App() {
           <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
           <Route path="/donorReg" element={<DonorReg theme={theme} setTheme={setTheme} />} />
           <Route path="/login" element={<Login theme={theme} setTheme={setTheme} />} />
-          <Route path="campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
+          <Route path="/campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
           <Route path="/hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
 
           {/* NESTED ROUTE for /dashboard */}
           <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />}>
             <Route index element={<h1>Welcome to Dashboard Page</h1>} />
-            <Route path="profileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
+            <Route path="ProfileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
              <Route path="AvailableBloodStocks" element={<AvailableBloodStocks theme={theme} setTheme={setTheme}/>} />
              <Route path="ChangePassword" element={<ChangePassword theme={theme} setTheme={setTheme}/>}/>
           </Route>
