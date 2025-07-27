@@ -9,6 +9,7 @@ import Dashboard from "./Pages/Dashboard/Dashboard";
 import ProfileInfo from "./Pages/ProfileInfo/ProfileInfo";
 import AvailableBloodStocks from "./Pages/AvailableBloodStocks/AvailableBloodStocks";
 import PageNotFound from "./Pages/PageNotFound/PageNotFound";
+import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -31,6 +32,8 @@ function App() {
           <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
           <Route path="/donorReg" element={<DonorReg theme={theme} setTheme={setTheme} />} />
           <Route path="/login" element={<Login theme={theme} setTheme={setTheme} />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+     
           <Route path="/campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
           <Route path="/hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
 

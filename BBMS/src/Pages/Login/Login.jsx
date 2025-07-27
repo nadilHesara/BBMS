@@ -108,7 +108,7 @@ const Login = ({ theme, setTheme }) => {
 
         <div className="forgot-pw-link">
           <p>
-            <Link to="/">Forgot Password?</Link>
+            <Link to="/forgot-password">Forgot Password?</Link>
           </p>
         </div>
 
