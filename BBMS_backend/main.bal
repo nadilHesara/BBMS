@@ -199,29 +199,24 @@ final mysql:Client dbClient = check new (
 
 // #################################### functions ###############################################
 
-isolated function getCampaignEvent(string month) returns Campaign[]|error {
+isolated function getCampaignEvent(string year_month) returns Campaign[]|error {
     Campaign[] campaigns = [];
-    string[] parts = re `-`.split(month);
+    string[] parts = re `-`.split(year_month);
     if parts.length() > 3 {
         return error("Invalid month format");
     }
     int year = check int:fromString(parts[0]);
     int mon = check int:fromString(parts[1]);
 
-    string startDate = string `${year}-${mon}-01`;
-    string endDate = string `${year}-${mon}-31`;
 
     stream<Campaign, error?> resultStream = dbClient->query(
-        `SELECT * FROM campaign where DateofCampaign between ${startDate} and ${endDate}`
+        `SELECT * FROM campaign where year(DateofCampaign) = ${year} and month(DateofCampaign) = ${mon}`
     );
     check from Campaign campaign in resultStream
         do {
             campaigns.push(campaign);
         };
     check resultStream.close();
-    if (campaigns.length() == 0) {
-        io:println("Nothing yet");
-    }
 
     io:println(campaigns);
     return campaigns;
@@ -815,7 +810,6 @@ service /dashboard on listener9191 {
     }
     resource function get campaigns(@http:Query string month) returns Campaign[]|error {
         Campaign[]|error campaigns = getCampaignEvent(month);
-        io:println("hello getevent");
         io:println(campaigns);
         return campaigns;
     };
