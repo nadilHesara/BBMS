@@ -45,13 +45,13 @@ public type Doner record {
     string username;
 
     @sql:Column {name: "Password"}
-    string? password;
+    string? password = ();
 
     @sql:Column {name: "Email"}
     string email;
 
-    @sql:Column {name: "ProfileImage"}
-    string profileImage?;
+    //@sql:Column {name: "ProfileImage"}
+    //string profileImage?;
 };
 
 type Login record {
@@ -145,6 +145,17 @@ public type HospitalID record {
 type LoginRequest record {
     string username;
     string password;
+};
+
+type bloodData record {
+    string? A_plus;
+    string? B_plus;
+    string? O_plus;
+    string? AB_plus;
+    string? A_minus;
+    string? B_minus;
+    string? O_minus;
+    string? AB_minus;
 };
 
 configurable string HOST = ?;
@@ -395,19 +406,44 @@ isolated function getAllDoners() returns Doner[]|error {
 }
 
 isolated function updateDoner(Doner doner) returns sql:ExecutionResult|error {
-    sql:ExecutionResult|error result = check dbClient->execute(`
-        UPDATE  Doner  SET
-            DonerName = ${doner.name},
-            Gender = ${doner.gender},
-            DoB =${doner.dob},
-            Telephone = ${doner.tele},
-            AddressLine1 = ${doner.address_line1},
-            AddressLine2 = ${doner.address_line2},
-            AddressLine3 = ${doner.address_line3},
-            District = ${doner.District},
-            ProfileImage = ${doner.profileImage}
-        WHERE  (DonerID = ${doner.doner_id} AND Username = ${doner.username} AND Email = ${doner.email})
-    `);
+    sql:ExecutionResult result;
+    
+    if (doner.password is string) {
+        result = check dbClient->execute(`
+            UPDATE Doner SET 
+                Username = ${doner.username}, 
+                DonerName = ${doner.name}, 
+                Email = ${doner.email}, 
+                Gender = ${doner.gender}, 
+                BloodGroup = ${doner.blood_group}, 
+                NICNo = ${doner.nic_no}, 
+                DoB = ${doner.dob}, 
+                Telephone = ${doner.tele}, 
+                AddressLine1 = ${doner.address_line1}, 
+                AddressLine2 = ${doner.address_line2}, 
+                AddressLine3 = ${doner.address_line3}, 
+                District = ${doner.District},
+                Password = ${doner.password}
+            WHERE DonerID = ${doner.doner_id}
+        `);
+    } else {
+        result = check dbClient->execute(`
+            UPDATE Doner SET 
+                Username = ${doner.username}, 
+                DonerName = ${doner.name}, 
+                Email = ${doner.email}, 
+                Gender = ${doner.gender}, 
+                BloodGroup = ${doner.blood_group}, 
+                NICNo = ${doner.nic_no}, 
+                DoB = ${doner.dob}, 
+                Telephone = ${doner.tele}, 
+                AddressLine1 = ${doner.address_line1}, 
+                AddressLine2 = ${doner.address_line2}, 
+                AddressLine3 = ${doner.address_line3}, 
+                District = ${doner.District}
+            WHERE DonerID = ${doner.doner_id}
+        `);
+    }
     return result;
 }
 
@@ -464,7 +500,7 @@ isolated function addHospital(Hospital hospital) returns json|error {
     else if result is error && loginResult is sql:ExecutionResult {
         return error("Please enter valid data");
     } else {
-        error? e = sendEmail(newHospital.email, newHospital.password, newHospital.username);
+        _ = check sendEmail(newHospital.email, newHospital.password, newHospital.username);
         return {"message": "Hospital adedd sucsessfully!"};
     }
 }
@@ -520,7 +556,9 @@ isolated function updateHospital(Hospital hospital) returns sql:ExecutionResult|
     return result;
 }
 
-// ################################# DB check password ###################################
+
+
+// ################################# DB password functions ###################################
 
 isolated function checkPassword(string username, string password) returns json|error {
     sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username});`;
@@ -586,6 +624,63 @@ isolated function addCamp(Campaign campaign) returns json|error {
     }
 }
 
+isolated function changePassword(string userType, string username, string newPassword, string previousPassword) returns json|error {
+    json|error oldPasswordCheck = checkPassword(username, previousPassword);
+    if oldPasswordCheck is error {
+        return oldPasswordCheck;
+    }
+
+    // Build parameterized query (safe interpolation)
+    sql:ExecutionResult|error userUpdateResult;
+    if userType == "Doner" {
+        userUpdateResult = dbClient->execute(`UPDATE Doner SET Password = ${newPassword} WHERE Username = ${username}`);
+    }else if userType == "Hospital" {
+        userUpdateResult = dbClient->execute(`UPDATE Hospital SET Password = ${newPassword} WHERE Username = ${username}`);
+    }else {
+        userUpdateResult = error("User type is different!");
+    }
+
+    if userUpdateResult is sql:ExecutionResult {
+        sql:ParameterizedQuery updateLoginQuery = `UPDATE login SET Password = ${newPassword} WHERE Username = ${username}`;
+        sql:ExecutionResult|error loginUpdateResult = dbClient->execute(updateLoginQuery);
+
+        if loginUpdateResult is sql:ExecutionResult {
+            return { "Message": "Password changed successfully" };
+        } else {
+            return loginUpdateResult;
+        }
+    } else {
+        return userUpdateResult;
+    }
+}
+
+
+isolated function resetPassword(string userType, string userInfo) returns json|error {
+    string newPassword = check generatePassword(12);
+    Doner|Hospital|error result ;
+    if userType == "Doner" {
+        result = dbClient->queryRow(`SELECT * from Doner where ( Username = ${userInfo} || Email =${userInfo} || NICNo = ${userInfo} || Telephone = ${userInfo});`);
+        
+    }else if userType == "Hospital" {
+        result = dbClient->queryRow(`SELECT * from Hospital where (Username = ${userInfo} || Email =${userInfo} || Contact = ${userInfo});`);
+    }else {
+        result = error("Incorrect type");
+    }
+    if result is error{
+        return result;
+    }
+
+    string? Username = result.username;
+    string? previousPassword = result.password; 
+    string? Email = result.email;
+
+    if Username is string && previousPassword is string && Email is string{
+        _ = check sendEmail(Email,newPassword,Username);
+        return changePassword(userType, Username,newPassword, previousPassword);
+    }
+    return error("Incorrect user");
+}
+
 // ############################################# Service functions ###############################################
 
 listener http:Listener listener9191 = new (9191);
@@ -632,8 +727,9 @@ service /dashboard on listener9191 {
 
     resource function get .(@http:Query string user_id, @http:Query string user_type) returns json|error {
         json body = {
-            "userId": "",
-            "userName": "",
+            "userId" : "",
+            "userName":"",
+            "Name" : "",
             "Email": "",
             "gender": "",
             "bloodGroup": "",
@@ -650,18 +746,19 @@ service /dashboard on listener9191 {
             Doner|error doner = getDoner(id = user_id);
             if doner is Doner {
                 body = {
-                    userId: doner.doner_id,
-                    userName: doner.username,
-                    Email: doner.email,
-                    gender: doner.gender,
-                    bloodGroup: doner.blood_group,
-                    NicNo: doner.nic_no,
-                    Dob: doner.dob,
-                    Telephone: doner.tele,
-                    AddressLine1: doner.address_line3,
-                    AddressLine2: doner.address_line2,
-                    AddressLine3: doner.address_line1,
-                    District: doner.District
+                    userId : doner.doner_id,
+                    userName : doner.username,
+                    Name : doner.name,
+                    Email : doner.email,
+                    gender : doner.gender,
+                    bloodGroup : doner.blood_group,
+                    NicNo : doner.nic_no,
+                    Dob : doner.dob,
+                    Telephone : doner.tele,
+                    AddressLine1 : doner.address_line1,
+                    AddressLine2 : doner.address_line2,
+                    AddressLine3 : doner.address_line3,
+                    District : doner.District
                 };
             } else {
                 return doner;
@@ -671,14 +768,14 @@ service /dashboard on listener9191 {
             Hospital|error hospital = getHospital(id = user_id);
             if hospital is Hospital {
                 body = {
-                    userId: hospital.hospital_id,
-                    userName: hospital.username,
-                    Email: hospital.email,
-                    Telephone: hospital.contact_no,
-                    AddressLine1: hospital.address_line3,
-                    AddressLine2: hospital.address_line2,
-                    AddressLine3: hospital.address_line1,
-                    District: hospital.District
+                    userId : hospital.hospital_id,
+                    userName : hospital.username,
+                    Email : hospital.email,
+                    Telephone : hospital.contact_no,
+                    AddressLine1 : hospital.address_line3,
+                    AddressLine2 : hospital.address_line2,
+                    AddressLine3 : hospital.address_line1,
+                    District : hospital.District
                 };
             } else {
                 return hospital;
@@ -686,40 +783,59 @@ service /dashboard on listener9191 {
         }
         return body;
     }
-
     resource function get campaigns(@http:Query string month) returns Campaign[]|error {
         Campaign[]|error campaigns = getCampaignEvent(month);
         return campaigns;
     };
+    
 
 
-    resource function put profileInfo(@http:Query string user_id, @http:Query string user_type, @http:Payload json user_data) returns json|error {
+
+resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
         if user_type == "Doner" {
-            Doner|error doner = <Doner>user_data;
-            if doner is Doner {
-                sql:ExecutionResult|error result = updateDoner(doner);
-                if result is sql:ExecutionResult {
-                    return {"message": "Doner updated successfully"};
-                } else {
-                    return result;
+            map<json> userMap = <map<json>>user_data;
+            json donerJson = userMap["doner"];
+
+            Doner doner = checkpanic donerJson.fromJsonWithType(Doner);
+
+            if doner.password is (){
+                Doner|error existingDoner = getDoner(id = user_id);
+                if existingDoner is Doner{
+                    doner.password = existingDoner.password;
                 }
-            } else {
-                return doner;
+            }
+           
+            sql:ExecutionResult|error result = updateDoner(doner);
+            if result is sql:ExecutionResult{
+                    return {"message" : "Doner updated successfully"} ;
+            }else {
+                return result;
+            }
+            
+            
+        }else if user_type == "Hospital" {
+            
+            map<json> userMap = <map<json>>user_data;
+            json hospitalJson = userMap["hospital"];
+
+            Hospital hospital = checkpanic hospitalJson.fromJsonWithType(Hospital);
+
+            if hospital.password is string {
+                Hospital|error existingHospital = getHospital(id = user_id);
+                if existingHospital is Hospital{
+                    hospital.password = existingHospital.password;
+                }
             }
 
-        } else if user_type == "Hospital" {
-            Hospital|error hospital = <Hospital>user_data;
-            if hospital is Hospital {
-                sql:ExecutionResult|error result = updateHospital(hospital);
-                if result is sql:ExecutionResult {
-                    return {"message": "Doner updated successfully"};
-                } else {
+            sql:ExecutionResult|error result = updateHospital(hospital);
+            if result is sql:ExecutionResult{
+                    return {"message" : "Hospital updated successfully"} ;
+            }else {
                     return result;
-                }
-            } else {
-                return hospital;
             }
+
         }
     }
-
 }
+
+
