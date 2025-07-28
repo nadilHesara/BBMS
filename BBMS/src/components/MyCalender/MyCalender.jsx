@@ -13,7 +13,8 @@ function CalendarComponent() {
   useEffect(() => {
     const year = value.getFullYear();
     const month = String(value.getMonth() + 1).padStart(2, '0');
-    axios.get(`http://localhost:9191/dashboard/month?month=${year}-${month}`)
+    console.log(year);
+    axios.get(`http://localhost:9191/dashboard/campaigns?month=${year}-${month}`)
       .then(res => setCampaigns(res.data))
       .catch(err => console.error(err));
   }, [value]);

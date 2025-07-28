@@ -11,7 +11,7 @@ import { IoBagAddSharp } from "react-icons/io5";
 import { CgPassword } from "react-icons/cg";
 import { GrStorage } from "react-icons/gr";
 import { MdAppRegistration } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./LeftSlideBar.css";
 
 const LeftSlideBar = ({ theme, userType, username }) => {
