@@ -44,9 +44,6 @@ const Login = ({ theme, setTheme }) => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-    if(login){
-      setMessage("Your are already login to "+userType+".")
-    }
 
     try {
       const response = await fetch("http://localhost:9191/login", {
