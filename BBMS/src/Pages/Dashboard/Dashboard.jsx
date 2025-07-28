@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import LeftSlideBar from "../../components/LeftSlideBar/LeftSlideBar";
 import NaviBar from "../../components/Navibar/NaviBar";
+import MyCalender from "../../components/MyCalender/MyCalender";
 import "./Dashboard.css";
 
 const Dashboard = ({ theme, setTheme }) => {
@@ -14,7 +15,7 @@ const Dashboard = ({ theme, setTheme }) => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
 
-  // ✅ Redirect to login if not logged in
+  
   useEffect(() => {
     console.log(userId + "    " + userType);
 
@@ -23,7 +24,7 @@ const Dashboard = ({ theme, setTheme }) => {
     }
   }, [userId, userType, navigate]);
 
-  // ✅ Fetch user data
+  
   useEffect(() => {
     if (!userId || !userType) return;
 
@@ -35,7 +36,7 @@ const Dashboard = ({ theme, setTheme }) => {
       .then((data) => {
         console.log(data)
         setUserData(data);
-        localStorage.setItem("userData", JSON.stringify(data)); // ✅ Store it as a string
+        localStorage.setItem("userData", JSON.stringify(data));
       })
       .catch((err) => {
         console.error("Error fetching dashboard data:", err.message);
@@ -43,7 +44,7 @@ const Dashboard = ({ theme, setTheme }) => {
       });
   }, [userId, userType]);
 
-  // ✅ Prevent back button navigation to dashboard after logout
+
   useEffect(() => {
     const handleBackButton = () => {
       if (!userId || !userType) {
@@ -68,7 +69,9 @@ const Dashboard = ({ theme, setTheme }) => {
       <div className="main-layout">
         <LeftSlideBar theme={theme} userType={userType} username={userData.userName} />
         <div className="content-area">
+          
           <Outlet />
+          <MyCalender />
           {/* <pre>{JSON.stringify(userData, null, 2)}</pre> */}
         </div>
       </div>

@@ -45,13 +45,13 @@ public type Doner record {
     string username;
 
     @sql:Column {name: "Password"}
-    string? password;
+    string? password = ();
 
     @sql:Column {name: "Email"}
     string email;
 
-    @sql:Column {name: "ProfileImage"}
-    string profileImage?;
+    //@sql:Column {name: "ProfileImage"}
+    //string profileImage?;
 };
 
 type Login record {
@@ -173,6 +173,30 @@ final mysql:Client dbClient = check new (
 );
 
 // #################################### functions ###############################################
+
+isolated function getCampaignEvent(string month) returns Campaign[]|error {
+    Campaign[] campaigns = [];
+    string[] parts = re `-`.split(month);
+    if parts.length() > 3 {
+        return error("Invalid month format");
+    }
+    int year = check int:fromString(parts[0]);
+    int mon = check int:fromString(parts[1]);
+
+    string startDate = string `${year}-${mon}-01`;
+    string endDate = string `${year}-${mon}-31`;
+
+    stream<Campaign, error?> resultStream = dbClient->query(
+        `SELECT * FROM campaigns where DateofCampaign between ${startDate} and ${endDate}`
+    );
+    check from Campaign campaign in resultStream
+        do {
+            campaigns.push(campaign);
+        };
+    check resultStream.close();
+    return campaigns;
+
+};
 
 isolated function IdIncriment(string currentId) returns string {
     string prefix = currentId[0].toString(); // Get the first character as prefix
@@ -382,19 +406,44 @@ isolated function getAllDoners() returns Doner[]|error {
 }
 
 isolated function updateDoner(Doner doner) returns sql:ExecutionResult|error {
-    sql:ExecutionResult|error result = check dbClient->execute(`
-        UPDATE  Doner  SET
-            DonerName = ${doner.name},
-            Gender = ${doner.gender},
-            DoB =${doner.dob},
-            Telephone = ${doner.tele},
-            AddressLine1 = ${doner.address_line1},
-            AddressLine2 = ${doner.address_line2},
-            AddressLine3 = ${doner.address_line3},
-            District = ${doner.District},
-            ProfileImage = ${doner.profileImage}
-        WHERE  (DonerID = ${doner.doner_id} AND Username = ${doner.username} AND Email = ${doner.email})
-    `);
+    sql:ExecutionResult result;
+    
+    if (doner.password is string) {
+        result = check dbClient->execute(`
+            UPDATE Doner SET 
+                Username = ${doner.username}, 
+                DonerName = ${doner.name}, 
+                Email = ${doner.email}, 
+                Gender = ${doner.gender}, 
+                BloodGroup = ${doner.blood_group}, 
+                NICNo = ${doner.nic_no}, 
+                DoB = ${doner.dob}, 
+                Telephone = ${doner.tele}, 
+                AddressLine1 = ${doner.address_line1}, 
+                AddressLine2 = ${doner.address_line2}, 
+                AddressLine3 = ${doner.address_line3}, 
+                District = ${doner.District},
+                Password = ${doner.password}
+            WHERE DonerID = ${doner.doner_id}
+        `);
+    } else {
+        result = check dbClient->execute(`
+            UPDATE Doner SET 
+                Username = ${doner.username}, 
+                DonerName = ${doner.name}, 
+                Email = ${doner.email}, 
+                Gender = ${doner.gender}, 
+                BloodGroup = ${doner.blood_group}, 
+                NICNo = ${doner.nic_no}, 
+                DoB = ${doner.dob}, 
+                Telephone = ${doner.tele}, 
+                AddressLine1 = ${doner.address_line1}, 
+                AddressLine2 = ${doner.address_line2}, 
+                AddressLine3 = ${doner.address_line3}, 
+                District = ${doner.District}
+            WHERE DonerID = ${doner.doner_id}
+        `);
+    }
     return result;
 }
 
@@ -507,6 +556,8 @@ isolated function updateHospital(Hospital hospital) returns sql:ExecutionResult|
     return result;
 }
 
+
+
 // ################################# DB password functions ###################################
 
 isolated function checkPassword(string username, string password) returns json|error {
@@ -533,6 +584,43 @@ isolated function checkPassword(string username, string password) returns json|e
         }
     } else {
         return result;
+    }
+}
+
+isolated function addCamp(Campaign campaign) returns json|error {
+    string? lastID = check dbClient->queryRow(`SELECT CampaignID FROM campaign ORDER BY CampaignID DESC LIMIT 1`);
+    string newID;
+
+    if lastID is string {
+        newID = IdIncriment(lastID);
+    } else {
+        newID = "C001";
+    }
+
+    campaign.campain_id = newID;
+    sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, BloodQuantity, StartTime, EndTime)
+            VALUES (
+                ${campaign.campain_id},
+                ${campaign.district},
+                ${campaign.date},
+                ${campaign.org_name},
+                ${campaign.org_tele},
+                ${campaign.org_email},
+                ${campaign.add_line1},
+                ${campaign.add_line2},
+                ${campaign.add_line3},
+                ${campaign.doner_count},
+                ${campaign.blood_quantity},
+                ${campaign.start_time},
+                ${campaign.end_time}
+            )`;
+
+    sql:ExecutionResult|error result = dbClient->execute(query);
+
+    if result is error {
+        return error("Failed");
+    } else {
+        return {"message": "Campaign adedd sucsessfully!"};
     }
 }
 
@@ -565,6 +653,7 @@ isolated function changePassword(string userType, string username, string newPas
         return userUpdateResult;
     }
 }
+
 
 isolated function resetPassword(string userType, string userInfo) returns json|error {
     string newPassword = check generatePassword(12);
@@ -615,6 +704,11 @@ service / on listener9191 {
         return result;
     }
 
+    isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
+        json|error result = check addCamp(campaign);
+        return result;
+    }
+
     isolated resource function post login(@http:Payload LoginRequest loginReq) returns json|error {
         json|error result = check checkPassword(loginReq.username, loginReq.password);
         return result;
@@ -633,8 +727,9 @@ service /dashboard on listener9191 {
 
     resource function get .(@http:Query string user_id, @http:Query string user_type) returns json|error {
         json body = {
-            "userId": "",
-            "userName": "",
+            "userId" : "",
+            "userName":"",
+            "Name" : "",
             "Email": "",
             "gender": "",
             "bloodGroup": "",
@@ -651,18 +746,19 @@ service /dashboard on listener9191 {
             Doner|error doner = getDoner(id = user_id);
             if doner is Doner {
                 body = {
-                    userId: doner.doner_id,
-                    userName: doner.username,
-                    Email: doner.email,
-                    gender: doner.gender,
-                    bloodGroup: doner.blood_group,
-                    NicNo: doner.nic_no,
-                    Dob: doner.dob,
-                    Telephone: doner.tele,
-                    AddressLine1: doner.address_line3,
-                    AddressLine2: doner.address_line2,
-                    AddressLine3: doner.address_line1,
-                    District: doner.District
+                    userId : doner.doner_id,
+                    userName : doner.username,
+                    Name : doner.name,
+                    Email : doner.email,
+                    gender : doner.gender,
+                    bloodGroup : doner.blood_group,
+                    NicNo : doner.nic_no,
+                    Dob : doner.dob,
+                    Telephone : doner.tele,
+                    AddressLine1 : doner.address_line1,
+                    AddressLine2 : doner.address_line2,
+                    AddressLine3 : doner.address_line3,
+                    District : doner.District
                 };
             } else {
                 return doner;
@@ -672,14 +768,14 @@ service /dashboard on listener9191 {
             Hospital|error hospital = getHospital(id = user_id);
             if hospital is Hospital {
                 body = {
-                    userId: hospital.hospital_id,
-                    userName: hospital.username,
-                    Email: hospital.email,
-                    Telephone: hospital.contact_no,
-                    AddressLine1: hospital.address_line3,
-                    AddressLine2: hospital.address_line2,
-                    AddressLine3: hospital.address_line1,
-                    District: hospital.District
+                    userId : hospital.hospital_id,
+                    userName : hospital.username,
+                    Email : hospital.email,
+                    Telephone : hospital.contact_no,
+                    AddressLine1 : hospital.address_line3,
+                    AddressLine2 : hospital.address_line2,
+                    AddressLine3 : hospital.address_line1,
+                    District : hospital.District
                 };
             } else {
                 return hospital;
@@ -687,34 +783,59 @@ service /dashboard on listener9191 {
         }
         return body;
     }
+    resource function get campaigns(@http:Query string month) returns Campaign[]|error {
+        Campaign[]|error campaigns = getCampaignEvent(month);
+        return campaigns;
+    };
+    
 
-    resource function put profileInfo(@http:Query string user_id, @http:Query string user_type, @http:Payload json user_data) returns json|error {
+
+
+resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
         if user_type == "Doner" {
-            Doner|error doner = <Doner>user_data;
-            if doner is Doner {
-                sql:ExecutionResult|error result = updateDoner(doner);
-                if result is sql:ExecutionResult {
-                    return {"message": "Doner updated successfully"};
-                } else {
-                    return result;
+            map<json> userMap = <map<json>>user_data;
+            json donerJson = userMap["doner"];
+
+            Doner doner = checkpanic donerJson.fromJsonWithType(Doner);
+
+            if doner.password is (){
+                Doner|error existingDoner = getDoner(id = user_id);
+                if existingDoner is Doner{
+                    doner.password = existingDoner.password;
                 }
-            } else {
-                return doner;
+            }
+           
+            sql:ExecutionResult|error result = updateDoner(doner);
+            if result is sql:ExecutionResult{
+                    return {"message" : "Doner updated successfully"} ;
+            }else {
+                return result;
+            }
+            
+            
+        }else if user_type == "Hospital" {
+            
+            map<json> userMap = <map<json>>user_data;
+            json hospitalJson = userMap["hospital"];
+
+            Hospital hospital = checkpanic hospitalJson.fromJsonWithType(Hospital);
+
+            if hospital.password is string {
+                Hospital|error existingHospital = getHospital(id = user_id);
+                if existingHospital is Hospital{
+                    hospital.password = existingHospital.password;
+                }
             }
 
-        } else if user_type == "Hospital" {
-            Hospital|error hospital = <Hospital>user_data;
-            if hospital is Hospital {
-                sql:ExecutionResult|error result = updateHospital(hospital);
-                if result is sql:ExecutionResult {
-                    return {"message": "Doner updated successfully"};
-                } else {
+            sql:ExecutionResult|error result = updateHospital(hospital);
+            if result is sql:ExecutionResult{
+                    return {"message" : "Hospital updated successfully"} ;
+            }else {
                     return result;
-                }
-            } else {
-                return hospital;
             }
+
         }
     }
-
 }
+
+

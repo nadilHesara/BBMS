@@ -38,6 +38,7 @@ function CampReg({ theme, setTheme }) {
     e.preventDefault();
     setMessage("");
     console.log(campaign);
+
     try{
       const response = await fetch("http://localhost:9191/campReg",{
       method:"POST",
@@ -46,10 +47,14 @@ function CampReg({ theme, setTheme }) {
         },
       body: JSON.stringify(campaign)
       })
+
       const result = await response.json();
+
       if (response.ok){
+        alert("Successfully added the campaign");
         setMessage(`Successfully registered by ${campaign.org_name}`);
       }else{
+        alert("Registration failed. Check server and data.");
         setMessage("Error : "+JSON.stringify(result));
       }
     }catch (error){
@@ -63,7 +68,7 @@ function CampReg({ theme, setTheme }) {
   const districts = [
     "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara", "Kandy",
     "Kegalle", "Kilinochchi", "Kurunegala", "Mannar", "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya", "Polonnaruwa",
-    "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",];
+    "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"];
 
 
   return (
@@ -76,11 +81,11 @@ function CampReg({ theme, setTheme }) {
           <input type="text" id="org_name" name="org_name" onChange={handleChange} required></input>
           <br />
 
-        <label > District: </label>
-        <select name="district" >
+        <label> District: </label>
+        <select name="district" onChange={handleChange} value={campaign.district} required>
           <option value="">---Select---</option>
           {districts.map((city,index)=>(
-            <option key={index} value={city} > {city} </option>
+            <option key={index} value={city} >{city}</option>
           ))}
         </select>
         <br />
@@ -124,7 +129,11 @@ function CampReg({ theme, setTheme }) {
           <input type="text" id="org_email" name="org_email" onChange={handleChange} required />
           <br />
           <input type="submit" value="Save"></input>
+          {message &&
+          <p>{ message }</p>}
         </form>
+
+        
       </div>
     </>
   );

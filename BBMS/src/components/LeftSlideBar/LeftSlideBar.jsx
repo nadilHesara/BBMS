@@ -7,8 +7,11 @@ import {
   FaHandsHelping,
   FaBars,
 } from "react-icons/fa";
-
-import { Link , useNavigate} from "react-router-dom";
+import { IoBagAddSharp } from "react-icons/io5";
+import { CgPassword } from "react-icons/cg";
+import { GrStorage } from "react-icons/gr";
+import { MdAppRegistration } from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
 import "./LeftSlideBar.css";
 
 const LeftSlideBar = ({ theme, userType, username }) => {
@@ -81,12 +84,12 @@ const LeftSlideBar = ({ theme, userType, username }) => {
             </Link>
 
             <Link to="AvailableBloodStocks">
-              <FaHistory size={30} />
+              <GrStorage size={30} />
               {isOpen && <span>Available Blood Stock</span>}
             </Link>
 
-            <Link to="#">
-              <FaHandsHelping size={30} />
+            <Link to="AddCampaign">
+              <IoBagAddSharp size={30} />
               {isOpen && <span>Add Campaign</span>}
             </Link>
 
@@ -96,13 +99,18 @@ const LeftSlideBar = ({ theme, userType, username }) => {
             </Link>
 
             <Link to="#">
-              <FaNotesMedical size={30} />
+              <FaHistory size={30} />
               {isOpen && <span>Campaign History</span>}
             </Link>
 
-            <Link to="#">
-              <FaNotesMedical size={30} />
+            <Link to="/donorReg">
+              <MdAppRegistration size={30} />
               {isOpen && <span>Donor Register</span>}
+            </Link>
+
+            <Link to="ChangePassword">
+              <CgPassword size={30} />
+              {isOpen && <span>Change Password</span>}
             </Link>
 
             <Link
@@ -142,12 +150,12 @@ const LeftSlideBar = ({ theme, userType, username }) => {
             </Link>
 
             <Link to="#">
-              <FaNotesMedical size={30} />
+              <MdAppRegistration size={30} />
               {isOpen && <span>Donor Register</span>}
             </Link>
 
             <Link to="#">
-              <FaNotesMedical size={30} />
+              <MdAppRegistration size={30} />
               {isOpen && <span>Hospital Register</span>}
             </Link>
 

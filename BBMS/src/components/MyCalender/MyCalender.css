@@ -1,0 +1,11 @@
+.highlight {
+  background-color: #ffdfdf !important;
+  border-radius: 50%;
+}
+
+.details {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f4f4f4;
+  border-left: 4px solid crimson;
+}

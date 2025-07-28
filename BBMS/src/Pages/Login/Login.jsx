@@ -87,7 +87,7 @@ const Login = ({ theme, setTheme }) => {
     <div>
       <NaviBar theme={theme} setTheme={setTheme} />
       <form onSubmit={handleLoginSubmit}>
-        <h1>Donor Login</h1>
+        <h1>Login</h1>
         <label htmlFor="Username"> Username: </label>
         <input type="text" id="Username" name="Username" value={username} onChange={(e) => setUsername(e.target.value)}></input>
         <br />
@@ -105,7 +105,7 @@ const Login = ({ theme, setTheme }) => {
 
         <div className="forgot-pw-link">
           <p>
-            <Link to="/">Forgot Password?</Link>
+            <Link to="/forgot-password">Forgot Password?</Link>
           </p>
         </div>
 

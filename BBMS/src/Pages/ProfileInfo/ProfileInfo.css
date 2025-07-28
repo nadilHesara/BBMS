@@ -47,3 +47,25 @@
     
 }
 
+.button-row {
+  display: flex;
+  justify-content: space-between; 
+  margin-top: 20px;
+  gap: 20px;
+  padding: 0 10px;
+}
+
+.change-pwd-btn,
+.save-btn {
+  background-color: #861f1f;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex: 1;              
+  max-width: 200px;   
+} 
+
