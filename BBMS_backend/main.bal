@@ -174,6 +174,30 @@ final mysql:Client dbClient = check new (
 
 // #################################### functions ###############################################
 
+isolated function getCampaignEvent(string month) returns Campaign[]|error {
+    Campaign[] campaigns = [];
+    string[] parts = re `-`.split(month);
+    if parts.length() > 3 {
+        return error("Invalid month format");
+    }
+    int year = check int:fromString(parts[0]);
+    int mon = check int:fromString(parts[1]);
+
+    string startDate = string `${year}-${mon}-01`;
+    string endDate = string `${year}-${mon}-31`;
+
+    stream<Campaign, error?> resultStream = dbClient->query(
+        `SELECT * FROM campaigns where DateofCampaign between ${startDate} and ${endDate}`
+    );
+    check from Campaign campaign in resultStream
+        do {
+            campaigns.push(campaign);
+        };
+    check resultStream.close();
+    return campaigns;
+
+};
+
 isolated function IdIncriment(string currentId) returns string {
     string prefix = currentId[0].toString(); // Get the first character as prefix
     string numericPart = currentId.substring(1); // Get the numeric part
@@ -534,8 +558,6 @@ isolated function updateHospital(Hospital hospital) returns sql:ExecutionResult|
 
 
 
-
-
 // ################################# DB password functions ###################################
 
 isolated function checkPassword(string username, string password) returns json|error {
@@ -569,9 +591,9 @@ isolated function addCamp(Campaign campaign) returns json|error {
     string? lastID = check dbClient->queryRow(`SELECT CampaignID FROM campaign ORDER BY CampaignID DESC LIMIT 1`);
     string newID;
 
-    if lastID is string{
+    if lastID is string {
         newID = IdIncriment(lastID);
-    }else{
+    } else {
         newID = "C001";
     }
 
@@ -595,10 +617,10 @@ isolated function addCamp(Campaign campaign) returns json|error {
 
     sql:ExecutionResult|error result = dbClient->execute(query);
 
-    if result is error  {
+    if result is error {
         return error("Failed");
-    }else {
-        return {"message":"Campaign adedd sucsessfully!"};
+    } else {
+        return {"message": "Campaign adedd sucsessfully!"};
     }
 }
 
@@ -631,6 +653,7 @@ isolated function changePassword(string userType, string username, string newPas
         return userUpdateResult;
     }
 }
+
 
 isolated function resetPassword(string userType, string userInfo) returns json|error {
     string newPassword = check generatePassword(12);
@@ -708,15 +731,15 @@ service /dashboard on listener9191 {
             "userName":"",
             "Name" : "",
             "Email": "",
-            "gender":"",
+            "gender": "",
             "bloodGroup": "",
-            "NicNo":"",
+            "NicNo": "",
             "Dob": "",
             "Telephone": "",
-            "AddressLine1" : "",
-            "AddressLine2" : "",
-            "AddressLine3" :"",
-            "District" : ""
+            "AddressLine1": "",
+            "AddressLine2": "",
+            "AddressLine3": "",
+            "District": ""
         };
 
         if user_type == "Doner" {
@@ -747,12 +770,11 @@ service /dashboard on listener9191 {
                 body = {
                     userId : hospital.hospital_id,
                     userName : hospital.username,
-                    Name : hospital.name,
                     Email : hospital.email,
                     Telephone : hospital.contact_no,
-                    AddressLine1 : hospital.address_line1,
+                    AddressLine1 : hospital.address_line3,
                     AddressLine2 : hospital.address_line2,
-                    AddressLine3 : hospital.address_line3,
+                    AddressLine3 : hospital.address_line1,
                     District : hospital.District
                 };
             } else {
@@ -761,8 +783,15 @@ service /dashboard on listener9191 {
         }
         return body;
     }
+    resource function get campaigns(@http:Query string month) returns Campaign[]|error {
+        Campaign[]|error campaigns = getCampaignEvent(month);
+        return campaigns;
+    };
+    
 
-    resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
+
+
+resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
         if user_type == "Doner" {
             map<json> userMap = <map<json>>user_data;
             json donerJson = userMap["doner"];
@@ -807,5 +836,6 @@ service /dashboard on listener9191 {
 
         }
     }
-
 }
+
+

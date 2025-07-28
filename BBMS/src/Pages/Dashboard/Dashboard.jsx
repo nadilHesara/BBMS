@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import LeftSlideBar from "../../components/LeftSlideBar/LeftSlideBar";
 import NaviBar from "../../components/Navibar/NaviBar";
+import MyCalender from "../../components/MyCalender/MyCalender";
 import "./Dashboard.css";
 
 const Dashboard = ({ theme, setTheme }) => {
@@ -68,7 +69,9 @@ const Dashboard = ({ theme, setTheme }) => {
       <div className="main-layout">
         <LeftSlideBar theme={theme} userType={userType} username={userData.userName} />
         <div className="content-area">
+          
           <Outlet />
+          <MyCalender />
           {/* <pre>{JSON.stringify(userData, null, 2)}</pre> */}
         </div>
       </div>
