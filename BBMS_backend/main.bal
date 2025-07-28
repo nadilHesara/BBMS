@@ -1,7 +1,7 @@
 import ballerina/email;
 import ballerina/http;
 import ballerina/random;
-// import ballerina/io;
+import ballerina/io;
 import ballerina/sql;
 import ballerina/time;
 import ballerinax/mysql;
@@ -119,18 +119,43 @@ public type Donates record {
 };
 
 public type Campaign record {
+    @sql:Column {name: "CampaignID"}
     string campain_id;
+
+    @sql:Column {name: "District"}
     string district;
+
+    @sql:Column {name: "DateofCampaign"}
     string date;
+
+    @sql:Column {name: "OrganizerName"}
     string org_name;
+
+    @sql:Column {name: "OrganizerTelephone"}
     string org_tele;
+
+    @sql:Column {name: "OrganizerEmail"}
     string org_email;
+
+    @sql:Column {name: "AddressLine1"}
     string add_line1;
+
+    @sql:Column {name: "AddressLine2"}
     string? add_line2;
+
+    @sql:Column {name: "AddressLine3"}
     string? add_line3;
+
+    @sql:Column {name: "DonerCount"}
     int? doner_count;
+
+    @sql:Column {name: "BloodQuantity"}
     int? blood_quantity;
+
+    @sql:Column {name: "StartTime"}
     string start_time;
+
+    @sql:Column {name: "EndTime"}
     string end_time;
 };
 
@@ -187,13 +212,18 @@ isolated function getCampaignEvent(string month) returns Campaign[]|error {
     string endDate = string `${year}-${mon}-31`;
 
     stream<Campaign, error?> resultStream = dbClient->query(
-        `SELECT * FROM campaigns where DateofCampaign between ${startDate} and ${endDate}`
+        `SELECT * FROM campaign where DateofCampaign between ${startDate} and ${endDate}`
     );
     check from Campaign campaign in resultStream
         do {
             campaigns.push(campaign);
         };
     check resultStream.close();
+    if (campaigns.length() == 0) {
+        io:println("Nothing yet");
+    }
+
+    io:println(campaigns);
     return campaigns;
 
 };
@@ -785,13 +815,15 @@ service /dashboard on listener9191 {
     }
     resource function get campaigns(@http:Query string month) returns Campaign[]|error {
         Campaign[]|error campaigns = getCampaignEvent(month);
+        io:println("hello getevent");
+        io:println(campaigns);
         return campaigns;
     };
     
 
 
 
-resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
+    resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
         if user_type == "Doner" {
             map<json> userMap = <map<json>>user_data;
             json donerJson = userMap["doner"];

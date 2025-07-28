@@ -28,6 +28,7 @@ const Dashboard = ({ theme, setTheme }) => {
   useEffect(() => {
     if (!userId || !userType) return;
 
+
     fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}`)
       .then((res) => {
         if (!res.ok) throw new Error("Fetch failed");
@@ -44,7 +45,7 @@ const Dashboard = ({ theme, setTheme }) => {
       });
   }, [userId, userType]);
 
-
+  const isOnDashboard = location.pathname === "/dashboard";
   useEffect(() => {
     const handleBackButton = () => {
       if (!userId || !userType) {
@@ -63,15 +64,24 @@ const Dashboard = ({ theme, setTheme }) => {
   if (error) return <p>{error}</p>;
   if (!userData) return <p>Loading...</p>;
 
+
   return (
     <>
       <NaviBar theme={theme} setTheme={setTheme} />
       <div className="main-layout">
         <LeftSlideBar theme={theme} userType={userType} username={userData.userName} />
         <div className="content-area">
+          {isOnDashboard && 
+
+            <div classname="calender">
+              <MyCalender />
+            </div>
+          }
+          {!isOnDashboard && 
+            <Outlet />
+          }
           
-          <Outlet />
-          <MyCalender />
+          
           {/* <pre>{JSON.stringify(userData, null, 2)}</pre> */}
         </div>
       </div>
