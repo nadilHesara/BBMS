@@ -4,7 +4,7 @@ import NaviBar from '../../components/Navibar/NaviBar';
 import { Link } from 'react-router-dom';
 import LeftSlideBar from '../../components/LeftSlideBar/LeftSlideBar';
 import { useNavigate } from 'react-router-dom';
-
+import Loader from '../../components/Loader/Loader';
 
 const Home = ({ theme, setTheme }) => {
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ const Home = ({ theme, setTheme }) => {
             <br /><br />
             <p>Be someone's hope. Donate blood</p>
           </div>
+          <Loader/>
         </div>
 
       </div>

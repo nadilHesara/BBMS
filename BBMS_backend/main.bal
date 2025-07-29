@@ -50,8 +50,8 @@ public type Doner record {
     @sql:Column {name: "Email"}
     string email;
 
-    //@sql:Column {name: "ProfileImage"}
-    //string profileImage?;
+    @sql:Column {name: "ProfileImage"}
+    string profileImage?;
 };
 
 type Login record {
@@ -247,7 +247,6 @@ isolated function padWithZeros(int number, int width) returns string {
     foreach int i in 0 ..< numZeros {
         zeros += "0";
     }
-
     return zeros + numStr;
 }
 
@@ -264,7 +263,6 @@ isolated function toBinaryString(string numStr) returns string|error {
         binary = (mutableNum % 2).toString() + binary;
         mutableNum = mutableNum / 2;
     }
-
     return binary;
 }
 
@@ -581,36 +579,7 @@ isolated function updateHospital(Hospital hospital) returns sql:ExecutionResult|
     return result;
 }
 
-
-
 // ################################# DB password functions ###################################
-
-isolated function checkPassword(string username, string password) returns json|error {
-    sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username});`;
-    Login|error result = check dbClient->queryRow(query);
-    if result is Login {
-        if (result.user_name == username && result.password == password) {
-            if result.doner_id is string {
-                return {
-                    "message": "Doner Login successful",
-                    "user_id": result.doner_id,
-                    "user_type": result.user_type
-                };
-            }
-            else {
-                return {
-                    "message": "Hospital Login successful",
-                    "user_id": result.hospital_id,
-                    "user_type": result.user_type
-                };
-            }
-        } else {
-            return error("Invalid username or password");
-        }
-    } else {
-        return result;
-    }
-}
 
 isolated function addCamp(Campaign campaign) returns json|error {
     string? lastID = check dbClient->queryRow(`SELECT CampaignID FROM campaign ORDER BY CampaignID DESC LIMIT 1`);
@@ -646,6 +615,35 @@ isolated function addCamp(Campaign campaign) returns json|error {
         return error("Failed");
     } else {
         return {"message": "Campaign adedd sucsessfully!"};
+    }
+}
+
+// ################################## DB password functions ###################################
+
+isolated function checkPassword(string username, string password) returns json|error {
+    sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username});`;
+    Login|error result = check dbClient->queryRow(query);
+    if result is Login {
+        if (result.user_name == username && result.password == password) {
+            if result.doner_id is string {
+                return {
+                    "message": "Doner Login successful",
+                    "user_id": result.doner_id,
+                    "user_type": result.user_type
+                };
+            }
+            else {
+                return {
+                    "message": "Hospital Login successful",
+                    "user_id": result.hospital_id,
+                    "user_type": result.user_type
+                };
+            }
+        } else {
+            return error("Invalid username or password");
+        }
+    } else {
+        return result;
     }
 }
 
@@ -738,7 +736,6 @@ service / on listener9191 {
         json|error result = check checkPassword(loginReq.username, loginReq.password);
         return result;
     }
-
 }
 
 @http:ServiceConfig {
@@ -764,7 +761,8 @@ service /dashboard on listener9191 {
             "AddressLine1": "",
             "AddressLine2": "",
             "AddressLine3": "",
-            "District": ""
+            "District": "",
+            "profileImage" : ""
         };
 
         if user_type == "Doner" {
@@ -795,11 +793,12 @@ service /dashboard on listener9191 {
                 body = {
                     userId : hospital.hospital_id,
                     userName : hospital.username,
+                    Name : hospital.name,
                     Email : hospital.email,
                     Telephone : hospital.contact_no,
-                    AddressLine1 : hospital.address_line3,
+                    AddressLine1 : hospital.address_line1,
                     AddressLine2 : hospital.address_line2,
-                    AddressLine3 : hospital.address_line1,
+                    AddressLine3 : hospital.address_line3,
                     District : hospital.District
                 };
             } else {
@@ -814,10 +813,7 @@ service /dashboard on listener9191 {
         return campaigns;
     };
     
-
-
-
-    resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
+resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
         if user_type == "Doner" {
             map<json> userMap = <map<json>>user_data;
             json donerJson = userMap["doner"];
@@ -830,17 +826,16 @@ service /dashboard on listener9191 {
                     doner.password = existingDoner.password;
                 }
             }
-           
+
             sql:ExecutionResult|error result = updateDoner(doner);
             if result is sql:ExecutionResult{
                     return {"message" : "Doner updated successfully"} ;
             }else {
                 return result;
             }
-            
-            
+
         }else if user_type == "Hospital" {
-            
+
             map<json> userMap = <map<json>>user_data;
             json hospitalJson = userMap["hospital"];
 
@@ -859,9 +854,6 @@ service /dashboard on listener9191 {
             }else {
                     return result;
             }
-
         }
     }
 }
-
-
