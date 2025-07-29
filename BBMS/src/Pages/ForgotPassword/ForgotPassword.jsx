@@ -3,6 +3,7 @@ import "./ForgotPassword.css";
 
 function ForgotPassword() {
 
+  const [userType, setUserType] = useState("donor");
   const [identifier, setIdentifier] = useState("");
 
   const handleSubmit = async(e) => {
@@ -19,7 +20,10 @@ function ForgotPassword() {
       })
       })
 
-      const result = await response.json();
+      const result = await response.json({
+        userInfo : identifier,
+        userType: userType
+      });
 
       if (response.ok){
         alert("Successfully added the campaign");
@@ -37,15 +41,35 @@ function ForgotPassword() {
     alert(`Request sent successfully.`);
   };
 
-  return (
+return (
     <div className="forgot-password-container">
       <h2>Forgot Password</h2>
       <form onSubmit={handleSubmit} className="forgot-password-form">
+        <div className="radio-group">
+          <label>
+            <input
+              type="radio"
+              name="userType"
+              value="donor"
+              checked={userType === "donor"}
+              onChange={() => setUserType("donor")}
+            />
+            Donor
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="userType"
+              value="hospital"
+              checked={userType === "hospital"}
+              onChange={() => setUserType("hospital")}
+            />
+            Hospital
+          </label>
+        </div>
 
         <div className="form-group">
-          <label htmlFor="identifier">
-            Enter your Username/Email/Password:
-          </label>
+          <label htmlFor="identifier">Enter your Username/Email/Password:</label>
           <input
             type="text"
             id="identifier"
@@ -55,9 +79,7 @@ function ForgotPassword() {
           />
         </div>
 
-        <button type="submit" className="request-btn">
-          Request
-        </button>
+        <button type="submit" className="request-btn">Request</button>
       </form>
     </div>
   );
