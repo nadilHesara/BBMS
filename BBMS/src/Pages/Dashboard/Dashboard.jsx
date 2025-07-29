@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import LeftSlideBar from "../../components/LeftSlideBar/LeftSlideBar";
 import NaviBar from "../../components/Navibar/NaviBar";
+import MyCalender from "../../components/MyCalender/MyCalender";
 import "./Dashboard.css";
 
 const Dashboard = ({ theme, setTheme }) => {
@@ -14,7 +15,7 @@ const Dashboard = ({ theme, setTheme }) => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
 
-  // ✅ Redirect to login if not logged in
+  
   useEffect(() => {
     console.log(userId + "    " + userType);
 
@@ -23,9 +24,10 @@ const Dashboard = ({ theme, setTheme }) => {
     }
   }, [userId, userType, navigate]);
 
-  // ✅ Fetch user data
+  
   useEffect(() => {
     if (!userId || !userType) return;
+
 
     fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}`)
       .then((res) => {
@@ -35,7 +37,7 @@ const Dashboard = ({ theme, setTheme }) => {
       .then((data) => {
         console.log(data)
         setUserData(data);
-        localStorage.setItem("userData", JSON.stringify(data)); // ✅ Store it as a string
+        localStorage.setItem("userData", JSON.stringify(data));
       })
       .catch((err) => {
         console.error("Error fetching dashboard data:", err.message);
@@ -43,7 +45,7 @@ const Dashboard = ({ theme, setTheme }) => {
       });
   }, [userId, userType]);
 
-  // ✅ Prevent back button navigation to dashboard after logout
+  const isOnDashboard = location.pathname === "/dashboard";
   useEffect(() => {
     const handleBackButton = () => {
       if (!userId || !userType) {
@@ -62,13 +64,24 @@ const Dashboard = ({ theme, setTheme }) => {
   if (error) return <p>{error}</p>;
   if (!userData) return <p>Loading...</p>;
 
+
   return (
     <>
       <NaviBar theme={theme} setTheme={setTheme} />
       <div className="main-layout">
         <LeftSlideBar theme={theme} userType={userType} username={userData.userName} />
         <div className="content-area">
-          <Outlet />
+          {isOnDashboard && 
+
+            <div classname="calender">
+              <MyCalender />
+            </div>
+          }
+          {!isOnDashboard && 
+            <Outlet />
+          }
+          
+          
           {/* <pre>{JSON.stringify(userData, null, 2)}</pre> */}
         </div>
       </div>

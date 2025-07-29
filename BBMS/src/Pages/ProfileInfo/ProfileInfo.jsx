@@ -21,7 +21,7 @@ function ProfileInfo({theme,setTheme}){
     address_line2: '',
     address_line3: '',
     District: '',
-    password: ''
+    profileimg: null,
   });
 
   const [hospital, setHospital] = useState({
@@ -34,18 +34,11 @@ function ProfileInfo({theme,setTheme}){
     address_line2: '',
     address_line3: '',
     District: '',
-    password: ''
+    profileimg: null,
+
   });
 
-  const [password, setPassword] = useState({
-    current_password: "",
-    new_password: "",
-    conf_password: "",
-  });
-
-  const [message, setMessage] = useState("");
   const [userType, setUserType] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   {/*const fileInputRef = useRef(null);*/}
 
 useEffect(() => {
@@ -79,7 +72,8 @@ useEffect(() => {
           address_line1: data.AddressLine1,
           address_line2: data.AddressLine2,
           address_line3: data.AddressLine3,
-          District: data.District
+          District: data.District,
+          profileimg: data.ProfileImage
         });
 
       }else if (user_Type==="Hospital"){
@@ -93,6 +87,7 @@ useEffect(() => {
           address_line2: data.AddressLine2,
           address_line3: data.AddressLine3,
           District: data.District,
+          profileimg: data.ProfileImage
         });
       }
 
@@ -115,12 +110,6 @@ useEffect(() => {
 
 {/*localStorage.setItem("userData", JSON.stringify(res.user_id));
 localStorage.setItem("userType", res.user_type);*/}
-
-
-  const handlepasswordChange = (e) => {const {name,value} = e.target;
-  setPassword(prevPassword => ({...prevPassword,[name]:value}));
-
-  };
 
 
   {/*const handleImageChange = (e) => {const file = e.target.files[0];
@@ -147,28 +136,11 @@ localStorage.setItem("userType", res.user_type);*/}
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    {/*if(doner.Password !== password.current_password){
-      setMessage("⚠️ Current password is incorrect");
-      return;
-    }*/}
-
-    if(password.new_password && password.current_password === password.new_password){
-      setMessage("⚠️ Enter new password");
-      return;
-    }
-
-    else if (password.new_password && password.new_password !== password.conf_password){
-      setMessage("⚠️ Password doesn't match");
-      return;
-    }
-
     const userData = userType === "Doner" ? doner : hospital;
     const userID = userType === "Doner" ? doner.doner_id : hospital.hospital_id;
-    setMessage("Saved Changes Successfully");
     console.log(userType === "Doner" ? doner : hospital);
-    console.log("Sending data: ", JSON.stringify(userType === "Doner" ? { doner: userData } : { hospital: userData }));
 
-
+    
     fetch(`http://localhost:9191/dashboard?user_id=${userID}&user_type=${userType}`, 
     { method: 'PUT',
      headers: {
@@ -178,7 +150,9 @@ localStorage.setItem("userType", res.user_type);*/}
   })
 
   .then(response => response.json())
-  .then(data => {setMessage(data.message || "Saved Changes Successfully")})
+  .then(data => {alert(data.message || "Saved Changes Successfully");
+
+  })
 
   .catch(error => 
     {console.error('Error:', error);
@@ -246,7 +220,7 @@ localStorage.setItem("userType", res.user_type);*/}
           <input type="text" defaultValue={doner.blood_group} readOnly title="This field cannot be changed"/>
           
           <label htmlFor="nic_no">NIC Number:</label>
-          <input type="text" name="nic_no" defaultValue={doner.nic_no} onChange={handleChange} required/>
+          <input type="text" name="nic_no" defaultValue={doner.nic_no} readOnly title="This field cannot be changed"/>
 
           <label> Date of Birth: </label>
           <input type="date" value={doner.dob} readOnly title="This field cannot be changed"/>
@@ -279,21 +253,8 @@ localStorage.setItem("userType", res.user_type);*/}
 
             </select>
 
-          <label>Current Password:</label>
-          <input type="password" name="current_password" onChange={handlepasswordChange}/>
-
-          <label>New Password:</label>
-          <input type="password" name="new_password" onChange={handlepasswordChange}/>
-
-          <label>Confirm New Password:</label>
-          <input type="password" name="conf_password" onChange={handlepasswordChange} required={password.new_password.trim() !== ""} disabled={password.new_password.trim() === ""}/>
-
           <br/>
           <input type="submit" value="Save Changes"/>
-          
-          <br/>
-          <br/>
-          {message && <p>{message}</p>}
 
         </form>
 
