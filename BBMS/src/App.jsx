@@ -23,6 +23,7 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("current_theme", theme);
+    document.body.className = theme;
   }, [theme]);
 
   return (
@@ -33,15 +34,15 @@ function App() {
           <Route path="/donorReg" element={<DonorReg theme={theme} setTheme={setTheme} />} />
           <Route path="/login" element={<Login theme={theme} setTheme={setTheme} />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
-          <Route path="/hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
 
-          {/* NESTED ROUTE for /dashboard */}
           <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />}>
             <Route index element={<h1>Welcome to Dashboard Page</h1>} />
               <Route path="ProfileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
               <Route path="AvailableBloodStocks" element={<AvailableBloodStocks theme={theme} setTheme={setTheme}/>} />
               <Route path="ChangePassword" element={<ChangePassword theme={theme} setTheme={setTheme}/>}/>
               <Route path="campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
+              <Route path="hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
+
           </Route>
 
           <Route path="*" element={<PageNotFound theme={theme} setTheme={setTheme} />} />
