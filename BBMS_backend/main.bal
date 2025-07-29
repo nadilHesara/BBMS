@@ -1,7 +1,7 @@
 import ballerina/email;
 import ballerina/http;
 import ballerina/random;
-import ballerina/io;
+// import ballerina/io;
 import ballerina/sql;
 import ballerina/time;
 import ballerinax/mysql;
@@ -183,6 +183,11 @@ type bloodData record {
     string? AB_minus;
 };
 
+type ForgotPasswordRequest record {|
+    string userType;
+    string userInfo;
+|};
+
 configurable string HOST = ?;
 configurable int PORT = ?;
 configurable string USER = ?;
@@ -218,7 +223,6 @@ isolated function getCampaignEvent(string year_month) returns Campaign[]|error {
         };
     check resultStream.close();
 
-    io:println(campaigns);
     return campaigns;
 
 };
@@ -647,8 +651,11 @@ isolated function checkPassword(string username, string password) returns json|e
     }
 }
 
-isolated function changePassword(string userType, string username, string newPassword, string previousPassword) returns json|error {
-    json|error oldPasswordCheck = checkPassword(username, previousPassword);
+isolated function changePassword(string userType, string username, string newPassword, string? previousPassword) returns json|error {
+    json|error? oldPasswordCheck =() ;
+    if previousPassword is string {
+         oldPasswordCheck= checkPassword(username, previousPassword);
+    }
     if oldPasswordCheck is error {
         return oldPasswordCheck;
     }
@@ -682,24 +689,26 @@ isolated function resetPassword(string userType, string userInfo) returns json|e
     string newPassword = check generatePassword(12);
     Doner|Hospital|error result ;
     if userType == "Doner" {
-        result = dbClient->queryRow(`SELECT * from Doner where ( Username = ${userInfo} || Email =${userInfo} || NICNo = ${userInfo} || Telephone = ${userInfo});`);
+        result = dbClient->queryRow(`SELECT * from Doner where ( Username = ${userInfo} OR Email =${userInfo} OR NICNo = ${userInfo} OR Telephone = ${userInfo});`);
         
     }else if userType == "Hospital" {
-        result = dbClient->queryRow(`SELECT * from Hospital where (Username = ${userInfo} || Email =${userInfo} || Contact = ${userInfo});`);
+        result = dbClient->queryRow(`SELECT * from Hospital where (Username = ${userInfo} OR Email =${userInfo} OR Contact = ${userInfo});`);
+    
     }else {
         result = error("Incorrect type");
     }
+
     if result is error{
         return result;
     }
 
-    string? Username = result.username;
-    string? previousPassword = result.password; 
-    string? Email = result.email;
+        string? Username = result.username;
+        string? previousPassword = result.password; 
+        string? Email = result.email;
 
     if Username is string && previousPassword is string && Email is string{
         _ = check sendEmail(Email,newPassword,Username);
-        return changePassword(userType, Username,newPassword, previousPassword);
+        return changePassword(userType, Username,newPassword, ());
     }
     return error("Incorrect user");
 }
@@ -737,8 +746,8 @@ service / on listener9191 {
         return result;
     }
 
-    isolated resource function post forgotpassword(@http:Payload string userType, string userInfo) returns json|error{
-        return resetPassword(userType,userInfo);         
+    isolated resource function post forgotpassword(@http:Payload ForgotPasswordRequest request) returns json|error{
+        return resetPassword(request.userType,request.userInfo);         
     }
 }
 
@@ -813,11 +822,10 @@ service /dashboard on listener9191 {
     }
     resource function get campaigns(@http:Query string month) returns Campaign[]|error {
         Campaign[]|error campaigns = getCampaignEvent(month);
-        io:println(campaigns);
         return campaigns;
     };
     
-resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
+    resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
         if user_type == "Doner" {
             map<json> userMap = <map<json>>user_data;
             json donerJson = userMap["doner"];

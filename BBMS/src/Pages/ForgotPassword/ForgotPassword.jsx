@@ -3,11 +3,13 @@ import "./ForgotPassword.css";
 
 function ForgotPassword() {
 
-  const [userType, setUserType] = useState("donor");
+  const [userType, setUserType] = useState("Donor");
   const [identifier, setIdentifier] = useState("");
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    console.log(userType);
+    console.log(identifier);
     
     try{
       const response = await fetch("http://localhost:9191/forgotpassword",{
@@ -16,30 +18,23 @@ function ForgotPassword() {
           "Content-Type": "application/json"
         },
       body: JSON.stringify({
-        userInfo : identifier,
+        userType : userType,
+        userInfo : identifier
       })
       })
 
-      const result = await response.json({
-        userInfo : identifier,
-        userType: userType
-      });
-
+      const result = await response.json();
+      console.log(result);
       if (response.ok){
-        alert("Successfully added the campaign");
-        setMessage(`Successfully registered by ${campaign.org_name}`);
+        alert("Successfully Reset Your Password!");
+  
       }else{
-        alert("Registration failed. Check server and data.");
-        setMessage("Error : "+JSON.stringify(result));
+        alert(result.message);
       }
     }catch (error){
-      //console.error(error.message);
       alert("Registration failed. Check server and data.");
-      setMessage("Registration failed. Check server and data.");
     }
-    
-    alert(`Request sent successfully.`);
-  };
+      };
 
 return (
     <div className="forgot-password-container">
@@ -50,9 +45,9 @@ return (
             <input
               type="radio"
               name="userType"
-              value="donor"
-              checked={userType === "donor"}
-              onChange={() => setUserType("donor")}
+              value="Doner"
+              checked={userType === "Doner"}
+              onChange={() => setUserType("Doner")}
             />
             Donor
           </label>
@@ -60,9 +55,9 @@ return (
             <input
               type="radio"
               name="userType"
-              value="hospital"
-              checked={userType === "hospital"}
-              onChange={() => setUserType("hospital")}
+              value="Hospital"
+              checked={userType === "Hospital"}
+              onChange={() => setUserType("Hospital")}
             />
             Hospital
           </label>
