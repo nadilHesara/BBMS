@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import districts from "../../SharedData/Districts";
 import {
   BarChart,
   Bar,
@@ -33,9 +34,25 @@ const statusColor = {
   Sufficient: "bg-green-500",
 };
 
+
+
 function AvailableBloodStocks() {
+
+
   return (
     <div className="p-6">
+
+      <label>District:</label>
+      <select name="District"   required>
+        <option value=""> Overall </option> 
+        {districts.map((d, i) => (
+          <option key={i} value={d}>
+            {d}
+          </option>
+        ))}
+      </select>
+
+
       <h2 className="text-2xl font-bold mb-4">Available Blood Stocks</h2>
 
       {/*cards */}
