@@ -15,28 +15,6 @@ function ForgotPassword() {
     <div className="forgot-password-container">
       <h2>Forgot Password</h2>
       <form onSubmit={handleSubmit} className="forgot-password-form">
-        <div className="radio-group">
-          <label>
-            <input
-              type="radio"
-              name="userType"
-              value="donor"
-              checked={userType === "donor"}
-              onChange={() => setUserType("donor")}
-            />
-            Donor
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="userType"
-              value="hospital"
-              checked={userType === "hospital"}
-              onChange={() => setUserType("hospital")}
-            />
-            Hospital
-          </label>
-        </div>
 
         <div className="form-group">
           <label htmlFor="identifier">

@@ -105,11 +105,9 @@ const Login = ({ theme, setTheme }) => {
 
         <div className="forgot-pw-link">
           <p>
-            <Link to="/forgot-password">Forgot Password?</Link>
+            <Link to={"/forgotpassword"}>Forgot Password?</Link>
           </p>
         </div>
-
-
 
         <input type="submit" value="Login"></input>
         <div className="register-link">
