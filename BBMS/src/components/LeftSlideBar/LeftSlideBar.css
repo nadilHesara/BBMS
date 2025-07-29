@@ -1,4 +1,4 @@
-/* Base Sidebar */
+
 .left-slide-bar {
   position: fixed;
   top: 11vh;
@@ -61,7 +61,7 @@
   color: #fff;
 }
 
-/* Nav links */
+
 .slide-bar-nav-links {
   display: flex;
   flex-direction: column;
@@ -89,13 +89,22 @@
   transform: translateX(5px);
 }
 
+.dark .slide-bar-nav-links   span {
+  color: white;
+}
+
+.dark .slide-bar-nav-links a svg {
+  color: white;
+}
+
+
 .left-slide-bar.dark .nav-links a:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
 .logout-link {
   color: #c0392b !important;
-  /* margin-top: vh; */
+ 
 }
 
 /* Mobile responsiveness */

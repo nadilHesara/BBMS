@@ -15,7 +15,6 @@ import { Link, useNavigate } from "react-router-dom";
 import "./LeftSlideBar.css";
 
 const LeftSlideBar = ({ theme, userType, username }) => {
-
   const navigate = useNavigate();
   const currunt_possition = localStorage.getItem("currunt_possition");
 
@@ -38,7 +37,6 @@ const LeftSlideBar = ({ theme, userType, username }) => {
 
   function SelectUser(userType) {
     if (userType == "Doner") {
-
       return (
         <>
           <div className="slide-bar-nav-links">
@@ -73,8 +71,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
           </div>
         </>
       );
-
-    } else if (userType == "Hospital") {
+    } else if (userType == "Hospital" || userType == "Admin") {
       return (
         <>
           <div className="slide-bar-nav-links">
@@ -108,6 +105,11 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               {isOpen && <span>Donor Register</span>}
             </Link>
 
+            {userType === "Admin" && <Link to="hospitalReg">
+              <MdAppRegistration size={30} />
+              {isOpen && <span>Hospital Register</span>}
+            </Link> }
+
             <Link to="ChangePassword">
               <CgPassword size={30} />
               {isOpen && <span>Change Password</span>}
@@ -124,53 +126,8 @@ const LeftSlideBar = ({ theme, userType, username }) => {
           </div>
         </>
       );
-
-    } else if(userType == "Admin") {
-      return (
-        <>
-          <div className="slide-bar-nav-links">
-            <Link to="/ProfileInfo">
-              <FaUserCircle size={30} />
-              {isOpen && <span>Available Blood Stock</span>}
-            </Link>
-
-            <Link to="#">
-              <FaHistory size={30} />
-              {isOpen && <span>Add Campaign</span>}
-            </Link>
-
-            <Link to="#">
-              <FaHandsHelping size={30} />
-              {isOpen && <span>Ongoing Campaign</span>}
-            </Link>
-
-            <Link to="#">
-              <FaNotesMedical size={30} />
-              {isOpen && <span>Campaign History</span>}
-            </Link>
-
-            <Link to="#">
-              <MdAppRegistration size={30} />
-              {isOpen && <span>Donor Register</span>}
-            </Link>
-
-            <Link to="#">
-              <MdAppRegistration size={30} />
-              {isOpen && <span>Hospital Register</span>}
-            </Link>
-
-            <Link
-              to="/login"
-              className="logout-link"
-              onClick={() => LoggingOut()}
-            >
-              <IoMdLogOut size={30} />
-              {isOpen && <span>Log Out</span>}
-            </Link>
-          </div>
-        </>
-      );
-    } else{
+    
+    } else {
       navigate("/login");
     }
   }
