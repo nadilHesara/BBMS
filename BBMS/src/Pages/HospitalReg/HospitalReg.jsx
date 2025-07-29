@@ -101,8 +101,8 @@ function HospitalReg({ theme, setTheme }) {
 
                     <br />
 
-                    <label htmlFor="tele">Telephone:</label>
-                    <input type="text" name="tele" onChange={handleChange} required />
+                    <label htmlFor="contact_no">Telephone:</label>
+                    <input type="text" name="contact_no" onChange={handleChange} required />
 
                     <input type="submit" value="Register" />
                     
