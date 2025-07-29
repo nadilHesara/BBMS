@@ -4,6 +4,7 @@ import LeftSlideBar from "../../components/LeftSlideBar/LeftSlideBar";
 import NaviBar from "../../components/Navibar/NaviBar";
 import MyCalender from "../../components/MyCalender/MyCalender";
 import "./Dashboard.css";
+import districts from "../../SharedData/districts";
 
 const Dashboard = ({ theme, setTheme }) => {
   const navigate = useNavigate();
@@ -14,7 +15,6 @@ const Dashboard = ({ theme, setTheme }) => {
 
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
-
   
   useEffect(() => {
     console.log(userId + "    " + userType);
@@ -44,6 +44,19 @@ const Dashboard = ({ theme, setTheme }) => {
         setError("Failed to load dashboard data.");
       });
   }, [userId, userType]);
+  console.log("user: ",userData?.District);
+ 
+  const [selectedDistrict,setSelectedDistrict] = useState(userData?.District);
+
+  useEffect(() => {
+  if (userData && userData?.District) {
+    setSelectedDistrict(userData.District);
+  }
+}, [userData]);
+
+  const handleSelectedDistrict = (e) => {
+      setSelectedDistrict(e.target.value);
+  }
 
   const isOnDashboard = location.pathname === "/dashboard";
   useEffect(() => {
@@ -52,6 +65,8 @@ const Dashboard = ({ theme, setTheme }) => {
         navigate("/login", { replace: true });
       }
     };
+
+    
 
     window.addEventListener("popstate", handleBackButton);
 
@@ -72,9 +87,22 @@ const Dashboard = ({ theme, setTheme }) => {
         <LeftSlideBar theme={theme} userType={userType} username={userData.userName} />
         <div className="content-area">
           {isOnDashboard && 
+            <div className="calender-container">
+              {userType === "Doner" && <h3 className="header">Welcome <i>{userData?.Name}</i></h3>}
+              {userType === "Hospital" && <h3 className="header">Welcome <i>{userData?.userName}</i></h3>}
+              
 
-            <div classname="calender">
-              <MyCalender />
+
+              <div className="district-sort-label-select">
+                <span className="district-sort-label">Sort the campaigns by district:</span>
+                <select className="form-select-sm custom-width" name="district" onChange={handleSelectedDistrict} value={selectedDistrict} required>
+                  <option value="">---Select---</option>
+                  {districts.map((city,index)=>(
+                    <option key={index} value={city} >{city}</option>
+                  ))}
+                </select>
+              </div>
+              <MyCalender selectedDistrict={selectedDistrict}/>
             </div>
           }
           {!isOnDashboard && 
