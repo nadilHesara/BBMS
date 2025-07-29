@@ -199,25 +199,25 @@ final mysql:Client dbClient = check new (
 
 // #################################### functions ###############################################
 
-isolated function getCampaignEvent(string year_month) returns Campaign[]|error {
+isolated function getCampaignEvent(string year_month, string district) returns Campaign[]|error {
     Campaign[] campaigns = [];
     string[] parts = re `-`.split(year_month);
     if parts.length() > 3 {
         return error("Invalid month format");
     }
+    string d = district;
     int year = check int:fromString(parts[0]);
     int mon = check int:fromString(parts[1]);
 
 
     stream<Campaign, error?> resultStream = dbClient->query(
-        `SELECT * FROM campaign where year(DateofCampaign) = ${year} and month(DateofCampaign) = ${mon}`
+        `SELECT * FROM campaign where year(DateofCampaign) = ${year} and month(DateofCampaign) = ${mon} and District = ${d}`
     );
     check from Campaign campaign in resultStream
         do {
             campaigns.push(campaign);
         };
     check resultStream.close();
-
     io:println(campaigns);
     return campaigns;
 
@@ -807,8 +807,8 @@ service /dashboard on listener9191 {
         }
         return body;
     }
-    resource function get campaigns(@http:Query string month) returns Campaign[]|error {
-        Campaign[]|error campaigns = getCampaignEvent(month);
+    resource function get campaigns(@http:Query string month, @http:Query string district) returns Campaign[]|error {
+        Campaign[]|error campaigns = getCampaignEvent(month,district);
         io:println(campaigns);
         return campaigns;
     };

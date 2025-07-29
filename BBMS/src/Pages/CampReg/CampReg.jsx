@@ -1,6 +1,7 @@
 import NaviBar from "../../components/Navibar/NaviBar";
 import "./CampReg.css";
 import React,{ use, useState } from 'react';
+import districts from '../../SharedData/districts';
 
 function CampReg({ theme, setTheme }) {
   const [campaign, setCampaign] = useState({
@@ -65,10 +66,6 @@ function CampReg({ theme, setTheme }) {
 
 
   }
-  const districts = [
-    "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara", "Kandy",
-    "Kegalle", "Kilinochchi", "Kurunegala", "Mannar", "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya", "Polonnaruwa",
-    "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"];
 
 
   return (
