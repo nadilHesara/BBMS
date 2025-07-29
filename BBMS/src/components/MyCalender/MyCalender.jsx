@@ -5,7 +5,9 @@ import 'react-calendar/dist/Calendar.css';
 import './MyCalender.css';
 
 
-function CalendarComponent() {
+function CalendarComponent(props) {
+  console.log("The selecteddistrict: ",props.selectedDistrict);
+  const selectedDistrict = props.selectedDistrict;
   const [activeStartDate,setActiveStartDate] = useState(new Date());
   const [value, setValue] = useState(new Date());
   const [campaigns, setCampaigns] = useState([]);
@@ -23,16 +25,16 @@ function CalendarComponent() {
   // Fetch data whenever month changes
 
   useEffect(() => {
+    if(!selectedDistrict) return;
     const year = activeStartDate.getFullYear();
     const month = String(activeStartDate.getMonth() + 1).padStart(2, '0');
    // console.log(month);
-    axios.get(`http://localhost:9191/dashboard/campaigns?month=${year}-${month}`)
+    axios.get(`http://localhost:9191/dashboard/campaigns?month=${year}-${month}&district=${selectedDistrict}`)
       .then(res => {
-        console.log("Campaigns data:", res.data);
         setCampaigns(res.data);
       })
       .catch(err => console.error(err));
-  }, [activeStartDate]);
+  }, [activeStartDate,selectedDistrict]);
 
   // Highlight campaign dates
   const tileClassName = ({ date, view }) => {
@@ -56,8 +58,6 @@ function CalendarComponent() {
         if (view === 'month') {
           const dateStr = formatDateLocal(date);
           const hasCampaign = campaigns.some(c => c.date === dateStr);
-          console.log("Available campaign dates:", campaigns.map(c => c.date));
-          console.log(hasCampaign,date);
           if (hasCampaign) {
             
             // return <div className="dot"/>;
