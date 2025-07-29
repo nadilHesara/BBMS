@@ -733,8 +733,12 @@ service / on listener9191 {
     }
 
     isolated resource function post login(@http:Payload LoginRequest loginReq) returns json|error {
-        json|error result = check checkPassword(loginReq.username, loginReq.password);
+        json|error result = checkPassword(loginReq.username, loginReq.password);
         return result;
+    }
+
+    isolated resource function post forgotpassword(@http:Payload string userType, string userInfo) returns json|error{
+        return resetPassword(userType,userInfo);         
     }
 }
 

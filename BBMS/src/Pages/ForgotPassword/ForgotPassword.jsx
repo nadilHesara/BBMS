@@ -2,12 +2,38 @@ import React, { useState } from "react";
 import "./ForgotPassword.css";
 
 function ForgotPassword() {
-  const [userType, setUserType] = useState("donor");
+
   const [identifier, setIdentifier] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // Implement logic to handle password recovery request here.
+    
+    try{
+      const response = await fetch("http://localhost:9191/forgotpassword",{
+      method:"POST",
+      headers: {
+          "Content-Type": "application/json"
+        },
+      body: JSON.stringify({
+        userInfo : identifier,
+      })
+      })
+
+      const result = await response.json();
+
+      if (response.ok){
+        alert("Successfully added the campaign");
+        setMessage(`Successfully registered by ${campaign.org_name}`);
+      }else{
+        alert("Registration failed. Check server and data.");
+        setMessage("Error : "+JSON.stringify(result));
+      }
+    }catch (error){
+      //console.error(error.message);
+      alert("Registration failed. Check server and data.");
+      setMessage("Registration failed. Check server and data.");
+    }
+    
     alert(`Request sent successfully.`);
   };
 

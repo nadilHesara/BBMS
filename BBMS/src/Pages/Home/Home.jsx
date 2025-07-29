@@ -9,7 +9,7 @@ import Loader from '../../components/Loader/Loader';
 const Home = ({ theme, setTheme }) => {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate('campReg')
+    navigate('/123')
   }
   return (
     <div className='app-container'>

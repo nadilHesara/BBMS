@@ -42,7 +42,7 @@ function CampReg({ theme, setTheme }) {
     try{
       const response = await fetch("http://localhost:9191/campReg",{
       method:"POST",
-      headers: {
+      headers: {  
           "Content-Type": "application/json"
         },
       body: JSON.stringify(campaign)

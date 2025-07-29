@@ -88,7 +88,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               {isOpen && <span>Available Blood Stock</span>}
             </Link>
 
-            <Link to="AddCampaign">
+            <Link to="campReg">
               <IoBagAddSharp size={30} />
               {isOpen && <span>Add Campaign</span>}
             </Link>
