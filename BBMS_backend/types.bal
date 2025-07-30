@@ -1,5 +1,4 @@
 import ballerina/sql;
-import ballerina/time;
 
 public type Doner record {
     @sql:Column {name: "DonerID"}
@@ -101,14 +100,41 @@ public type Hospital record {
 };
 
 public type Donates record {
+    @sql:Column {name: "DonateID"}
     string donate_id;
+
+    @sql:Column {name: "DonerID"}
     string doner_id;
-    int campain_id;
-    time:Utc donate_time;
+
+    @sql:Column {name: "CampaignID"}
+    string campaign_id;
+
+    @sql:Column {name: "DonateTime"}
+    string? donate_time;
+
+    @sql:Column {name: "Pressure"}
     string pressure;
-    float weight;
+
+    @sql:Column {name: "Weight"}
+    decimal weight;
+
+    @sql:Column {name: "Sugar"}
     string sugar;
+
+    @sql:Column {name: "BloodQuantity"}
     int blood_quantity;
+};
+
+
+public type DonateRecord record{
+    @sql:Column {name: "OrganizerName"}
+    string org_name;
+
+    @sql:Column {name: "DateofCampaign"}
+    string date;
+
+    @sql:Column {name: "District"}
+    string district;
 };
 
 public type Campaign record {

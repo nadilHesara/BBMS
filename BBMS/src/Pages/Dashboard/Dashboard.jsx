@@ -96,7 +96,6 @@ const Dashboard = ({ theme, setTheme }) => {
               <div className="district-sort-label-select">
                 <span className="district-sort-label">Sort the campaigns by district:</span>
                 <select className="form-select-sm custom-width" name="district" onChange={handleSelectedDistrict} value={selectedDistrict} required>
-                  <option value="">---Select---</option>
                   {districts.map((city,index)=>(
                     <option key={index} value={city} >{city}</option>
                   ))}

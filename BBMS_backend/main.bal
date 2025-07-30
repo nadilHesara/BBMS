@@ -1,5 +1,6 @@
 import ballerina/http;
 import ballerina/sql;
+import ballerina/io;
 
 listener http:Listener listener9191 = new (9191);
 
@@ -106,8 +107,8 @@ service /dashboard on listener9191 {
         }
         return body;
     }
-    resource function get campaigns(@http:Query string month) returns Campaign[]|error {
-        Campaign[]|error campaigns = getCampaignEvent(month);
+    resource function get campaigns(@http:Query string month, @http:Query string district) returns Campaign[]|error {
+        Campaign[]|error campaigns = getCampaignEvent(month,district);
         return campaigns;
     };
     
@@ -159,5 +160,11 @@ service /dashboard on listener9191 {
             }
 
         }
+    }
+
+    resource function get donations(@http:Query string user_id) returns DonateRecord[]|error{
+        DonateRecord[]|error donations= get_DonationHistory(user_id);
+        io:println(donations);
+        return donations;
     }
 }

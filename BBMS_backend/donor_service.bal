@@ -1,4 +1,5 @@
 import ballerina/sql;
+import ballerina/io;
 
 public isolated function addDoner(Doner doner) returns json|error {
     DonerID|error d = dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
@@ -134,4 +135,24 @@ public isolated function updateDoner(Doner doner) returns sql:ExecutionResult|er
         `);
     }
     return result;
+}
+
+
+public isolated function get_DonationHistory(string userID) returns DonateRecord[]|error {
+    DonateRecord[] donations = [];
+
+    stream<DonateRecord, error?> resultStream = dbClient->query(
+        `select campaign.OrganizerName, campaign.DateofCampaign, campaign.District from donates 
+            join doner on donates.DonerID = doner.DonerID
+            join campaign on donates.CampaignID = campaign.CampaignID
+            where donates.donerID = ${userID}`
+    );
+    check from DonateRecord donation in resultStream
+        do {
+            donations.push(donation);
+            
+        };
+    check resultStream.close();
+    io:println(donations);
+    return donations;
 }
