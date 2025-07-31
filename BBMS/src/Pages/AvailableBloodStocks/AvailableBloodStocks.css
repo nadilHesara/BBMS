@@ -50,3 +50,7 @@
   background-color: #10b981; /* Tailwind green-500 */
   color: white;
 }
+
+.p-6{
+  width: 100%;
+}
