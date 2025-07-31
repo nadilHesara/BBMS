@@ -1,10 +1,21 @@
 .main-layout{
     height: auto;
+    padding: 20px;
     
 }
 
-.calender{
-    margin-top:100px;
-    align-content: center;
-    background-color: blue;
+.custom-width{
+    width:200px;
+}
+
+.district-sort-label-select {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.district-sort-label {
+  font-weight: 500;
+  margin-right: 5px;
 }

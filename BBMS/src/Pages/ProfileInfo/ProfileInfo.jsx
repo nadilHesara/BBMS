@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 {/*import NaviBar from '../../components/Navibar/NaviBar';*/}
-import districts from '../../SharedData/Districts';
+import districts from '../../SharedData/districts';
 import { FaUserCircle } from 'react-icons/fa';
 import "./ProfileInfo.css"
 {/*import { use } from 'react';*/}

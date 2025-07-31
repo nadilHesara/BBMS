@@ -10,6 +10,7 @@ import ProfileInfo from "./Pages/ProfileInfo/ProfileInfo";
 import AvailableBloodStocks from "./Pages/AvailableBloodStocks/AvailableBloodStocks";
 import PageNotFound from "./Pages/PageNotFound/PageNotFound";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
+import DonationHistory from "./Pages/DonationHistory/DonationHistory";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -42,6 +43,7 @@ function App() {
               <Route path="ChangePassword" element={<ChangePassword theme={theme} setTheme={setTheme}/>}/>
               <Route path="campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
               <Route path="hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
+              <Route path="donation-history" element={<DonationHistory theme={theme} setTheme={setTheme} />} />
 
           </Route>
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NaviBar from "../../components/Navibar/NaviBar";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
-import districts from '../../SharedData/Districts';
+import districts from '../../SharedData/districts';
 import bloodgrp from '../../SharedData/bloodgrp';
 import "./DonorReg.css";
 

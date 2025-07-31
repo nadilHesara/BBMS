@@ -45,7 +45,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               {isOpen && <span>Profile Info</span>}
             </Link>
 
-            <Link to="#">
+            <Link to="donation-history">
               <FaHistory size={30} />
               {isOpen && <span>Donation History</span>}
             </Link>
