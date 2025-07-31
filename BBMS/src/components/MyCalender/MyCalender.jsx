@@ -29,9 +29,10 @@ function CalendarComponent(props) {
     const year = activeStartDate.getFullYear();
     const month = String(activeStartDate.getMonth() + 1).padStart(2, '0');
    // console.log(month);
-    axios.get(`http://localhost:9191/dashboard/campaigns?month=${year}-${month}&district=${selectedDistrict}`)
+    axios.get(`http://localhost:9191/dashboard/campaigns?date=${year}-${month}&district=${selectedDistrict}`)
       .then(res => {
         setCampaigns(res.data);
+        console.log(campaigns);
       })
       .catch(err => console.error(err));
   }, [activeStartDate,selectedDistrict]);
