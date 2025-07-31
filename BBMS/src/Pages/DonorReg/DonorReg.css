@@ -34,6 +34,7 @@ form {
 form input[type="text"],
 input[type="email"],
 form input[type="date"],
+form input[type="time"],
 form input[type="tel"],
 form select {
     width: 60%;
