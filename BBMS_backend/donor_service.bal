@@ -80,19 +80,19 @@ public isolated function getDoner(string? id = (), string? username = (), string
     return doner;
 }
 
-// public isolated function getAllDoners() returns Doner[]|error {
-//     Doner[] doners = [];
-//     stream&lt;Doner, error?&gt; resultStream = dbClient->query(
-//         ` SELECT * FROM Doner `
-//     );
-//     check from Doner doner in resultStream
-//         do {
-//             doners.push(doner);
-//         };
+public isolated function getAllDoners() returns Doner[]|error {
+    Doner[] doners = [];
+    stream<Doner, error?> resultStream = dbClient->query(
+        ` SELECT * FROM Doner `
+    );
+    check from Doner doner in resultStream
+        do {
+            doners.push(doner);
+        };
 
-//     check resultStream.close();
-//     return doners;
-// }
+    check resultStream.close();
+    return doners;
+}
 
 public isolated function updateDoner(Doner doner) returns sql:ExecutionResult|error {
     sql:ExecutionResult result;

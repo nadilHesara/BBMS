@@ -106,10 +106,6 @@ service /dashboard on listener9191 {
         }
         return body;
     }
-    resource function get campaigns(@http:Query string month) returns Campaign[]|error {
-        Campaign[]|error campaigns = getCampaignEvent(month);
-        return campaigns;
-    };
     
     resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
         if user_type == "Doner" {
@@ -160,4 +156,19 @@ service /dashboard on listener9191 {
 
         }
     }
+
+    resource function get campaigns(@http:Query string month) returns Campaign[]|error {
+        Campaign[]|error campaigns = getCampaignEvent(month);
+        return campaigns;
+    };
+
+    resource function get bloodStock(@http:Query string district) returns Hospital[]|error { 
+        Hospital[]|error hospitals;
+        if district == "All" {
+            hospitals = getAllHospitals(());
+        }else {
+            hospitals = getAllHospitals(district);
+        }
+        return hospitals;
+    };
 }

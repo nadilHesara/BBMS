@@ -38,12 +38,35 @@ const statusColor = {
 
 function AvailableBloodStocks() {
 
+  const userId = localStorage.getItem("userId");
+  const userType = localStorage.getItem("userType");
+
+  const [hospitals, setHospitals] = useState([]);
+  const [district , setDistrict] = useState("All");
+  
+  const handleDistrict = (e) => {
+    setDistrict(e.value);
+  }
+
+  useEffect(()=> {
+
+    fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}/bloodStock?${district}`)
+    .then((res)=> {
+      if (!res.ok) throw new Error("Fetch failed");
+        return res.json();
+    })
+    .then((data) => {
+      console.log(district);
+      setHospitals(data);
+    })
+},[district])
+
 
   return (
     <div className="p-6">
 
       <label>District:</label>
-      <select name="District"   required>
+      <select name="District" onChange={(e) => handleDistrict(e)}  required>
         <option value=""> Overall </option> 
         {districts.map((d, i) => (
           <option key={i} value={d}>
