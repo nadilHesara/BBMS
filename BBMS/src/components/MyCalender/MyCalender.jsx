@@ -3,6 +3,7 @@ import Calendar from "react-calendar";
 import axios from "axios";
 import 'react-calendar/dist/Calendar.css';
 import './MyCalender.css';
+import { Link } from "react-router-dom";
 
 
 function CalendarComponent(props) {
@@ -85,7 +86,12 @@ function CalendarComponent(props) {
           <ul>
             {selectedDateDetails.map((c, index) => (
               <li key={index}>
-                <strong>{c.org_name}</strong> in {c.add_line1} {c.add_line2} {c.add_line3} starts at {c.start_time}
+                <div className="campaign-info">
+                <strong>{c.org_name}</strong> <span></span> in {c.add_line1} {c.add_line2} {c.add_line3} starts at {c.start_time}
+                </div>
+                <div className="btn-wrapper">
+                <Link to= 'donates' state={{campaignId: selectedDateDetails[index].campain_id }}> <button className="btn-update">Update Donations</button></Link>
+                </div>
               </li>
             ))}
           </ul>

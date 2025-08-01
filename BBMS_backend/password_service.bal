@@ -88,3 +88,20 @@ isolated function resetPassword(string userType, string userInfo) returns json|e
     }
     return error("Incorrect user");
 }
+
+isolated function search_Doner(string username_email, string nic) returns json|error {
+    sql:ParameterizedQuery query = `SELECT * FROM doner WHERE ((UserName=${username_email} OR Email=${username_email}) AND NICNo=${nic});`;
+    Doner|error result = check dbClient->queryRow(query);
+    
+        if result is Doner {
+        return {
+            "message": "A Registered Doner",
+            "user_id": result.doner_id
+        };
+                   
+    } else {
+        return error("No Registered Doner found");
+
+    }
+
+}
