@@ -2,6 +2,7 @@ import ballerina/http;
 import ballerina/sql;
 import ballerina/io;
 
+
 listener http:Listener listener9191 = new (9191);
 
 @http:ServiceConfig {
@@ -36,6 +37,18 @@ service / on listener9191 {
     isolated resource function post forgotpassword(@http:Payload ForgotPasswordRequest request) returns json|error{
         return resetPassword(request.userType,request.userInfo);         
     }
+
+    isolated resource function post donates(@http:Payload SearchRequest searchReq) returns json|error {
+        json|error result = check search_Doner(searchReq.username_email, searchReq.nic);
+        return result;
+    }
+
+    isolated resource function post donations(@http:Payload Donates donates) returns json|error {
+        json|error result = check addDonation(donates);
+        return result;
+    }
+
+
 }
 
 @http:ServiceConfig {
@@ -167,4 +180,35 @@ service /dashboard on listener9191 {
         io:println(donations);
         return donations;
     }
+
+    resource function get donor(@http:Query string donor_id,@http:Query string campaign) returns json|error{
+        json body = {
+            "Name" : "",
+            "BloodGroup": "",
+            "BYear": "",
+            "BMonth": ""
+        };
+        Doner|error doner = getDoner(donor_id);
+            if doner is Doner {
+                string DOB = doner.dob;
+                string Age_yr = string:substring(DOB, 0, 4);
+                string Age_m = string:substring(DOB, 5, 7);
+                int b_yr = checkpanic int:fromString(Age_yr);
+                int b_m = checkpanic int:fromString(Age_m);
+
+                body = {
+                    Name : doner.name,
+                    BloodGroup : doner.blood_group,
+                    BYear : b_yr,
+                    BMonth : b_m
+                };
+
+            }else {
+                return error("Doner not found");
+            }
+        io:println(body);
+        return body;
+    }
+
+
 }

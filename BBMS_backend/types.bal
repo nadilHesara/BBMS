@@ -122,7 +122,10 @@ public type Donates record {
     string sugar;
 
     @sql:Column {name: "BloodQuantity"}
-    int blood_quantity;
+    int? blood_quantity;
+
+    @sql:Column {name: "BloodGroup"}
+    string blood_group;
 };
 
 
@@ -186,9 +189,17 @@ public type HospitalID record {
     string? HospitalID;
 };
 
+public type DonationID record {
+    string? DonateID;
+};
 public type LoginRequest record {
     string username;
     string password;
+};
+
+public type SearchRequest record {
+    string username_email;
+    string nic;
 };
 
 public type bloodData record {
@@ -206,3 +217,4 @@ public type ForgotPasswordRequest record {|
     string userType;
     string userInfo;
 |};
+

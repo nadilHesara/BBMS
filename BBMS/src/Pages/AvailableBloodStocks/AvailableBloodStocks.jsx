@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import districts from "../../SharedData/Districts";
+import districts from "../../SharedData/districts";
 import {
   BarChart,
   Bar,
