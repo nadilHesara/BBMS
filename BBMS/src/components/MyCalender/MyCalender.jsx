@@ -13,6 +13,7 @@ function CalendarComponent(props) {
   const [value, setValue] = useState(new Date());
   const [campaigns, setCampaigns] = useState([]);
   const [selectedDateDetails, setSelectedDateDetails] = useState([]);
+  const [expandedCampaign, setExpandedCampaign] = useState(null);
 
   // Helper function to format date in local timezone (YYYY-MM-DD)
   const formatDateLocal = (date) => {
@@ -30,9 +31,10 @@ function CalendarComponent(props) {
     const year = activeStartDate.getFullYear();
     const month = String(activeStartDate.getMonth() + 1).padStart(2, '0');
    // console.log(month);
-    axios.get(`http://localhost:9191/dashboard/campaigns?month=${year}-${month}&district=${selectedDistrict}`)
+    axios.get(`http://localhost:9191/dashboard/campaigns?date=${year}-${month}&district=${selectedDistrict}`)
       .then(res => {
         setCampaigns(res.data);
+        console.log(campaigns);
       })
       .catch(err => console.error(err));
   }, [activeStartDate,selectedDistrict]);
@@ -52,6 +54,30 @@ function CalendarComponent(props) {
     const dateStr = formatDateLocal(date);
     const selected = campaigns.filter(c => c.date === dateStr);
     setSelectedDateDetails(selected);
+    setExpandedCampaign(null); // Reset expanded view when new date is selected
+  };
+
+  // Handle expand/collapse campaign details
+  const toggleExpandedView = (campaign) => {
+    console.log("expand : " , expandedCampaign);
+    if (expandedCampaign && expandedCampaign.campain_id === campaign.campain_id) {
+      setExpandedCampaign(null);
+    } else {
+      setExpandedCampaign(campaign);
+    }
+  };
+
+  // Handle donation request
+  const handleDonationRequest = (campaign) => {
+    const userID = localStorage.getItem("userId");
+    if (!userID) {
+      alert("Please login to request a donation");
+      return;
+    }
+
+    // You can implement the donation request logic here
+    console.log("Requesting donation for campaign:", campaign.campain_id);
+    alert(`Donation request sent for ${campaign.org_name} campaign!`);
   };
 
   const tilecontent = ({ date, view }) => {
@@ -81,20 +107,77 @@ function CalendarComponent(props) {
       />
 
       {selectedDateDetails.length > 0 && (
-        <div className="details">
-          <h3>Campaigns on {selectedDateDetails[0].date}</h3>
-          <ul>
-            {selectedDateDetails.map((c, index) => (
-              <li key={index}>
-                <div className="campaign-info">
-                <strong>{c.org_name}</strong> <span></span> in {c.add_line1} {c.add_line2} {c.add_line3} starts at {c.start_time}
+        <div className="campaigns-container">
+          <h3 className="campaigns-title">Campaigns on {selectedDateDetails[0].date}</h3>
+          
+          {selectedDateDetails.map((campaign, index) => (
+            <div key={campaign.campaign_id || index} className="campaign-details">
+              <div className="campaign-basic-info">
+                <strong className="org-name">{campaign.org_name}</strong>
+                <div className="location-info">
+                  {campaign.add_line1} {campaign.add_line2} {campaign.add_line3}
                 </div>
-                <div className="btn-wrapper">
-                <Link to= 'donates' state={{campaignId: selectedDateDetails[index].campain_id }}> <button className="btn-update">Update Donations</button></Link>
+                <div className="time-info">Starts at {campaign.start_time}</div>
+                <button 
+                  className={`expand-btn ${expandedCampaign && expandedCampaign.campain_id === campaign.campain_id ? 'expanded' : ''}`}
+                  onClick={() => toggleExpandedView(campaign)}
+                >
+                  {expandedCampaign && expandedCampaign.campain_id === campaign.campain_id 
+                    ? "Show Less" 
+                    : "More Details"}
+                </button>
+              </div>
+
+              {/* Expanded View */}
+              {expandedCampaign && expandedCampaign.campain_id === campaign.campain_id && (
+                <div className="expanded-details">
+                  <div className="details">
+                    <div className="detail-item">
+                      <span className="detail-label">Organization:</span>
+                      <span className="detail-value">{campaign.org_name}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Date:</span>
+                      <span className="detail-value">{campaign.date}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Start Time:</span>
+                      <span className="detail-value">{campaign.start_time}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">End Time:</span>
+                      <span className="detail-value">{campaign.end_time || "Not specified"}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">District:</span>
+                      <span className="detail-value">{campaign.district}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Address:</span>
+                      <span className="detail-value">
+                        {campaign.add_line1} {campaign.add_line2} {campaign.add_line3}
+                      </span>
+                    </div>
+                    {campaign.description && (
+                      <div className="detail-item full-width">
+                        <span className="detail-label">Description:</span>
+                        <span className="detail-value">{campaign.description}</span>
+                      </div>
+                    )}
+                    <div className="action-buttons">
+                    <button 
+                      className="donation-request-btn"
+                      onClick={() => handleDonationRequest(campaign)}
+                    > Request Donation
+                    </button>
+                  </div>
+                  </div>
+                  
+                  
                 </div>
-              </li>
-            ))}
-          </ul>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>

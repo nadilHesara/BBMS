@@ -1,5 +1,5 @@
 import NaviBar from "../../components/Navibar/NaviBar";
-import "./CampReg.module.css";
+import "./CampReg.css";
 import React,{ use, useState } from 'react';
 import districts from '../../SharedData/districts';
 

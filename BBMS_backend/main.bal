@@ -171,8 +171,8 @@ service /dashboard on listener9191 {
         }
     }
 
-    resource function get campaigns(@http:Query string month, string year) returns Campaign[]|error {
-        Campaign[]|error campaigns = getCampaignEvent(year,month);
+    resource function get campaigns(@http:Query string date, string district) returns Campaign[]|error {
+        Campaign[]|error campaigns = getCampaignEvent(date,district);
         return campaigns;
     };
 
