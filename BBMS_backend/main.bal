@@ -164,6 +164,7 @@ service /dashboard on listener9191 {
     };
 
     resource function get bloodStock(@http:Query string district) returns Hospital[]|error { 
+        io:println(district);
         Hospital[]|error hospitals;
         if district == "All" {
             hospitals = getAllHospitals(());

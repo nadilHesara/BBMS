@@ -4,11 +4,11 @@ import LeftSlideBar from "../../components/LeftSlideBar/LeftSlideBar";
 import NaviBar from "../../components/Navibar/NaviBar";
 import MyCalender from "../../components/MyCalender/MyCalender";
 import "./Dashboard.css";
-import districts from "../../SharedData/districts";
+import districts from "../../SharedData/Districts";
 
 const Dashboard = ({ theme, setTheme }) => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = useLocation(); 
 
   const userId = localStorage.getItem("userId");
   const userType = localStorage.getItem("userType");

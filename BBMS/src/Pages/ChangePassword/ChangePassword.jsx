@@ -15,7 +15,7 @@ function ChangePassword({ onSave, onCancel }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData); // Pass password data to parent
+    onSave(formData); 
   };
 
   return (
