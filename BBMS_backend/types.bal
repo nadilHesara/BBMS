@@ -189,6 +189,10 @@ public type HospitalID record {
     string? HospitalID;
 };
 
+public type CampaignID record {
+    string? CampaignID;
+};
+
 public type DonationID record {
     string? DonateID;
 };
@@ -218,3 +222,7 @@ public type ForgotPasswordRequest record {|
     string userInfo;
 |};
 
+
+public type HospitalName record {|
+    string Name;
+|};

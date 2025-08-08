@@ -24,11 +24,6 @@ service / on listener9191 {
         return result;
     }
 
-    isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
-        json|error result = check addCamp(campaign);
-        return result;
-    }
-
     isolated resource function post login(@http:Payload LoginRequest loginReq) returns json|error {
         json|error result = check checkPassword(loginReq.username, loginReq.password);
         return result;
@@ -47,6 +42,7 @@ service / on listener9191 {
         json|error result = check addDonation(donates);
         return result;
     }
+    
 
 
 }
@@ -171,22 +167,33 @@ service /dashboard on listener9191 {
         }
     }
 
-    resource function get campaigns(@http:Query string date, string district) returns Campaign[]|error {
-        Campaign[]|error campaigns = getCampaignEvent(date,district);
-        return campaigns;
-    };
 
-    resource function get bloodStock(@http:Query string district) returns Hospital[]|error { 
-        io:println(district);
-        Hospital[]|error hospitals;
+
+    resource function get bloodStock(@http:Query string district) returns json|error {
+        io:println("Request received for district: " + district);
+
+        HospitalName[]|error hospitalsResult;
         if district == "All" {
-            hospitals = getAllHospitals(());
-        }else {
-            hospitals = getAllHospitals(district);
+            hospitalsResult = getAllHospitals(());
+        } else {
+            hospitalsResult = getAllHospitals(district);
         }
-        return hospitals;
-    };
+        
+        if hospitalsResult is error {
+            return hospitalsResult;
+        }
+        
+        json body = {
+            "hospitals": hospitalsResult
+        };
+        return body;
+    }
 
+    isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
+        json|error result = check addCamp(campaign);
+        return result;
+    }
+    
     resource function get donations(@http:Query string user_id) returns DonateRecord[]|error{
         DonateRecord[]|error donations= get_DonationHistory(user_id);
         io:println(donations);

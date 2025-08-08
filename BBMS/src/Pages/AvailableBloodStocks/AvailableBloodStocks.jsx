@@ -52,14 +52,13 @@ function AvailableBloodStocks() {
 
   useEffect(() => {
     fetch(
-      `http://localhost:9191/dashboard/bloodStock?${district}`
+      `http://localhost:9191/dashboard/bloodStock?district=${district}`
     )
       .then((res) => {
         if (!res.ok) throw new Error("Fetch failed");
         return res.json();
       })
       .then((data) => {
-        console.log(district);
         setHospitals(data.hospitals || []);
       })
       .catch((err) => {
@@ -86,10 +85,10 @@ function AvailableBloodStocks() {
 
       <label>Hospitals:</label>
       <select name="Hospitals" required>
-        <option value="">-- select --</option>
+        <option value=""> All </option>
         {hospitals.map((d, i) => (
-          <option key={i} value={d}>
-            {d}
+          <option key={i} value={d.Name}>
+            {d.Name}
           </option>
         ))}
       </select>
@@ -143,7 +142,7 @@ function AvailableBloodStocks() {
     </BarChart>
   </ResponsiveContainer>
 </div>
-    </div>
+  </div>
   );
 }
 export default AvailableBloodStocks;
