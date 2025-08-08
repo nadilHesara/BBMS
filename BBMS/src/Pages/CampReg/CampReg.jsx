@@ -17,7 +17,7 @@ function CampReg({ theme, setTheme }) {
     end_time:'',
     org_tele:'',
     org_email:'',
-    blood_quantity:''
+    blood_quantity:0
   })
 
   const [message,setMessage] = useState("");
@@ -56,7 +56,7 @@ function CampReg({ theme, setTheme }) {
         setMessage(`Successfully registered by ${campaign.org_name}`);
       }else{
         alert("Registration failed. Check server and data.");
-        setMessage("Error : "+JSON.stringify(result));
+        setMessage("Error : " + JSON.stringify(result));
       }
     }catch (error){
       //console.error(error.message);
@@ -73,7 +73,7 @@ function CampReg({ theme, setTheme }) {
       <NaviBar theme={theme} setTheme={setTheme} />
       <div className="campreg-container">
         <form  onSubmit={handleSubmit}>
-          <h1>Campaign Registration</h1>
+          <h1 >Campaign Registration</h1>
           <label htmlFor="org_name"> Organizer Name: </label>
           <input type="text" id="org_name" name="org_name" onChange={handleChange} required></input>
           <br />
@@ -90,9 +90,11 @@ function CampReg({ theme, setTheme }) {
         
 
       <label> Address: </label>
-      <input type="text" id="add_line1" name="add_line1"  onChange={handleChange} required/>
-      <input type="text" id="add_line2" name="add_line2"  onChange={handleChange}/>
-      <input type="text" id="add_line3" name="add_line3" onChange={handleChange} />
+        <input type="text" id="add_line1" name="add_line1"  onChange={handleChange}  placeholder="Line 1" required/>
+      <div className="address-lines">
+        <input type="text" id="add_line2" name="add_line2"  onChange={handleChange} placeholder="Line 2"/>
+        <input type="text" id="add_line3" name="add_line3" onChange={handleChange} placeholder="Line 3"/>
+      </div>
       
       <br />
 
@@ -105,29 +107,25 @@ function CampReg({ theme, setTheme }) {
       <input type="number" id="doner_count" name="doner_count" placeholder="Enter the expected number of donars" onChange={handleNumberChange} required />
 
       <br />
+      
 
-      <label htmlFor="blood_quantity"> Expected blood qunatity(pints) </label>
-      <input type="number" id="blood_quantity" name="blood_quantity" placeholder="Number of pints" onChange={handleNumberChange} required/>
-
-      <br />
-
-          <label htmlFor="start_time"> Starting Time : </label>
-          <input type="text" id="start_time" name="start_time" onChange={handleChange} placeholder="HH:MM" required ></input>
+          <label htmlFor="start_time" style={{width:'150px'}}> Starting Time : </label>
+          <input type="time" id="start_time" name="start_time" onChange={handleChange} required ></input>
           <br />
 
           <label htmlFor="end_time"> Ending Time : </label>
-          <input type="time" id="end_time" name="end_time" onChange={handleChange} placeholder="HH:MM" required></input>
+          <input type="time" id="end_time" name="end_time" onChange={handleChange} required></input>
           <br />
 
           <label htmlFor="org_tele"> Contact Number: </label>
-          <input type="text" id="org_tele" name="org_tele" onChange={handleChange} required/>
+          <input type="tel" id="org_tele" name="org_tele" onChange={handleChange} required/>
           <br />
           <label htmlFor="org_email"> Email Address: </label>
           <input type="text" id="org_email" name="org_email" onChange={handleChange} required />
           <br />
           <input type="submit" value="Save"></input>
           {message &&
-          <p>{ message }</p>}
+          <p className="message">{ message }</p>}
         </form>
 
         

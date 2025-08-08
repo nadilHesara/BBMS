@@ -15,6 +15,8 @@ import DonationHistory from "./Pages/DonationHistory/DonationHistory";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import ChangePassword from "./Pages/ChangePassword/ChangePassword";
+import Donates from "./Pages/Donates/Donates";
+import DonationInfo from "./Pages/DonationInfo/DonationInfo";
 
 function App() {
   const current_theme = localStorage.getItem("current_theme");
@@ -44,7 +46,8 @@ function App() {
               <Route path="campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
               <Route path="hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
               <Route path="donation-history" element={<DonationHistory theme={theme} setTheme={setTheme} />} />
-
+              <Route path="Donates" element={<Donates theme={theme} setTheme={setTheme} />} />
+              <Route path="donationinfo" element={<DonationInfo theme={theme} setTheme={setTheme} />} />
           </Route>
 
           <Route path="*" element={<PageNotFound theme={theme} setTheme={setTheme} />} />
