@@ -42,8 +42,6 @@ service / on listener9191 {
         json|error result = check addDonation(donates);
         return result;
     }
-    
-
 
 }
 
@@ -167,10 +165,7 @@ service /dashboard on listener9191 {
         }
     }
 
-
-
     resource function get bloodStock(@http:Query string district) returns json|error {
-        io:println("Request received for district: " + district);
 
         HospitalName[]|error hospitalsResult;
         if district == "All" {
@@ -196,7 +191,6 @@ service /dashboard on listener9191 {
     
     resource function get donations(@http:Query string user_id) returns DonateRecord[]|error{
         DonateRecord[]|error donations= get_DonationHistory(user_id);
-        io:println(donations);
         return donations;
     }
 
@@ -229,5 +223,8 @@ service /dashboard on listener9191 {
         return body;
     }
 
-
+    resource function get campaigns(@http:Query string date, string district) returns Campaign[]|error {
+        Campaign[]|error campaigns = getCampaignEvent(date,district);
+        return campaigns;
+    };
 }

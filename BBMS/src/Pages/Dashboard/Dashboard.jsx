@@ -66,8 +66,6 @@ const Dashboard = ({ theme, setTheme }) => {
       }
     };
 
-    
-
     window.addEventListener("popstate", handleBackButton);
 
     return () => {

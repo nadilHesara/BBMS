@@ -1,5 +1,4 @@
 import ballerina/sql;
-import ballerina/io;
 
 isolated function addCamp(Campaign campaign) returns json|error {
     CampaignID|error c = dbClient->queryRow(`SELECT CampaignID FROM campaign ORDER BY CampaignID DESC LIMIT 1`);
@@ -62,7 +61,6 @@ isolated function getCampaignEvent(string year_month, string district) returns C
             campaigns.push(campaign);
         };
     check resultStream.close();
-    io:println(campaigns);
     return campaigns;
 
 };
