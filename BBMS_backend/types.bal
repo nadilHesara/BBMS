@@ -226,3 +226,8 @@ public type ForgotPasswordRequest record {|
 public type HospitalName record {|
     string Name;
 |};
+
+public type bloodStockRequest record {
+    string district;
+    string? hospital;
+};
