@@ -1,12 +1,31 @@
 import React, { useState } from "react";
-import "./ChangePassword.css";
 
-function ChangePassword({ onSave, onCancel }) {
+import "./ChangePassword.css";
+import { useNavigate } from "react-router-dom";
+
+function ChangePassword() {
+  const navigate = useNavigate();
+  const userType = sessionStorage.getItem("userType");
+  const [userData,setUserData] = useState(JSON.parse(sessionStorage.getItem("userData")));
+
   const [formData, setFormData] = useState({
-    current_password: "",
-    new_password: "",
-    conf_password: "",
+    currentPassword: "",
+    newPassword: "",
+    userType: userType,
+    userName: userData.userName
+    
   });
+
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const CheckNewPassword = () => {
+    if(confirmPassword == formData.newPassword){
+      SendPasswordData();
+    }
+    else{
+      alert("Password is not matching.")      
+    }
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,8 +34,32 @@ function ChangePassword({ onSave, onCancel }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData); 
+    CheckNewPassword();
   };
+
+  const SendPasswordData = async () =>{
+    try{        
+        const response = await fetch(`http://localhost:9191/dashboard/ChangePassword` ,{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+          },
+        body: JSON.stringify(formData)
+        })
+
+        const result = await response.json();
+
+        if (response.ok){
+          alert("Password Changed successfully!")
+          navigate("/dashboard")
+        }
+        else{
+          alert(result.message)
+        }
+    } catch(error){
+      alert(error.message)
+    }
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -25,10 +68,10 @@ function ChangePassword({ onSave, onCancel }) {
         <input
           type="password"
           id="curpwd"
-          name="current_password"
-          value={formData.current_password}
+          name="currentPassword"
+          // value={formData.current_password}
           onChange={handleChange}
-          required
+          // required
         />
       </div>
 
@@ -37,8 +80,8 @@ function ChangePassword({ onSave, onCancel }) {
         <input
           type="password"
           id="newpwd"
-          name="new_password"
-          value={formData.new_password}
+          name="newPassword"
+          // value={formData.new_password}
           onChange={handleChange}
           required
         />
@@ -50,8 +93,8 @@ function ChangePassword({ onSave, onCancel }) {
           type="password"
           id="cfmnewpwd"
           name="conf_password"
-          value={formData.conf_password}
-          onChange={handleChange}
+          // value={formData.conf_password}
+          onChange={(e) => setConfirmPassword(e.target.value)}
           required
         />
       </div>
@@ -59,7 +102,7 @@ function ChangePassword({ onSave, onCancel }) {
         <button type="submit" className="save-btn">
           Save Password
         </button>
-        <button type="button" onClick={onCancel} className="close-btn">
+        <button type="button" className="close-btn">
           Cancel
         </button>
       </div>

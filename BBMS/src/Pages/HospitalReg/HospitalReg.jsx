@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NaviBar from "../../components/Navibar/NaviBar";
-import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
-import districts from '../../SharedData/Districts';
+import districts from '../../SharedData/districts';
 import "./HospitalReg.css";
 
 function HospitalReg({ theme, setTheme }) {
@@ -20,10 +19,6 @@ function HospitalReg({ theme, setTheme }) {
         contact_no: "",
         password: ""
     });
-
-    const [show, setShow] = useState([false, false]);
-
-
 
     const handleChange = (e) => {
         setHospital({
@@ -51,7 +46,7 @@ function HospitalReg({ theme, setTheme }) {
             const result = await response.json();
             if (response.ok) {
                 setMessage("Hospital Registration Successful!");
-                navigate("/login");
+                navigate("/dashboard");
 
             } else {
                 setMessage("Error: " + (result.message || JSON.stringify(result)));

@@ -1,7 +1,6 @@
 import ballerina/http;
-import ballerina/sql;
 import ballerina/io;
-
+import ballerina/sql;
 
 listener http:Listener listener9191 = new (9191);
 
@@ -48,17 +47,17 @@ service / on listener9191 {
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
-        allowMethods: ["POST", "GET", "PUT", "OPTIONS"]
+        allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowHeaders: ["Content-Type", "Authorization"]
     }
 }
-
 service /dashboard on listener9191 {
 
     resource function get .(@http:Query string user_id, @http:Query string user_type) returns json|error {
         json body = {
-            "userId" : "",
-            "userName":"",
-            "Name" : "",
+            "userId": "",
+            "userName": "",
+            "Name": "",
             "Email": "",
             "gender": "",
             "bloodGroup": "",
@@ -76,19 +75,19 @@ service /dashboard on listener9191 {
             Doner|error doner = getDoner(id = user_id);
             if doner is Doner {
                 body = {
-                    userId : doner.doner_id,
-                    userName : doner.username,
-                    Name : doner.name,
-                    Email : doner.email,
-                    gender : doner.gender,
-                    bloodGroup : doner.blood_group,
-                    NicNo : doner.nic_no,
-                    Dob : doner.dob,
-                    Telephone : doner.tele,
-                    AddressLine1 : doner.address_line1,
-                    AddressLine2 : doner.address_line2,
-                    AddressLine3 : doner.address_line3,
-                    District : doner.District
+                    userId: doner.doner_id,
+                    userName: doner.username,
+                    Name: doner.name,
+                    Email: doner.email,
+                    gender: doner.gender,
+                    bloodGroup: doner.blood_group,
+                    NicNo: doner.nic_no,
+                    Dob: doner.dob,
+                    Telephone: doner.tele,
+                    AddressLine1: doner.address_line1,
+                    AddressLine2: doner.address_line2,
+                    AddressLine3: doner.address_line3,
+                    District: doner.District
                 };
             } else {
                 return doner;
@@ -98,15 +97,15 @@ service /dashboard on listener9191 {
             Hospital|error hospital = getHospital(id = user_id);
             if hospital is Hospital {
                 body = {
-                    userId : hospital.hospital_id,
-                    userName : hospital.username,
-                    Name : hospital.name,
-                    Email : hospital.email,
-                    Telephone : hospital.contact_no,
-                    AddressLine1 : hospital.address_line1,
-                    AddressLine2 : hospital.address_line2,
-                    AddressLine3 : hospital.address_line3,
-                    District : hospital.District
+                    userId: hospital.hospital_id,
+                    userName: hospital.username,
+                    Name: hospital.name,
+                    Email: hospital.email,
+                    Telephone: hospital.contact_no,
+                    AddressLine1: hospital.address_line1,
+                    AddressLine2: hospital.address_line2,
+                    AddressLine3: hospital.address_line3,
+                    District: hospital.District
                 };
             } else {
                 return hospital;
@@ -131,35 +130,33 @@ service /dashboard on listener9191 {
             Doner doner = checkpanic donerJson.fromJsonWithType(Doner);
 
             sql:ExecutionResult|error result = updateDoner(doner);
-            if result is sql:ExecutionResult{
-                    return {"message" : "Doner updated successfully"} ;
-            }else {
+            if result is sql:ExecutionResult {
+                return {"message": "Doner updated successfully"};
+            } else {
                 return result;
             }
-            
-            
-        }else if user_type == "Hospital" {            
+
+        } else if user_type == "Hospital" {
             map<json> userMap = <map<json>>user_data;
             json hospitalJson = userMap["hospital"];
-            
+
             Hospital|error existingHospital = getHospital(id = user_id);
 
             if existingHospital is Hospital {
                 if hospitalJson is map<json> {
                     hospitalJson["password"] = existingHospital.password;
-                    
+
                 }
             }
 
             Hospital hospital = checkpanic hospitalJson.fromJsonWithType(Hospital);
 
-
             sql:ExecutionResult|error result = updateHospital(hospital);
-            if result is sql:ExecutionResult{
-                    return {"message" : "Hospital updated successfully"} ;
+            if result is sql:ExecutionResult {
+                return {"message": "Hospital updated successfully"};
 
-            }else {
-                    return result;
+            } else {
+                return result;
             }
 
         }

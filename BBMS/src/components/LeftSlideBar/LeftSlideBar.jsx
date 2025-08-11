@@ -16,20 +16,20 @@ import "./LeftSlideBar.css";
 
 const LeftSlideBar = ({ theme, userType, username }) => {
   const navigate = useNavigate();
-  const currunt_possition = localStorage.getItem("currunt_possition");
+  const currunt_possition = sessionStorage.getItem("currunt_possition");
 
   const [isOpen, setIsOpen] = useState(
     currunt_possition === "true" ? true : false
   );
 
   useEffect(() => {
-    localStorage.setItem("currunt_possition", isOpen.toString());
+    sessionStorage.setItem("currunt_possition", isOpen.toString());
   }, [isOpen]);
 
   const LoggingOut = () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userType");
-    localStorage.removeItem("userData");
+    sessionStorage.removeItem("userId");
+    sessionStorage.removeItem("userType");
+    sessionStorage.removeItem("userData");
     navigate("/login", { replace: true });
   };
 
@@ -58,6 +58,11 @@ const LeftSlideBar = ({ theme, userType, username }) => {
             <Link to="#">
               <FaNotesMedical size={30} />
               {isOpen && <span>Medical Records</span>}
+            </Link>
+
+            <Link to="/dashboard/DonationForm">
+              <FaNotesMedical size={30} />
+              {isOpen && <span>Donation Form</span>}
             </Link>
 
             <Link
@@ -95,7 +100,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               {isOpen && <span>Ongoing Campaign</span>}
             </Link>
 
-            <Link to="#">
+            <Link to="CampaignHistory">
               <FaHistory size={30} />
               {isOpen && <span>Campaign History</span>}
             </Link>
@@ -105,10 +110,12 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               {isOpen && <span>Donor Register</span>}
             </Link>
 
-            {userType === "Admin" && <Link to="hospitalReg">
-              <MdAppRegistration size={30} />
-              {isOpen && <span>Hospital Register</span>}
-            </Link> }
+            {userType === "Admin" && (
+              <Link to="hospitalReg">
+                <MdAppRegistration size={30} />
+                {isOpen && <span>Hospital Register</span>}
+              </Link>
+            )}
 
             <Link to="ChangePassword">
               <CgPassword size={30} />
@@ -126,7 +133,6 @@ const LeftSlideBar = ({ theme, userType, username }) => {
           </div>
         </>
       );
-    
     } else {
       navigate("/login");
     }

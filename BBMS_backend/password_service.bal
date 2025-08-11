@@ -30,7 +30,7 @@ isolated function checkPassword(string username, string password) returns json|e
 isolated function changePassword(string userType, string username, string newPassword, string? previousPassword) returns json|error {
     json|error? oldPasswordCheck =() ;
     if previousPassword is string {
-         oldPasswordCheck= checkPassword(username, previousPassword);
+        oldPasswordCheck= checkPassword(username, previousPassword);
     }
     if oldPasswordCheck is error {
         return oldPasswordCheck;
