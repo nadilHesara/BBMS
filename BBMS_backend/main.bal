@@ -165,13 +165,7 @@ service /dashboard on listener9191 {
         }
     }
 
-    resource function get bloodStock(@http:Query bloodStockRequest request) returns json|error {
-        string district = request.district;
-        string? hospital = request.hospital;
-        if hospital is () {
-            hospital = "All";
-        }
-        
+    resource function get bloodStock(@http:Query string district, string hospital) returns json|error {
         HospitalName[]|error hospitalsResult;
         if district == "All" {
             hospitalsResult = getAllHospitals(());
@@ -186,6 +180,7 @@ service /dashboard on listener9191 {
         json body = {
             "hospitals": hospitalsResult
         };
+
         return body;
     }
 

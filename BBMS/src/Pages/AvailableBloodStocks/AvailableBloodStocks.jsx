@@ -12,14 +12,14 @@ import {
 import "./AvailableBloodStocks.css";
 
 const bloodData = [
-  { type: "A+", units: 120 },
-  { type: "B+", units: 85 },
-  { type: "AB+", units: 40 },
-  { type: "O+", units: 150 },
-  { type: "A-", units: 20 },
-  { type: "B-", units: 15 },
-  { type: "AB-", units: 10 },
-  { type: "O-", units: 5 },
+  { type: "A+", units: 0 },
+  { type: "B+", units: 0 },
+  { type: "AB+", units: 0 },
+  { type: "O+", units: 0 },
+  { type: "A-", units: 0 },
+  { type: "B-", units: 0 },
+  { type: "AB-", units: 0 },
+  { type: "O-", units: 0 },
 ];
 
 
@@ -45,6 +45,7 @@ function AvailableBloodStocks() {
   const [hospitals, setHospitals] = useState([]);
   const [district, setDistrict] = useState("All");
   const [error, setError] = useState(null);
+  const [hospital, setHospital] = useState("All");
 
   const handleDistrict = (e) => {
     setDistrict(e.target.value);
@@ -52,7 +53,7 @@ function AvailableBloodStocks() {
 
   useEffect(() => {
     fetch(
-      `http://localhost:9191/dashboard/bloodStock?district=${district}`
+      `http://localhost:9191/dashboard/bloodStock?district=${district}&hospital=${hospital}`
     )
       .then((res) => {
         if (!res.ok) throw new Error("Fetch failed");

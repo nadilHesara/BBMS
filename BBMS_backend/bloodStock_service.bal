@@ -1,6 +1,6 @@
 import ballerina/sql;
 
-isolated function getBloodStockHospital(string hospitalID) returns bloodData|error {
+isolated function getBloodStockHospital(string? hospitalID) returns bloodData|error {
     sql:ParameterizedQuery query = `SELECT
                                             SUM(A_plus) AS A_plus,
                                             SUM(B_plus) AS B_plus,
