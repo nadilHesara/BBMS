@@ -125,8 +125,7 @@ public type Donates record {
     int blood_quantity;
 };
 
-
-public type DonateRecord record{
+public type DonateRecord record {
     @sql:Column {name: "OrganizerName"}
     string org_name;
 
@@ -205,4 +204,12 @@ public type bloodData record {
 public type ForgotPasswordRequest record {|
     string userType;
     string userInfo;
+|};
+
+type passwordData record {|
+    string currentPassword;
+    string newPassword;
+    string userType;
+    string userName;
+    
 |};

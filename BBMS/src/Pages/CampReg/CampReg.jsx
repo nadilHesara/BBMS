@@ -38,7 +38,6 @@ function CampReg({ theme, setTheme }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-    console.log(campaign);
 
     try{
       const response = await fetch("http://localhost:9191/campReg",{
