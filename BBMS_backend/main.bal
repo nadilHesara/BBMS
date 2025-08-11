@@ -163,19 +163,20 @@ service /dashboard on listener9191 {
     }
 
     resource function get bloodStock(@http:Query string district, string hospital) returns json|error {
-        HospitalName[]|error hospitalsResult;
-        if district == "All" {
-            hospitalsResult = getAllHospitals(());
-        } else {
-            hospitalsResult = getAllHospitals(district);
-        }
-        
+        HospitalDetails[]|error hospitalsResult = getAllHospitals(district);
+
+        bloodData|error bloodResult = getBloodStockHospital(hospital);
+        io:println(bloodResult);
         if hospitalsResult is error {
             return hospitalsResult;
         }
+        if bloodResult is error {
+            return bloodResult;
+        }
         
         json body = {
-            "hospitals": hospitalsResult
+            "hospitals": hospitalsResult,
+            "blood":bloodResult.toJson()
         };
 
         return body;

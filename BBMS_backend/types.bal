@@ -231,6 +231,7 @@ type passwordData record {|
 
 
 
-public type HospitalName record {|
+public type HospitalDetails record {|
+    string HospitalID;
     string Name;
 |};

@@ -11,18 +11,17 @@ import {
 } from "recharts";
 import "./AvailableBloodStocks.css";
 
-const bloodData = [
-  { type: "A+", units: 0 },
-  { type: "B+", units: 0 },
-  { type: "AB+", units: 0 },
-  { type: "O+", units: 0 },
-  { type: "A-", units: 0 },
-  { type: "B-", units: 0 },
-  { type: "AB-", units: 0 },
-  { type: "O-", units: 0 },
-];
 
-
+const typeMap = {
+  "A+": "A_plus",
+  "B+": "B_plus",
+  "AB+": "AB_plus",
+  "O+": "O_plus",
+  "A-": "A_minus",
+  "B-": "B_minus",
+  "AB-": "AB_minus",
+  "O-": "O_minus",
+};
 
 const statusColor = {
   Critical: "bg-red-500",
@@ -34,13 +33,30 @@ const statusColor = {
 
 function AvailableBloodStocks() {
   
+  const HandleBlood = (item , blood) => {
+
+    if (blood[typeMap[item.type]] == null){
+      return 0
+    }
+    return parseFloat(blood[typeMap[item.type]])
+  }
+
   const getStatus = (units) => {
     if (units < 10) return "Critical";
     if (units < 30) return "Low";
     return "Sufficient";
   };
-  const userId = localStorage.getItem("userId");
-  const userType = localStorage.getItem("userType");
+
+  const [bloodData,setBloodData] = useState([
+  { type: "A+", units: 0 },
+  { type: "B+", units: 0 },
+  { type: "AB+", units: 0 },
+  { type: "O+", units: 0 },
+  { type: "A-", units: 0 },
+  { type: "B-", units: 0 },
+  { type: "AB-", units: 0 },
+  { type: "O-", units: 0 },
+])
 
   const [hospitals, setHospitals] = useState([]);
   const [district, setDistrict] = useState("All");
@@ -51,7 +67,12 @@ function AvailableBloodStocks() {
     setDistrict(e.target.value);
   };
 
+    const handleHospital = (e) => {
+    setHospital(e.target.value);
+  };
+
   useEffect(() => {
+    
     fetch(
       `http://localhost:9191/dashboard/bloodStock?district=${district}&hospital=${hospital}`
     )
@@ -60,13 +81,22 @@ function AvailableBloodStocks() {
         return res.json();
       })
       .then((data) => {
+    
         setHospitals(data.hospitals || []);
+        console.log(data.blood);
+        
+        const updatedData = bloodData.map(item => ({
+          ...item,
+          units: HandleBlood(item,data.blood)
+        }));
+
+        setBloodData(updatedData);
       })
       .catch((err) => {
         console.error("Error fetching hospital data:", err.message);
         setError("Failed to load hospitals data.");
       });
-  }, [district]);
+  }, [district,hospital]);
 
 
   return (
@@ -85,10 +115,10 @@ function AvailableBloodStocks() {
       </select>
 
       <label>Hospitals:</label>
-      <select name="Hospitals" required>
-        <option value=""> All </option>
+      <select name="Hospitals" onChange={handleHospital} required>
+        <option value="All"> All </option>
         {hospitals.map((d, i) => (
-          <option key={i} value={d.Name}>
+          <option key={i} value={d}>
             {d.Name}
           </option>
         ))}

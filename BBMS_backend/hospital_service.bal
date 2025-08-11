@@ -80,16 +80,16 @@ isolated function getHospital(string? id = (), string? username = (), string? em
     return hospital;
 }
 
-isolated function getAllHospitals(string? district) returns HospitalName[]|error {
-    HospitalName[] hospitals = [];
-    stream<HospitalName, error?> resultStream;
-    if district == (){
-        resultStream = dbClient->query( ` SELECT Name FROM Hospital`,HospitalName);
+isolated function getAllHospitals(string? district) returns HospitalDetails[]|error {
+    HospitalDetails[] hospitals = [];
+    stream<HospitalDetails, error?> resultStream;
+    if district == "All"{
+        resultStream = dbClient->query( ` SELECT HospitalID,Name FROM Hospital`,HospitalDetails);
     }else{
-        resultStream = dbClient->query(` SELECT Name FROM Hospital WHERE District = ${district}` ,HospitalName);
+        resultStream = dbClient->query(` SELECT HospitalID,Name FROM Hospital WHERE District = ${district}` ,HospitalDetails);
     }
     
-    check from HospitalName hospital in resultStream
+    check from HospitalDetails hospital in resultStream
         do {
             hospitals.push(hospital);
         };
