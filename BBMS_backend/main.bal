@@ -23,19 +23,25 @@ service / on listener9191 {
         return result;
     }
 
-    isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
-        json|error result = check addCamp(campaign);
-        return result;
-    }
-
     isolated resource function post login(@http:Payload LoginRequest loginReq) returns json|error {
         json|error result = check checkPassword(loginReq.username, loginReq.password);
         return result;
     }
 
-    isolated resource function post forgotpassword(@http:Payload ForgotPasswordRequest request) returns json|error {
-        return resetPassword(request.userType, request.userInfo);
+    isolated resource function post forgotpassword(@http:Payload ForgotPasswordRequest request) returns json|error{
+        return resetPassword(request.userType,request.userInfo);         
     }
+
+    isolated resource function post donates(@http:Payload SearchRequest searchReq) returns json|error {
+        json|error result = check search_Doner(searchReq.username_email, searchReq.nic);
+        return result;
+    }
+
+    isolated resource function post donations(@http:Payload Donates donates) returns json|error {
+        json|error result = check addDonation(donates);
+        return result;
+    }
+
 }
 
 @http:ServiceConfig {
@@ -107,13 +113,8 @@ service /dashboard on listener9191 {
         }
         return body;
     }
-
-    resource function get campaigns(@http:Query string month, @http:Query string district) returns Campaign[]|error {
-        Campaign[]|error campaigns = getCampaignEvent(month, district);
-        return campaigns;
-    };
-
-    resource function put .(@http:Query string user_id, @http:Query string user_type, @http:Payload json user_data) returns json|error {
+    
+    resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
         if user_type == "Doner" {
             map<json> userMap = <map<json>>user_data;
             json donerJson = userMap["doner"];
@@ -161,13 +162,73 @@ service /dashboard on listener9191 {
         }
     }
 
-    resource function get donations(@http:Query string user_id) returns DonateRecord[]|error {
-        DonateRecord[]|error donations = get_DonationHistory(user_id);
-        io:println(donations);
+    resource function get bloodStock(@http:Query bloodStockRequest request) returns json|error {
+        string district = request.district;
+        string? hospital = request.hospital;
+        if hospital is () {
+            hospital = "All";
+        }
+        
+        HospitalName[]|error hospitalsResult;
+        if district == "All" {
+            hospitalsResult = getAllHospitals(());
+        } else {
+            hospitalsResult = getAllHospitals(district);
+        }
+        
+        if hospitalsResult is error {
+            return hospitalsResult;
+        }
+        
+        json body = {
+            "hospitals": hospitalsResult
+        };
+        return body;
+    }
+
+    isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
+        json|error result = check addCamp(campaign);
+        return result;
+    }
+    
+    resource function get donations(@http:Query string user_id) returns DonateRecord[]|error{
+        DonateRecord[]|error donations= get_DonationHistory(user_id);
         return donations;
     }
 
-    resource function post ChangePassword(@http:Payload passwordData passwordData) returns error|json {
-        return changePassword(passwordData.userType, passwordData.userName, passwordData.newPassword, passwordData.currentPassword);
+    resource function get donor(@http:Query string donor_id,@http:Query string campaign) returns json|error{
+        json body = {
+            "Name" : "",
+            "BloodGroup": "",
+            "BYear": "",
+            "BMonth": ""
+        };
+        Doner|error doner = getDoner(donor_id);
+            if doner is Doner {
+                string DOB = doner.dob;
+                string Age_yr = string:substring(DOB, 0, 4);
+                string Age_m = string:substring(DOB, 5, 7);
+                int b_yr = checkpanic int:fromString(Age_yr);
+                int b_m = checkpanic int:fromString(Age_m);
+
+                body = {
+                    Name : doner.name,
+                    BloodGroup : doner.blood_group,
+                    BYear : b_yr,
+                    BMonth : b_m
+                };
+
+            }else {
+                return error("Doner not found");
+            }
+        io:println(body);
+        return body;
     }
+
+    resource function get campaigns(@http:Query string date, string district) returns Campaign[]|error {
+        Campaign[]|error campaigns = getCampaignEvent(date,district);
+        return campaigns;
+    };
+
+
 }

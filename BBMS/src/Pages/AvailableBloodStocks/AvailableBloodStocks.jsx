@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import districts from "../../SharedData/Districts";
+import districts from "../../SharedData/districts";
 import {
   BarChart,
   Bar,
@@ -22,11 +22,7 @@ const bloodData = [
   { type: "O-", units: 5 },
 ];
 
-const getStatus = (units) => {
-  if (units < 10) return "Critical";
-  if (units < 30) return "Low";
-  return "Sufficient";
-};
+
 
 const statusColor = {
   Critical: "bg-red-500",
@@ -37,14 +33,49 @@ const statusColor = {
 
 
 function AvailableBloodStocks() {
+  
+  const getStatus = (units) => {
+    if (units < 10) return "Critical";
+    if (units < 30) return "Low";
+    return "Sufficient";
+  };
+  const userId = localStorage.getItem("userId");
+  const userType = localStorage.getItem("userType");
+
+  const [hospitals, setHospitals] = useState([]);
+  const [district, setDistrict] = useState("All");
+  const [error, setError] = useState(null);
+
+  const handleDistrict = (e) => {
+    setDistrict(e.target.value);
+  };
+
+  useEffect(() => {
+    fetch(
+      `http://localhost:9191/dashboard/bloodStock?district=${district}`
+    )
+      .then((res) => {
+        if (!res.ok) throw new Error("Fetch failed");
+        return res.json();
+      })
+      .then((data) => {
+        setHospitals(data.hospitals || []);
+      })
+      .catch((err) => {
+        console.error("Error fetching hospital data:", err.message);
+        setError("Failed to load hospitals data.");
+      });
+  }, [district]);
 
 
   return (
     <div className="p-6">
+      <div className="selects">
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <label>District:</label>
-      <select name="District"   required>
-        <option value=""> Overall </option> 
+      <select name="District" onChange={handleDistrict} required>
+        <option value="All">Overall</option>
         {districts.map((d, i) => (
           <option key={i} value={d}>
             {d}
@@ -52,6 +83,16 @@ function AvailableBloodStocks() {
         ))}
       </select>
 
+      <label>Hospitals:</label>
+      <select name="Hospitals" required>
+        <option value=""> All </option>
+        {hospitals.map((d, i) => (
+          <option key={i} value={d.Name}>
+            {d.Name}
+          </option>
+        ))}
+      </select>
+      </div>
 
       <h2 className="text-2xl font-bold mb-4">Available Blood Stocks</h2>
 
@@ -101,7 +142,7 @@ function AvailableBloodStocks() {
     </BarChart>
   </ResponsiveContainer>
 </div>
-    </div>
+  </div>
   );
 }
 export default AvailableBloodStocks;

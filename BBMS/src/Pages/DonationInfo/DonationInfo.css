@@ -1,0 +1,194 @@
+/* DonationInfo.css */
+
+.donerinfoForm {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 30px;
+    padding: 30px;
+    margin-left: 40px; /* Account for sidebar */
+    max-width: 1200px;
+    margin-right: auto;
+}
+
+/* Donor Information Card - Left Side */
+.donerinfoCard {
+    flex: 1;
+    min-width: 350px;
+    padding: 25px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.campID {
+    display: block;
+    font-size: 11px;
+    color: #797b79;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.donerinfoCard h1 {
+    color: #b22624;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #b99787;
+    display: inline-block;
+    position: relative;
+}
+
+.donerinfoCard .content-wrapper {
+    text-align: left;
+    display: inline-block;
+    width: auto;
+    margin: 0 auto;
+}
+
+.label-value-pair {
+    display: flex;
+    margin-bottom: 12px;
+    min-width: 250px; /* Adjust this value as needed */
+}
+
+.label{
+    color: #555;
+    font-weight: 500;
+    width: 120px; /* Fixed width for all labels */
+    text-align: space-between;
+    padding-right: 15px;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.valtext {
+    color: #3f3e3e;
+    font-weight: 600;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.blood-group-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 12px;
+    margin-top: 15px;
+    min-width: 250px;
+}
+
+.donerinfoCard select {
+    width: 26%;
+    margin-top: 5px;
+    padding: 0px 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fafafa;
+    color: #3f3e3e;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: left;
+}
+
+/* Donation Input Section - Right Side */
+.donationinputsection {
+    flex: 1;
+    min-width: 350px;
+    padding: 25px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.donationinputgrouprow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.inputblock {
+    flex: 1;
+    min-width: 150px;
+}
+
+.donationinputsection label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+}
+
+.donationinputsection input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fafafa;
+    font-size: 14px;
+}
+
+.donationinputsection input[type="time"] {
+    padding: 8px 12px;
+    width: auto;
+}
+
+/* Update Button */
+.updatebtn {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 8px 10px;
+    background-color: #b22624;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: fit-content;
+}
+
+.updatebtn:hover {
+    background-color: #c62828;
+    transform: translateY(-0.5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .donerinfoForm {
+        flex-direction: column;
+        margin-left: 80px;
+    }
+    
+    .donerinfoCard, .donationinputsection {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .donerinfoForm {
+        margin-left: 20px;
+        padding: 20px;
+    }
+    
+    .donationinputgrouprow {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .inputblock {
+        min-width: 100%;
+    }
+    
+    .updatebtn {
+        width: 100%;
+        float: none;
+    }
+}

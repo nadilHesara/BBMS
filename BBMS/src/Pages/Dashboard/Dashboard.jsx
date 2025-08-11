@@ -4,11 +4,11 @@ import LeftSlideBar from "../../components/LeftSlideBar/LeftSlideBar";
 import NaviBar from "../../components/Navibar/NaviBar";
 import MyCalender from "../../components/MyCalender/MyCalender";
 import "./Dashboard.css";
-import districts from "../../SharedData/districts";
+import districts from "../../SharedData/Districts";
 
 const Dashboard = ({ theme, setTheme }) => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = useLocation(); 
 
   const userId = sessionStorage.getItem("userId");
   const userType = sessionStorage.getItem("userType");
@@ -66,8 +66,6 @@ const Dashboard = ({ theme, setTheme }) => {
         navigate("/login", { replace: true });
       }
     };
-
-    
 
     window.addEventListener("popstate", handleBackButton);
 
