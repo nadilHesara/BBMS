@@ -31,18 +31,18 @@ export default function EligibilityCheck() {
     <div className="form-container">
       <h2>Eligibility Check</h2>
       <form>
-        <label>Age: <input name="age" type="number" onChange={handleChange} /></label>
-        <label>Weight (kg): <input name="weight" type="number" onChange={handleChange} /></label>
-        <label>Months since last donation: <input name="lastDonation" type="number" onChange={handleChange} /></label>
-        <label>Hemoglobin (g/dL): <input name="hemoglobin" type="number" step="0.1" onChange={handleChange} /></label>
-        <label>Months since foreign travel: <input name="foreignTravel" type="number" onChange={handleChange} /></label>
+        <label>Age: <input name="age" type="number" onChange={handleChange} /></label><br />
+        <label>Weight (kg): <input name="weight" type="number" onChange={handleChange} /></label><br />
+        <label>Months since last donation: <input name="lastDonation" type="number" onChange={handleChange} /></label><br />
+        {/* <label>Hemoglobin (g/dL): <input name="hemoglobin" type="number" step="0.1" onChange={handleChange} /></label><br /> */}
+        <label>Months since foreign travel: <input name="foreignTravel" type="number" onChange={handleChange} /></label><br />
         <label>Any risk behavior? 
           <select name="risk" onChange={handleChange}>
             <option value="">--Select--</option>
             <option value="no">No</option>
             <option value="yes">Yes</option>
           </select>
-        </label>
+        </label><br />
         <button
           type="button"
           disabled={!isEligible()}

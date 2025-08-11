@@ -22,12 +22,16 @@ form {
 label {
   display: flex;
   flex-direction: column;
+  align-items: center;  
   font-weight: 500;
   font-size: 0.95rem;
 }
 
-input, select {
+label input, 
+label select {
   padding: 0.6rem 0.8rem;
+  flex: 1; 
+  margin-left: 12px;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
