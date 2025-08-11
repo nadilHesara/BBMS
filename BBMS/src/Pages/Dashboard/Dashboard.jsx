@@ -4,7 +4,7 @@ import LeftSlideBar from "../../components/LeftSlideBar/LeftSlideBar";
 import NaviBar from "../../components/Navibar/NaviBar";
 import MyCalender from "../../components/MyCalender/MyCalender";
 import "./Dashboard.css";
-import districts from "../../SharedData/Districts";
+import districts from "../../SharedData/districts";
 
 const Dashboard = ({ theme, setTheme }) => {
   const navigate = useNavigate();
