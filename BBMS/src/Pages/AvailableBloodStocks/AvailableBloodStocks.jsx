@@ -68,11 +68,10 @@ function AvailableBloodStocks() {
   };
 
     const handleHospital = (e) => {
-    setHospital(e.target.value);
+      setHospital(e.target.value);
   };
 
   useEffect(() => {
-    
     fetch(
       `http://localhost:9191/dashboard/bloodStock?district=${district}&hospital=${hospital}`
     )
@@ -80,10 +79,9 @@ function AvailableBloodStocks() {
         if (!res.ok) throw new Error("Fetch failed");
         return res.json();
       })
-      .then((data) => {
-    
+      .then((data) => {      
         setHospitals(data.hospitals || []);
-        console.log(data.blood);
+        setHospital("All")
         
         const updatedData = bloodData.map(item => ({
           ...item,
@@ -105,7 +103,7 @@ function AvailableBloodStocks() {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <label>District:</label>
-      <select name="District" onChange={handleDistrict} required>
+      <select name="District" onChange={(e) => handleDistrict(e)} required>
         <option value="All">Overall</option>
         {districts.map((d, i) => (
           <option key={i} value={d}>
@@ -118,7 +116,7 @@ function AvailableBloodStocks() {
       <select name="Hospitals" onChange={handleHospital} required>
         <option value="All"> All </option>
         {hospitals.map((d, i) => (
-          <option key={i} value={d}>
+          <option key={i} value={d.HospitalID}>
             {d.Name}
           </option>
         ))}
