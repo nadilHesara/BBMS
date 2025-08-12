@@ -3,7 +3,8 @@ import Calendar from "react-calendar";
 import axios from "axios";
 import 'react-calendar/dist/Calendar.css';
 import './MyCalender.css';
-import { Link } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
+
 
 
 function CalendarComponent(props) {
@@ -14,6 +15,8 @@ function CalendarComponent(props) {
   const [campaigns, setCampaigns] = useState([]);
   const [selectedDateDetails, setSelectedDateDetails] = useState([]);
   const [expandedCampaign, setExpandedCampaign] = useState(null);
+  const navigate = useNavigate(); 
+
 
   // Helper function to format date in local timezone (YYYY-MM-DD)
   const formatDateLocal = (date) => {
@@ -77,7 +80,9 @@ function CalendarComponent(props) {
 
     // You can implement the donation request logic here
     console.log("Requesting donation for campaign:", campaign.campain_id);
-    alert(`Donation request sent for ${campaign.org_name} campaign!`);
+    // alert(`Donation request sent for ${campaign.org_name} campaign!`);
+    navigate("donates",{state: { campaignId: campaign.campain_id, campdate: campaign.date}});
+
   };
 
   const tilecontent = ({ date, view }) => {
@@ -165,10 +170,10 @@ function CalendarComponent(props) {
                       </div>
                     )}
                     <div className="action-buttons">
-                    <button 
+                    <button
                       className="donation-request-btn"
                       onClick={() => handleDonationRequest(campaign)}
-                    > Request Donation
+                    > Update Donation
                     </button>
                   </div>
                   </div>
