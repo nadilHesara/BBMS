@@ -156,3 +156,18 @@ public isolated function get_DonationHistory(string userID) returns DonateRecord
     io:println(donations);
     return donations;
 }
+
+public isolated function getLastDonation(string donor_id) returns string|error {
+    string LastDonation = "";
+    sql:ParameterizedQuery query1 = `SELECT CampaignID FROM donates WHERE DonerID = ${donor_id} ORDER BY DonateID DESC LIMIT 1`;
+    Campaign|error Camp = check dbClient->queryRow(query1);
+
+    if Camp is Campaign {  
+        sql:ParameterizedQuery query2 = `SELECT DateofCampaign FROM campaign WHERE CampaignID = ${Camp.campain_id}`;
+        LastDonation = check dbClient->queryRow(query2);
+        
+    } else {
+        return error("No Previous Donations found");
+    }
+    return LastDonation;
+}
