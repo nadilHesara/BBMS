@@ -84,9 +84,9 @@ isolated function getAllHospitals(string? district) returns HospitalDetails[]|er
     HospitalDetails[] hospitals = [];
     stream<HospitalDetails, error?> resultStream;
     if district == "All"{
-        resultStream = dbClient->query( ` SELECT HospitalID,Name FROM Hospital`,HospitalDetails);
+        resultStream = dbClient->query( `SELECT HospitalID,Name FROM Hospital`,HospitalDetails);
     }else{
-        resultStream = dbClient->query(` SELECT HospitalID,Name FROM Hospital WHERE District = ${district}` ,HospitalDetails);
+        resultStream = dbClient->query(`SELECT HospitalID,Name FROM Hospital WHERE District = ${district}` ,HospitalDetails);
     }
     
     check from HospitalDetails hospital in resultStream

@@ -10,6 +10,7 @@ function Donates({theme,setTheme}) {
     const location = useLocation();
     const navigate = useNavigate();
     const campaign_id = location.state?.campaignId;
+    const campdate = location.state?.campdate;
 
     const handleSearchSubmit = async (e) => { 
         e.preventDefault();
@@ -32,10 +33,11 @@ function Donates({theme,setTheme}) {
             else{
                 const data = await response.json();
                 console.log(data);
-                navigate("/dashboard/donationinfo",{
+                navigate("/dashboard/DonationForm",{
                     state: {
                         campaign_Id: campaign_id,
                         donorId: data.user_id,
+                        cdate: campdate,
                     }
                 });
 

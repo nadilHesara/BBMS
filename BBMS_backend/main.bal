@@ -1,5 +1,5 @@
 import ballerina/http;
-import ballerina/io;
+// import ballerina/io;
 import ballerina/sql;
 
 listener http:Listener listener9191 = new (9191);
@@ -165,17 +165,20 @@ service /dashboard on listener9191 {
     resource function get bloodStock(@http:Query string district, string hospital) returns json|error {
         HospitalDetails[]|error hospitalsResult = getAllHospitals(district);
 
-        bloodData|error bloodResult = getBloodStockHospital(hospital);
-        io:println(bloodResult);
+        bloodData|error bloodResult = getBloodStockHospital(district,hospital);
+        if district == "All" {
+            hospitalsResult = [];
+        }
+
         if hospitalsResult is error {
             return hospitalsResult;
         }
         if bloodResult is error {
             return bloodResult;
         }
-        
+
         json body = {
-            "hospitals": hospitalsResult,
+            "hospitals": hospitalsResult.toJson(),
             "blood":bloodResult.toJson()
         };
 
@@ -192,10 +195,17 @@ service /dashboard on listener9191 {
         return donations;
     }
 
-    resource function get donor(@http:Query string donor_id,@http:Query string campaign) returns json|error{
+    resource function get donor(@http:Query string donor_id) returns json|error{
+        string|error dateResult = getLastDonation(donor_id);
+        string lastDonation = "";
+        if dateResult is string {
+            lastDonation = dateResult;
+        } else {
+            lastDonation = "";
+        }
         json body = {
-            "Name" : "",
-            "BloodGroup": "",
+            "LastDonationYR": "",
+            "LastDonationMonth": "",
             "BYear": "",
             "BMonth": ""
         };
@@ -206,10 +216,18 @@ service /dashboard on listener9191 {
                 string Age_m = string:substring(DOB, 5, 7);
                 int b_yr = checkpanic int:fromString(Age_yr);
                 int b_m = checkpanic int:fromString(Age_m);
+                (string|int) lastYear = " ";
+                (string|int) lastMonth = " ";
+                if lastDonation != "" {
+                    string lastDonationYear = string:substring(lastDonation, 0, 4);
+                    string lastDonationMonth = string:substring(lastDonation, 5, 7);
+                    lastYear = checkpanic int:fromString(lastDonationYear);
+                    lastMonth = checkpanic int:fromString(lastDonationMonth);
+                }
 
                 body = {
-                    Name : doner.name,
-                    BloodGroup : doner.blood_group,
+                    LastDonationYR: lastYear,
+                    LastDonationMonth: lastMonth,
                     BYear : b_yr,
                     BMonth : b_m
                 };
@@ -217,7 +235,6 @@ service /dashboard on listener9191 {
             }else {
                 return error("Doner not found");
             }
-        io:println(body);
         return body;
     }
 
@@ -225,6 +242,4 @@ service /dashboard on listener9191 {
         Campaign[]|error campaigns = getCampaignEvent(date,district);
         return campaigns;
     };
-
-
 }
