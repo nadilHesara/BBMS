@@ -28,7 +28,7 @@ function App() {
   }, [theme]);
 
   return (
-    <div className={theme === "light" ? "container" : "container dark"}>
+    <div className={ `app-container ${theme}`} >
       <Router>
         <Routes>
           <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
