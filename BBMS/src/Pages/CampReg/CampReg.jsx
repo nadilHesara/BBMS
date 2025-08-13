@@ -72,7 +72,7 @@ function CampReg({ theme, setTheme }) {
     <>
       <NaviBar theme={theme} setTheme={setTheme} />
       <div className="campreg-container">
-        <form  onSubmit={handleSubmit}>
+        <form className="doner-reg-form" onSubmit={handleSubmit}>
           <h1 >Campaign Registration</h1>
           <label htmlFor="org_name"> Organizer Name: </label>
           <input type="text" id="org_name" name="org_name" onChange={handleChange} required></input>

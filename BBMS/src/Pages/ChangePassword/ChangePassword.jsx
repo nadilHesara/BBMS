@@ -19,7 +19,7 @@ function ChangePassword({ onSave, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="doner-reg-form" onSubmit={handleSubmit}>
       <div>
         <label htmlFor="curpwd">Current Password: </label>
         <input

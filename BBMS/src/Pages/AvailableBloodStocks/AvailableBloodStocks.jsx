@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import districts from "../../SharedData/Districts";
+import districts from "../../SharedData/districts";
 import {
   BarChart,
   Bar,
@@ -34,49 +34,62 @@ const statusColor = {
   Sufficient: "bg-green-500",
 };
 
-
-
-function AvailableBloodStocks() {
-
+function AvailableBloodStocks({theme}) {
   const userId = localStorage.getItem("userId");
   const userType = localStorage.getItem("userType");
 
   const [hospitals, setHospitals] = useState([]);
-  const [district , setDistrict] = useState("All");
+  const [district, setDistrict] = useState("All");
+  const [isDarkMode, setIsDarkMode] = useState(false);
   
+
+  useEffect(() => {
+    setIsDarkMode(theme === "dark");
+  }, [theme]);
+
   const handleDistrict = (e) => {
     setDistrict(e.value);
-  }
+  };
 
-  useEffect(()=> {
+  
 
+  useEffect(() => {
     fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}/bloodStock?${district}`)
-    .then((res)=> {
-      if (!res.ok) throw new Error("Fetch failed");
+      .then((res) => {
+        if (!res.ok) throw new Error("Fetch failed");
         return res.json();
-    })
-    .then((data) => {
-      console.log(district);
-      setHospitals(data);
-    })
-},[district])
-
+      })
+      .then((data) => {
+        console.log(district);
+        setHospitals(data);
+      });
+  }, [district]);
 
   return (
-    <div className="p-6">
+    <div className={`blood-stock-container ${isDarkMode ? 'dark-mode' : ''}`}>
+      <div className="header-controls">
+        <div className="district-control">
+          <label className={isDarkMode ? 'dark-label' : ''}>District:</label>
+          <select
+            className={`district-select ${isDarkMode ? 'dark-select' : ''}`}
+            name="District"
+            onChange={(e) => handleDistrict(e)}
+            required
+          >
+            <option value=""> Overall </option>
+            {districts.map((d, i) => (
+              <option key={i} value={d}>
+                {d}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <label>District:</label>
-      <select name="District" onChange={(e) => handleDistrict(e)}  required>
-        <option value=""> Overall </option> 
-        {districts.map((d, i) => (
-          <option key={i} value={d}>
-            {d}
-          </option>
-        ))}
-      </select>
+      </div>
 
-
-      <h2 className="text-2xl font-bold mb-4">Available Blood Stocks</h2>
+      <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'dark-title' : ''}`}>
+        Available Blood Stocks
+      </h2>
 
       {/*cards */}
       <div className="blood-card-grid">
@@ -85,10 +98,14 @@ function AvailableBloodStocks() {
           return (
             <div
               key={item.type}
-              className="blood-stock-card"
+              className={`blood-stock-card ${isDarkMode ? 'dark-card' : ''}`}
             >
-              <div className="text-lg font-semibold">🩸 {item.type}</div>
-              <div className="text-2xl font-bold">{item.units} Units</div>
+              <div className={`text-lg font-semibold ${isDarkMode ? 'dark-text' : ''}`}>
+                🩸 {item.type}
+              </div>
+              <div className={`text-2xl font-bold ${isDarkMode ? 'dark-text' : ''}`}>
+                {item.units} Units
+              </div>
               <span
                 className={`status-${status.toLowerCase()} mt-2 text-sm px-2 py-1 rounded-full w-fit`}
               >
@@ -99,32 +116,46 @@ function AvailableBloodStocks() {
         })}
       </div>
 
-  {/* Chart */}
-<div className="blood-chart-container">
-  <h3 className="blood-chart-title">Blood Stock Chart</h3>
-  <ResponsiveContainer width="100%" height={300}>
-    <BarChart data={bloodData}>
-      <XAxis dataKey="type" />
-      <YAxis />
-      <Tooltip />
-      <Bar dataKey="units">
-        {bloodData.map((entry, index) => (
-          <Cell
-            key={`cell-${index}`}
-            fill={
-              getStatus(entry.units) === "Critical"
-                ? "#EF4444"
-                : getStatus(entry.units) === "Low"
-                ? "#FACC15"
-                : "#10B981"
-            }
-          />
-        ))}
-      </Bar>
-    </BarChart>
-  </ResponsiveContainer>
-</div>
+      {/* Chart */}
+      <div className={`blood-chart-container ${isDarkMode ? 'dark-chart' : ''}`}>
+        <h3 className={`blood-chart-title ${isDarkMode ? 'dark-title' : ''}`}>
+          Blood Stock Chart
+        </h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={bloodData}>
+            <XAxis
+              dataKey="type"
+              tick={{ fill: isDarkMode ? '#e5e7eb' : '#374151' }}
+            />
+            <YAxis
+              tick={{ fill: isDarkMode ? '#e5e7eb' : '#374151' }}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                border: isDarkMode ? '1px solid #374151' : '1px solid #d1d5db',
+                color: isDarkMode ? '#e5e7eb' : '#374151'
+              }}
+            />
+            <Bar dataKey="units">
+              {bloodData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={
+                    getStatus(entry.units) === "Critical"
+                      ? "#EF4444"
+                      : getStatus(entry.units) === "Low"
+                      ? "#FACC15"
+                      : "#10B981"
+                  }
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }
+
 export default AvailableBloodStocks;

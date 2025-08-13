@@ -1,13 +1,13 @@
 /* ===== Base Styles ===== */
 .navibar {
-    position: absolute;
-    width: 100%;
-    height: 9.9vh;
-    background-color: rgb(77, 77, 77);
+    position: fixed;
+    height: 70px;
+    width : 100%;
+    background-color: rgb(77, 77, 77,1);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 40px 50px;
+    padding: 15px 50px;
     top: 0;
     left: 0;
     transition: 0.5s;
@@ -16,8 +16,20 @@
 
 /* ===== Dark Mode ===== */
 .navibar.dark {
-  background: rgba(25, 25, 25, 0.9);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: fixed;
+  height: 70px;
+  width : 100%;
+  background-color: rgb(41, 41, 41);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 50px;
+  top: 0;
+  left: 0;
+  transition: 0.5s;
+  z-index: 1000;
+
+  
 }
 
 /* ===== Logo and Brand ===== */
