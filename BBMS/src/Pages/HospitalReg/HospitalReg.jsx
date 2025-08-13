@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NaviBar from "../../components/Navibar/NaviBar";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
-import districts from '../../SharedData/Districts';
+import districts from '../../SharedData/districts';
 import "./HospitalReg.css";
 
 function HospitalReg({ theme, setTheme }) {
@@ -67,7 +67,7 @@ function HospitalReg({ theme, setTheme }) {
         <div>
             <NaviBar theme={theme} setTheme={setTheme} />
             <div className={theme === "light" ? "hospital-reg" : "hospital-reg dark"}>
-                <form onSubmit={handleSubmit}>
+                <form className="hospital-reg-form"  onSubmit={handleSubmit}>
                     <h1>Hospital Registration</h1>
                     <label htmlFor="name">Hospital Name:</label>
                     <input type="text" name="name" onChange={handleChange} required />

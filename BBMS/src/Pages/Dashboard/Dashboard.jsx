@@ -81,11 +81,11 @@ const Dashboard = ({ theme, setTheme }) => {
 
 
   return (
-    <>
+    <div className="dashboard-layout">
       <NaviBar theme={theme} setTheme={setTheme} />
-      <div className="main-layout">
+      <div className={`main-layout ${theme}`}>
         <LeftSlideBar theme={theme} userType={userType} username={userData.userName} />
-        <div className="content-area">
+        <div className={`content-area ${theme}`}>
           {isOnDashboard && 
             <div className="calender-container">
               {userType === "Doner" && <h3 className="header">Welcome <i>{userData?.Name}</i></h3>}
@@ -112,7 +112,7 @@ const Dashboard = ({ theme, setTheme }) => {
           {/* <pre>{JSON.stringify(userData, null, 2)}</pre> */}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
