@@ -38,10 +38,9 @@ function CampReg({ theme, setTheme }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-    console.log(campaign);
 
     try{
-      const response = await fetch("http://localhost:9191/campReg",{
+      const response = await fetch("http://localhost:9191/dashboard/campReg",{
       method:"POST",
       headers: {  
           "Content-Type": "application/json"
@@ -63,10 +62,7 @@ function CampReg({ theme, setTheme }) {
       alert("Registration failed. Check server and data.");
       setMessage("Registration failed. Check server and data.");
     }
-
-
   }
-
 
   return (
     <>

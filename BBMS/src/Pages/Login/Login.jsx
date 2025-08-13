@@ -9,11 +9,11 @@ import { Link, useNavigate } from 'react-router-dom';
 const Login = ({ theme, setTheme }) => {
   const navigate = useNavigate();
 
-  const login = localStorage.getItem("userType");
+  const login = sessionStorage.getItem("userType");
   const [userType, setUserType] = useState(login ? login : "");
 
   useEffect(() => {
-    localStorage.setItem("userType", userType)
+    sessionStorage.setItem("userType", userType)
   }, [userType]);
 
   const [username, setUsername] = useState('');
@@ -24,8 +24,8 @@ const Login = ({ theme, setTheme }) => {
 
 
   useEffect(() => {
-    const savedUsername =  localStorage.getItem("rememberedUsername");
-    const savedPassword = localStorage.getItem("rememberedPassword");
+    const savedUsername = sessionStorage.getItem("rememberedUsername");
+    const savedPassword = sessionStorage.getItem("rememberedPassword");
 
     if (savedUsername && savedPassword) {
       setUsername(savedUsername);
@@ -55,12 +55,12 @@ const Login = ({ theme, setTheme }) => {
       });
 
       if (rememberMe) {
-        localStorage.setItem("rememberedUsername", username);
-        localStorage.setItem("rememberedPassword", password);
+        sessionStorage.setItem("rememberedUsername", username);
+        sessionStorage.setItem("rememberedPassword", password);
 
       } else {
-        localStorage.removeItem("rememberedUsername");
-        localStorage.removeItem("rememberedPassword");
+        sessionStorage.removeItem("rememberedUsername");
+        sessionStorage.removeItem("rememberedPassword");
       }
 
       const result = await response.json();
@@ -68,10 +68,10 @@ const Login = ({ theme, setTheme }) => {
         setMessage(result.message);
         console.log("Login successful to " + result.user_type + " !");
         setUserType(result.user_type);
-        localStorage.setItem("username", result.username);
+        sessionStorage.setItem("username", result.username);
         navigate("/dashboard");
-        localStorage.setItem("userId", result.user_id); // or whatever key name you use
-        localStorage.setItem("userType", result.user_type);
+        sessionStorage.setItem("userId", result.user_id); // or whatever key name you use
+        sessionStorage.setItem("userType", result.user_type);
 
 
       } else {

@@ -1,6 +1,6 @@
 import ballerina/http;
+// import ballerina/io;
 import ballerina/sql;
-import ballerina/io;
 
 listener http:Listener listener9191 = new (9191);
 
@@ -23,11 +23,6 @@ service / on listener9191 {
         return result;
     }
 
-    isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
-        json|error result = check addCamp(campaign);
-        return result;
-    }
-
     isolated resource function post login(@http:Payload LoginRequest loginReq) returns json|error {
         json|error result = check checkPassword(loginReq.username, loginReq.password);
         return result;
@@ -36,22 +31,33 @@ service / on listener9191 {
     isolated resource function post forgotpassword(@http:Payload ForgotPasswordRequest request) returns json|error{
         return resetPassword(request.userType,request.userInfo);         
     }
+
+    isolated resource function post donates(@http:Payload SearchRequest searchReq) returns json|error {
+        json|error result = check search_Doner(searchReq.username_email, searchReq.nic);
+        return result;
+    }
+
+    isolated resource function post donations(@http:Payload Donates donates) returns json|error {
+        json|error result = check addDonation(donates);
+        return result;
+    }
+
 }
 
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
-        allowMethods: ["POST", "GET", "PUT", "OPTIONS"]
+        allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowHeaders: ["Content-Type", "Authorization"]
     }
 }
-
 service /dashboard on listener9191 {
 
     resource function get .(@http:Query string user_id, @http:Query string user_type) returns json|error {
         json body = {
-            "userId" : "",
-            "userName":"",
-            "Name" : "",
+            "userId": "",
+            "userName": "",
+            "Name": "",
             "Email": "",
             "gender": "",
             "bloodGroup": "",
@@ -69,19 +75,19 @@ service /dashboard on listener9191 {
             Doner|error doner = getDoner(id = user_id);
             if doner is Doner {
                 body = {
-                    userId : doner.doner_id,
-                    userName : doner.username,
-                    Name : doner.name,
-                    Email : doner.email,
-                    gender : doner.gender,
-                    bloodGroup : doner.blood_group,
-                    NicNo : doner.nic_no,
-                    Dob : doner.dob,
-                    Telephone : doner.tele,
-                    AddressLine1 : doner.address_line1,
-                    AddressLine2 : doner.address_line2,
-                    AddressLine3 : doner.address_line3,
-                    District : doner.District
+                    userId: doner.doner_id,
+                    userName: doner.username,
+                    Name: doner.name,
+                    Email: doner.email,
+                    gender: doner.gender,
+                    bloodGroup: doner.blood_group,
+                    NicNo: doner.nic_no,
+                    Dob: doner.dob,
+                    Telephone: doner.tele,
+                    AddressLine1: doner.address_line1,
+                    AddressLine2: doner.address_line2,
+                    AddressLine3: doner.address_line3,
+                    District: doner.District
                 };
             } else {
                 return doner;
@@ -91,15 +97,15 @@ service /dashboard on listener9191 {
             Hospital|error hospital = getHospital(id = user_id);
             if hospital is Hospital {
                 body = {
-                    userId : hospital.hospital_id,
-                    userName : hospital.username,
-                    Name : hospital.name,
-                    Email : hospital.email,
-                    Telephone : hospital.contact_no,
-                    AddressLine1 : hospital.address_line1,
-                    AddressLine2 : hospital.address_line2,
-                    AddressLine3 : hospital.address_line3,
-                    District : hospital.District
+                    userId: hospital.hospital_id,
+                    userName: hospital.username,
+                    Name: hospital.name,
+                    Email: hospital.email,
+                    Telephone: hospital.contact_no,
+                    AddressLine1: hospital.address_line1,
+                    AddressLine2: hospital.address_line2,
+                    AddressLine3: hospital.address_line3,
+                    District: hospital.District
                 };
             } else {
                 return hospital;
@@ -124,58 +130,116 @@ service /dashboard on listener9191 {
             Doner doner = checkpanic donerJson.fromJsonWithType(Doner);
 
             sql:ExecutionResult|error result = updateDoner(doner);
-            if result is sql:ExecutionResult{
-                    return {"message" : "Doner updated successfully"} ;
-            }else {
+            if result is sql:ExecutionResult {
+                return {"message": "Doner updated successfully"};
+            } else {
                 return result;
             }
-            
-            
-        }else if user_type == "Hospital" {            
+
+        } else if user_type == "Hospital" {
             map<json> userMap = <map<json>>user_data;
             json hospitalJson = userMap["hospital"];
-            
+
             Hospital|error existingHospital = getHospital(id = user_id);
 
             if existingHospital is Hospital {
                 if hospitalJson is map<json> {
                     hospitalJson["password"] = existingHospital.password;
-                    
+
                 }
             }
 
             Hospital hospital = checkpanic hospitalJson.fromJsonWithType(Hospital);
 
-
             sql:ExecutionResult|error result = updateHospital(hospital);
-            if result is sql:ExecutionResult{
-                    return {"message" : "Hospital updated successfully"} ;
+            if result is sql:ExecutionResult {
+                return {"message": "Hospital updated successfully"};
 
-            }else {
-                    return result;
+            } else {
+                return result;
             }
 
         }
+    }
+
+    resource function get bloodStock(@http:Query string district, string hospital) returns json|error {
+        HospitalDetails[]|error hospitalsResult = getAllHospitals(district);
+
+        bloodData|error bloodResult = getBloodStockHospital(district,hospital);
+        if district == "All" {
+            hospitalsResult = [];
+        }
+
+        if hospitalsResult is error {
+            return hospitalsResult;
+        }
+        if bloodResult is error {
+            return bloodResult;
+        }
+
+        json body = {
+            "hospitals": hospitalsResult.toJson(),
+            "blood":bloodResult.toJson()
+        };
+
+        return body;
+    }
+
+    isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
+        json|error result = check addCamp(campaign);
+        return result;
+    }
+    
+    resource function get donations(@http:Query string user_id) returns DonateRecord[]|error{
+        DonateRecord[]|error donations= get_DonationHistory(user_id);
+        return donations;
+    }
+
+    resource function get donor(@http:Query string donor_id) returns json|error{
+        string|error dateResult = getLastDonation(donor_id);
+        string lastDonation = "";
+        if dateResult is string {
+            lastDonation = dateResult;
+        } else {
+            lastDonation = "";
+        }
+        json body = {
+            "LastDonationYR": "",
+            "LastDonationMonth": "",
+            "BYear": "",
+            "BMonth": ""
+        };
+        Doner|error doner = getDoner(donor_id);
+            if doner is Doner {
+                string DOB = doner.dob;
+                string Age_yr = string:substring(DOB, 0, 4);
+                string Age_m = string:substring(DOB, 5, 7);
+                int b_yr = checkpanic int:fromString(Age_yr);
+                int b_m = checkpanic int:fromString(Age_m);
+                (string|int) lastYear = " ";
+                (string|int) lastMonth = " ";
+                if lastDonation != "" {
+                    string lastDonationYear = string:substring(lastDonation, 0, 4);
+                    string lastDonationMonth = string:substring(lastDonation, 5, 7);
+                    lastYear = checkpanic int:fromString(lastDonationYear);
+                    lastMonth = checkpanic int:fromString(lastDonationMonth);
+                }
+
+                body = {
+                    LastDonationYR: lastYear,
+                    LastDonationMonth: lastMonth,
+                    BYear : b_yr,
+                    BMonth : b_m
+                };
+
+            }else {
+                return error("Doner not found");
+            }
+        return body;
     }
 
     resource function get campaigns(@http:Query string date, string district) returns Campaign[]|error {
         Campaign[]|error campaigns = getCampaignEvent(date,district);
         return campaigns;
     };
-
-    resource function get bloodStock(@http:Query string district) returns Hospital[]|error { 
-        Hospital[]|error hospitals;
-        if district == "All" {
-            hospitals = getAllHospitals(());
-        }else {
-            hospitals = getAllHospitals(district);
-        }
-        return hospitals;
-    };
-
-    resource function get donations(@http:Query string user_id) returns DonateRecord[]|error{
-        DonateRecord[]|error donations= get_DonationHistory(user_id);
-        io:println(donations);
-        return donations;
-    }
 }

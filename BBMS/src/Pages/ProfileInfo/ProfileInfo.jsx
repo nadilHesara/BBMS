@@ -43,8 +43,8 @@ function ProfileInfo({theme,setTheme}){
 
 useEffect(() => {
 
-  const userData = JSON.parse(localStorage.getItem("userData"));
-  const user_Type = localStorage.getItem("userType");
+  const userData = JSON.parse(sessionStorage.getItem("userData"));
+  const user_Type = sessionStorage.getItem("userType");
   setUserType(user_Type);
 
   const fetchUserData = async () => {
@@ -108,8 +108,8 @@ useEffect(() => {
 }, []);
 
 
-{/*localStorage.setItem("userData", JSON.stringify(res.user_id));
-localStorage.setItem("userType", res.user_type);*/}
+{/*sessionStorage.setItem("userData", JSON.stringify(res.user_id));
+sessionStorage.setItem("userType", res.user_type);*/}
 
 
   {/*const handleImageChange = (e) => {const file = e.target.files[0];

@@ -8,6 +8,7 @@ import HospitalReg from "./Pages/HospitalReg/HospitalReg";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import ProfileInfo from "./Pages/ProfileInfo/ProfileInfo";
 import AvailableBloodStocks from "./Pages/AvailableBloodStocks/AvailableBloodStocks";
+import CampaignHistory from "./Pages/CampaignHistory/CampaignHistory";
 import PageNotFound from "./Pages/PageNotFound/PageNotFound";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import DonationHistory from "./Pages/DonationHistory/DonationHistory";
@@ -15,6 +16,15 @@ import DonationHistory from "./Pages/DonationHistory/DonationHistory";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import ChangePassword from "./Pages/ChangePassword/ChangePassword";
+import DonationFormLayout from "./Pages/DonationForm/DonationFormLayout";
+import EligibilityCheck from "./components/DonationFormComponents/EligibilityCheck";
+import PersonalInfoForm from "./components/DonationFormComponents/PersonalInfoForm";
+import DonationHistoryForm from "./components/DonationFormComponents/DonationHistoryForm";
+import MedicalScreenForm from "./components/DonationFormComponents/MedicalScreenForm";
+import ConsentForm from "./components/DonationFormComponents/ConsentForm";
+import SuccessPage from "./components/DonationFormComponents/SuccessPage";
+import Donates from "./Pages/Donates/Donates";
+
 
 function App() {
   const current_theme = localStorage.getItem("current_theme");
@@ -36,14 +46,28 @@ function App() {
           <Route path="/login" element={<Login theme={theme} setTheme={setTheme} />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
 
+
           <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />}>
             <Route index element={<h1>Welcome to Dashboard Page</h1>} />
               <Route path="ProfileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
               <Route path="AvailableBloodStocks" element={<AvailableBloodStocks theme={theme} setTheme={setTheme}/>} />
+              <Route path="CampaignHistory" element={<CampaignHistory theme={theme} setTheme={setTheme} />}/>
               <Route path="ChangePassword" element={<ChangePassword theme={theme} setTheme={setTheme}/>}/>
               <Route path="campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
               <Route path="hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
               <Route path="donation-history" element={<DonationHistory theme={theme} setTheme={setTheme} />} />
+              <Route path="donates" element={<Donates theme={theme} setTheme={setTheme} />} />
+
+
+            <Route path="DonationForm" element={<DonationFormLayout />}>
+              <Route index element={<EligibilityCheck />} />
+              <Route path="personal-info" element={<PersonalInfoForm />} />
+              <Route path="donation-history" element={<DonationHistoryForm />} />
+              <Route path="medical" element={<MedicalScreenForm />} />
+              <Route path="consent" element={<ConsentForm />} />
+              <Route path="success" element={<SuccessPage />} />
+            </Route>
+              
 
           </Route>
 

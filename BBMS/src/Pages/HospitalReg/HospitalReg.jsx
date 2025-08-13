@@ -21,10 +21,6 @@ function HospitalReg({ theme, setTheme }) {
         password: ""
     });
 
-    const [show, setShow] = useState([false, false]);
-
-
-
     const handleChange = (e) => {
         setHospital({
             ...hospital,
@@ -51,7 +47,7 @@ function HospitalReg({ theme, setTheme }) {
             const result = await response.json();
             if (response.ok) {
                 setMessage("Hospital Registration Successful!");
-                navigate("/login");
+                navigate("/dashboard");
 
             } else {
                 setMessage("Error: " + (result.message || JSON.stringify(result)));

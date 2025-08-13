@@ -2,6 +2,8 @@ import ballerina/sql;
 import ballerina/io;
 
 public isolated function addDoner(Doner doner) returns json|error {
+
+
     DonerID|error d = dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
     string newDonerId;
     if d is DonerID {
@@ -21,6 +23,13 @@ public isolated function addDoner(Doner doner) returns json|error {
         newDoner.blood_group = ();
     }
 
+    string defaultPassword;
+    if doner.password is () || doner.password == "" {
+        defaultPassword = check generatePassword(12);
+        _ = check sendEmail(doner.email, defaultPassword,doner.username);
+        newDoner.password = defaultPassword;
+    }
+    
     sql:ParameterizedQuery addDoner = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District, Username, Password, Email)
         VALUES(
             ${newDoner.doner_id},
@@ -155,4 +164,19 @@ public isolated function get_DonationHistory(string userID) returns DonateRecord
     check resultStream.close();
     io:println(donations);
     return donations;
+}
+
+public isolated function getLastDonation(string donor_id) returns string|error {
+    string LastDonation = "";
+    sql:ParameterizedQuery query1 = `SELECT CampaignID FROM donates WHERE DonerID = ${donor_id} ORDER BY DonateID DESC LIMIT 1`;
+    Campaign|error Camp = check dbClient->queryRow(query1);
+
+    if Camp is Campaign {  
+        sql:ParameterizedQuery query2 = `SELECT DateofCampaign FROM campaign WHERE CampaignID = ${Camp.campain_id}`;
+        LastDonation = check dbClient->queryRow(query2);
+        
+    } else {
+        return error("No Previous Donations found");
+    }
+    return LastDonation;
 }

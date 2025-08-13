@@ -8,10 +8,10 @@ import districts from "../../SharedData/districts";
 
 const Dashboard = ({ theme, setTheme }) => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = useLocation(); 
 
-  const userId = localStorage.getItem("userId");
-  const userType = localStorage.getItem("userType");
+  const userId = sessionStorage.getItem("userId");
+  const userType = sessionStorage.getItem("userType");
 
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
@@ -37,7 +37,7 @@ const Dashboard = ({ theme, setTheme }) => {
       .then((data) => {
         console.log(data)
         setUserData(data);
-        localStorage.setItem("userData", JSON.stringify(data));
+        sessionStorage.setItem("userData", JSON.stringify(data));
       })
       .catch((err) => {
         console.error("Error fetching dashboard data:", err.message);
@@ -59,14 +59,13 @@ const Dashboard = ({ theme, setTheme }) => {
   }
 
   const isOnDashboard = location.pathname === "/dashboard";
+  
   useEffect(() => {
     const handleBackButton = () => {
       if (!userId || !userType) {
         navigate("/login", { replace: true });
       }
     };
-
-    
 
     window.addEventListener("popstate", handleBackButton);
 

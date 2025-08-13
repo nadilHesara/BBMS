@@ -8,7 +8,7 @@ import "./DonorReg.css";
 
 function DonorReg({ theme, setTheme }) {
   const navigate = useNavigate();
-  const [userType,_] = useState(localStorage.getItem("userType") ? localStorage.getItem("userType"):undefined);
+  const [userType,_] = useState(sessionStorage.getItem("userType") ? sessionStorage.getItem("userType"):undefined);
   console.log(userType);
 
 
