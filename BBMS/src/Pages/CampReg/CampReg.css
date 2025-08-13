@@ -1,10 +1,115 @@
-body{
-    overflow-y: auto;
+.doner-reg-form  h1 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 30px;
+
+    color: #861f1f;
 }
 
-.campreg-container {
-  height: calc(100vh - 100px);
-  box-sizing: border-box;
+
+.doner-reg-form label {
+    gap: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 15px;
+    margin-bottom: 10px;
+    color: rgb(77, 77, 77);
+    font-weight: 540;
+    display: inline-block;
+    width: 130px;
+
 }
 
 
+.doner-reg-form {
+    animation: slideIn 0.5s ease;
+    background-color: #f2f2f2;
+    padding: 30px 40px;
+    width: 500px;
+    margin: 120px auto 50px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.doner-reg-form input[type="text"],
+input[type="email"],
+.doner-reg-form input[type="date"],
+.doner-reg-form input[type="time"],
+.doner-reg-form input[type="tel"],
+.doner-reg-form select {
+    width: 60%;
+    padding: 5px;
+    font-size: 15px;
+    border-radius: 5px;
+    border: 1px solid black;
+    margin-bottom: 20px;
+}
+
+.doner-reg-form div input[type="text"] {
+    width: 87%;
+    padding: 5px;
+    font-size: 15px;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.doner-reg-form input[type="radio"] {
+    margin-left: 2px;
+
+}
+
+
+.doner-reg-form input[type="submit"] {
+    background-color: #861f1f;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin-left: 37%;
+    margin-top: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.doner-reg-form input[type="submit"]:hover {
+    background-color: #bf1212;
+}
+
+.dark form label {
+    color: rgb(198, 198, 198);
+}
+
+.dark h1 {
+    color: rgba(219, 46, 187, 0.696);
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+.donor-reg {
+    height: calc(100vh - 100px);
+}
+
+.address-lines {
+    margin-left: 130px;
+}
+
+.message {
+    width: 100%;
+    display: flex;
+    font-size: 18px;
+    justify-items: center;
+    align-items: center;
+    padding-top: 2vh;
+    flex-direction: column;
+}

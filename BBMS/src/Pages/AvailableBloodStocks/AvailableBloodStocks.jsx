@@ -31,11 +31,11 @@ const statusColor = {
 
 
 
-function AvailableBloodStocks() {
-  
-  const HandleBlood = (item , blood) => {
+function AvailableBloodStocks({ theme }) {
 
-    if (blood[typeMap[item.type]] == null){
+  const HandleBlood = (item, blood) => {
+
+    if (blood[typeMap[item.type]] == null) {
       return 0
     }
     return parseFloat(blood[typeMap[item.type]])
@@ -47,28 +47,34 @@ function AvailableBloodStocks() {
     return "Sufficient";
   };
 
-  const [bloodData,setBloodData] = useState([
-  { type: "A+", units: 0 },
-  { type: "B+", units: 0 },
-  { type: "AB+", units: 0 },
-  { type: "O+", units: 0 },
-  { type: "A-", units: 0 },
-  { type: "B-", units: 0 },
-  { type: "AB-", units: 0 },
-  { type: "O-", units: 0 },
-])
+  const [bloodData, setBloodData] = useState([
+    { type: "A+", units: 0 },
+    { type: "B+", units: 0 },
+    { type: "AB+", units: 0 },
+    { type: "O+", units: 0 },
+    { type: "A-", units: 0 },
+    { type: "B-", units: 0 },
+    { type: "AB-", units: 0 },
+    { type: "O-", units: 0 },
+  ])
 
   const [hospitals, setHospitals] = useState([]);
   const [district, setDistrict] = useState("All");
   const [error, setError] = useState(null);
   const [hospital, setHospital] = useState("All");
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+
+  useEffect(() => {
+    setIsDarkMode(theme === "dark");
+  }, [theme]);
 
   const handleDistrict = (e) => {
     setDistrict(e.target.value);
   };
 
-    const handleHospital = (e) => {
-      setHospital(e.target.value);
+  const handleHospital = (e) => {
+    setHospital(e.target.value);
   };
 
   useEffect(() => {
@@ -79,13 +85,13 @@ function AvailableBloodStocks() {
         if (!res.ok) throw new Error("Fetch failed");
         return res.json();
       })
-      .then((data) => {      
+      .then((data) => {
         setHospitals(data.hospitals || []);
         setHospital("All")
-        
+
         const updatedData = bloodData.map(item => ({
           ...item,
-          units: HandleBlood(item,data.blood)
+          units: HandleBlood(item, data.blood)
         }));
 
         setBloodData(updatedData);
@@ -94,84 +100,93 @@ function AvailableBloodStocks() {
         console.error("Error fetching hospital data:", err.message);
         setError("Failed to load hospitals data.");
       });
-  }, [district,hospital]);
+  }, [district, hospital]);
 
 
   return (
-    <div className="p-6">
-      <div className="selects">
-      {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <label>District:</label>
-      <select name="District" onChange={(e) => handleDistrict(e)} required>
-        <option value="All">Overall</option>
-        {districts.map((d, i) => (
-          <option key={i} value={d}>
-            {d}
-          </option>
-        ))}
-      </select>
+    <>
+      <div className={`blood-stock-container ${isDarkMode ? 'dark-mode' : ''}`}>
+        <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'dark-title' : ''}`}>Available Blood Stocks</h2>
+        <div className="selects">
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          <div></div>
+        </div>
+        <div className="header-controls">
+          <div className="district-control">
+            <label className={isDarkMode ? 'dark-label' : ''}>District:</label>
+            <select className={`district-select ${isDarkMode ? 'dark-select' : ''}`} name="District" onChange={(e) => handleDistrict(e)} required>
+              <option value="All">Overall</option>
+              {districts.map((d, i) => (
+                <option key={i} value={d}>
+                  {d}
+                </option>
+              ))}
+            </select>
 
-      <label>Hospitals:</label>
-      <select name="Hospitals" onChange={handleHospital} required>
-        <option value="All"> All </option>
-        {hospitals.map((d, i) => (
-          <option key={i} value={d.HospitalID}>
-            {d.Name}
-          </option>
-        ))}
-      </select>
-      </div>
+            <label className={isDarkMode ? 'dark-label' : ''}>Hospitals:</label>
+            <select className={`district-select ${isDarkMode ? 'dark-select' : ''}`} name="Hospitals" onChange={handleHospital} required>
+              <option value="All"> All </option>
+              {hospitals.map((d, i) => (
+                <option key={i} value={d.HospitalID}>
+                  {d.Name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
 
-      <h2 className="text-2xl font-bold mb-4">Available Blood Stocks</h2>
 
-      {/*cards */}
-      <div className="blood-card-grid">
-        {bloodData.map((item) => {
-          const status = getStatus(item.units);
-          return (
-            <div
-              key={item.type}
-              className="blood-stock-card"
-            >
-              <div className="text-lg font-semibold">🩸 {item.type}</div>
-              <div className="text-2xl font-bold">{item.units} Units</div>
-              <span
-                className={`status-${status.toLowerCase()} mt-2 text-sm px-2 py-1 rounded-full w-fit`}
+
+
+        {/*cards */}
+        <div className="blood-card-grid">
+          {bloodData.map((item) => {
+            const status = getStatus(item.units);
+            return (
+              <div
+                key={item.type}
+                className={`blood-stock-card ${isDarkMode ? 'dark-card' : ''}`}
               >
-                {status}
-              </span>
-            </div>
-          );
-        })}
-      </div>
+                <div className={`text-lg font-semibold ${isDarkMode ? 'dark-text' : ''}`}>🩸 {item.type}</div>
+                <div className={`text-2xl font-bold ${isDarkMode ? 'dark-text' : ''}`}>{item.units} Units</div>
+                <span
+                  className={`status-${status.toLowerCase()} mt-2 text-sm px-2 py-1 rounded-full w-fit`}
+                >
+                  {status}
+                </span>
+              </div>
+            );
+          })}
+        </div>
 
-  {/* Chart */}
-<div className="blood-chart-container">
-  <h3 className="blood-chart-title">Blood Stock Chart</h3>
-  <ResponsiveContainer width="100%" height={300}>
-    <BarChart data={bloodData}>
-      <XAxis dataKey="type" />
-      <YAxis />
-      <Tooltip />
-      <Bar dataKey="units">
-        {bloodData.map((entry, index) => (
-          <Cell
-            key={`cell-${index}`}
-            fill={
-              getStatus(entry.units) === "Critical"
-                ? "#EF4444"
-                : getStatus(entry.units) === "Low"
-                ? "#FACC15"
-                : "#10B981"
-            }
-          />
-        ))}
-      </Bar>
-    </BarChart>
-  </ResponsiveContainer>
-</div>
-  </div>
+        {/* Chart */}
+        <div className={`blood-chart-container ${isDarkMode ? 'dark-chart' : ''}`}>
+          <h3 className={`blood-chart-title ${isDarkMode ? 'dark-title' : ''}`}>Blood Stock Chart</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={bloodData}>
+              <XAxis dataKey="type" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="units">
+                {bloodData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={
+                      getStatus(entry.units) === "Critical"
+                        ? "#EF4444"
+                        : getStatus(entry.units) === "Low"
+                          ? "#FACC15"
+                          : "#10B981"
+                    }
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div >
+    </>
   );
 }
 export default AvailableBloodStocks;

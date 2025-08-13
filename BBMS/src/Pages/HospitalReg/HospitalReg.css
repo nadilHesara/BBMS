@@ -1,4 +1,4 @@
-form h1 {
+.hospital-reg-form h1 {
     text-align: center;
     font-size: 28px;
     margin-bottom: 30px;
@@ -7,7 +7,7 @@ form h1 {
 }
 
 
-form label {
+.hospital-reg-form label {
     gap: 20px;
     font-size: 16px;
     font-weight: bold;
@@ -21,7 +21,7 @@ form label {
 }
 
 
-form {
+.hospital-reg-form {
     animation: slideIn 0.5s ease;
     background-color: #f2f2f2;
     padding: 30px 40px;
@@ -31,9 +31,9 @@ form {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-form input[type="text"],
-form input[type="tel"],
-form select {
+.hospital-reg-form input[type="text"],
+.hospital-reg-form input[type="tel"],
+.hospital-reg-form select {
     width: 60%;
     padding: 5px;
     font-size: 15px;
@@ -42,7 +42,7 @@ form select {
     margin-bottom: 20px;
 }
 
-form div input[type="text"] {
+.hospital-reg-form div input[type="text"] {
     width: 87%;
     padding: 5px;
     font-size: 15px;
@@ -50,13 +50,13 @@ form div input[type="text"] {
     border: 1px solid black;
 }
 
-form input[type="radio"] {
+.hospital-reg-form input[type="radio"] {
     margin-left: 2px;
 
 }
 
 
-form input[type="submit"] {
+.hospital-reg-form input[type="submit"] {
     background-color: #861f1f;
     color: white;
     border: none;
@@ -69,11 +69,11 @@ form input[type="submit"] {
     transition: background-color 0.3s ease;
 }
 
-form input[type="submit"]:hover {
+.hospital-reg-form input[type="submit"]:hover {
     background-color: #bf1212;
 }
 
-.dark form label {
+.dark .hospital-reg-form label {
     color: rgb(198, 198, 198);
 }
 
