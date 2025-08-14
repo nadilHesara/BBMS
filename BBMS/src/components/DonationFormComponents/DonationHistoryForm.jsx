@@ -37,7 +37,7 @@ export default function DonationHistoryForm() {
       <h2>Step 3: Donation History</h2>
       <form onSubmit={handleNext}>
         <label>Have you donated blood before?
-          <select name="donatedBefore" required onChange={handleChange}>
+          <select name="donatedBefore" /*required*/ onChange={handleChange}>
             <option value="">--Select--</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>

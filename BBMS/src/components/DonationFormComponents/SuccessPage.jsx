@@ -60,7 +60,7 @@ export default function ConsentForm() {
             name="testConsent"
             checked={form.testConsent}
             onChange={handleChange}
-            required
+            /*required*/
           />
           I consent to testing my blood for HIV, Hepatitis B/C, Syphilis, Malaria.
         </label>
@@ -71,7 +71,7 @@ export default function ConsentForm() {
             name="instructionConsent"
             checked={form.instructionConsent}
             onChange={handleChange}
-            required
+            /*required*/
           />
           I agree to follow all instructions from NBTS.
         </label>
@@ -82,13 +82,13 @@ export default function ConsentForm() {
             name="notifyConsent"
             checked={form.notifyConsent}
             onChange={handleChange}
-            required
+            /*required*/
           />
           I agree to be informed of my test results and follow guidance.
         </label>
 
         <label>How often do you want to donate?
-          <select name="frequency" required onChange={handleChange}>
+          <select name="frequency" /*required*/ onChange={handleChange}>
             <option value="">--Select--</option>
             <option>Once in 4 months</option>
             <option>Once in 6 months</option>

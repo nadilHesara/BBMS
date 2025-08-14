@@ -2,11 +2,14 @@ import { useState, useRef, useEffect } from 'react';
 {/*import NaviBar from '../../components/Navibar/NaviBar';*/}
 import districts from '../../SharedData/districts';
 import { FaUserCircle } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 import "./ProfileInfo.css"
 {/*import { use } from 'react';*/}
 
 function ProfileInfo({theme,setTheme}){
 
+  const location = useLocation();
+  const from = location.state?.from;
   const [doner, setDoner] = useState({
     doner_id: '',
     username: '',
@@ -201,10 +204,10 @@ sessionStorage.setItem("userType", res.user_type);*/}
             </div>*/}
 
 
-          <label htmlFor="name">{userType} Name:</label>
+          <label> {userType} Name:</label>
           <input type="text" name="name" defaultValue={userType === "Doner" ? doner.name : hospital.name} onChange={handleChange} required/>
 
-          <label htmlFor="username">Username: </label>
+          <label> Username: </label>
           <input type="text" name="username" defaultValue={userType === "Doner" ? doner.username : hospital.username} readOnly title="This field cannot be changed"/>
           <br />  
           
@@ -227,11 +230,11 @@ sessionStorage.setItem("userType", res.user_type);*/}
           </>
           )}
 
-          <label htmlFor="email">Email: </label>
+          <label>Email: </label>
           <input type="email" name="email" defaultValue={userType === "Doner" ? doner.email : hospital.email} onChange={handleChange} required />
           <br />
 
-          <label htmlFor = {userType === "Doner" ? "tele" : "contact_no"}>{userType === "Doner" ? "Telephone:" : "Contact Number:"}</label>
+          <label>{userType === "Doner" ? "Telephone:" : "Contact Number:"}</label>
           <input type="tel" name={userType === "Doner" ? "tele" : "contact_no"} defaultValue={userType === "Doner" ? doner.tele : hospital.contact_no}  onChange={handleChange} required />
 
           <label>Address:</label>

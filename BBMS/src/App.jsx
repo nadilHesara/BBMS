@@ -11,6 +11,7 @@ import AvailableBloodStocks from "./Pages/AvailableBloodStocks/AvailableBloodSto
 import PageNotFound from "./Pages/PageNotFound/PageNotFound";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import DonationHistory from "./Pages/DonationHistory/DonationHistory";
+import DonationInfo from "./Pages/DonationInfo/DonationInfo";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -55,11 +56,12 @@ function App() {
               <Route path="hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
               <Route path="donation-history" element={<DonationHistory theme={theme} setTheme={setTheme} />} />
               <Route path="donates" element={<Donates theme={theme} setTheme={setTheme} />} />
+              <Route path="DonationInfo" element={<DonationInfo theme={theme} seTheme={setTheme}/>}/> 
 
 
             <Route path="DonationForm" element={<DonationFormLayout />}>
               <Route index element={<EligibilityCheck />} />
-              <Route path="personal-info" element={<PersonalInfoForm />} />
+              <Route path="ProfileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
               <Route path="donation-history" element={<DonationHistoryForm />} />
               <Route path="medical" element={<MedicalScreenForm />} />
               <Route path="consent" element={<ConsentForm />} />

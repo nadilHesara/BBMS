@@ -40,7 +40,8 @@ const LeftSlideBar = ({ theme, userType, username }) => {
       return (
         <>
           <div className="slide-bar-nav-links">
-            <Link to="profileInfo">
+            <Link to="profileInfo"
+            state={{from:"LeftSideBar"}}>
               <FaUserCircle size={30} />
               {isOpen && <span>Profile Info</span>}
             </Link>
@@ -80,7 +81,8 @@ const LeftSlideBar = ({ theme, userType, username }) => {
       return (
         <>
           <div className="slide-bar-nav-links">
-            <Link to="profileInfo">
+            <Link to="profileInfo"
+            state={{from:"LeftSideBar"}}>
               <FaUserCircle size={30} />
               {isOpen && <span>Profile Info</span>}
             </Link>
