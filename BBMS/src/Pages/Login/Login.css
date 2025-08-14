@@ -1,12 +1,14 @@
-
-
+.login-header{
+  color: rgb(106, 6, 6);
+  text-align: center;
+}
 
 .login-links {
   margin-top: 10px;
   text-align: center;
 }
 
-.forgot-pw-link a {
+.forgot-pw-link  {
   color: #007bff;
   text-decoration: none;
 
@@ -18,10 +20,7 @@
 
 }
 
-.forgot-pw-link {
-  margin-top: 10px;
-  margin-left: 14px;
-}
+
 
 .register-link {
   margin-top: 10px;
@@ -32,9 +31,22 @@
   text-decoration: underline;
 }
 
+.login-btn {
+  display: block;          /* Make it take the full line */
+  margin: 20px auto;       /* Center horizontally with auto left/right margins, and add vertical space */
+  width: 80%;            /* Increase width as you like */
+  padding: 10px 0;         /* Add some vertical padding */
+  font-size: 16px;         /* Make text a bit bigger */
+  cursor: pointer;         /* Change cursor on hover */
+  border-radius: 20px;      /* Optional: rounded corners */
+  border: none;            /* Optional: remove default border */
+  background-color: rgb(106, 6, 6);; /* Optional: blue background */
+  color: white;            /* Optional: white text */
+}
 
 
-form label {
+
+.login-form label {
   font-size: 16px;
   font-weight: 540;
   padding: 15px;
@@ -46,8 +58,8 @@ form label {
 }
 
 
-form {
-  background-color: #f2f2f2;
+.login-form {
+  background-color: rgba(255, 255, 255, 0.7);
   padding: 30px 40px;
   width: 500px;
   margin: 120px auto 50px auto;
@@ -56,11 +68,12 @@ form {
 }
 
 
-form input[type="text"],
-form input[type="password"],
-form input[type="date"],
-form input[type="tel"],
-form select {
+.login-form input[type="text"],
+.login-form input[type="password"],
+.login-form input[type="date"],
+.login-form input[type="tel"],
+.login-form input[type="number"],
+.login-form select {
   width: 60%;
   padding: 5px;
   font-size: 15px;
@@ -75,7 +88,7 @@ input#pwd {
 }
 
 
-form svg {
+.login-form svg {
   position: relative;
   left: -30px;
   top: 2px;
@@ -83,25 +96,25 @@ form svg {
 }
 
 
-form {
+.login-form {
   position: relative;
 }
 
 
-form label input[type="checkbox"] {
+.login-form label input[type="checkbox"] {
   margin-right: 6px;
   vertical-align: middle;
 }
 
 
-form label {
+.login-form label {
   display: inline-block;
   vertical-align: middle;
   margin-bottom: 10px;
 }
 
 
-form label:has(input[type="checkbox"]) {
+.login-form label:has(input[type="checkbox"]) {
   
   display: contents;
   align-items:  center;
@@ -111,5 +124,27 @@ form label:has(input[type="checkbox"]) {
  
 }
 
+.forget-pwd-container{
+  width:100%;
+  display:inline-flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  padding-left:15px;
+  padding-right: 30px;
 
+  
+}
+
+/* .remeber-me-check {
+  padding-left:15px;
+  display: inline-flex;  
+  align-items: center;   
+  justify-content: flex-start; 
+  width:90%;       
+}
+
+.forgot-pw-link{
+  
+} */
 
