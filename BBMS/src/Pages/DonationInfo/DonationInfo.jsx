@@ -143,6 +143,7 @@ function DonationInfo({ theme, setTheme }) {
                 navigate('/dashboard/Donates',{
                     state: {
                         campaignId: donate.campaign_id,
+                        campdate:donate.camp_date
                     }
                 }
                 );

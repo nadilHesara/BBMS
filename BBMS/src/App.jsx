@@ -12,11 +12,8 @@ import CampaignHistory from "./Pages/CampaignHistory/CampaignHistory";
 import PageNotFound from "./Pages/PageNotFound/PageNotFound";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import DonationHistory from "./Pages/DonationHistory/DonationHistory";
-<<<<<<< HEAD
 import DonationInfo from "./Pages/DonationInfo/DonationInfo";
-=======
 import CampaignHistory from "./Pages/CampaignHistory/CampaignHistory";
->>>>>>> origin/main
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -62,12 +59,8 @@ function App() {
               <Route path="hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
               <Route path="donation-history" element={<DonationHistory theme={theme} setTheme={setTheme} />} />
               <Route path="donates" element={<Donates theme={theme} setTheme={setTheme} />} />
-<<<<<<< HEAD
-              <Route path="DonationInfo" element={<DonationInfo theme={theme} seTheme={setTheme}/>}/> 
-
-=======
               <Route path="CampaignHistory" element={<CampaignHistory theme={theme} setTheme={setTheme} />} />
->>>>>>> origin/main
+              <Route path="DonationInfo" element={<DonationInfo theme={theme} setTheme={setTheme} />} />
 
             <Route path="DonationForm" element={<DonationFormLayout />}>
               <Route index element={<EligibilityCheck />} />
