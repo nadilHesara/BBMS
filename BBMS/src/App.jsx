@@ -12,14 +12,13 @@ import CampaignHistory from "./Pages/CampaignHistory/CampaignHistory";
 import PageNotFound from "./Pages/PageNotFound/PageNotFound";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import DonationHistory from "./Pages/DonationHistory/DonationHistory";
-import CampaignHistory from "./Pages/CampaignHistory/CampaignHistory";
+import DonationInfo from "./Pages/DonationInfo/DonationInfo";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import ChangePassword from "./Pages/ChangePassword/ChangePassword";
 import DonationFormLayout from "./Pages/DonationForm/DonationFormLayout";
 import EligibilityCheck from "./components/DonationFormComponents/EligibilityCheck";
-import PersonalInfoForm from "./components/DonationFormComponents/PersonalInfoForm";
 import DonationHistoryForm from "./components/DonationFormComponents/DonationHistoryForm";
 import MedicalScreenForm from "./components/DonationFormComponents/MedicalScreenForm";
 import ConsentForm from "./components/DonationFormComponents/ConsentForm";
@@ -59,6 +58,7 @@ function App() {
               <Route path="donation-history" element={<DonationHistory theme={theme} setTheme={setTheme} />} />
               <Route path="donates" element={<Donates theme={theme} setTheme={setTheme} />} />
               <Route path="CampaignHistory" element={<CampaignHistory theme={theme} setTheme={setTheme} />} />
+              <Route path="DonationInfo" element={<DonationInfo theme={theme} setTheme={setTheme} />} />
 
             <Route path="DonationForm" element={<DonationFormLayout />}>
               <Route index element={<EligibilityCheck />} />
