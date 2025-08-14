@@ -51,6 +51,7 @@ service / on listener9191 {
         allowHeaders: ["Content-Type", "Authorization"]
     }
 }
+
 service /dashboard on listener9191 {
 
     resource function get .(@http:Query string user_id, @http:Query string user_type) returns json|error {
@@ -242,4 +243,15 @@ service /dashboard on listener9191 {
         Campaign[]|error campaigns = getCampaignEvent(date,district);
         return campaigns;
     };
+
+    resource function get CampaignHistory(@http:Query string user_id) returns Campaign[]|error {
+        Campaign[]|error campaigns = getCampaignHistory(user_id);
+        return campaigns;
+    }
+
+    resource function post ChangePassword(@http:Payload passwordData passwordData) returns json|error {
+        json|error result = check changePassword(passwordData.userType, passwordData.userName, passwordData.newPassword, passwordData.currentPassword);
+        return result;
+        
+    }
 }
