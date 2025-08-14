@@ -34,7 +34,7 @@ export default function MedicalScreenForm() {
       <h2>Step 4: Medical & Risk Screening</h2>
       <form onSubmit={handleNext}>
         <label>Have you ever had jaundice/hepatitis?
-          <select name="jaundice" required onChange={handleChange}>
+          <select name="jaundice" /*required*/ onChange={handleChange}>
             <option value="">--Select--</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
@@ -42,7 +42,7 @@ export default function MedicalScreenForm() {
         </label>
 
         <label>Had TB or typhoid in the past 2 years?
-          <select name="tbTyphoid" required onChange={handleChange}>
+          <select name="tbTyphoid" /*required*/ onChange={handleChange}>
             <option value="">--Select--</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
