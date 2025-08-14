@@ -8,10 +8,11 @@ import HospitalReg from "./Pages/HospitalReg/HospitalReg";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import ProfileInfo from "./Pages/ProfileInfo/ProfileInfo";
 import AvailableBloodStocks from "./Pages/AvailableBloodStocks/AvailableBloodStocks";
+import CampaignHistory from "./Pages/CampaignHistory/CampaignHistory";
 import PageNotFound from "./Pages/PageNotFound/PageNotFound";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import DonationHistory from "./Pages/DonationHistory/DonationHistory";
-import DonationInfo from "./Pages/DonationInfo/DonationInfo";
+import CampaignHistory from "./Pages/CampaignHistory/CampaignHistory";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -38,7 +39,7 @@ function App() {
   }, [theme]);
 
   return (
-    <div className={theme === "light" ? "container" : "container dark"}>
+    <div className={ `app-container ${theme}`} >
       <Router>
         <Routes>
           <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
@@ -51,13 +52,13 @@ function App() {
             <Route index element={<h1>Welcome to Dashboard Page</h1>} />
               <Route path="ProfileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
               <Route path="AvailableBloodStocks" element={<AvailableBloodStocks theme={theme} setTheme={setTheme}/>} />
+              <Route path="CampaignHistory" element={<CampaignHistory theme={theme} setTheme={setTheme} />}/>
               <Route path="ChangePassword" element={<ChangePassword theme={theme} setTheme={setTheme}/>}/>
               <Route path="campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
               <Route path="hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
               <Route path="donation-history" element={<DonationHistory theme={theme} setTheme={setTheme} />} />
               <Route path="donates" element={<Donates theme={theme} setTheme={setTheme} />} />
-              <Route path="DonationInfo" element={<DonationInfo theme={theme} seTheme={setTheme}/>}/> 
-
+              <Route path="CampaignHistory" element={<CampaignHistory theme={theme} setTheme={setTheme} />} />
 
             <Route path="DonationForm" element={<DonationFormLayout />}>
               <Route index element={<EligibilityCheck />} />

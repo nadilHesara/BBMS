@@ -1,56 +1,172 @@
 .blood-card-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  gap: 3rem;
   margin-bottom: 2rem;
+  margin-left: 8rem;
+  margin-right: 8rem;
   border-radius: 0.75rem;
-    overflow: hidden;
+  overflow: hidden;
 
   @media (min-width: 768px) {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-
 .blood-stock-card {
-  background-color: white;
-  border-radius: 0.75rem; /* rounded-xl */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* shadow */
-  padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.blood-stock-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.blood-stock-card.dark-card {
+  background: #1e293b;
+  border: 1px solid #475569;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.blood-stock-card.dark-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
 .blood-chart-container {
-  background-color: white;
-  padding: 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  margin-left: 8rem;
+  margin-right: 8rem;
+  padding: 2rem;
   border-radius: 0.75rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
   margin-bottom: 2rem;
+  border: 1px solid #e2e8f0;
+}
+
+.blood-chart-container.dark-chart {
+  background: #1e293b;
+  border: 1px solid #475569;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .blood-chart-title {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
+  color: #1e293b;
+}
+
+.blood-chart-title.dark-title {
+  color: #e2e8f0;
 }
 
 .status-critical {
-  background-color: #ef4444; /* Tailwind red-500 */
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+  border-radius:10px;
+  text-align: center;
 }
 
 .status-low {
-  background-color: #facc15; /* Tailwind yellow-400 */
-  color: white;
+  background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+  color: #1f2937;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(250, 204, 21, 0.3);
+  border-radius:10px;
+  text-align: center;
 }
 
 .status-sufficient {
-  background-color: #10b981; /* Tailwind green-500 */
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+  border-radius:10px;
+  text-align: center;
 }
 
-.p-6{
+.blood-stock-container {
   width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+  padding-left:5rem;
+  padding-right:5rem;
 }
+
+
+.district-select {
+  width: 200px;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background-color: white;
+  color: #374151;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.district-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.district-select.dark-select {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+.district-select.dark-select:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+}
+
+.header-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  margin-left: 8rem;
+  margin-right: 8rem;
+  padding: 1rem 0;
+}
+
+.district-control {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.district-control label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.district-control label.dark-label {
+  color: #e5e7eb;
+}
+
+
+.dark-text {
+  color: #e5e7eb !important;
+}
+
+.dark-title {
+  color: #e2e8f0 !important;
+}
+

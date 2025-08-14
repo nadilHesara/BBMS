@@ -51,7 +51,7 @@ public isolated function addDoner(Doner doner) returns json|error {
     sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , DonerID  , UserType) 
             VALUES(
             ${newDoner.username},
-            ${newDoner.tele},
+            ${newDoner.password},
             ${newDoner.doner_id},
             "Doner")`;
 

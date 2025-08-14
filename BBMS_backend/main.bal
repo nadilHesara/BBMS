@@ -1,5 +1,5 @@
 import ballerina/http;
-import ballerina/io;
+// import ballerina/io;
 import ballerina/sql;
 
 listener http:Listener listener9191 = new (9191);
@@ -51,6 +51,7 @@ service / on listener9191 {
         allowHeaders: ["Content-Type", "Authorization"]
     }
 }
+
 service /dashboard on listener9191 {
 
     resource function get .(@http:Query string user_id, @http:Query string user_type) returns json|error {
@@ -165,17 +166,20 @@ service /dashboard on listener9191 {
     resource function get bloodStock(@http:Query string district, string hospital) returns json|error {
         HospitalDetails[]|error hospitalsResult = getAllHospitals(district);
 
-        bloodData|error bloodResult = getBloodStockHospital(hospital);
-        io:println(bloodResult);
+        bloodData|error bloodResult = getBloodStockHospital(district,hospital);
+        if district == "All" {
+            hospitalsResult = [];
+        }
+
         if hospitalsResult is error {
             return hospitalsResult;
         }
         if bloodResult is error {
             return bloodResult;
         }
-        
+
         json body = {
-            "hospitals": hospitalsResult,
+            "hospitals": hospitalsResult.toJson(),
             "blood":bloodResult.toJson()
         };
 
@@ -260,5 +264,14 @@ service /dashboard on listener9191 {
         return campaigns;
     };
 
+    resource function get CampaignHistory(@http:Query string user_id) returns Campaign[]|error {
+        Campaign[]|error campaigns = getCampaignHistory(user_id);
+        return campaigns;
+    }
 
+    resource function post ChangePassword(@http:Payload passwordData passwordData) returns json|error {
+        json|error result = check changePassword(passwordData.userType, passwordData.userName, passwordData.newPassword, passwordData.currentPassword);
+        return result;
+        
+    }
 }
