@@ -2,6 +2,8 @@ import ballerina/sql;
 import ballerina/io;
 
 public isolated function addDoner(Doner doner) returns json|error {
+
+
     DonerID|error d = dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
     string newDonerId;
     if d is DonerID {
@@ -21,6 +23,13 @@ public isolated function addDoner(Doner doner) returns json|error {
         newDoner.blood_group = ();
     }
 
+    string defaultPassword;
+    if doner.password is () || doner.password == "" {
+        defaultPassword = check generatePassword(12);
+        _ = check sendEmail(doner.email, defaultPassword,doner.username);
+        newDoner.password = defaultPassword;
+    }
+    
     sql:ParameterizedQuery addDoner = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District, Username, Password, Email)
         VALUES(
             ${newDoner.doner_id},
@@ -42,7 +51,7 @@ public isolated function addDoner(Doner doner) returns json|error {
     sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , DonerID  , UserType) 
             VALUES(
             ${newDoner.username},
-            ${newDoner.tele},
+            ${newDoner.password},
             ${newDoner.doner_id},
             "Doner")`;
 

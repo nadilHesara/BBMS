@@ -178,6 +178,9 @@ public type Campaign record {
 
     @sql:Column {name: "EndTime"}
     string end_time;
+
+    @sql:Column {name: "HospitalID"}
+    string hospital_id;
 };
 
 public type DonerID record {
@@ -228,8 +231,6 @@ type passwordData record {|
     string userName;
     
 |};
-
-
 
 public type HospitalDetails record {|
     string HospitalID;

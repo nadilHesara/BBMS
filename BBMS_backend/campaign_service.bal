@@ -64,3 +64,24 @@ isolated function getCampaignEvent(string year_month, string district) returns C
     return campaigns;
 
 };
+
+isolated function getCampaignHistory(string hospital_id , string? date = ()) returns Campaign[]|error {
+    Campaign[] campaigns = [];
+    
+    sql:ParameterizedQuery query;
+
+    if date is (){
+        query = `SELECT * FROM campaign where HospitalID = ${hospital_id}`;
+    } else {
+        query = `SELECT * FROM campaign where HospitalID = ${hospital_id} and DateofCampaign = ${date}`;
+    }
+    stream<Campaign, error?> resultStream = dbClient->query(query);
+    check from Campaign campaign in resultStream
+        do {
+            campaigns.push(campaign);
+        };
+    check resultStream.close();
+
+
+    return campaigns;
+}

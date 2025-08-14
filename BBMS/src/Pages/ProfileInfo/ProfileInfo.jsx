@@ -169,7 +169,7 @@ sessionStorage.setItem("userType", res.user_type);*/}
 
       <div className={theme === "light" ? "profile-info" : "profile-info dark"}>
 
-        <form onSubmit={handleSubmit}>
+        <form className='doner-reg-form' onSubmit={handleSubmit}>
 
           <h1> {userType} Profile</h1>
 
