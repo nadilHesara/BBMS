@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import districts from "../../SharedData/districts";
+import { LoadingContext } from "../../context/LoadingContext";
 import {
   BarChart,
   Bar,
@@ -32,7 +33,7 @@ const statusColor = {
 
 
 function AvailableBloodStocks({ theme }) {
-
+  const { loading, setLoading } = useContext(LoadingContext);
   const HandleBlood = (item, blood) => {
 
     if (blood[typeMap[item.type]] == null) {
@@ -103,51 +104,60 @@ function AvailableBloodStocks({ theme }) {
   const handleAddBloodSubmit = async (e) => {
     e.preventDefault();
     // TODO: integrate with backend API to add blood stock
-    try{
-      const response = await fetch("http://localhost:9191/dashboard/addBlood",{
-      method:"POST",
-      headers: {  
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:9191/dashboard/addBlood", {
+        method: "POST",
+        headers: {
           "Content-Type": "application/json"
         },
-      body: JSON.stringify(newBlood)
+        body: JSON.stringify(newBlood)
       })
 
       const result = await response.json();
 
-      if (!response.ok){
+      if (!response.ok) {
         alert("Registration failed. Check server and data.");
       }
-    }catch (error){
+    } catch (error) {
       alert("failed to add the package. Check server and data.");
 
+    } finally {
+      setLoading(true)
     }
-    console.log("New blood entry:", newBlood);
-    setShowAddModal(false);
+
   };
 
   useEffect(() => {
-    fetch(
-      `http://localhost:9191/dashboard/bloodStock?district=${district}&hospital=${hospital}`
-    )
-      .then((res) => {
-        if (!res.ok) throw new Error("Fetch failed");
-        return res.json();
-      })
-      .then((data) => {
-        setHospitals(data.hospitals || []);
-        setHospital("All")
+    try {
+      setLoading(true);
+      fetch(
+        `http://localhost:9191/dashboard/bloodStock?district=${district}&hospital=${hospital}`
+      )
+        .then((res) => {
+          if (!res.ok) throw new Error("Fetch failed");
+          return res.json();
+        })
+        .then((data) => {
+          setHospitals(data.hospitals || []);
+          setHospital("All")
 
-        const updatedData = bloodData.map(item => ({
-          ...item,
-          units: HandleBlood(item, data.blood)
-        }));
+          const updatedData = bloodData.map(item => ({
+            ...item,
+            units: HandleBlood(item, data.blood)
+          }));
 
-        setBloodData(updatedData);
-      })
-      .catch((err) => {
-        console.error("Error fetching hospital data:", err.message);
-        setError("Failed to load hospitals data.");
-      });
+          setBloodData(updatedData);
+        })
+        .catch((err) => {
+          console.error("Error fetching hospital data:", err.message);
+          setError("Failed to load hospitals data.");
+        });
+    } catch (error) {
+      setError("Server Error")
+    } finally {
+      setLoading(false);
+    }
   }, [district, hospital]);
 
 
@@ -159,7 +169,7 @@ function AvailableBloodStocks({ theme }) {
           <h2 className={`page-header ${isDarkMode ? 'dark-title' : ''}`}>Available Blood Stocks</h2>
           <button className="add-blood-btn" onClick={openAddModal}>+ Add Blood</button>
         </div>
-        
+
         <div className="header-controls">
           <div className="district-control">
             <label className={isDarkMode ? 'dark-label' : ''}>District:</label>
@@ -183,11 +193,11 @@ function AvailableBloodStocks({ theme }) {
             </select>
           </div>
           <div className="selects">
-          {error && <p >{error}</p>}
-          <div></div>
+            {error && <p >{error}</p>}
+            <div></div>
+          </div>
         </div>
-        </div>
-             
+
 
 
 

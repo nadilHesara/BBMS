@@ -8,9 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Home = ({ theme, setTheme }) => {
   const navigate = useNavigate();
-  const handleClick = () => {
-    navigate('/123')
-  }
+
   return (
     <div className='dashboard-layout'>
       <NaviBar theme={theme} setTheme={setTheme} />

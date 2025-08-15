@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import NaviBar from "../../components/Navibar/NaviBar";
 import "./CampaignRequest.css";
-import { useContext } from "react";
 import { LoadingContext } from "../../context/LoadingContext";
 
 export default function CampaignForm({ theme, setTheme }) {

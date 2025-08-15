@@ -1,65 +1,76 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import LeftSlideBar from "../../components/LeftSlideBar/LeftSlideBar";
 import NaviBar from "../../components/Navibar/NaviBar";
 import MyCalender from "../../components/MyCalender/MyCalender";
 import "./Dashboard.css";
 import districts from "../../SharedData/districts";
+import { LoadingContext } from "../../context/LoadingContext";
+
 
 const Dashboard = ({ theme, setTheme }) => {
+
+  const { loading, setLoading } = useContext(LoadingContext);
+
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
 
   const userId = sessionStorage.getItem("userId");
   const userType = sessionStorage.getItem("userType");
 
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
-  
+
   useEffect(() => {
     console.log(userId + "    " + userType);
 
-    if (userId==null || userType==null) {
+    if (userId == undefined || userType == undefined) {
       navigate("/login", { replace: true });
     }
   }, [userId, userType, navigate]);
 
-  
+
   useEffect(() => {
     if (!userId || !userType) return;
 
-
-    fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Fetch failed");
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data)
-        setUserData(data);
-        sessionStorage.setItem("userData", JSON.stringify(data));
-      })
-      .catch((err) => {
-        console.error("Error fetching dashboard data:", err.message);
-        setError("Failed to load dashboard data.");
-      });
+    try {
+      setLoading(true);
+      fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Fetch failed");
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data)
+          setUserData(data);
+          sessionStorage.setItem("userData", JSON.stringify(data));
+        })
+        .catch((err) => {
+          console.error("Error fetching dashboard data:", err.message);
+          setError("Failed to load dashboard data.");
+        });
+    } catch (error) {
+      setError("Server Error");
+    } finally {
+      setLoading(false);
+    }
   }, [userId, userType]);
-  console.log("user: ",userData?.District);
- 
-  const [selectedDistrict,setSelectedDistrict] = useState(userData?.District);
+  console.log("user: ", userData?.District);
+
+  const [selectedDistrict, setSelectedDistrict] = useState(userData?.District);
 
   useEffect(() => {
-  if (userData && userData?.District) {
-    setSelectedDistrict(userData.District);
-  }
-}, [userData]);
+    if (userData && userData?.District) {
+      setSelectedDistrict(userData.District);
+    }
+  }, [userData]);
 
   const handleSelectedDistrict = (e) => {
-      setSelectedDistrict(e.target.value);
+    setSelectedDistrict(e.target.value);
   }
 
   const isOnDashboard = location.pathname === "/dashboard";
-  
+
   useEffect(() => {
     const handleBackButton = () => {
       if (!userId || !userType) {
@@ -85,25 +96,25 @@ const Dashboard = ({ theme, setTheme }) => {
       <div className={`main-layout ${theme}`}>
         <LeftSlideBar theme={theme} userType={userType} username={userData.userName} />
         <div className={`content-area ${theme}`}>
-          {isOnDashboard && 
+          {isOnDashboard &&
             <div className="dashboard-content">
               <div className="calender-container">
                 {userType === "Doner" && <h3 className="header">Welcome <i>{userData?.Name}</i></h3>}
                 {userType === "Hospital" && <h3 className="header">Welcome <i>{userData?.userName}</i></h3>}
-              
+
                 <div className="district-sort-label-select">
                   <span className="district-sort-label">Sort the campaigns by district:</span>
                   <select className="form-select-sm custom-width" name="district" onChange={handleSelectedDistrict} value={selectedDistrict} required>
-                    {districts.map((city,index)=>(
+                    {districts.map((city, index) => (
                       <option key={index} value={city} >{city}</option>
                     ))}
                   </select>
                 </div>
-                <MyCalender selectedDistrict={selectedDistrict}/>
+                <MyCalender selectedDistrict={selectedDistrict} />
               </div>
             </div>
           }
-          {!isOnDashboard && 
+          {!isOnDashboard &&
             <Outlet />
           }
         </div>

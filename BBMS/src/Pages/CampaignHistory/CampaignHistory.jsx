@@ -1,4 +1,4 @@
-import React from "react";
+import React , {useContext} from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -9,6 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
+import { LoadingContext } from "../../context/LoadingContext";
 
 function descendingComparator(a, b, orderBy) {
   if (orderBy === "Date") {
@@ -49,8 +50,10 @@ export default function CampaignHistory() {
   const [orderBy, setOrderBy] = React.useState("Date");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const { loading, setLoading } = useContext(LoadingContext);
 
   React.useEffect(() => {
+    try{
     const userId = localStorage.getItem("userId");
     fetch(`http://localhost:9191/dashboard/CampaignHistory?user_id=${userId}`)
       .then((res) => {
@@ -79,6 +82,11 @@ export default function CampaignHistory() {
         );
       })
       .catch((err) => console.error("Error fetching campaign history:", err));
+    } catch (error) {
+      console.error("Error in CampaignHistory component:", error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const handleRequestSort = (event, property) => {

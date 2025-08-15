@@ -1,13 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 {/*import NaviBar from '../../components/Navibar/NaviBar';*/ }
 import districts from '../../SharedData/districts';
 import { FaUserCircle } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import "./ProfileInfo.css"
+import { LoadingContext } from '../../context/LoadingContext';
 {/*import { use } from 'react';*/ }
 
 function ProfileInfo({ theme, setTheme }) {
-
+  const { loading, setLoading } = useContext(LoadingContext);
   const location = useLocation();
   const from = location.state?.from;
   const [doner, setDoner] = useState({
@@ -52,6 +53,7 @@ function ProfileInfo({ theme, setTheme }) {
 
     const fetchUserData = async () => {
       try {
+        setLoading(true);
         const user_id = userData?.userId;
         const response = await fetch(`http://localhost:9191/dashboard?user_id=${user_id}&user_type=${user_Type}`);
 
@@ -99,7 +101,7 @@ function ProfileInfo({ theme, setTheme }) {
         setMessage("⚠️ Failed to load profile data.");
 
       } finally {
-        setIsLoading(false);
+        setLoading(false);
 
       }
     }
@@ -143,26 +145,33 @@ sessionStorage.setItem("userType", res.user_type);*/}
     const userID = userType === "Doner" ? doner.doner_id : hospital.hospital_id;
     console.log(userType === "Doner" ? doner : hospital);
 
+    try {
+      setLoading(true);
+      fetch(`http://localhost:9191/dashboard?user_id=${userID}&user_type=${userType}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(userType === "Doner" ? { doner: userData } : { hospital: userData })
+        })
 
-    fetch(`http://localhost:9191/dashboard?user_id=${userID}&user_type=${userType}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userType === "Doner" ? { doner: userData } : { hospital: userData })
-      })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message || "Saved Changes Successfully");
 
-      .then(response => response.json())
-      .then(data => {
-        alert(data.message || "Saved Changes Successfully");
+        })
 
-      })
-
-      .catch(error => {
-        console.error('Error:', error);
-        setMessage("⚠️ Failed to save changes");
-      });
+        .catch(error => {
+          console.error('Error:', error);
+          setMessage("⚠️ Failed to save changes");
+        });
+    } catch (error) {
+      console.error('Error:', error);
+      setMessage("⚠️ Failed to save changes");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -204,7 +213,7 @@ sessionStorage.setItem("userType", res.user_type);*/}
           <br />
 
           <label>{userType === "Doner" ? "Telephone:" : "Contact Number:"}</label>
-          <input type="tel" name={userType === "Doner" ? "tele" : "contact_no"} defaultValue={userType === "Doner" ? doner.tele : hospital.contact_no}  onChange={handleChange} required />
+          <input type="tel" name={userType === "Doner" ? "tele" : "contact_no"} defaultValue={userType === "Doner" ? doner.tele : hospital.contact_no} onChange={handleChange} required />
 
           <label>Address:</label>
           <input type="text" name="address_line1" defaultValue={userType === "Doner" ? doner.address_line1 : hospital.address_line1} onChange={handleChange} required />

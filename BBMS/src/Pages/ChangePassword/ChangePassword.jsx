@@ -1,13 +1,16 @@
-import React, { useState } from "react";
-
+import React, { useState , useContext } from "react";
+import { LoadingContext } from "../../context/LoadingContext";
 import "./ChangePassword.css";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { filledInputClasses } from "@mui/material/FilledInput";
 
 function ChangePassword() {
   const navigate = useNavigate();
   const userType = sessionStorage.getItem("userType");
   const [userData,setUserData] = useState(JSON.parse(sessionStorage.getItem("userData")));
-
+  const { loading, setLoading } = useContext(LoadingContext);
+  
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -39,6 +42,7 @@ function ChangePassword() {
 
   const SendPasswordData = async () =>{
     try{        
+      setLoading(true);
         const response = await fetch(`http://localhost:9191/dashboard/ChangePassword` ,{
         method: "POST",
         headers: {
@@ -58,6 +62,8 @@ function ChangePassword() {
         }
     } catch(error){
       alert(error.message)
+    } finally {
+      setLoading(false);
     }
   }
 
