@@ -1,9 +1,12 @@
+.doner-reg{
+    height:auto;
+}
+
 .doner-reg-form  h1 {
     text-align: center;
     font-size: 28px;
     margin-bottom: 30px;
-
-    color: #861f1f;
+    color: #691212;
 }
 
 
@@ -94,10 +97,6 @@ input[type="email"],
         transform: translateY(0px);
         opacity: 1;
     }
-}
-
-.donor-reg {
-    height: calc(100vh - 100px);
 }
 
 .address-lines {
