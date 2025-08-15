@@ -14,6 +14,7 @@ import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import DonationHistory from "./Pages/DonationHistory/DonationHistory";
 import DonationInfo from "./Pages/DonationInfo/DonationInfo";
 import CampaignRequest from "./Pages/CampaignRequest/CampaignRequest";
+import GlobalLoading from "./components/GlobalLoading/GlobalLoading";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -26,7 +27,7 @@ import ConsentForm from "./components/DonationFormComponents/ConsentForm";
 import SuccessPage from "./components/DonationFormComponents/SuccessPage";
 import Donates from "./Pages/Donates/Donates";
 import Footer from "./components/Footer/Footer";
-
+import { LoadingProvider } from "./context/LoadingContext";
 
 function App() {
   const current_theme = localStorage.getItem("current_theme");
@@ -40,8 +41,10 @@ function App() {
   }, [theme]);
 
   return (
+    <LoadingProvider>
     <div className={`app-container ${theme}`} >
       <Router>
+        <GlobalLoading />
         <div className="content">
           <Routes>
             <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
@@ -77,8 +80,8 @@ function App() {
         </div>
         <Footer />
       </Router>
-
     </div>
+    </LoadingProvider>
   );
 }
 

@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import NaviBar from "../../components/Navibar/NaviBar";
 import "./CampaignRequest.css";
+import { useContext } from "react";
+import { LoadingContext } from "../../context/LoadingContext";
 
 export default function CampaignForm({ theme, setTheme }) {
+
+  const { loading, setLoading } = useContext(LoadingContext);
+
   const [formData, setFormData] = useState({
     organizerName: "",
     email: "",
@@ -25,6 +30,7 @@ export default function CampaignForm({ theme, setTheme }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("Sending...");
+    setLoading(true);
 
     try {
       const res = await fetch("http://localhost:8080/send-email", {
@@ -49,6 +55,8 @@ export default function CampaignForm({ theme, setTheme }) {
       }
     } catch (err) {
       setStatus("❌ Error: " + err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
