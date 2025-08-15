@@ -16,14 +16,11 @@ import "./LeftSlideBar.css";
 
 const LeftSlideBar = ({ theme, userType, username }) => {
   const navigate = useNavigate();
-  const currunt_possition = sessionStorage.getItem("currunt_possition");
-
-  const [isOpen, setIsOpen] = useState(
-    currunt_possition === "true" ? true : false
-  );
+  const [currentPos,setCurrentPos] = useState(true);
+  const [isOpen, setIsOpen] = useState(currentPos);
 
   useEffect(() => {
-    sessionStorage.setItem("currunt_possition", isOpen.toString());
+    setCurrentPos(isOpen);
   }, [isOpen]);
 
   const LoggingOut = () => {
