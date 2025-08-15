@@ -82,10 +82,7 @@ isolated function randomize(string text) returns string|error {
     return string:fromBytes(chars);
 }
 
-public isolated function sendEmail(string toEmail, string password, string username) returns error? {
-    string emailBody = "This is auto genarated email do not reply to this. \n" +
-                        "Your user name is " + username + ". \n" +
-                        "You password of the BBMS acount is " + password + ".";
+public isolated function sendEmail(string toEmail, string subject, string body) returns error? {
 
     email:SmtpClient smtpClient = check new (
         host = "smtp.gmail.com",
@@ -96,8 +93,8 @@ public isolated function sendEmail(string toEmail, string password, string usern
 
     email:Message message = {
         to: [toEmail],
-        subject: "New password from BBMS App",
-        body: emailBody
+        subject: subject,
+        htmlBody:  body
     };
     check smtpClient->sendMessage(message);
 }

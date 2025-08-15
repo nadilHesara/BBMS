@@ -43,6 +43,42 @@ service / on listener9191 {
         return result;
     }
 
+    isolated resource function post campaignRequest(@http:Payload CampaignRequest data) returns json|error {
+        string emailBody = "<!DOCTYPE html>" +
+                    "<html>" +
+                    "<head>" +
+                    "<style>" +
+                    "  .container { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; border-radius: 10px; }" +
+                    "  .header { color: #d32f2f; font-size: 22px; font-weight: bold; margin-bottom: 20px; }" +
+                    "  .content { font-size: 16px; margin-bottom: 10px; }" +
+                    "  .label { font-weight: bold; color: #333; }" +
+                    "  .footer { font-size: 14px; color: #555; margin-top: 20px; }" +
+                    "</style>" +
+                    "</head>" +
+                    "<body>" +
+                    "  <div class='container'>" +
+                    "    <div class='header'>New Blood Donation Campaign Request</div>" +
+                    "    <div class='content'><span class='label'>Organizer Name:</span> " + data.organizerName + "</div>" +
+                    "    <div class='content'><span class='label'>Email:</span> " + data.email + "</div>" +
+                    "    <div class='content'><span class='label'>Phone Number:</span> " + data.phone + "</div>" +
+                    "    <div class='content'><span class='label'>Campaign Name:</span> " + data.campaignName + "</div>" +
+                    "    <div class='content'><span class='label'>Location:</span> " + data.location + "</div>" +
+                    "    <div class='content'><span class='label'>Date:</span> " + data.date + "</div>" ;
+        string? details = data.details;
+        if details is string {
+                emailBody += "<div class='content'><span class='label'>Additional Details:</span> " + details + "</div>";
+            }
+
+            emailBody += "<div class='footer'>This is an auto-generated email. Please do not reply.</div>" +
+            "  </div>" +
+            "</body>" +
+            "</html>";
+
+        string subject = "New Blood Donation Campaign Request | " + data.campaignName+"";
+        json|error result =  sendEmail("thilokyaangeesa@gmail.com",subject,emailBody);
+
+        return result;
+    }
 }
 
 @http:ServiceConfig {

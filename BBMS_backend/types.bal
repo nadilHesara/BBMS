@@ -281,3 +281,14 @@ public type CampaignDetails record {|
     @sql:Column {name: "AB_minus"}
     string? AB_minus;
 |};
+
+
+public type CampaignRequest record {|
+    string organizerName;
+    string email;
+    string phone;
+    string campaignName;
+    string location;
+    string date;
+    string? details;
+|};
