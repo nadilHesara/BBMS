@@ -12,8 +12,10 @@ const Login = ({ theme, setTheme }) => {
   const login = sessionStorage.getItem("userType");
   const [userType, setUserType] = useState(login ? login : "");
 
+
   useEffect(() => {
     sessionStorage.setItem("userType", userType)
+    
   }, [userType]);
 
   const [username, setUsername] = useState('');
@@ -69,10 +71,9 @@ const Login = ({ theme, setTheme }) => {
         console.log("Login successful to " + result.user_type + " !");
         setUserType(result.user_type);
         sessionStorage.setItem("username", result.username);
-        navigate("/dashboard");
-        sessionStorage.setItem("userId", result.user_id); // or whatever key name you use
+        sessionStorage.setItem("userId", result.user_id);
         sessionStorage.setItem("userType", result.user_type);
-
+        navigate("/dashboard");
 
       } else {
         setMessage("Error: " + (result.message || JSON.stringify(result)));

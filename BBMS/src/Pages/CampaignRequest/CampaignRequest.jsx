@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import NaviBar from "../../Components/NaviBar/NaviBar";
+import NaviBar from "../../components/Navibar/NaviBar";
 import "./CampaignRequest.css";
 
 export default function CampaignForm({ theme, setTheme }) {
