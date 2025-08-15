@@ -131,6 +131,7 @@ const Home = ({ theme, setTheme }) => {
               <p>Your first donation could be the reason someone gets a second chance at life — register today and be a hero in someone’s story.</p>
               <div className="action-buttons">
                 <Link to="/donorReg" className='btn btn-secondary'>Become a Donor</Link>
+                <Link to="/campaignRequest" className='btn btn-secondary'>Organize a Campaign</Link>
               </div>
               <p className="inspiration-text">"Be someone's hope. Donate blood today."</p>
             </div>

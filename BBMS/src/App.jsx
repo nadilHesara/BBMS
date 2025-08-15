@@ -13,6 +13,7 @@ import PageNotFound from "./Pages/PageNotFound/PageNotFound";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import DonationHistory from "./Pages/DonationHistory/DonationHistory";
 import DonationInfo from "./Pages/DonationInfo/DonationInfo";
+import CampaignRequest from "./Pages/CampaignRequest/CampaignRequest";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -46,7 +47,8 @@ function App() {
             <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
             <Route path="/donorReg" element={<DonorReg theme={theme} setTheme={setTheme} />} />
             <Route path="/login" element={<Login theme={theme} setTheme={setTheme} />} />
-            <Route path="/forgotpassword" element={<ForgotPassword />} />
+            <Route path="/forgotpassword" element={<ForgotPassword  theme={theme} setTheme={setTheme} />} />
+            <Route path="/campaignRequest" element={<CampaignRequest  theme={theme} setTheme={setTheme}  />} />
             <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />}>
               <Route index element={<h1>Welcome to Dashboard Page</h1>} />
               <Route path="ProfileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
@@ -68,8 +70,6 @@ function App() {
               <Route path="consent" element={<ConsentForm />} />
               <Route path="success" element={<SuccessPage />} />
             </Route>
-              
-
             </Route>
 
             <Route path="*" element={<PageNotFound theme={theme} setTheme={setTheme} />} />
