@@ -101,7 +101,7 @@ function DonorReg({ theme, setTheme }) {
   return (
     <div>
       <NaviBar theme={theme} setTheme={setTheme} />
-      <div className={theme === "light" ? "donor-reg" : "donor-reg dark"}>
+      <div className={theme === "light" ? "doner-reg" : "doner-reg dark"}>
         <form className="doner-reg-form" onSubmit={handleSubmit}>
           <h1>Donor Registration</h1>
           <label htmlFor="name">Donor Name:</label>

@@ -38,10 +38,12 @@
 
 }
 
+.dashboard-content{
+  margin:50px;
+}
 
 
 .content-area{
-  padding:60px;
   width:100%;
 }
 

@@ -24,6 +24,7 @@ import MedicalScreenForm from "./components/DonationFormComponents/MedicalScreen
 import ConsentForm from "./components/DonationFormComponents/ConsentForm";
 import SuccessPage from "./components/DonationFormComponents/SuccessPage";
 import Donates from "./Pages/Donates/Donates";
+import Footer from "./components/Footer/Footer";
 
 
 function App() {
@@ -38,21 +39,20 @@ function App() {
   }, [theme]);
 
   return (
-    <div className={ `app-container ${theme}`} >
+    <div className={`app-container ${theme}`} >
       <Router>
-        <Routes>
-          <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
-          <Route path="/donorReg" element={<DonorReg theme={theme} setTheme={setTheme} />} />
-          <Route path="/login" element={<Login theme={theme} setTheme={setTheme} />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
-
-
-          <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />}>
-            <Route index element={<h1>Welcome to Dashboard Page</h1>} />
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
+            <Route path="/donorReg" element={<DonorReg theme={theme} setTheme={setTheme} />} />
+            <Route path="/login" element={<Login theme={theme} setTheme={setTheme} />} />
+            <Route path="/forgotpassword" element={<ForgotPassword />} />
+            <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />}>
+              <Route index element={<h1>Welcome to Dashboard Page</h1>} />
               <Route path="ProfileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
-              <Route path="AvailableBloodStocks" element={<AvailableBloodStocks theme={theme} setTheme={setTheme}/>} />
-              <Route path="CampaignHistory" element={<CampaignHistory theme={theme} setTheme={setTheme} />}/>
-              <Route path="ChangePassword" element={<ChangePassword theme={theme} setTheme={setTheme}/>}/>
+              <Route path="AvailableBloodStocks" element={<AvailableBloodStocks theme={theme} setTheme={setTheme} />} />
+              <Route path="CampaignHistory" element={<CampaignHistory theme={theme} setTheme={setTheme} />} />
+              <Route path="ChangePassword" element={<ChangePassword theme={theme} setTheme={setTheme} />} />
               <Route path="campReg" element={<CampReg theme={theme} setTheme={setTheme} />} />
               <Route path="hospitalReg" element={<HospitalReg theme={theme} setTheme={setTheme} />} />
               <Route path="donation-history" element={<DonationHistory theme={theme} setTheme={setTheme} />} />
@@ -70,11 +70,14 @@ function App() {
             </Route>
               
 
-          </Route>
+            </Route>
 
-          <Route path="*" element={<PageNotFound theme={theme} setTheme={setTheme} />} />
-        </Routes>
+            <Route path="*" element={<PageNotFound theme={theme} setTheme={setTheme} />} />
+          </Routes>
+        </div>
+        <Footer />
       </Router>
+
     </div>
   );
 }

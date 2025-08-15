@@ -63,6 +63,14 @@ function AvailableBloodStocks({ theme }) {
   const [error, setError] = useState(null);
   const [hospital, setHospital] = useState("All");
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newBlood, setNewBlood] = useState({
+    type: "A+",
+    units: "",
+    district: "",
+    hospitalId: "",
+    notes: "",
+  });
 
 
   useEffect(() => {
@@ -75,6 +83,46 @@ function AvailableBloodStocks({ theme }) {
 
   const handleHospital = (e) => {
     setHospital(e.target.value);
+  };
+
+  const openAddModal = () => setShowAddModal(true);
+  const closeAddModal = () => {
+    setShowAddModal(false);
+    setNewBlood({
+      type: "A+",
+      units: "",
+      district: "",
+      hospitalId: "",
+      notes: "",
+    });
+  };
+  const handleNewBloodChange = (e) => {
+    const { name, value } = e.target;
+    setNewBlood((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleAddBloodSubmit = async (e) => {
+    e.preventDefault();
+    // TODO: integrate with backend API to add blood stock
+    try{
+      const response = await fetch("http://localhost:9191/dashboard/addBlood",{
+      method:"POST",
+      headers: {  
+          "Content-Type": "application/json"
+        },
+      body: JSON.stringify(newBlood)
+      })
+
+      const result = await response.json();
+
+      if (!response.ok){
+        alert("Registration failed. Check server and data.");
+      }
+    }catch (error){
+      alert("failed to add the package. Check server and data.");
+
+    }
+    console.log("New blood entry:", newBlood);
+    setShowAddModal(false);
   };
 
   useEffect(() => {
@@ -107,11 +155,11 @@ function AvailableBloodStocks({ theme }) {
 
     <>
       <div className={`blood-stock-container ${isDarkMode ? 'dark-mode' : ''}`}>
-        <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'dark-title' : ''}`}>Available Blood Stocks</h2>
-        <div className="selects">
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          <div></div>
+        <div className="page-header-row">
+          <h2 className={`page-header ${isDarkMode ? 'dark-title' : ''}`}>Available Blood Stocks</h2>
+          <button className="add-blood-btn" onClick={openAddModal}>+ Add Blood</button>
         </div>
+        
         <div className="header-controls">
           <div className="district-control">
             <label className={isDarkMode ? 'dark-label' : ''}>District:</label>
@@ -134,8 +182,12 @@ function AvailableBloodStocks({ theme }) {
               ))}
             </select>
           </div>
+          <div className="selects">
+          {error && <p >{error}</p>}
+          <div></div>
         </div>
-
+        </div>
+             
 
 
 
@@ -185,6 +237,58 @@ function AvailableBloodStocks({ theme }) {
             </BarChart>
           </ResponsiveContainer>
         </div>
+        {showAddModal && (
+          <div className="modal-overlay" onClick={closeAddModal}>
+            <div className="add-blood-container">
+              <div className={`modal-content ${isDarkMode ? 'dark-modal' : ''}`} onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <h3>Add Blood</h3>
+                  <button className="modal-close-btn" onClick={closeAddModal}>×</button>
+                </div>
+                <form className="modal-form" onSubmit={handleAddBloodSubmit}>
+                  <div className="form-row">
+                    <label>Blood Type</label>
+                    <select name="type" value={newBlood.type} onChange={handleNewBloodChange} required>
+                      {Object.keys(typeMap).map((t) => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-row">
+                    <label>Units</label>
+                    <input type="number" min="0" name="units" value={newBlood.units} onChange={handleNewBloodChange} required />
+                  </div>
+                  <div className="form-row">
+                    <label>District</label>
+                    <select name="district" value={newBlood.district} onChange={handleNewBloodChange}>
+                      <option value="">Select</option>
+                      {districts.map((d, i) => (
+                        <option key={i} value={d}>{d}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-row">
+                    <label>Hospital</label>
+                    <select name="hospitalId" value={newBlood.hospitalId} onChange={handleNewBloodChange}>
+                      <option value="">Select</option>
+                      {hospitals.map((h, i) => (
+                        <option key={i} value={h.HospitalID}>{h.Name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-row">
+                    <label>Notes</label>
+                    <textarea name="notes" rows="3" value={newBlood.notes} onChange={handleNewBloodChange} placeholder="Optional"></textarea>
+                  </div>
+                  <div className="form-actions">
+                    <button type="button" className="btn-secondary" onClick={closeAddModal}>Cancel</button>
+                    <button type="submit" className="btn-primary">Add</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
       </div >
     </>
   );
