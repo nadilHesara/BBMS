@@ -5,9 +5,9 @@ import './DonationHistory.css';
 function DonationHistory({ theme, setTheme }) {
     const [donations, setDonations] = useState([]);
 
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    const user_Type = localStorage.getItem("userType");
-    const userID = localStorage.getItem("userId");
+    const userData = JSON.parse(sessionStorage.getItem("userData"));
+    const user_Type = sessionStorage.getItem("userType");
+    const userID = sessionStorage.getItem("userId");
 
     useEffect(() => {
         if (userID) {

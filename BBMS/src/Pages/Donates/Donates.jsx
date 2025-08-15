@@ -33,11 +33,11 @@ function Donates({theme,setTheme}) {
             else{
                 const data = await response.json();
                 console.log(data);
-                navigate("/dashboard/DonationForm",{
+                navigate("/dashboard/DonationInfo",{
                     state: {
                         campaign_Id: campaign_id,
                         donorId: data.user_id,
-                        cdate: campdate,
+                        cdate: campdate
                     }
                 });
 
@@ -47,6 +47,8 @@ function Donates({theme,setTheme}) {
             console.error("Error:", error);
             setShowPopup(true);
         }
+
+
     }
 
 

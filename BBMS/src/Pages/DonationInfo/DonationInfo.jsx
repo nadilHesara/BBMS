@@ -13,6 +13,7 @@ function DonationInfo({ theme, setTheme }) {
     const [donate, setDonate] = useState({
         donate_id: "M001",
         campaign_id: '',
+        camp_date: '',
         doner_id: '',
         name: '',
         age: '',
@@ -24,11 +25,28 @@ function DonationInfo({ theme, setTheme }) {
         blood_quantity: 0
     });
 
-    const ageCalculator = (b_m,b_yr) => {
-        const today = new Date();
-        const currentYear = today.getFullYear();  
-        const currentMonth = today.getMonth() + 1; 
+    const parseDate = (dateString) => {
+        if (!dateString) return null;
+
+        try{
+            const dateParts = dateString.split('-');
+            if (dateParts.length !== 3) return null;
+            const [yearStr, monthStr, dayStr] = dateParts;
+            return {
+                year: parseInt(yearStr, 10),
+                month: parseInt(monthStr, 10),
+                day: parseInt(dayStr, 10)
+            };
+
+        }catch (error) {
+            console.error("Error parsing date:", error);
+            return null;
+        }
+    };
+
+    const ageCalculator = (b_m, b_yr, currentMonth, currentYear) => {
         let ageYears = currentYear - b_yr;
+
         if (currentMonth < b_m) {
             ageYears--;
         }
@@ -37,12 +55,14 @@ function DonationInfo({ theme, setTheme }) {
     };
 
     useEffect(() => {
-        const {campaign_Id, donorId} = location.state || {};
+        const {campaign_Id, donorId, cdate} = location.state || {};
             setDonate(prev => ({
                 ...prev,
                 campaign_id: campaign_Id,
-                doner_id: donorId
+                doner_id: donorId,
+                camp_date: cdate,
             }));
+
         
     }, [location.state]);
 
@@ -50,13 +70,22 @@ function DonationInfo({ theme, setTheme }) {
 
         const fetchdonorData = async () => {
         try {
-            const response =await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${donate.doner_id}&campaign=${donate.campaign_id}`);
+            const response =await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${donate.doner_id}`);
 
             const data = response.data;
 
+            const campdate = parseDate(donate.camp_date);
+
+            if (!campdate) {
+              console.error("Invalid campaign date format", campdate);
+              return;
+            }
+            const currentYear = campdate.year;
+            const currentMonth = campdate.month;
+            
             const b_yr = data.BYear;
             const b_m = data.BMonth;
-            const DAge = ageCalculator(b_m, b_yr);
+            const DAge = ageCalculator(b_m, b_yr, currentMonth, currentYear);
 
             setDonate(prev => ({
                 ...prev,
@@ -71,7 +100,7 @@ function DonationInfo({ theme, setTheme }) {
 
     };
 
-    if (donate.doner_id && donate.campaign_id) {
+    if (donate.doner_id) {
         fetchdonorData();
   }  
 
@@ -114,6 +143,7 @@ function DonationInfo({ theme, setTheme }) {
                 navigate('/dashboard/Donates',{
                     state: {
                         campaignId: donate.campaign_id,
+                        campdate:donate.camp_date
                     }
                 }
                 );

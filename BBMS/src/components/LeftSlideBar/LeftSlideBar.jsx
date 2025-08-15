@@ -16,14 +16,11 @@ import "./LeftSlideBar.css";
 
 const LeftSlideBar = ({ theme, userType, username }) => {
   const navigate = useNavigate();
-  const currunt_possition = sessionStorage.getItem("currunt_possition");
-
-  const [isOpen, setIsOpen] = useState(
-    currunt_possition === "true" ? true : false
-  );
+  const [currentPos,setCurrentPos] = useState(true);
+  const [isOpen, setIsOpen] = useState(currentPos);
 
   useEffect(() => {
-    sessionStorage.setItem("currunt_possition", isOpen.toString());
+    setCurrentPos(isOpen);
   }, [isOpen]);
 
   const LoggingOut = () => {
@@ -40,7 +37,8 @@ const LeftSlideBar = ({ theme, userType, username }) => {
       return (
         <>
           <div className="slide-bar-nav-links">
-            <Link to="profileInfo">
+            <Link to="profileInfo"
+            state={{from:"LeftSideBar"}}>
               <FaUserCircle size={30} color={theme === 'dark' ? 'white' : 'black'} />
               {isOpen && <span>Profile Info</span>}
             </Link>
@@ -80,8 +78,9 @@ const LeftSlideBar = ({ theme, userType, username }) => {
       return (
         <>
           <div className="slide-bar-nav-links">
-            <Link to="profileInfo">
-              <FaUserCircle size={30} color={theme === 'dark' ? 'white' : 'black'} />
+            <Link to="profileInfo"
+            state={{from:"LeftSideBar"}}>
+              <FaUserCircle size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Profile Info</span>}
             </Link>
 

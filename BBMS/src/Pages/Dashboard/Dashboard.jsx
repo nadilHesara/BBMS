@@ -86,29 +86,26 @@ const Dashboard = ({ theme, setTheme }) => {
         <LeftSlideBar theme={theme} userType={userType} username={userData.userName} />
         <div className={`content-area ${theme}`}>
           {isOnDashboard && 
-            <div className="calender-container">
-              {userType === "Doner" && <h3 className="header">Welcome <i>{userData?.Name}</i></h3>}
-              {userType === "Hospital" && <h3 className="header">Welcome <i>{userData?.userName}</i></h3>}
+            <div className="dashboard-content">
+              <div className="calender-container">
+                {userType === "Doner" && <h3 className="header">Welcome <i>{userData?.Name}</i></h3>}
+                {userType === "Hospital" && <h3 className="header">Welcome <i>{userData?.userName}</i></h3>}
               
-
-
-              <div className="district-sort-label-select">
-                <span className="district-sort-label">Sort the campaigns by district:</span>
-                <select className="form-select-sm custom-width" name="district" onChange={handleSelectedDistrict} value={selectedDistrict} required>
-                  {districts.map((city,index)=>(
-                    <option key={index} value={city} >{city}</option>
-                  ))}
-                </select>
+                <div className="district-sort-label-select">
+                  <span className="district-sort-label">Sort the campaigns by district:</span>
+                  <select className="form-select-sm custom-width" name="district" onChange={handleSelectedDistrict} value={selectedDistrict} required>
+                    {districts.map((city,index)=>(
+                      <option key={index} value={city} >{city}</option>
+                    ))}
+                  </select>
+                </div>
+                <MyCalender selectedDistrict={selectedDistrict}/>
               </div>
-              <MyCalender selectedDistrict={selectedDistrict}/>
             </div>
           }
           {!isOnDashboard && 
             <Outlet />
           }
-          
-          
-          {/* <pre>{JSON.stringify(userData, null, 2)}</pre> */}
         </div>
       </div>
     </div>
