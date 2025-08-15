@@ -12,7 +12,7 @@ import CampaignHistory from "./Pages/CampaignHistory/CampaignHistory";
 import PageNotFound from "./Pages/PageNotFound/PageNotFound";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import DonationHistory from "./Pages/DonationHistory/DonationHistory";
-import CampaignHistory from "./Pages/CampaignHistory/CampaignHistory";
+
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";

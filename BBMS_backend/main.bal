@@ -1,6 +1,7 @@
 import ballerina/http;
 // import ballerina/io;
 import ballerina/sql;
+import ballerina/io;
 
 listener http:Listener listener9191 = new (9191);
 
@@ -244,14 +245,14 @@ service /dashboard on listener9191 {
         return campaigns;
     };
 
-    resource function get CampaignHistory(@http:Query string user_id) returns Campaign[]|error {
-        Campaign[]|error campaigns = getCampaignHistory(user_id);
+    resource function get CampaignHistory(@http:Query string user_id) returns CampaignDetails[]|error {
+        CampaignDetails[]|error campaigns = getCampaignHistory(user_id);
+        io:println(campaigns);
         return campaigns;
     }
 
     resource function post ChangePassword(@http:Payload passwordData passwordData) returns json|error {
         json|error result = check changePassword(passwordData.userType, passwordData.userName, passwordData.newPassword, passwordData.currentPassword);
         return result;
-        
     }
 }
