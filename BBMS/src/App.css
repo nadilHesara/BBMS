@@ -44,23 +44,31 @@ body, .container {
   box-sizing: border-box;
 }
 
+
+
 body,html, #root{
+  display:flex;
+  flex-direction: column;
   margin:0;
   padding:0;
   width:100%;
   height:100%;
-  display:flex;
-  flex-direction: column;
+  min-height: 100vh;
+  
+}
+
+.app-container > .content {
+  flex: 1; 
 }
 .app-container{
   /* background-color: aqua;
   display: flex;
   height:calc(100vh-60px); */
-  flex: 1;
   display: flex;
   flex-direction: column;
   width:100%;
   height: 100%;
+  min-height: 100vh;
   margin:0;
   padding:0;
   background-color: rgb(255, 213, 213);
