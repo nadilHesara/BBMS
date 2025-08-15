@@ -5,6 +5,8 @@ import axios from "axios";
 
 
 export default function EligibilityCheck() {
+
+  const donor_id = sessionStorage.getItem("userId");
   const [form, setForm] = useState({
     age: '',
     weight: '',
@@ -13,13 +15,13 @@ export default function EligibilityCheck() {
     foreignTravel: '',
     risk: '',
   });
+
   const navigate = useNavigate();
   const location = useLocation();
 
   const[info, setInfo] = useState({
-    campaign_id: location.state?.campaign_Id || '',
-    donor_id: location.state?.donorId || '',
-    camp_date: location.state?.cdate || '',
+    campaign_id: location.state?.campaignId || '',
+    camp_date: location.state?.campdate || '',
   });
 
   const parseDate = (dateString) => {
@@ -57,29 +59,30 @@ export default function EligibilityCheck() {
       }
 
       return ageYears;
-  };
+    };
 
 
 
   useEffect(() => {
-      const {campaign_Id, donorId, date } = location.state || {};
+      const {campaign_Id, date } = location.state || {};
           setInfo(prev => ({
               ...prev,
               campaign_id: campaign_Id,
-              donor_id: donorId,
               camp_date: date,
-          }));    
+          }));
+
+
+
   }, [location.state]);
 
   useEffect(() => {
-
+        
         const fetchdonorData = async () => {
         try {
-            const response =await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${info.donor_id}`);
+            const response =await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${donor_id}`);
 
             const data = response.data;
   
-
             const campdate = parseDate(info.camp_date);
             if (!campdate) {
               console.error("Invalid campaign date format");
@@ -110,16 +113,41 @@ export default function EligibilityCheck() {
             }));
 
         } catch (error) {
-            console.error("Error fetching donor data:", error);
+            console.error("Error fetching Donor data:", error);
         }
 
     };
 
-    if (info.donor_id) {
+    if (donor_id) {
         fetchdonorData();
   }  
 
-}, [info.donor_id]);
+}, [donor_id]);
+
+  useEffect (()=> {
+  
+      if (form.age && form.age < 18){
+        alert("You are too yong to donate blood");
+      }else if (form.age > 60){
+        alert("Thank you great citizen. You are now beyond the eligible limit for blood donation");               
+      }
+  },[form.age]);
+
+
+  useEffect (()=> {
+  
+      if (form.lastDonation && form.lastDonation !== "No Previous Donations" && form.lastDonation < 4 || form.lastDonation === 0){
+          alert("You are temporarily ineligible due to recent donations. Thank you for your support!");
+      }
+  },[form.lastDonation]);
+
+  useEffect (()=> {
+  
+      if (form.risk && form.risk === "yes"){
+        alert("You’re temporarily ineligible to donate due to risky behavior");
+      }
+  },[form.risk]);
+
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -141,11 +169,16 @@ export default function EligibilityCheck() {
     <div className="form-container">
       <h2>Eligibility Check</h2>
       <form>
-        <label>Age (yrs): <input name="age"  value={form.age} readOnly/></label><br />
-        <label>Weight (kg): <input name="weight" type="number" onChange={handleChange} /></label><br />
+        <label>Age (yrs): <input name="age"  value={form.age} yrs readOnly/></label><br />
+        <label>Weight (kg): <input name="weight" type="number" onChange={handleChange} 
+           onBlur={() => {if (form.weight && form.weight < 50) {alert("Sorry, you must meet the minimum weight to donate safely");}}} /></label><br />
+
         <label>Months since last donation: <input name="lastDonation" value={form.lastDonation} readOnly/></label><br />
         {/* <label>Hemoglobin (g/dL): <input name="hemoglobin" type="number" step="0.1" onChange={handleChange} /></label><br /> */}
-        <label>Months since foreign travel: <input name="foreignTravel" type="number" onChange={handleChange} /></label><br />
+
+        <label>Months since foreign travel: <input name="foreignTravel" type="number" onChange={handleChange} 
+          onBlur={() => {if (form.foreignTravel && form.foreignTravel < 3) {alert("Sorry, Foreign travels within the last 3 months makes you temporarily ineligible to donate");}}} /></label><br />
+
         <label>Any risk behavior? 
           <select name="risk" onChange={handleChange}>
             <option value="">--Select--</option>
@@ -156,7 +189,7 @@ export default function EligibilityCheck() {
         <button
           type="button"
           disabled={!isEligible()}
-          onClick={() => navigate('personal-info')}
+          onClick={() => navigate("profileInfo", {state:{from:"DonationForm"}})}
         >
           Proceed to Declaration
         </button>

@@ -1,6 +1,7 @@
 import ballerina/http;
 // import ballerina/io;
 import ballerina/sql;
+import ballerina/io;
 
 listener http:Listener listener9191 = new (9191);
 
@@ -208,34 +209,54 @@ service /dashboard on listener9191 {
             "LastDonationYR": "",
             "LastDonationMonth": "",
             "BYear": "",
-            "BMonth": ""
+            "BMonth": "",
+            "Name" : "",
+            "BloodGroup" : ""
         };
+
         Doner|error doner = getDoner(donor_id);
             if doner is Doner {
                 string DOB = doner.dob;
-                string Age_yr = string:substring(DOB, 0, 4);
-                string Age_m = string:substring(DOB, 5, 7);
-                int b_yr = checkpanic int:fromString(Age_yr);
-                int b_m = checkpanic int:fromString(Age_m);
+                string[] parts1 = re `-`.split(DOB);
+
+                if parts1.length() > 3 {
+                    return error("Invalid month format");
+                }
+
+                int b_yr = checkpanic int:fromString(parts1[0]);
+                int b_m = checkpanic int:fromString(parts1[1]);
+
                 (string|int) lastYear = " ";
                 (string|int) lastMonth = " ";
+
                 if lastDonation != "" {
-                    string lastDonationYear = string:substring(lastDonation, 0, 4);
-                    string lastDonationMonth = string:substring(lastDonation, 5, 7);
-                    lastYear = checkpanic int:fromString(lastDonationYear);
-                    lastMonth = checkpanic int:fromString(lastDonationMonth);
+                    string[] parts2 = re `-`.split(lastDonation);
+
+                    if parts2.length() > 3 {
+                        return error("Invalid month format");
+                    }
+
+                    lastYear = checkpanic int:fromString(parts2[0]);
+                    lastMonth = checkpanic int:fromString(parts2[1]);
                 }
+
+
 
                 body = {
                     LastDonationYR: lastYear,
                     LastDonationMonth: lastMonth,
                     BYear : b_yr,
-                    BMonth : b_m
+                    BMonth : b_m,
+                    Name : doner.name,
+                    BloodGroup : doner.blood_group
+
                 };
 
             }else {
                 return error("Doner not found");
             }
+
+
         return body;
     }
 
@@ -244,15 +265,15 @@ service /dashboard on listener9191 {
         return campaigns;
     };
 
-    resource function get CampaignHistory(@http:Query string user_id) returns Campaign[]|error {
-        Campaign[]|error campaigns = getCampaignHistory(user_id);
+    resource function get CampaignHistory(@http:Query string user_id) returns CampaignDetails[]|error {
+        CampaignDetails[]|error campaigns = getCampaignHistory(user_id);
+        io:println(campaigns);
         return campaigns;
     }
 
     resource function post ChangePassword(@http:Payload passwordData passwordData) returns json|error {
         json|error result = check changePassword(passwordData.userType, passwordData.userName, passwordData.newPassword, passwordData.currentPassword);
         return result;
-        
     }
 
 }

@@ -37,7 +37,8 @@ const LeftSlideBar = ({ theme, userType, username }) => {
       return (
         <>
           <div className="slide-bar-nav-links">
-            <Link to="profileInfo">
+            <Link to="profileInfo"
+            state={{from:"LeftSideBar"}}>
               <FaUserCircle size={30} color={theme === 'dark' ? 'white' : 'black'} />
               {isOpen && <span>Profile Info</span>}
             </Link>
@@ -77,8 +78,9 @@ const LeftSlideBar = ({ theme, userType, username }) => {
       return (
         <>
           <div className="slide-bar-nav-links">
-            <Link to="profileInfo">
-              <FaUserCircle size={30} color={theme === 'dark' ? 'white' : 'black'} />
+            <Link to="profileInfo"
+            state={{from:"LeftSideBar"}}>
+              <FaUserCircle size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Profile Info</span>}
             </Link>
 

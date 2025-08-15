@@ -73,6 +73,7 @@ function CalendarComponent(props) {
   // Handle donation request
   const handleDonationRequest = (campaign) => {
     const userID = localStorage.getItem("userId");
+    const user_type = sessionStorage.getItem("userType")
     if (!userID) {
       alert("Please login to request a donation");
       return;
@@ -81,7 +82,11 @@ function CalendarComponent(props) {
     // You can implement the donation request logic here
     console.log("Requesting donation for campaign:", campaign.campain_id);
     // alert(`Donation request sent for ${campaign.org_name} campaign!`);
-    navigate("donates",{state: { campaignId: campaign.campain_id, campdate: campaign.date}});
+    if(user_type === "Doner"){
+      navigate("/dashboard/DonationForm",{state: { campaignId: campaign.campain_id, campdate: campaign.date}});
+    }else if (user_type === "Hospital"){
+      navigate('donates',{state: { campaignId: campaign.campain_id, campdate: campaign.date}});
+     }
 
   };
 
