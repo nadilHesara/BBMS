@@ -77,14 +77,45 @@ isolated function resetPassword(string userType, string userInfo) returns json|e
     if result is error{
         return result;
     }
-
-        string? Username = result.username;
+        string? username = result.username;
+        string? name = result.name;
         string? previousPassword = result.password; 
         string? Email = result.email;
 
-    if Username is string && previousPassword is string && Email is string{
-        _ = check sendEmail(Email,newPassword,Username);
-        return changePassword(userType, Username,newPassword, ());
+    if username is string && name is string && previousPassword is string && Email is string{
+        string htmlBody = 
+            "<!DOCTYPE html>" +
+            "<html>" +
+            "<head>" +
+            "<style>" +
+            "  body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" +
+            "  .container { max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }" +
+            "  .header { color: #d32f2f; font-size: 24px; font-weight: bold; margin-bottom: 20px; text-align: center; }" +
+            "  .content { font-size: 16px; color: #333; margin-bottom: 20px; line-height: 1.5; }" +
+            "  .password { font-weight: bold; color: #d32f2f; }" +
+            "  .footer { font-size: 14px; color: #777; text-align: center; margin-top: 30px; }" +
+            "  .btn { display: inline-block; padding: 10px 20px; background-color: #d32f2f; color: #fff; text-decoration: none; border-radius: 6px; }" +
+            "</style>" +
+            "</head>" +
+            "<body>" +
+            "  <div class='container'>" +
+            "    <div class='header'>Reset Your BBMS Password</div>" +
+            "    <div class='content'>" +
+            "      Hello " + name + ",<br/><br/>" +
+            "      Your password has been reset successfully. Your new password is: " +
+            "      <span class='password'>" + newPassword + "</span><br/><br/>" +
+            "      Please login and change your password immediately for security reasons." +
+            "    </div>" +
+            "    <div style='text-align: center;'>" +
+            "      <a class='btn' href='https://your-bbms-app.com/login'>Login Now</a>" +
+            "    </div>" +
+            "    <div class='footer'>This is an auto-generated email. Please do not reply.</div>" +
+            "  </div>" +
+            "</body>" +
+            "</html>";
+            
+        _ = check sendEmail(Email , "Password Reset", htmlBody);
+        return changePassword(userType, username,newPassword, ());
     }
     return error("Incorrect user");
 }
