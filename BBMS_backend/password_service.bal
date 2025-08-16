@@ -2,7 +2,7 @@ import ballerina/sql;
 
 isolated function checkPassword(string username) returns Login|error {
     sql:ParameterizedQuery query = `SELECT * FROM login WHERE UserName=${username};`;
-    Login|error result = check dbClient->queryRow(query);
+    Login|error result =  dbClient->queryRow(query);
     return result;
 }
 
@@ -35,14 +35,10 @@ isolated function changePassword(string userType, string username, string newPas
         if loginCheck is error {
             return error("User Does not Exist");
         }
-
     }
 
     // Encrypt the new password
     string encryptedNewPassword = check encryptPassword(newPassword);
-
-
-
  
     sql:ExecutionResult|error loginUpdateResult = dbClient->execute(
         `UPDATE login SET Password = ${encryptedNewPassword} WHERE UserName = ${username}`
@@ -53,7 +49,6 @@ isolated function changePassword(string userType, string username, string newPas
     } else {
         return loginUpdateResult;
     }
-   
 }
 
 isolated function resetPassword(string userType, string userInfo) returns json|error {
@@ -72,12 +67,11 @@ isolated function resetPassword(string userType, string userInfo) returns json|e
     if result is error{
         return result;
     }
-        string? username = result.username;
-        string? name = result.name;
-        string? previousPassword = result.password; 
-        string? Email = result.email;
+    string? username = result.username;
+    string? name = result.name;
+    string? Email = result.email;
 
-    if username is string && name is string && previousPassword is string && Email is string{
+    if username is string && name is string  && Email is string{
         string htmlBody = 
             "<!DOCTYPE html>" +
             "<html>" +
@@ -90,6 +84,7 @@ isolated function resetPassword(string userType, string userInfo) returns json|e
             "  .password { font-weight: bold; color: #d32f2f; }" +
             "  .footer { font-size: 14px; color: #777; text-align: center; margin-top: 30px; }" +
             "  .btn { display: inline-block; padding: 10px 20px; background-color: #d32f2f; color: #fff; text-decoration: none; border-radius: 6px; }" +
+            "  .btn a {color: #fff; text-decoration: none}"+
             "</style>" +
             "</head>" +
             "<body>" +
@@ -97,12 +92,14 @@ isolated function resetPassword(string userType, string userInfo) returns json|e
             "    <div class='header'>Reset Your BBMS Password</div>" +
             "    <div class='content'>" +
             "      Hello " + name + ",<br/><br/>" +
-            "      Your password has been reset successfully. Your new password is: " +
+            "      Your password has been reset successfully. <br/>" +
+            "Your user name is : " + username +
+            " <br/> Your new password is: " +
             "      <span class='password'>" + newPassword + "</span><br/><br/>" +
             "      Please login and change your password immediately for security reasons." +
             "    </div>" +
             "    <div style='text-align: center;'>" +
-            "      <a class='btn' href='https://your-bbms-app.com/login'>Login Now</a>" +
+            "      <a class='btn' href='http://localhost:5173/login'>Login Now</a>" +
             "    </div>" +
             "    <div class='footer'>This is an auto-generated email. Please do not reply.</div>" +
             "  </div>" +

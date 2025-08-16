@@ -26,7 +26,7 @@ const Home = ({ theme, setTheme }) => {
                   />
             </div>
           </div>
-          <h1 className="text-5xl mt-[5vh] md:text-7xl font-bold text-zinc-400 bg-clip-text text-transparent mb-10">
+          <h1 className="text-5xl mt-[5vh] md:text-7xl text-black dark:text-white font-bold text-zinc-400 bg-clip-text text-transparent mb-10">
             Blood Bank Management System
           </h1>
           <p className="text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto">

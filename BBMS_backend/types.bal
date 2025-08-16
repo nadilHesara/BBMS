@@ -37,7 +37,6 @@ public type Doner record {
     @sql:Column {name: "Username"}
     string username;
 
-    @sql:Column {name: "Password"}
     string? password = ();
 
     @sql:Column {name: "Email"}
@@ -89,7 +88,6 @@ public type Hospital record {
     @sql:Column {name: "Username"}
     string username;
 
-    @sql:Column {name: "Password"}
     string password;
 
     @sql:Column {name: "Email"}

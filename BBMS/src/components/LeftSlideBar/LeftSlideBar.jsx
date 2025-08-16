@@ -18,6 +18,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
   const navigate = useNavigate();
   const [currentPos,setCurrentPos] = useState(true);
   const [isOpen, setIsOpen] = useState(currentPos);
+  const userData = JSON.parse(sessionStorage.getItem("userData"));
 
   useEffect(() => {
     setCurrentPos(isOpen);
@@ -36,7 +37,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
     if (userType == "Doner") {
       return (
         <>
-          <div className="slide-bar-nav-links">
+          <div className={theme === 'dark' ? "slide-bar-nav-links dark" :"slide-bar-nav-links"}>
             <Link to="profileInfo"
             state={{from:"LeftSideBar"}}>
               <FaUserCircle size={30} color={theme === 'dark' ? 'white' : 'black'} />
@@ -48,19 +49,19 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               {isOpen && <span>Donation History</span>}
             </Link>
 
-            <Link to="ChangePassword">
-              <CgPassword size={30} color={theme === 'dark' ? 'white' : 'black'}/>
-              {isOpen && <span>Change Password</span>}
-            </Link>
-
             {/* <Link to="#">
               <FaNotesMedical size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Medical Records</span>}
             </Link> */}
 
             <Link to="/dashboard/DonationForm">
-              <FaNotesMedical size={30} />
+              <FaNotesMedical size={30 } color={theme === 'dark' ? 'white' : 'black'} />
               {isOpen && <span>Donation Form</span>}
+            </Link>
+
+            <Link to="ChangePassword">
+              <CgPassword size={30} color={theme === 'dark' ? 'white' : 'black'}/>
+              {isOpen && <span>Change Password</span>}
             </Link>
 
             <Link
@@ -78,36 +79,36 @@ const LeftSlideBar = ({ theme, userType, username }) => {
       return (
         <>
           <div className="slide-bar-nav-links">
-            <Link to="profileInfo"
+            {userType == "Hospital" && <Link to="profileInfo"
             state={{from:"LeftSideBar"}}>
               <FaUserCircle size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Profile Info</span>}
-            </Link>
+            </Link>}
 
             <Link to="AvailableBloodStocks">
               <GrStorage size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Available Blood Stock</span>}
             </Link>
 
-            <Link to="campReg">
+            {userType == "Hospital" && <Link to="campReg">
               <IoBagAddSharp size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Add Campaign</span>}
-            </Link>
+            </Link>}
 
-            <Link to="#">
+            {/* <Link to="#">
               <FaNotesMedical size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Ongoing Campaign</span>}
-            </Link>
+            </Link> */}
 
             <Link to="CampaignHistory">
               <FaHistory size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Campaign History</span>}
             </Link>
 
-            <Link to="/donorReg">
+            {userType == "Hospital" && <Link to="/donorReg">
               <MdAppRegistration size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Donor Register</span>}
-            </Link>
+            </Link>}
 
             {userType === "Admin" && (
               <Link to="hospitalReg">
@@ -125,7 +126,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               className="logout-link"
               onClick={() => LoggingOut()}
             >
-              <IoMdLogOut size={30} color={theme === 'dark' ? 'white' : 'black'}/>
+              <IoMdLogOut size={30} color={"red"}/>
               {isOpen && <span>Log Out</span>}
             </Link>
           </div>
@@ -135,7 +136,8 @@ const LeftSlideBar = ({ theme, userType, username }) => {
       navigate("/login");
     }
   }
-
+  console.log();
+  
   return (
    
     <aside className={`left-slide-bar ${theme} ${isOpen ? "open" : "closed"}`}>
@@ -148,8 +150,8 @@ const LeftSlideBar = ({ theme, userType, username }) => {
         <div className="profile-section">
           {isOpen && (
             <>
-              <FaUserCircle size={80} color={theme === 'dark' ? 'white' : 'black'} />
-              <h4>{username}</h4>
+              <FaUserCircle size={80} color={theme === 'dark' ? 'rgba(181, 181, 181, 0.9)' : 'rgba(75, 75, 75, 0.9)'} />
+              <h4 >{userData.Name}</h4>
             </>
           )}
         </div>

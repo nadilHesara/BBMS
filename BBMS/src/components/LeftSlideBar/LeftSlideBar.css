@@ -50,8 +50,10 @@
 
 .profile-section h4 {
   margin: 0;
-  font-size: 35px;
+  font-size: 25px;
   text-align: center;
+  font-weight: 600;
+  font-style:initial;
 }
 
 .slide-bar-nav-links {
@@ -72,6 +74,10 @@
   transition: all 0.3s ease;
   border-radius: 8px;
   font-size: 16px;
+}
+
+.slide-bar-nav-links.dark a:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .slide-bar-nav-links a:hover {
@@ -95,17 +101,19 @@
 }
 
 /* Dark mode support */
- .left-slide-bar.dark {
+.left-slide-bar.dark {
   background-color: #1a1a1a;
 }
 
- .left-slide-bar.dark .slide-bar-nav-links span {
+.left-slide-bar.dark .slide-bar-nav-links span {
   color:#e3e3e3;
 }
 
 .left-slide-bar.dark  .profile-section h4 {
   color:#e3e3e3;
 }
+
+
 
 @media screen and (max-width: 768px) {
   .left-slide-bar {
