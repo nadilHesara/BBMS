@@ -1,5 +1,7 @@
 import ballerina/email;
 import ballerina/random;
+import ballerina/time;
+import ballerina/crypto;
 
 public isolated function IdIncriment(string currentId) returns string {
     string prefix = currentId[0].toString();
@@ -82,10 +84,7 @@ isolated function randomize(string text) returns string|error {
     return string:fromBytes(chars);
 }
 
-public isolated function sendEmail(string toEmail, string password, string username) returns error? {
-    string emailBody = "This is auto genarated email do not reply to this. \n" +
-                        "Your user name is " + username + ". \n" +
-                        "You password of the BBMS acount is " + password + ".";
+public isolated function sendEmail(string toEmail, string subject, string body) returns error? {
 
     email:SmtpClient smtpClient = check new (
         host = "smtp.gmail.com",
@@ -96,8 +95,106 @@ public isolated function sendEmail(string toEmail, string password, string usern
 
     email:Message message = {
         to: [toEmail],
-        subject: "New password from BBMS App",
-        body: emailBody
+        subject: subject,
+        htmlBody:  body
     };
     check smtpClient->sendMessage(message);
+}
+
+isolated function getCurrentDate() returns string {
+    // Get current UTC time with millisecond precision
+    time:Utc currentUtc = time:utcNow(precision = 3);
+    
+    // Convert to string and extract date part
+    string currentTimeString = time:utcToString(currentUtc);
+    
+    // Extract date part (YYYY-MM-DD) from RFC 3339 format
+    string dateOnly = currentTimeString.substring(0, 10);
+    
+    return dateOnly;
+}
+
+isolated function formatDate(int year, int month, int day, string format) returns string {
+    // Simple date formatting based on format string
+    if format == "yyyy-MM-dd" {
+        string formattedMonth = month < 10 ? "0" + month.toString() : month.toString();
+        string formattedDay = day < 10 ? "0" + day.toString() : day.toString();
+        return year.toString() + "-" + formattedMonth + "-" + formattedDay;
+    }
+    // Add more format options as needed
+    return year.toString() + "-" + month.toString() + "-" + day.toString();
+}
+
+// Password encryption utility functions
+public isolated function encryptPassword(string password, byte[]? salt = ()) returns string|error {
+    byte[] passwordBytes = password.toBytes();
+    byte[] saltBytes;
+    
+    if salt is () {
+        // Generate random salt if not provided
+        saltBytes = [];
+        foreach int i in 0...15 {
+            int randomByte = check random:createIntInRange(0, 255);
+            saltBytes.push(<byte>randomByte);
+        }
+    } else {
+        saltBytes = salt;
+    }
+    
+    // Hash password with salt using SHA-256
+    byte[] hashedPassword = crypto:hashSha256(input = passwordBytes, salt = saltBytes);
+    
+    // Convert hash to hex string for storage
+    string hexHash = bytesToHex(hashedPassword);
+    string hexSalt = bytesToHex(saltBytes);
+    
+    // Return salt + hash combined (salt first 32 chars, hash remaining)
+    return hexSalt + hexHash;
+}
+
+public isolated function verifyPassword(string password, string storedHash) returns boolean|error {
+    if storedHash.length() < 64 {
+        return error("Invalid stored hash format");
+    }
+    
+    // Extract salt (first 32 hex chars = 16 bytes) and hash
+    string saltHex = storedHash.substring(0, 32);
+    string hashHex = storedHash.substring(32);
+    
+    byte[] salt = check hexToBytes(saltHex);
+    
+    // Hash the provided password with the extracted salt
+    string encryptedPassword = check encryptPassword(password, salt);
+    string newHashHex = encryptedPassword.substring(32);
+    
+    // Compare hashes
+    return hashHex == newHashHex;
+}
+
+isolated function bytesToHex(byte[] bytes) returns string {
+    string hex = "";
+    foreach byte b in bytes {
+        string hexByte = int:toHexString(b);
+        if hexByte.length() == 1 {
+            hexByte = "0" + hexByte;
+        }
+        hex += hexByte;
+    }
+    return hex;
+}
+
+isolated function hexToBytes(string hex) returns byte[]|error {
+    if hex.length() % 2 != 0 {
+        return error("Invalid hex string length");
+    }
+    
+    byte[] bytes = [];
+    int i = 0;
+    while i < hex.length() {
+        string hexPair = hex.substring(i, i + 2);
+        int byteValue = check int:fromHexString(hexPair);
+        bytes.push(<byte>byteValue);
+        i += 2;
+    }
+    return bytes;
 }

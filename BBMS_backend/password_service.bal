@@ -1,65 +1,60 @@
 import ballerina/sql;
 
-isolated function checkPassword(string username, string password) returns json|error {
-    sql:ParameterizedQuery query = `SELECT * FROM login WHERE (UserName=${username});`;
+isolated function checkPassword(string username) returns Login|error {
+    sql:ParameterizedQuery query = `SELECT * FROM login WHERE UserName=${username};`;
     Login|error result = check dbClient->queryRow(query);
-    if result is Login {
-        if (result.user_name == username && result.password == password) {
-            if result.doner_id is string {
-                return {
-                    "message": "Doner Login successful",
-                    "user_id": result.doner_id,
-                    "user_type": result.user_type
-                };
-            }
-            else {
-                return {
-                    "message": "Hospital Login successful",
-                    "user_id": result.hospital_id,
-                    "user_type": result.user_type
-                };
-            }
+    return result;
+}
+
+isolated function loginUser(string username, string password) returns json|error {
+    Login user = check checkPassword(username);
+
+    boolean valid = check verifyPassword(password, user.password);
+    if valid {
+        if user.doner_id is string {
+            return {
+                "message": "Doner Login successful",
+                "user_id": user.doner_id,
+                "user_type": user.user_type
+            };
         } else {
-            return error("Invalid username or password");
+            return {
+                "message": "Hospital Login successful",
+                "user_id": user.hospital_id,
+                "user_type": user.user_type
+            };
         }
     } else {
-        return result;
+        return error("Invalid username or password");
     }
 }
 
 isolated function changePassword(string userType, string username, string newPassword, string? previousPassword) returns json|error {
-    json|error? oldPasswordCheck =() ;
     if previousPassword is string {
-        oldPasswordCheck= checkPassword(username, previousPassword);
-    }
-    if oldPasswordCheck is error {
-        return oldPasswordCheck;
-    }
-
-    // Build parameterized query (safe interpolation)
-    sql:ExecutionResult|error userUpdateResult;
-    if userType == "Doner" {
-        userUpdateResult = dbClient->execute(`UPDATE Doner SET Password = ${newPassword} WHERE Username = ${username}`);
-    }else if userType == "Hospital" {
-        userUpdateResult = dbClient->execute(`UPDATE Hospital SET Password = ${newPassword} WHERE Username = ${username}`);
-    }else {
-        userUpdateResult = error("User type is different!");
-    }
-
-    if userUpdateResult is sql:ExecutionResult {
-        sql:ParameterizedQuery updateLoginQuery = `UPDATE login SET Password = ${newPassword} WHERE Username = ${username}`;
-        sql:ExecutionResult|error loginUpdateResult = dbClient->execute(updateLoginQuery);
-
-        if loginUpdateResult is sql:ExecutionResult {
-            return { "Message": "Password changed successfully" };
-        } else {
-            return loginUpdateResult;
+        json|error loginCheck =  loginUser(username, previousPassword);
+        if loginCheck is error {
+            return error("User Does not Exist");
         }
-    } else {
-        return userUpdateResult;
-    }
-}
 
+    }
+
+    // Encrypt the new password
+    string encryptedNewPassword = check encryptPassword(newPassword);
+
+
+
+ 
+    sql:ExecutionResult|error loginUpdateResult = dbClient->execute(
+        `UPDATE login SET Password = ${encryptedNewPassword} WHERE UserName = ${username}`
+        );
+
+    if loginUpdateResult is sql:ExecutionResult {
+        return { "Message": "Password changed successfully" };
+    } else {
+        return loginUpdateResult;
+    }
+   
+}
 
 isolated function resetPassword(string userType, string userInfo) returns json|error {
     string newPassword = check generatePassword(12);
@@ -77,14 +72,45 @@ isolated function resetPassword(string userType, string userInfo) returns json|e
     if result is error{
         return result;
     }
-
-        string? Username = result.username;
+        string? username = result.username;
+        string? name = result.name;
         string? previousPassword = result.password; 
         string? Email = result.email;
 
-    if Username is string && previousPassword is string && Email is string{
-        _ = check sendEmail(Email,newPassword,Username);
-        return changePassword(userType, Username,newPassword, ());
+    if username is string && name is string && previousPassword is string && Email is string{
+        string htmlBody = 
+            "<!DOCTYPE html>" +
+            "<html>" +
+            "<head>" +
+            "<style>" +
+            "  body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" +
+            "  .container { max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }" +
+            "  .header { color: #d32f2f; font-size: 24px; font-weight: bold; margin-bottom: 20px; text-align: center; }" +
+            "  .content { font-size: 16px; color: #333; margin-bottom: 20px; line-height: 1.5; }" +
+            "  .password { font-weight: bold; color: #d32f2f; }" +
+            "  .footer { font-size: 14px; color: #777; text-align: center; margin-top: 30px; }" +
+            "  .btn { display: inline-block; padding: 10px 20px; background-color: #d32f2f; color: #fff; text-decoration: none; border-radius: 6px; }" +
+            "</style>" +
+            "</head>" +
+            "<body>" +
+            "  <div class='container'>" +
+            "    <div class='header'>Reset Your BBMS Password</div>" +
+            "    <div class='content'>" +
+            "      Hello " + name + ",<br/><br/>" +
+            "      Your password has been reset successfully. Your new password is: " +
+            "      <span class='password'>" + newPassword + "</span><br/><br/>" +
+            "      Please login and change your password immediately for security reasons." +
+            "    </div>" +
+            "    <div style='text-align: center;'>" +
+            "      <a class='btn' href='https://your-bbms-app.com/login'>Login Now</a>" +
+            "    </div>" +
+            "    <div class='footer'>This is an auto-generated email. Please do not reply.</div>" +
+            "  </div>" +
+            "</body>" +
+            "</html>";
+            
+        _ = check sendEmail(Email , "Password Reset", htmlBody);
+        return changePassword(userType, username,newPassword, ());
     }
     return error("Incorrect user");
 }

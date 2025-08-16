@@ -14,7 +14,7 @@ const NaviBar = ({ theme, setTheme }) => {
   return (
     <nav className={`navibar ${theme}`}>
       <Link to='/' className='logo-link'>
-        <MdBloodtype size={45} className='navibar-img' color={theme === 'dark' ? 'white' : 'black'} />
+        <img src="/images/Blood Bank logo 2022-03.png" className="logo" alt="" />
         {theme === 'dark' ? <span className="logo-text">LifeLine</span> : <span className="logo-text dark-text">LifeLine</span>}
       </Link>
 

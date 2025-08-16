@@ -2,6 +2,7 @@ import React, { useState,useContext } from "react";
 import NaviBar from "../../components/Navibar/NaviBar";
 import "./CampaignRequest.css";
 import { LoadingContext } from "../../context/LoadingContext";
+import { toast } from "react-toastify";
 
 export default function CampaignForm({ theme, setTheme }) {
 
@@ -17,8 +18,6 @@ export default function CampaignForm({ theme, setTheme }) {
     details: ""
   });
 
-  const [status, setStatus] = useState("");
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -28,18 +27,15 @@ export default function CampaignForm({ theme, setTheme }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus("Sending...");
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8080/send-email", {
+      const res = await fetch("http://localhost:9191/campaignRequest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
       });
-
       if (res.ok) {
-        setStatus("✅ Campaign request sent successfully!");
         setFormData({
           organizerName: "",
           email: "",
@@ -49,11 +45,12 @@ export default function CampaignForm({ theme, setTheme }) {
           date: "",
           details: ""
         });
+        toast.success("Campaign request sent successfully!");
       } else {
-        setStatus("❌ Failed to send request.");
+        toast.error("Failed to send campaign request. Please try again.");
       }
     } catch (err) {
-      setStatus("❌ Error: " + err.message);
+      toast.error("Server error. Please try again later.");
     } finally {
       setLoading(false);
     }

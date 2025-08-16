@@ -100,8 +100,10 @@ const Login = ({ theme, setTheme }) => {
         <br />
 
         <label htmlFor="pwd">Password:</label>
-        <input type={show ? "text" : "password"} id="pwd" name="pwd" value={password} onChange={(e) => setPassword(e.target.value)}></input>
-        {show ? <AiFillEyeInvisible onClick={() => toggleShow()} size={20} /> : <AiFillEye onClick={() => toggleShow()} size={20} />}
+        
+          <input type={show ? "text" : "password"} id="pwd" name="pwd" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+          <div className="password-toggle-icon">{show ?  <AiFillEyeInvisible onClick={() => toggleShow()} size={20}  /> : <AiFillEye onClick={() => toggleShow()} size={20} className="password-toggle-icon" />}
+        </div>
         <br />
 
 

@@ -25,9 +25,8 @@ DROP TABLE IF EXISTS `bloodstocks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bloodstocks` (
-  `StockID` int NOT NULL,
+  `StockID` int NOT NULL AUTO_INCREMENT,
   `CampaignID` varchar(255) DEFAULT NULL,
-  `HospitalID` varchar(4) DEFAULT NULL,
   `A_plus` float DEFAULT NULL,
   `B_plus` float DEFAULT NULL,
   `O_plus` float DEFAULT NULL,
@@ -36,13 +35,11 @@ CREATE TABLE `bloodstocks` (
   `B_minus` float DEFAULT NULL,
   `O_minus` float DEFAULT NULL,
   `AB_minus` float DEFAULT NULL,
-  `District` varchar(50) DEFAULT NULL,
+  `note` mediumtext,
   PRIMARY KEY (`StockID`),
-  KEY `CampaignID` (`CampaignID`),
-  KEY `HospitalID` (`HospitalID`),
-  CONSTRAINT `bloodstocks_ibfk_1` FOREIGN KEY (`CampaignID`) REFERENCES `campaign` (`CampaignID`),
-  CONSTRAINT `bloodstocks_ibfk_2` FOREIGN KEY (`HospitalID`) REFERENCES `hospital` (`HospitalID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `bloodstocks_ibfk_1` (`CampaignID`),
+  CONSTRAINT `bloodstocks_ibfk_1` FOREIGN KEY (`CampaignID`) REFERENCES `campaign` (`CampaignID`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,7 +48,7 @@ CREATE TABLE `bloodstocks` (
 
 LOCK TABLES `bloodstocks` WRITE;
 /*!40000 ALTER TABLE `bloodstocks` DISABLE KEYS */;
-INSERT INTO `bloodstocks` VALUES (1,'C001','H001',120,85,40,150,20,15,10,5,'Gampaha'),(2,'C002','H002',84,32,65,48,45,65,1,54,'Colombo');
+INSERT INTO `bloodstocks` VALUES (1,'C001',121,85,40,150,20,15,22,5,''),(2,'C002',84,32,65,48,45,65,1,54,NULL),(4,'C001',1,NULL,NULL,6,NULL,NULL,12,NULL,''),(6,NULL,NULL,NULL,NULL,NULL,NULL,NULL,12,NULL,'By Hospital'),(7,NULL,NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,'as'),(8,NULL,NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,'asd'),(9,NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,''),(10,NULL,12,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'qw'),(11,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'q'),(12,NULL,10,NULL,NULL,NULL,NULL,NULL,NULL,NULL,''),(13,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,''),(14,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,''),(15,NULL,-1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,''),(16,NULL,NULL,-12,NULL,NULL,NULL,NULL,NULL,NULL,''),(17,NULL,-10,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'');
 /*!40000 ALTER TABLE `bloodstocks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -75,8 +72,12 @@ CREATE TABLE `campaign` (
   `DonerCount` int DEFAULT NULL,
   `StartTime` time DEFAULT NULL,
   `EndTime` time DEFAULT NULL,
-  `HospitalID` varchar(5) NOT NULL,
-  PRIMARY KEY (`CampaignID`)
+  `completed` tinyint NOT NULL DEFAULT '0',
+  `HospitalID` varchar(5) DEFAULT NULL,
+  `CampaignName` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`CampaignID`),
+  KEY `fk_campaign_hospital` (`HospitalID`),
+  CONSTRAINT `fk_campaign_hospital` FOREIGN KEY (`HospitalID`) REFERENCES `hospital` (`HospitalID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -86,7 +87,7 @@ CREATE TABLE `campaign` (
 
 LOCK TABLES `campaign` WRITE;
 /*!40000 ALTER TABLE `campaign` DISABLE KEYS */;
-INSERT INTO `campaign` VALUES ('C001','Colombo','2025-08-18','UOM CSE','0703371796','thilokyaangeesa@gmail.com','Katubadda','Moratuwa','',23,'07:42:00','16:42:00','H001'),('C002','Colombo','2025-08-20','Japura','0703371796','thilokyaangeesa@gmail.com','Japura Camps','Mount Lavinia','',50,'09:00:00','16:05:00','H002');
+INSERT INTO `campaign` VALUES ('C001','Gampaha','2025-08-18','UOM CSE','0703371796','thilokyaangeesa@gmail.com','Katubadda','Moratuwa','',23,'07:42:00','16:42:00',0,'H001','CS 40'),('C002','Colombo','2025-08-20','Japura','0703371796','thilokyaangeesa@gmail.com','Japura Camps','Mount Lavinia','',50,'09:00:00','16:05:00',0,'H002','Japura ENG');
 /*!40000 ALTER TABLE `campaign` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -99,8 +100,8 @@ DROP TABLE IF EXISTS `donates`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `donates` (
   `DonateID` varchar(10) NOT NULL,
-  `DonerID` varchar(4) DEFAULT NULL,
-  `CampaignID` varchar(255) DEFAULT NULL,
+  `DonerID` varchar(4) NOT NULL,
+  `CampaignID` varchar(255) NOT NULL,
   `DonateTime` time DEFAULT NULL,
   `Pressure` varchar(20) DEFAULT NULL,
   `Weight` decimal(5,2) DEFAULT NULL,
@@ -155,7 +156,7 @@ CREATE TABLE `doner` (
 
 LOCK TABLES `doner` WRITE;
 /*!40000 ALTER TABLE `doner` DISABLE KEYS */;
-INSERT INTO `doner` VALUES ('D001','Thilokya Angeesa','Male',NULL,'200324610311','2003-09-02','0703371796','80/5','Siyambalape Watta','Delgoda','Gampaha','','Thilokya03','thilokyaangeesa@gmail.com'),('D002','Lahiru Dilshan','Male','O+','200330111405','2003-10-27','0714566635','2/4','Semidal Farm','Akuressa','Matara','','LahiruDilshan','adlahiru65@gmail.com'),('D003','Hesandi Siwmini','Female','B+','200382110104','2024-11-26','0776713212','21/5','Bandarawaththa','Gampaha','Gampaha','','hesandism','hesandism@gmail.com'),('D004','Hesandi Siwmini','Female','O+','200382110104','2025-08-02','0776713212','21/5','Bandarawaththa','Gampaha','Gampaha',_binary 'N@p#5835OgH$','hesandism','hesandism@gmail.com');
+INSERT INTO `doner` VALUES ('D001','Thilokya Angeesa','Male',NULL,'200324610311','2003-09-02','0703371796','80/5','Siyambalape Watta','Delgoda','Gampaha',_binary 'pgtnD5&v4tbC','Thilokya03','thilokyaangeesa@gmail.com'),('D002','Lahiru Dilshan','Male','O+','200330111405','2003-10-27','0714566635','2/4','Semidal Farm','Akuressa','Matara','','LahiruDilshan','adlahiru65@gmail.com'),('D003','Hesandi Siwmini','Female','B+','200382110104','2024-11-26','0776713212','21/5','Bandarawaththa','Gampaha','Gampaha','','hesandism','hesandism@gmail.com'),('D004','Hesandi Siwmini','Female','O+','200382110104','2025-08-02','0776713212','21/5','Bandarawaththa','Gampaha','Gampaha',_binary 'N@p#5835OgH$','hesandism','hesandism@gmail.com');
 /*!40000 ALTER TABLE `doner` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,7 +219,7 @@ CREATE TABLE `login` (
 
 LOCK TABLES `login` WRITE;
 /*!40000 ALTER TABLE `login` DISABLE KEYS */;
-INSERT INTO `login` VALUES ('Admin','Admin',NULL,NULL,'Admin'),('ColomboHos','zDSt#5$H0w&W',NULL,'H002','Hospital'),('GampahaHos','12345',NULL,'H001','Hospital'),('hesandism','0776713212','D004',NULL,'Doner'),('Thilokya03','0703371796','D001',NULL,'Doner');
+INSERT INTO `login` VALUES ('Admin','Admin',NULL,NULL,'Admin'),('ColomboHos','zDSt#5$H0w&W',NULL,'H002','Hospital'),('GampahaHos','12345',NULL,'H001','Hospital'),('hesandism','0776713212','D004',NULL,'Doner'),('Thilokya03','pgtnD5&v4tbC','D001',NULL,'Doner');
 /*!40000 ALTER TABLE `login` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -231,4 +232,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-08-15 18:51:07
+-- Dump completed on 2025-08-16 16:43:00
