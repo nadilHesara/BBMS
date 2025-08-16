@@ -1,9 +1,13 @@
 import NaviBar from "../../components/Navibar/NaviBar";
 import "./CampReg.css";
-import React,{ use, useState } from 'react';
+import React,{ use, useState , useContext } from 'react';
+import { LoadingContext } from "../../context/LoadingContext";
 import districts from '../../SharedData/districts';
 
 function CampReg({ theme, setTheme }) {
+
+  const { loading, setLoading } = useContext(LoadingContext);
+
   const [campaign, setCampaign] = useState({
     campain_id:'C001',
     district:'',
@@ -40,6 +44,7 @@ function CampReg({ theme, setTheme }) {
     setMessage("");
 
     try{
+      setLoading(true);
       const response = await fetch("http://localhost:9191/dashboard/campReg",{
       method:"POST",
       headers: {  
@@ -51,16 +56,15 @@ function CampReg({ theme, setTheme }) {
       const result = await response.json();
 
       if (response.ok){
-        alert("Successfully added the campaign");
         setMessage(`Successfully registered by ${campaign.org_name}`);
       }else{
-        alert("Registration failed. Check server and data.");
+    
         setMessage("Error : " + JSON.stringify(result));
       }
     }catch (error){
-      //console.error(error.message);
-      alert("Registration failed. Check server and data.");
       setMessage("Registration failed. Check server and data.");
+    }finally {
+      setLoading(false);
     }
   }
 
@@ -68,7 +72,7 @@ function CampReg({ theme, setTheme }) {
     <>
       <NaviBar theme={theme} setTheme={setTheme} />
       <div className="campreg-container">
-        <form  onSubmit={handleSubmit}>
+        <form className="doner-reg-form" onSubmit={handleSubmit}>
           <h1 >Campaign Registration</h1>
           <label htmlFor="org_name"> Organizer Name: </label>
           <input type="text" id="org_name" name="org_name" onChange={handleChange} required></input>

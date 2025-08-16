@@ -16,7 +16,7 @@ isolated function addCamp(Campaign campaign) returns json|error {
     }
 
     campaign.campain_id = newID;
-    sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, BloodQuantity, StartTime, EndTime)
+    sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, StartTime, EndTime)
             VALUES (
                 ${campaign.campain_id},
                 ${campaign.district},
@@ -28,7 +28,6 @@ isolated function addCamp(Campaign campaign) returns json|error {
                 ${campaign.add_line2},
                 ${campaign.add_line3},
                 ${campaign.doner_count},
-                ${campaign.blood_quantity},
                 ${campaign.start_time},
                 ${campaign.end_time}
             )`;
@@ -52,7 +51,6 @@ isolated function getCampaignEvent(string year_month, string district) returns C
     int year = check int:fromString(parts[0]);
     int mon = check int:fromString(parts[1]);
 
-
     stream<Campaign, error?> resultStream = dbClient->query(
         `SELECT * FROM campaign where year(DateofCampaign) = ${year} and month(DateofCampaign) = ${mon} and District = ${d}`
     );
@@ -64,3 +62,62 @@ isolated function getCampaignEvent(string year_month, string district) returns C
     return campaigns;
 
 };
+
+isolated function getCampaignHistory(string hospital_id, string? month = ()) returns CampaignDetails[]|error {
+    CampaignDetails[] campaigns = [];
+
+    sql:ParameterizedQuery query;
+
+    if month is () {
+        query = `SELECT 
+                    c.CampaignID, 
+                    c.District, 
+                    c.DateofCampaign, 
+                    c.OrganizerName, 
+                    c.OrganizerTelephone, 
+                    c.OrganizerEmail, 
+                    c.DonerCount, 
+                    b.A_plus, 
+                    b.B_plus, 
+                    b.O_plus, 
+                    b.AB_plus, 
+                    b.A_minus, 
+                    b.B_minus, 
+                    b.O_minus, 
+                    b.AB_minus
+                FROM campaign AS c
+                INNER JOIN bloodstocks AS b 
+                    ON c.CampaignID = b.CampaignID
+                where c.HospitalID = ${hospital_id}`;
+    } else {
+        string date  = month + "-01";
+        query = `SELECT 
+                    c.CampaignID, 
+                    c.District, 
+                    c.DateofCampaign, 
+                    c.OrganizerName, 
+                    c.OrganizerTelephone, 
+                    c.OrganizerEmail, 
+                    c.DonerCount, 
+                    b.A_plus, 
+                    b.B_plus, 
+                    b.O_plus, 
+                    b.AB_plus, 
+                    b.A_minus, 
+                    b.B_minus, 
+                    b.O_minus, 
+                    b.AB_minus
+                FROM campaign AS c
+                INNER JOIN bloodstocks AS b 
+                    ON c.CampaignID = b.CampaignID
+                where c.HospitalID = ${hospital_id} and c.DateofCampaign >= ${date}`;
+    }
+    stream<CampaignDetails, error?> resultStream = dbClient->query(query);
+    check from CampaignDetails campaign in resultStream
+        do {
+            campaigns.push(campaign);
+        };
+    check resultStream.close();
+
+    return campaigns;
+}

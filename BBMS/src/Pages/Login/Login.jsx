@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect ,useContext } from 'react'
 import './Login.css';
 import NaviBar from '../../components/Navibar/NaviBar';
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link, useNavigate } from 'react-router-dom';
-
+import { LoadingContext } from "../../context/LoadingContext";
 
 
 const Login = ({ theme, setTheme }) => {
+
+  const { loading, setLoading } = useContext(LoadingContext);
+
   const navigate = useNavigate();
 
   const login = sessionStorage.getItem("userType");
   const [userType, setUserType] = useState(login ? login : "");
 
+
   useEffect(() => {
     sessionStorage.setItem("userType", userType)
+    
   }, [userType]);
 
   const [username, setUsername] = useState('');
@@ -44,7 +49,7 @@ const Login = ({ theme, setTheme }) => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-
+    setLoading(true);
     try {
       const response = await fetch("http://localhost:9191/login", {
         method: "POST",
@@ -69,10 +74,9 @@ const Login = ({ theme, setTheme }) => {
         console.log("Login successful to " + result.user_type + " !");
         setUserType(result.user_type);
         sessionStorage.setItem("username", result.username);
-        navigate("/dashboard");
-        sessionStorage.setItem("userId", result.user_id); // or whatever key name you use
+        sessionStorage.setItem("userId", result.user_id);
         sessionStorage.setItem("userType", result.user_type);
-
+        navigate("/dashboard");
 
       } else {
         setMessage("Error: " + (result.message || JSON.stringify(result)));
@@ -81,14 +85,16 @@ const Login = ({ theme, setTheme }) => {
     } catch (error) {
       console.error("Error login form :", error.message);
       setMessage("Login failed. Check server and data.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <div>
       <NaviBar theme={theme} setTheme={setTheme} />
-      <form onSubmit={handleLoginSubmit}>
-        <h1>Login</h1>
+      <form className='login-form' onSubmit={handleLoginSubmit} >
+        <h1 className='login-header'>Login</h1>
         <label htmlFor="Username"> Username: </label>
         <input type="text" id="Username" name="Username" value={username} onChange={(e) => setUsername(e.target.value)}></input>
         <br />
@@ -99,18 +105,21 @@ const Login = ({ theme, setTheme }) => {
         <br />
 
 
-        <label>
-          <input type="checkbox" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />Remember Me
-        </label>
-        <br />
-
-        <div className="forgot-pw-link">
-          <p>
-            <Link to={"/forgotpassword"}>Forgot Password?</Link>
-          </p>
+        <div className='forget-pwd-container'>
+          <div className='remeber-me-check'>
+            <label >
+              <input  type="checkbox" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />Remember Me
+            </label>
+          </div>
+          <br />
+          
+            <p className="forgot-pw-link">
+              <Link to={"/forgotpassword"}>Forgot Password?</Link>
+            </p>
+          
         </div>
 
-        <input type="submit" value="Login"></input>
+        <input className='login-btn' type="submit" value="Login"></input>
         <div className="register-link">
           <p>
             Don't have an account? <Link to="/donorReg">Register now</Link>

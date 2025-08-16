@@ -1,4 +1,4 @@
-.main-layout{
+/* .main-layout{
     height: auto;
     padding: 20px;
     
@@ -18,4 +18,43 @@
 .district-sort-label {
   font-weight: 500;
   margin-right: 5px;
+} */
+
+
+.dashboard-layout{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin:0;
+  padding:0
+
+}
+.main-layout{
+  display:flex;
+  flex:1;
+  background-color:rgb(255, 213, 213);
+  padding-top: 60px;
+  margin:0;
+
+}
+
+.dashboard-content{
+  margin:50px;
+}
+
+
+.content-area{
+  width:100%;
+}
+
+.content-area.dark{
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+.main-layout.dark{
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+.content-area.content-area.dark .calender-component{
+  color: aqua;
 }

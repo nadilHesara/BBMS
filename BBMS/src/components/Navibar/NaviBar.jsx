@@ -9,6 +9,8 @@ const NaviBar = ({ theme, setTheme }) => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
+  const userType = sessionStorage.getItem("userType");
+
   return (
     <nav className={`navibar ${theme}`}>
       <Link to='/' className='logo-link'>
@@ -18,16 +20,17 @@ const NaviBar = ({ theme, setTheme }) => {
 
       <ul className="nav-links">
         <li><Link to='/'>Home</Link></li>
-        <li><Link to='/dashboard'>Dashboard</Link></li>
+        {userType ? <li><Link to='/dashboard'>Dashboard</Link></li> : <></>}
         <li><Link to='/login'>Login</Link></li>
-        <li><Link to='/donorReg'>Register</Link></li>
+        <li><Link to='/donorReg'>Become Doner</Link></li>
+        <li><Link to='/campaignRequest'>Organize Campaign</Link></li>
       </ul>
 
       <div className="user-toggle-icons">
         {theme === 'dark' 
           ? <IoMoonSharp className='toggle-icon' size={30} onClick={toggle_mode} color='white' />
           : <IoSunnySharp className='toggle-icon' size={30} onClick={toggle_mode} color='black' />}
-        <Link to='/login'><FaRegCircleUser className='user-icon' size={35} color={theme === 'dark' ? 'white' : 'black'} /></Link>
+        <Link to={userType ? '/dashboard':'/login'}><FaRegCircleUser className='user-icon' size={35} color={theme === 'dark' ? 'white' : 'black'} /></Link>
       </div>
     </nav>
   );
