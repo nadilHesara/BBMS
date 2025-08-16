@@ -122,3 +122,17 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
 
     return campaigns;
 }
+
+isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[]|error {
+    CampaignIdName[] campaigns = [];
+    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID}`;
+    
+    stream<CampaignIdName, error?> resultStream = dbClient->query(query);
+    check from CampaignIdName campaign in resultStream
+        do {
+            campaigns.push(campaign);
+        };
+    check resultStream.close();
+    
+    return campaigns;
+}

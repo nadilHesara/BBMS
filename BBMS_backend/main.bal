@@ -312,4 +312,19 @@ service /dashboard on listener9191 {
         return result;
     }
 
+    resource function get addBloodCampaigns(@http:Query string hospital) returns CampaignIdName[]|error {
+        CampaignIdName[]|error hospitals = getCampaignHospital(hospital);
+        if hospitals is error {
+            return hospitals;
+        }
+        return hospitals;
+        
+    }
+    resource function post addBlood(@http:Payload BloodData bloodData) returns json|error {
+
+        json|error result = check addBloodStock(bloodData);
+        return result;
+        
+    }
+
 }
