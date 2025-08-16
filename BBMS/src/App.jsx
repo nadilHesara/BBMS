@@ -37,6 +37,22 @@ function App() {
   const [theme, setTheme] = useState(current_theme || "light");
   const toastPosition = window.innerWidth <= 768 ? "top-center" : "top-right";
 
+  const [dark, setDark] = useState(
+    localStorage.getItem("theme") === "dark" ||
+    (!("theme" in localStorage) &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches)
+  );
+
+  useEffect(() => {
+    if (dark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [dark]);
+
 
   useEffect(() => {
     localStorage.setItem("current_theme", theme);

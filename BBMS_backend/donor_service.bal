@@ -3,7 +3,7 @@ import ballerina/io;
 
 public isolated function addDoner(Doner doner) returns json|error {
 
-
+    // Generate new DonerID
     DonerID|error d = dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
     string newDonerId;
     if d is DonerID {
@@ -19,18 +19,45 @@ public isolated function addDoner(Doner doner) returns json|error {
 
     Doner newDoner = doner.clone();
     newDoner.doner_id = newDonerId;
+
+    // Handle empty blood group
     if newDoner.blood_group is string && newDoner.blood_group == "" {
         newDoner.blood_group = ();
     }
 
+    // Handle password
+    string? password = newDoner.password;
     string defaultPassword;
-    if doner.password is () || doner.password == "" {
-        defaultPassword = check generatePassword(12);
-        _ = check sendEmail(doner.email, defaultPassword,doner.username);
+    if password is () || password == "" {
+        // Generate random default password
+        defaultPassword = check generatePassword();
         newDoner.password = defaultPassword;
+
+        // Send email to user
+        string donerEmail = newDoner.email;
+        string htmlBody = "<!DOCTYPE html>" +
+            "<html>" +
+            "<head>" +
+            "<style>/* Your email styling here */</style>" +
+            "</head>" +
+            "<body>" +
+            "Hello " + newDoner.name + ",<br/>" +
+            "Your login password is: <b>" + defaultPassword + "</b>" +
+            "</body></html>";
+        
+        error? emailResult = sendEmail(donerEmail, "Welcome to BBMS - Your Account Details", htmlBody);
+        if emailResult is error {
+            io:println("Warning: Could not send welcome email. ", emailResult.message());
+        }
     }
-    
-    sql:ParameterizedQuery addDoner = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District, Username, Password, Email)
+
+    // Encrypt password before storing
+    password = newDoner.password;
+    if !(password is string){return error("Password does not exist");}
+    string encryptedPassword = check encryptPassword(password);
+
+    // Insert donor details
+    sql:ParameterizedQuery addDoner = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District, Username, Email)
         VALUES(
             ${newDoner.doner_id},
             ${newDoner.name},
@@ -44,29 +71,29 @@ public isolated function addDoner(Doner doner) returns json|error {
             ${newDoner.address_line3},
             ${newDoner.District},
             ${newDoner.username},
-            ${newDoner.password},
             ${newDoner.email}
         )`;
 
-    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , DonerID  , UserType) 
+    // Insert login details
+    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, DonerID, UserType) 
             VALUES(
             ${newDoner.username},
-            ${newDoner.password},
+            ${encryptedPassword},
             ${newDoner.doner_id},
             "Doner")`;
 
     sql:ExecutionResult|error result = dbClient->execute(addDoner);
     sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
 
-    if result is error && loginResult is error {
-        return error("Doner already exist!");
-    }
-    else if result is error && loginResult is sql:ExecutionResult {
-        return error("Please enter valid data");
+    if result is error {
+        return error("Failed to add donor: " + result.message());
+    } else if loginResult is error {
+        return error("Failed to add login details: " + loginResult.message());
     } else {
-        return {"message": "Doner adedd sucsessfully!"};
+        return {"message": "Donor added successfully!"};
     }
 }
+
 
 public isolated function getDoner(string? id = (), string? username = (), string? email = ()) returns Doner|error {
     Doner|error doner;
@@ -122,7 +149,6 @@ public isolated function updateDoner(Doner doner) returns sql:ExecutionResult|er
                 AddressLine2 = ${doner.address_line2}, 
                 AddressLine3 = ${doner.address_line3}, 
                 District = ${doner.District},
-                Password = ${doner.password}
             WHERE DonerID = ${doner.doner_id}
         `);
     } else {
@@ -145,7 +171,6 @@ public isolated function updateDoner(Doner doner) returns sql:ExecutionResult|er
     }
     return result;
 }
-
 
 public isolated function get_DonationHistory(string userID) returns DonateRecord[]|error {
     DonateRecord[] donations = [];
