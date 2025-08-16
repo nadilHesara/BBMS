@@ -48,15 +48,15 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               {isOpen && <span>Donation History</span>}
             </Link>
 
-            <Link to="#">
-              <FaHandsHelping size={30} color={theme === 'dark' ? 'white' : 'black'}/>
-              {isOpen && <span>Request Donation</span>}
+            <Link to="ChangePassword">
+              <CgPassword size={30} color={theme === 'dark' ? 'white' : 'black'}/>
+              {isOpen && <span>Change Password</span>}
             </Link>
 
-            <Link to="#">
+            {/* <Link to="#">
               <FaNotesMedical size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Medical Records</span>}
-            </Link>
+            </Link> */}
 
             <Link to="/dashboard/DonationForm">
               <FaNotesMedical size={30} />
@@ -68,7 +68,7 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               className="logout-link"
               onClick={() => LoggingOut()}
             >
-              <IoMdLogOut size={30} color={theme === 'dark' ? 'white' : 'black'}/>
+              <IoMdLogOut size={30} color={'red'}/>
               {isOpen && <span>Log Out</span>}
             </Link>
           </div>

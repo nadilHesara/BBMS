@@ -16,7 +16,7 @@ isolated function addCamp(Campaign campaign) returns json|error {
     }
 
     campaign.campain_id = newID;
-    sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, StartTime, EndTime)
+    sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, StartTime, EndTime , HospitalID)
             VALUES (
                 ${campaign.campain_id},
                 ${campaign.district},
@@ -29,7 +29,8 @@ isolated function addCamp(Campaign campaign) returns json|error {
                 ${campaign.add_line3},
                 ${campaign.doner_count},
                 ${campaign.start_time},
-                ${campaign.end_time}
+                ${campaign.end_time},
+                ${campaign.hospital_id}
             )`;
 
     sql:ExecutionResult|error result = dbClient->execute(query);
