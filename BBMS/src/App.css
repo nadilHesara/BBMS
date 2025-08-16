@@ -26,9 +26,7 @@ body,html, #root{
   flex: 1; 
 }
 .app-container{
-  /* background-color: aqua;
-  display: flex;
-  height:calc(100vh-60px); */
+   background: rgb(255, 187, 187);
   display: flex;
   flex-direction: column;
   width:100%;
@@ -36,11 +34,12 @@ body,html, #root{
   min-height: 100vh;
   margin:0;
   padding:0;
-  background-color: rgb(255, 213, 213);
   overflow-x: hidden;
 }
 
-
+.app-container.dark{
+  background-color: rgb(75, 72, 72);
+}
 
 
 .Toastify__toast {

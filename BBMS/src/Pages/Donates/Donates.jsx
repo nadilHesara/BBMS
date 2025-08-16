@@ -67,7 +67,7 @@ function Donates({ theme, setTheme }) {
 
     return (
         <div className="search_container">
-            <form onSubmit={handleSearchSubmit}>
+            <form classname="doner-reg-form" onSubmit={handleSearchSubmit}>
                 <h1>Campaign {campaign_id}</h1>
                 <div className="field_container">
                     <label className='Label' htmlFor="username_email">Username or Email</label>

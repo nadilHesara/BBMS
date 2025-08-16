@@ -67,7 +67,7 @@ function HospitalReg({ theme, setTheme }) {
         <div>
             <NaviBar theme={theme} setTheme={setTheme} />
             <div className={theme === "light" ? "hospital-reg" : "hospital-reg dark"}>
-                <form className="hospital-reg-form"  onSubmit={handleSubmit}>
+                <form className="doner-reg-form"  onSubmit={handleSubmit}>
                     <h1>Hospital Registration</h1>
                     <label htmlFor="name">Hospital Name:</label>
                     <input type="text" name="name" onChange={handleChange} required />

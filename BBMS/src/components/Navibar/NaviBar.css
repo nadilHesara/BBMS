@@ -38,6 +38,19 @@
   align-items: center;
   gap: 10px;
   text-decoration: none;
+   transition: ease 0.5s;
+}
+
+.logo{
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  transition: ease 0.5s;
+}
+
+.logo-link:hover{
+  transform: scale(1.05);
+  transition: ease 0.5s;
 }
 
 .logo-text {

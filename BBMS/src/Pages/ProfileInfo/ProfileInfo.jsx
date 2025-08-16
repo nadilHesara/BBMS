@@ -5,6 +5,7 @@ import { FaUserCircle } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import "./ProfileInfo.css"
 import { LoadingContext } from '../../context/LoadingContext';
+import { toast } from 'react-toastify';
 {/*import { use } from 'react';*/ }
 
 function ProfileInfo({ theme, setTheme }) {
@@ -97,8 +98,7 @@ function ProfileInfo({ theme, setTheme }) {
         }
 
       } catch (err) {
-        console.error("Error fetching user:", err);
-        setMessage("⚠️ Failed to load profile data.");
+        toast.error("⚠️ Failed to load profile data.");
 
       } finally {
         setLoading(false);
@@ -158,17 +158,11 @@ sessionStorage.setItem("userType", res.user_type);*/}
 
         .then(response => response.json())
         .then(data => {
-          alert(data.message || "Saved Changes Successfully");
+          toast.success("Saved Changes Successfully");
 
         })
-
-        .catch(error => {
-          console.error('Error:', error);
-          setMessage("⚠️ Failed to save changes");
-        });
     } catch (error) {
-      console.error('Error:', error);
-      setMessage("⚠️ Failed to save changes");
+      toast.error("⚠️ Failed to save changes");
     } finally {
       setLoading(false);
     }

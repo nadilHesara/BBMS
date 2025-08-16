@@ -1,4 +1,5 @@
 import ballerina/sql;
+import ballerina/io;
 
 isolated function addCamp(Campaign campaign) returns json|error {
     CampaignID|error c = dbClient->queryRow(`SELECT CampaignID FROM campaign ORDER BY CampaignID DESC LIMIT 1`);
@@ -16,7 +17,8 @@ isolated function addCamp(Campaign campaign) returns json|error {
     }
 
     campaign.campain_id = newID;
-    sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, StartTime, EndTime)
+    io:println("newID:" + newID);
+    sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, StartTime, EndTime , HospitalID)
             VALUES (
                 ${campaign.campain_id},
                 ${campaign.district},
@@ -29,7 +31,8 @@ isolated function addCamp(Campaign campaign) returns json|error {
                 ${campaign.add_line3},
                 ${campaign.doner_count},
                 ${campaign.start_time},
-                ${campaign.end_time}
+                ${campaign.end_time},
+                ${campaign.hospital_id}
             )`;
 
     sql:ExecutionResult|error result = dbClient->execute(query);
@@ -119,5 +122,20 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
         };
     check resultStream.close();
 
+    return campaigns;
+}
+
+isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[]|error {
+    CampaignIdName[] campaigns = [];
+    string curruntDate = getCurrentDate();
+    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND DateofCampaign <= ${curruntDate} ORDER BY DateofCampaign DESC`;
+    
+    stream<CampaignIdName, error?> resultStream = dbClient->query(query);
+    check from CampaignIdName campaign in resultStream
+        do {
+            campaigns.push(campaign);
+        };
+    check resultStream.close();
+    
     return campaigns;
 }

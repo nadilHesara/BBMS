@@ -37,7 +37,6 @@ public type Doner record {
     @sql:Column {name: "Username"}
     string username;
 
-    @sql:Column {name: "Password"}
     string? password = ();
 
     @sql:Column {name: "Email"}
@@ -89,7 +88,6 @@ public type Hospital record {
     @sql:Column {name: "Username"}
     string username;
 
-    @sql:Column {name: "Password"}
     string password;
 
     @sql:Column {name: "Email"}
@@ -280,4 +278,32 @@ public type CampaignDetails record {|
     
     @sql:Column {name: "AB_minus"}
     string? AB_minus;
+|};
+
+
+public type CampaignRequest record {|
+    string organizerName;
+    string email;
+    string phone;
+    string campaignName;
+    string location;
+    string date;
+    string? details;
+|};
+
+public type BloodData record {|
+    string bloodType;
+    string? campaignId;
+    int units;
+    string? notes;
+|};
+
+public type CampaignIdName record {|
+    string CampaignID;
+    string CampaignName;
+|};
+
+public type BloodStockDetails record {|
+    int StockId;
+    string CampaignID;
 |};

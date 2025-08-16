@@ -2,19 +2,14 @@ import ballerina/sql;
 
 isolated function addHospital(Hospital hospital) returns json|error {
     // Generate a new HOSPITAL ID
-
     HospitalID|error h = dbClient->queryRow(`SELECT HospitalID FROM Hospital ORDER BY HospitalID DESC LIMIT 1`);
-    string newHospitalId;
+    string newHospitalId = "H001";
 
     if h is HospitalID {
         string? lastId = h.HospitalID;
         if lastId is string {
             newHospitalId = IdIncriment(lastId);
-        } else {
-            newHospitalId = "H001";
         }
-    } else {
-        newHospitalId = "H001";
     }
 
     // Create a new Hospital record with the new Hospital Id
@@ -22,39 +17,41 @@ isolated function addHospital(Hospital hospital) returns json|error {
     newHospital.hospital_id = newHospitalId;
     newHospital.password = check generatePassword(12);
 
-    sql:ParameterizedQuery addHospital = `INSERT INTO Hospital(HospitalID, Name, District, Contact, AddressLine1, AddressLine2, AddressLine3, Username, Password, Email)
-        VALUES(
-            ${newHospital.hospital_id},
-            ${newHospital.name},
-            ${newHospital.District},
-            ${newHospital.contact_no},
-            ${newHospital.address_line1},
-            ${newHospital.address_line2},
-            ${newHospital.address_line3},
-            ${newHospital.username},
-            ${newHospital.password},
-            ${newHospital.email}
-        )`;
+    // Insert into Hospital table (now includes password)
+    sql:ParameterizedQuery addHospital = `INSERT INTO Hospital(
+        HospitalID, Name, District, Contact, AddressLine1, AddressLine2, AddressLine3, Username, Email
+    ) VALUES(
+        ${newHospital.hospital_id},
+        ${newHospital.name},
+        ${newHospital.District},
+        ${newHospital.contact_no},
+        ${newHospital.address_line1},
+        ${newHospital.address_line2},
+        ${newHospital.address_line3},
+        ${newHospital.username},
+        ${newHospital.email},
 
-    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , HospitalID  , UserType) 
-            VALUES(
-            ${newHospital.username},
-            ${newHospital.password},
-            ${newHospital.hospital_id},
-            "Hospital")`;
+    )`;
+
+    // Insert into login table
+    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, HospitalID, UserType) 
+        VALUES(
+        ${newHospital.username},
+        ${newHospital.password},
+        ${newHospital.hospital_id},
+        "Hospital")`;
 
     sql:ExecutionResult|error result = dbClient->execute(addHospital);
     sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
 
     if result is error && loginResult is error {
-        return error("Hospital already exist!");
-    }
-    else if result is error && loginResult is sql:ExecutionResult {
+        return error("Hospital already exists!");
+    } else if result is error {
         return error("Please enter valid data");
-    } else {
-        _ = check sendEmail(newHospital.email, newHospital.password, newHospital.username);
-        return {"message": "Hospital adedd sucsessfully!"};
     }
+
+    _ = check sendEmail(newHospital.email, newHospital.password, newHospital.username);
+    return {"message": "Hospital added successfully!"};
 }
 
 isolated function getHospital(string? id = (), string? username = (), string? email = ()) returns Hospital|error {

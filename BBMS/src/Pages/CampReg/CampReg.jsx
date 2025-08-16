@@ -7,6 +7,8 @@ import districts from '../../SharedData/districts';
 function CampReg({ theme, setTheme }) {
 
   const { loading, setLoading } = useContext(LoadingContext);
+  const userId = sessionStorage.getItem("userId");
+  console.log("userId: ",userId);
 
   const [campaign, setCampaign] = useState({
     campain_id:'C001',
@@ -21,7 +23,8 @@ function CampReg({ theme, setTheme }) {
     end_time:'',
     org_tele:'',
     org_email:'',
-    blood_quantity:0
+    blood_quantity:0,
+    hospital_id: userId
   })
 
   const [message,setMessage] = useState("");
@@ -42,7 +45,7 @@ function CampReg({ theme, setTheme }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-
+    console.log(campaign);
     try{
       setLoading(true);
       const response = await fetch("http://localhost:9191/dashboard/campReg",{
@@ -52,13 +55,13 @@ function CampReg({ theme, setTheme }) {
         },
       body: JSON.stringify(campaign)
       })
-
+      console.log("campaign: ", campaign);
       const result = await response.json();
 
       if (response.ok){
         setMessage(`Successfully registered by ${campaign.org_name}`);
       }else{
-    
+        console.log("error:", campaign);
         setMessage("Error : " + JSON.stringify(result));
       }
     }catch (error){
