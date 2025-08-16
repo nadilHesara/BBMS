@@ -2,6 +2,13 @@
 .login-header{
   color: rgb(106, 6, 6);
   text-align: center;
+  font-size: 40px;
+  letter-spacing: 2px;
+  
+}
+
+.login-header.dark{
+  color:black;
 }
 
 .login-links {
@@ -142,7 +149,7 @@ input#pwd {
 .password-toggle-icon {
   position: absolute;
   right: 59px;
-  top: 45%;
+  top: 49%;
   transform: translateY(-50%);
   cursor: pointer;
   color: #666;

@@ -54,8 +54,25 @@ function App() {
   }, [dark]);
 
 
+  // Initialize dark mode class on first load and handle theme changes
+  useEffect(() => {
+    // Set initial theme from localStorage
+    const savedTheme = localStorage.getItem("current_theme") || "light";
+    setTheme(savedTheme);
+  }, []);
+
   useEffect(() => {
     localStorage.setItem("current_theme", theme);
+    
+    // For Tailwind dark mode, we need to add/remove 'dark' class from html element
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      console.log('Added dark class to HTML');
+    } else {
+      document.documentElement.classList.remove('dark');
+      console.log('Removed dark class from HTML');
+    }
+    
     document.body.className = theme;
   }, [theme]);
 
