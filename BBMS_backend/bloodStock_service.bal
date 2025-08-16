@@ -145,8 +145,7 @@ isolated function addBloodStock(BloodData bloodData) returns json|error {
     sql:ExecutionResult|error result = dbClient->execute(query);
     if result is error {
         return result;
-    }
-    
+    }   
     return {"status": "success", "message": "Blood stock added successfully"};
    
 }

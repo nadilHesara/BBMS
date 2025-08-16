@@ -3,7 +3,6 @@ import ballerina/io;
 
 public isolated function addDoner(Doner doner) returns json|error {
 
-
     DonerID|error d = dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
     string newDonerId;
     if d is DonerID {
@@ -23,10 +22,47 @@ public isolated function addDoner(Doner doner) returns json|error {
         newDoner.blood_group = ();
     }
 
-    string defaultPassword;
-    if doner.password is () || doner.password == "" {
-        defaultPassword = check generatePassword(12);
-        _ = check sendEmail(doner.email, defaultPassword,doner.username);
+    io:println(newDoner , doner);
+    string? password = newDoner.password;
+    string defaultPassword ;
+    if password is () || password == "" {
+        defaultPassword = check generatePassword();
+        
+        string donerEmail = newDoner.email;
+        string htmlBody = "<!DOCTYPE html>" +
+            "<html>" +
+            "<head>" +
+            "<style>" +
+            "  body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" +
+            "  .container { max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }" +
+            "  .header { color: #d32f2f; font-size: 24px; font-weight: bold; margin-bottom: 20px; text-align: center; }" +
+            "  .content { font-size: 16px; color: #333; margin-bottom: 20px; line-height: 1.5; }" +
+            "  .password { font-weight: bold; color: #d32f2f; }" +
+            "  .footer { font-size: 14px; color: #777; text-align: center; margin-top: 30px; }" +
+            "  .btn { display: inline-block; padding: 10px 20px; background-color: #d32f2f;  text-decoration: none; border-radius: 6px; color: #ffffffff; }" +
+            "</style>" +
+            "</head>" +
+            "<body>" +
+            "  <div class='container'>" +
+            "    <div class='header'>Welcome to BBMS</div>" +
+            "    <div class='content'>" +
+            "      Hello " + newDoner.name + ",<br/><br/>" +
+            "      Your account has been created successfully. Your login password is: " +
+            "      <span class='password'>"+ defaultPassword + "</span><br/><br/>" +
+            "      Please login and change your password immediately for security reasons." +
+            "    </div>" +
+            "    <div style='text-align: center;'>" +
+            "      <a class='btn' href='https://your-bbms-app.com/login'>Login Now</a>" +
+            "    </div>" +
+            "    <div class='footer'>This is an auto-generated email. Please do not reply.</div>" +
+            "  </div>" +
+            "</body>" +
+            "</html>";
+        
+        error? emailResult = sendEmail(donerEmail, "Welcome to BBMS - Your Account Details", htmlBody);
+        if emailResult is error {
+            io:println("Warning: Could not send welcome email. ", emailResult.message());
+        }
         newDoner.password = defaultPassword;
     }
     
@@ -58,13 +94,12 @@ public isolated function addDoner(Doner doner) returns json|error {
     sql:ExecutionResult|error result = dbClient->execute(addDoner);
     sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
 
-    if result is error && loginResult is error {
-        return error("Doner already exist!");
-    }
-    else if result is error && loginResult is sql:ExecutionResult {
-        return error("Please enter valid data");
+    if result is error {
+        return error("Failed to add donor: " + result.message());
+    } else if loginResult is error {
+        return error("Failed to add login details: " + loginResult.message());
     } else {
-        return {"message": "Doner adedd sucsessfully!"};
+        return {"message": "Donor added successfully!"};
     }
 }
 
@@ -145,7 +180,6 @@ public isolated function updateDoner(Doner doner) returns sql:ExecutionResult|er
     }
     return result;
 }
-
 
 public isolated function get_DonationHistory(string userID) returns DonateRecord[]|error {
     DonateRecord[] donations = [];

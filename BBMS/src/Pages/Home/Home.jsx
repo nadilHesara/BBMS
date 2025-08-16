@@ -14,9 +14,9 @@ const Home = ({ theme, setTheme }) => {
     <div className="min-h-screen bg-gradient-to-br from-red-900 to-red-500 ">
       <NaviBar theme={theme} setTheme={setTheme} />
       {/* Hero Section with Blood Drop Visual */}
-      <section className="relative overflow-hidden py-20 px-6">
+      <section className="relative overflow-hidden h-[100vh] py-20 px-6">
         <div className="absolute inset-0 bg-gradient-to-r from-rose-950 to-rose-600 opacity-10 "></div>
-        <div className="max-w-7xl mx-auto text-center relative z-10 rounded-b-xl">
+        <div className="max-w-7xl mx-auto text-center relative z-10 rounded-b-xl mt-[10vh] items-center justify-center">
           <div className="mb-3">
             <div className=" w-[120px] h-[120px] inline-block pt-2 pb-2 pl-2 pr-3 bg-zinc-400  rounded-full  text-center shadow-2xl shadow-[0_10px_30px_rgba(0,0,0,0.7)] mb-2 transform hover:scale-105 transition-transform duration-300">
               <img
@@ -26,13 +26,13 @@ const Home = ({ theme, setTheme }) => {
                   />
             </div>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold text-zinc-400 bg-clip-text text-transparent mb-10">
+          <h1 className="text-5xl mt-[5vh] md:text-7xl font-bold text-zinc-400 bg-clip-text text-transparent mb-10">
             Blood Bank Management System
           </h1>
           <p className="text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto">
             Saving Lives, One Drop at a Time
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col mt-[10vh] sm:flex-row gap-4 justify-center">
             <Link to="/donorReg"
               className="px-8 py-4 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-full font-semibold text-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
             >
