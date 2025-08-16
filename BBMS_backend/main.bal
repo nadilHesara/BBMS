@@ -224,6 +224,7 @@ service /dashboard on listener9191 {
     }
 
     isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
+        io:println(campaign);
         json|error result = check addCamp(campaign);
         return result;
     }

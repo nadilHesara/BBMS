@@ -1,4 +1,5 @@
 import ballerina/sql;
+import ballerina/io;
 
 isolated function addCamp(Campaign campaign) returns json|error {
     CampaignID|error c = dbClient->queryRow(`SELECT CampaignID FROM campaign ORDER BY CampaignID DESC LIMIT 1`);
@@ -16,6 +17,7 @@ isolated function addCamp(Campaign campaign) returns json|error {
     }
 
     campaign.campain_id = newID;
+    io:println("newID:" + newID);
     sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, StartTime, EndTime , HospitalID)
             VALUES (
                 ${campaign.campain_id},

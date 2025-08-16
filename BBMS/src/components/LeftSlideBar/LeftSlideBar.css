@@ -27,10 +27,13 @@
   cursor: pointer;
   margin-top:30px;
   margin-left: 15px;
-  padding:5px;
+  padding-top:5px;
+  padding-bottom:5px;
   font-size: 16px;
   width: 50px;
   text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 .sidebar-toggle-btn:hover {
