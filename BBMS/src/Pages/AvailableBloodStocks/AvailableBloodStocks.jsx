@@ -100,11 +100,9 @@ function AvailableBloodStocks({ theme }) {
   const handleNewBloodChange = (e) => {
     const { name, value } = e.target;
     setNewBlood(prev => ({
-    ...prev,
-    [name]: name === "units" ? parseInt(value, 10) : value 
-  }));
-  
-    console.log(newBlood);
+      ...prev,
+      [name]: name === "units" ? parseInt(value, 10) : value
+    }));
   };
 
   useEffect(() => {
@@ -116,7 +114,7 @@ function AvailableBloodStocks({ theme }) {
           if (!res.ok) throw new Error("Fetch failed");
           return res.json();
         })
-        .then((data) => {         
+        .then((data) => {
           setCampaigns(data || []);
         });
     } catch (error) {
@@ -126,36 +124,40 @@ function AvailableBloodStocks({ theme }) {
     }
   }, [showAddModal, hospital]);
 
-  const handleAddBloodSubmit = async (e) => {
+  const handleAddBloodSubmit = async (e, actionType) => {
     e.preventDefault();
-  
+
+    let dataToSend = { ...newBlood };
+    if (actionType === "remove") {
+      dataToSend.units = dataToSend.units * -1;
+    }
+
+    console.log(dataToSend);
+
     try {
       setLoading(true);
       const response = await fetch(`http://localhost:9191/dashboard/addBlood`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(newBlood)
-      })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataToSend)
+      });
 
       const result = await response.json();
 
       if (!response.ok) {
         toast.error("Registration failed. Check server and data.");
-      }
-      else{
+      } else {
         toast.success("Blood package added successfully!");
         closeAddModal();
         setHospital("All");
       }
     } catch (error) {
-      toast.error("failed to add the package. Check server and data.");
-
+      toast.error("Failed to add the package. Check server and data.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
+
 
   useEffect(() => {
     try {
@@ -175,7 +177,6 @@ function AvailableBloodStocks({ theme }) {
             ...item,
             units: HandleBlood(item, data.blood)
           }));
-
           setBloodData(updatedData);
         })
         .catch((err) => {
@@ -187,7 +188,7 @@ function AvailableBloodStocks({ theme }) {
     } finally {
       setLoading(false);
     }
-  }, [district, hospital]);
+  }, [district, hospital , showAddModal]);
 
 
   return (
@@ -196,7 +197,7 @@ function AvailableBloodStocks({ theme }) {
       <div className={`blood-stock-container ${isDarkMode ? 'dark-mode' : ''}`}>
         <div className="page-header-row">
           <h2 className={`page-header ${isDarkMode ? 'dark-title' : ''}`}>Available Blood Stocks</h2>
-          <button className="add-blood-btn" onClick={openAddModal}>+ Add Blood</button>
+          <button className="add-blood-btn" onClick={openAddModal}>Add or Remove Blood</button>
         </div>
 
         <div className="header-controls">
@@ -277,51 +278,60 @@ function AvailableBloodStocks({ theme }) {
           </ResponsiveContainer>
         </div>
 
-
         {showAddModal && (
           <div className="modal-overlay" onClick={closeAddModal}>
             <div className="add-blood-container">
               <div className={`modal-content ${isDarkMode ? 'dark-modal' : ''}`} onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                  <h3>Add Blood</h3>
+                  <h3>Add or Remove Blood</h3>
                   <button className="modal-close-btn" onClick={closeAddModal}>×</button>
                 </div>
+
                 <form className="modal-form" onSubmit={handleAddBloodSubmit}>
                   <div className="form-row">
                     <label>Blood Type</label>
-                    <select name="bloodType"  onChange={handleNewBloodChange} required>
-                      <option value={null}>Select</option>
+                    <select name="bloodType" onChange={handleNewBloodChange} required>
+                      <option value="">Select</option>
                       {Object.keys(typeMap).map((t) => (
                         <option key={t} value={typeMap[t]}>{t}</option>
                       ))}
                     </select>
                   </div>
+
                   <div className="form-row">
                     <label>Units</label>
-                    <input type="number" min={0} name="units"  onChange={handleNewBloodChange} required />
+                    <input type="number" min={0} name="units" onChange={handleNewBloodChange} required />
                   </div>
+
                   <div className="form-row">
                     <label>Campaign</label>
-                    <select name="campaignId"  onChange={handleNewBloodChange}>
+                    <select name="campaignId" onChange={handleNewBloodChange}>
                       <option value="">Select</option>
                       {Campaigns.map((d, i) => (
                         <option key={i} value={d.CampaignID}>{d.CampaignName}</option>
                       ))}
                     </select>
                   </div>
+
                   <div className="form-row">
                     <label>Notes</label>
-                    <textarea name="notes" rows="3"  onChange={handleNewBloodChange} placeholder="Optional"></textarea>
+                    <textarea name="notes" rows="3" onChange={handleNewBloodChange} placeholder="Optional"></textarea>
                   </div>
+
+
+
                   <div className="form-actions">
                     <button type="button" className="btn-secondary" onClick={closeAddModal}>Cancel</button>
-                    <button type="submit" className="btn-primary">Add</button>
+                    <button type="submit" className="btn-primary add" onClick={(e) => handleAddBloodSubmit(e, "add")}>Add</button>
+                    <button type="submit" className="btn-primary remove" onClick={(e) => handleAddBloodSubmit(e, "remove")}>Remove</button>
                   </div>
+
                 </form>
               </div>
             </div>
           </div>
         )}
+
 
 
       </div >
