@@ -3,6 +3,7 @@ import ballerina/io;
 
 public isolated function addDoner(Doner doner) returns json|error {
 
+    // Generate new DonerID
     DonerID|error d = dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
     string newDonerId;
     if d is DonerID {
@@ -18,55 +19,45 @@ public isolated function addDoner(Doner doner) returns json|error {
 
     Doner newDoner = doner.clone();
     newDoner.doner_id = newDonerId;
+
+    // Handle empty blood group
     if newDoner.blood_group is string && newDoner.blood_group == "" {
         newDoner.blood_group = ();
     }
 
-    io:println(newDoner , doner);
+    // Handle password
     string? password = newDoner.password;
-    string defaultPassword ;
+    string defaultPassword;
     if password is () || password == "" {
+        // Generate random default password
         defaultPassword = check generatePassword();
-        
+        newDoner.password = defaultPassword;
+
+        // Send email to user
         string donerEmail = newDoner.email;
         string htmlBody = "<!DOCTYPE html>" +
             "<html>" +
             "<head>" +
-            "<style>" +
-            "  body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" +
-            "  .container { max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }" +
-            "  .header { color: #d32f2f; font-size: 24px; font-weight: bold; margin-bottom: 20px; text-align: center; }" +
-            "  .content { font-size: 16px; color: #333; margin-bottom: 20px; line-height: 1.5; }" +
-            "  .password { font-weight: bold; color: #d32f2f; }" +
-            "  .footer { font-size: 14px; color: #777; text-align: center; margin-top: 30px; }" +
-            "  .btn { display: inline-block; padding: 10px 20px; background-color: #d32f2f;  text-decoration: none; border-radius: 6px; color: #ffffffff; }" +
-            "</style>" +
+            "<style>/* Your email styling here */</style>" +
             "</head>" +
             "<body>" +
-            "  <div class='container'>" +
-            "    <div class='header'>Welcome to BBMS</div>" +
-            "    <div class='content'>" +
-            "      Hello " + newDoner.name + ",<br/><br/>" +
-            "      Your account has been created successfully. Your login password is: " +
-            "      <span class='password'>"+ defaultPassword + "</span><br/><br/>" +
-            "      Please login and change your password immediately for security reasons." +
-            "    </div>" +
-            "    <div style='text-align: center;'>" +
-            "      <a class='btn' href='https://your-bbms-app.com/login'>Login Now</a>" +
-            "    </div>" +
-            "    <div class='footer'>This is an auto-generated email. Please do not reply.</div>" +
-            "  </div>" +
-            "</body>" +
-            "</html>";
+            "Hello " + newDoner.name + ",<br/>" +
+            "Your login password is: <b>" + defaultPassword + "</b>" +
+            "</body></html>";
         
         error? emailResult = sendEmail(donerEmail, "Welcome to BBMS - Your Account Details", htmlBody);
         if emailResult is error {
             io:println("Warning: Could not send welcome email. ", emailResult.message());
         }
-        newDoner.password = defaultPassword;
     }
-    
-    sql:ParameterizedQuery addDoner = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District, Username, Password, Email)
+
+    // Encrypt password before storing
+    password = newDoner.password;
+    if !(password is string){return error("Password does not exist");}
+    string encryptedPassword = check encryptPassword(password);
+
+    // Insert donor details
+    sql:ParameterizedQuery addDoner = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District, Username, Email)
         VALUES(
             ${newDoner.doner_id},
             ${newDoner.name},
@@ -80,14 +71,14 @@ public isolated function addDoner(Doner doner) returns json|error {
             ${newDoner.address_line3},
             ${newDoner.District},
             ${newDoner.username},
-            ${newDoner.password},
             ${newDoner.email}
         )`;
 
-    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName , Password , DonerID  , UserType) 
+    // Insert login details
+    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, DonerID, UserType) 
             VALUES(
             ${newDoner.username},
-            ${newDoner.password},
+            ${encryptedPassword},
             ${newDoner.doner_id},
             "Doner")`;
 
@@ -102,6 +93,7 @@ public isolated function addDoner(Doner doner) returns json|error {
         return {"message": "Donor added successfully!"};
     }
 }
+
 
 public isolated function getDoner(string? id = (), string? username = (), string? email = ()) returns Doner|error {
     Doner|error doner;
@@ -157,7 +149,6 @@ public isolated function updateDoner(Doner doner) returns sql:ExecutionResult|er
                 AddressLine2 = ${doner.address_line2}, 
                 AddressLine3 = ${doner.address_line3}, 
                 District = ${doner.District},
-                Password = ${doner.password}
             WHERE DonerID = ${doner.doner_id}
         `);
     } else {
