@@ -7,6 +7,7 @@ import districts from '../../SharedData/districts';
 function CampReg({ theme, setTheme }) {
 
   const { loading, setLoading } = useContext(LoadingContext);
+  const userId = sessionStorage.getItem("userId");
 
   const [campaign, setCampaign] = useState({
     campain_id:'C001',
@@ -21,7 +22,8 @@ function CampReg({ theme, setTheme }) {
     end_time:'',
     org_tele:'',
     org_email:'',
-    blood_quantity:0
+    blood_quantity:0,
+    hospital_id: userId
   })
 
   const [message,setMessage] = useState("");
