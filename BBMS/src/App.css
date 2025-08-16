@@ -40,9 +40,7 @@ body,html, #root{
   overflow-x: hidden;
 }
 
-.app-container.dark{
-  background-color: rgb(55, 48, 48);
-}
+
 
 
 .Toastify__toast {

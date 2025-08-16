@@ -3,7 +3,7 @@ import { FaRegCircleUser } from "react-icons/fa6";
 import { IoSunnySharp, IoMoonSharp } from "react-icons/io5";
 import { MdBloodtype } from "react-icons/md";
 import { Link } from 'react-router-dom';
-
+import { useEffect } from 'react';
 const NaviBar = ({ theme, setTheme }) => {
   const toggle_mode = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');

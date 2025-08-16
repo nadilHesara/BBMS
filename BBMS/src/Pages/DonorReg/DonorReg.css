@@ -83,9 +83,7 @@ input[type="email"],
     color: rgb(198, 198, 198);
 }
 
-.dark h1 {
-    color: rgba(219, 46, 187, 0.696);
-}
+
 
 @keyframes slideIn {
     0% {

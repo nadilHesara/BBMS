@@ -38,10 +38,16 @@ function App() {
   const toastPosition = window.innerWidth <= 768 ? "top-center" : "top-right";
 
 
+  
   useEffect(() => {
-    localStorage.setItem("current_theme", theme);
-    document.body.className = theme;
-  }, [theme]);
+  localStorage.setItem("current_theme", theme);
+  sessionStorage.setItem("current_theme", theme);
+  if (theme === "dark") {
+    document.documentElement.classList.add("dark");  // add class to <html>
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+}, [theme]);
 
   return (
     <LoadingProvider>
