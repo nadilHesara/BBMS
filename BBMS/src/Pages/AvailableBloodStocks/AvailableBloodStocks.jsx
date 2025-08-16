@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, use } from "react";
 import districts from "../../SharedData/districts";
 import { LoadingContext } from "../../context/LoadingContext";
+import { toast } from "react-toastify";
 import {
   BarChart,
   Bar,
@@ -66,12 +67,12 @@ function AvailableBloodStocks({ theme }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newBlood, setNewBlood] = useState({
-    type: "A+",
-    units: "",
-    district: "",
-    hospitalId: "",
+    bloodType: "A+",
+    units: 0,
+    campaignId: null,
     notes: "",
   });
+  const [Campaigns, setCampaigns] = useState([]);
 
 
   useEffect(() => {
@@ -90,23 +91,47 @@ function AvailableBloodStocks({ theme }) {
   const closeAddModal = () => {
     setShowAddModal(false);
     setNewBlood({
-      type: "A+",
+      bloodType: "",
       units: "",
-      district: "",
-      hospitalId: "",
+      campaignId: "",
       notes: "",
     });
   };
   const handleNewBloodChange = (e) => {
     const { name, value } = e.target;
-    setNewBlood((prev) => ({ ...prev, [name]: value }));
+    setNewBlood(prev => ({
+    ...prev,
+    [name]: name === "units" ? parseInt(value, 10) : value 
+  }));
+  
+    console.log(newBlood);
   };
-  const handleAddBloodSubmit = async (e) => {
-    e.preventDefault();
-    // TODO: integrate with backend API to add blood stock
+
+  useEffect(() => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:9191/dashboard/addBlood", {
+      const userId = sessionStorage.getItem("userId");
+      fetch(`http://localhost:9191/dashboard/addBloodCampaigns?hospital=${userId}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Fetch failed");
+          return res.json();
+        })
+        .then((data) => {         
+          setCampaigns(data || []);
+        });
+    } catch (error) {
+      toast.error("Server Error");
+    } finally {
+      setLoading(false);
+    }
+  }, [showAddModal, hospital]);
+
+  const handleAddBloodSubmit = async (e) => {
+    e.preventDefault();
+  
+    try {
+      setLoading(true);
+      const response = await fetch(`http://localhost:9191/dashboard/addBlood`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -117,15 +142,19 @@ function AvailableBloodStocks({ theme }) {
       const result = await response.json();
 
       if (!response.ok) {
-        alert("Registration failed. Check server and data.");
+        toast.error("Registration failed. Check server and data.");
+      }
+      else{
+        toast.success("Blood package added successfully!");
+        closeAddModal();
+        setHospital("All");
       }
     } catch (error) {
-      alert("failed to add the package. Check server and data.");
+      toast.error("failed to add the package. Check server and data.");
 
     } finally {
-      setLoading(true)
+      setLoading(false)
     }
-
   };
 
   useEffect(() => {
@@ -150,7 +179,7 @@ function AvailableBloodStocks({ theme }) {
           setBloodData(updatedData);
         })
         .catch((err) => {
-          console.error("Error fetching hospital data:", err.message);
+          toast.error("Server");
           setError("Failed to load hospitals data.");
         });
     } catch (error) {
@@ -247,6 +276,8 @@ function AvailableBloodStocks({ theme }) {
             </BarChart>
           </ResponsiveContainer>
         </div>
+
+
         {showAddModal && (
           <div className="modal-overlay" onClick={closeAddModal}>
             <div className="add-blood-container">
@@ -258,37 +289,29 @@ function AvailableBloodStocks({ theme }) {
                 <form className="modal-form" onSubmit={handleAddBloodSubmit}>
                   <div className="form-row">
                     <label>Blood Type</label>
-                    <select name="type" value={newBlood.type} onChange={handleNewBloodChange} required>
+                    <select name="bloodType"  onChange={handleNewBloodChange} required>
+                      <option value={null}>Select</option>
                       {Object.keys(typeMap).map((t) => (
-                        <option key={t} value={t}>{t}</option>
+                        <option key={t} value={typeMap[t]}>{t}</option>
                       ))}
                     </select>
                   </div>
                   <div className="form-row">
                     <label>Units</label>
-                    <input type="number" min="0" name="units" value={newBlood.units} onChange={handleNewBloodChange} required />
+                    <input type="number" min={0} name="units"  onChange={handleNewBloodChange} required />
                   </div>
                   <div className="form-row">
-                    <label>District</label>
-                    <select name="district" value={newBlood.district} onChange={handleNewBloodChange}>
+                    <label>Campaign</label>
+                    <select name="campaignId"  onChange={handleNewBloodChange}>
                       <option value="">Select</option>
-                      {districts.map((d, i) => (
-                        <option key={i} value={d}>{d}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="form-row">
-                    <label>Hospital</label>
-                    <select name="hospitalId" value={newBlood.hospitalId} onChange={handleNewBloodChange}>
-                      <option value="">Select</option>
-                      {hospitals.map((h, i) => (
-                        <option key={i} value={h.HospitalID}>{h.Name}</option>
+                      {Campaigns.map((d, i) => (
+                        <option key={i} value={d.CampaignID}>{d.CampaignName}</option>
                       ))}
                     </select>
                   </div>
                   <div className="form-row">
                     <label>Notes</label>
-                    <textarea name="notes" rows="3" value={newBlood.notes} onChange={handleNewBloodChange} placeholder="Optional"></textarea>
+                    <textarea name="notes" rows="3"  onChange={handleNewBloodChange} placeholder="Optional"></textarea>
                   </div>
                   <div className="form-actions">
                     <button type="button" className="btn-secondary" onClick={closeAddModal}>Cancel</button>
@@ -299,6 +322,8 @@ function AvailableBloodStocks({ theme }) {
             </div>
           </div>
         )}
+
+
       </div >
     </>
   );

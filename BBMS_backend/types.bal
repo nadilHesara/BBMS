@@ -292,3 +292,20 @@ public type CampaignRequest record {|
     string date;
     string? details;
 |};
+
+public type BloodData record {|
+    string bloodType;
+    string? campaignId;
+    int units;
+    string? notes;
+|};
+
+public type CampaignIdName record {|
+    string CampaignID;
+    string CampaignName;
+|};
+
+public type BloodStockDetails record {|
+    int StockId;
+    string CampaignID;
+|};
