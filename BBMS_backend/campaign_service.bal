@@ -125,7 +125,8 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
 
 isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[]|error {
     CampaignIdName[] campaigns = [];
-    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID}`;
+    string curruntDate = getCurrentDate();
+    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND DateofCampaign <= ${curruntDate} ORDER BY DateofCampaign DESC`;
     
     stream<CampaignIdName, error?> resultStream = dbClient->query(query);
     check from CampaignIdName campaign in resultStream

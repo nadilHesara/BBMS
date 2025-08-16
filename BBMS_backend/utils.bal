@@ -1,5 +1,6 @@
 import ballerina/email;
 import ballerina/random;
+import ballerina/time;
 
 public isolated function IdIncriment(string currentId) returns string {
     string prefix = currentId[0].toString();
@@ -97,4 +98,29 @@ public isolated function sendEmail(string toEmail, string subject, string body) 
         htmlBody:  body
     };
     check smtpClient->sendMessage(message);
+}
+
+
+isolated function getCurrentDate() returns string {
+    // Get current UTC time with millisecond precision
+    time:Utc currentUtc = time:utcNow(precision = 3);
+    
+    // Convert to string and extract date part
+    string currentTimeString = time:utcToString(currentUtc);
+    
+    // Extract date part (YYYY-MM-DD) from RFC 3339 format
+    string dateOnly = currentTimeString.substring(0, 10);
+    
+    return dateOnly;
+}
+
+isolated function formatDate(int year, int month, int day, string format) returns string {
+    // Simple date formatting based on format string
+    if format == "yyyy-MM-dd" {
+        string formattedMonth = month < 10 ? "0" + month.toString() : month.toString();
+        string formattedDay = day < 10 ? "0" + day.toString() : day.toString();
+        return year.toString() + "-" + formattedMonth + "-" + formattedDay;
+    }
+    // Add more format options as needed
+    return year.toString() + "-" + month.toString() + "-" + day.toString();
 }
