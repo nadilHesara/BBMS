@@ -306,7 +306,7 @@ function AvailableBloodStocks({ theme }) {
                   <div className="form-row">
                     <label>Campaign</label>
                     <select name="campaignId" onChange={handleNewBloodChange}>
-                      <option value="">Select</option>
+                      <option value={null}>Select</option>
                       {Campaigns.map((d, i) => (
                         <option key={i} value={d.CampaignID}>{d.CampaignName}</option>
                       ))}

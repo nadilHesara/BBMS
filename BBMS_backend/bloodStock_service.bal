@@ -57,7 +57,7 @@ isolated function addBloodStock(BloodData bloodData) returns json|error {
     string bloodType = bloodData.bloodType;
     sql:ParameterizedQuery query;
 
-    if bloodData.campaignId is () {
+    if bloodData.campaignId is () || bloodData.campaignId == "" {
         if bloodType == "A_plus" {
             query = `INSERT INTO bloodstocks( A_plus, note)
                      VALUES ( ${bloodData.units}, ${bloodData.notes})`;
