@@ -2,14 +2,16 @@ import { useState, useRef, useEffect } from 'react';
 {/*import NaviBar from '../../components/Navibar/NaviBar';*/}
 import districts from '../../SharedData/districts';
 import { FaUserCircle } from 'react-icons/fa';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import "./ProfileInfo.css"
 {/*import { use } from 'react';*/}
 
 function ProfileInfo({theme,setTheme}){
 
   const location = useLocation();
+  const navigate = useNavigate();
   const from = location.state?.from;
+
   const [doner, setDoner] = useState({
     doner_id: '',
     username: '',
@@ -154,7 +156,10 @@ sessionStorage.setItem("userType", res.user_type);*/}
 
   .then(response => response.json())
   .then(data => {alert(data.message || "Saved Changes Successfully");
-
+    if (from === "DonationForm"){
+      navigate('../donation-history');
+    } 
+    
   })
 
   .catch(error => 
@@ -257,7 +262,7 @@ sessionStorage.setItem("userType", res.user_type);*/}
             </select>
 
           <br/>
-          <input type="submit" value="Save Changes"/>
+          <input type="submit" value={from ==="LeftSideBar" ? "Save Changes" : "Next"}/>
 
         </form>
 

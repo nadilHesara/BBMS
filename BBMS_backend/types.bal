@@ -198,6 +198,11 @@ public type CampaignID record {
 public type DonationID record {
     string? DonateID;
 };
+
+public type SubmissionID record {
+    string? submitID;
+};
+
 public type LoginRequest record {
     string username;
     string password;
@@ -236,3 +241,116 @@ public type HospitalDetails record {|
     string HospitalID;
     string Name;
 |};
+
+public type Eligible record {
+    @sql:Column {name: "submitID"}
+    string submitID;
+
+    @sql:Column {name: "foreignTravel"}
+    int 'foreignTravel?;
+
+    @sql:Column {name: "risk"}
+    string 'risk?;
+
+    @sql:Column {name: "DonerID"}
+    string DonerID;
+
+    @sql:Column {name: "eligible"}
+    boolean eligible;
+
+    @sql:Column {name: "CampaignID"}
+    string CampaignID;
+};
+
+public type DonHistory record{
+    @sql:Column {name: "submitID"}
+    string submitID;
+
+    @sql:Column {name: "hadIssuesBefore"}
+    string hadIssuesBefore;
+
+    @sql:Column {name: "issueDetails"}
+    string 'issueDetails?;
+
+    @sql:Column {name: "advisedNotToDonate"}
+    string advisedNotToDonate;
+
+    @sql:Column {name: "readInfoLeaflet"}
+    string readInfoLeaflet;
+
+    @sql:Column {name: "medicalConditions"}
+    string medicalConditions;   
+
+};
+
+public type MedRisks record{
+    @sql:Column {name: "submitID"}
+    string submitID;
+
+    @sql:Column {name: "jaundice"}
+    string jaundice;
+
+    @sql:Column {name: "tbTyphoid"}
+    string tbTyphoid;
+
+    @sql:Column {name: "vaccinations"}
+    string vaccinations;
+
+    @sql:Column {name: "tattoos"}
+    string tattoos;
+
+    @sql:Column {name: "imprisoned"}
+    string imprisoned;
+
+    @sql:Column {name: "foreignTravel"}
+    string foreignTravel;
+
+    @sql:Column {name: "bloodTransfusion"}
+    string bloodTransfusion;
+
+    @sql:Column {name: "malaria"}
+    string malaria;
+
+    @sql:Column {name: "dengue"}
+    string dengue;
+
+    @sql:Column {name: "recentIllness"}
+    string recentIllness;
+
+    @sql:Column {name: "dentalWork"}
+    string dentalWork;
+
+    @sql:Column {name: "recentMeds"}
+    string recentMeds;
+
+    @sql:Column {name: "riskyCategoriesAwareness"}
+    string riskyCategoriesAwareness;
+
+    @sql:Column {name: "riskSymptoms"}
+    string riskSymptoms;
+
+
+};
+
+public type Consent record{
+    @sql:Column {name: "submitID"}
+    string submitID;
+
+    @sql:Column {name: "testConsent"}
+    boolean testConsent;
+
+    @sql:Column {name: "instructionConsent"}
+    boolean instructionConsent;
+
+    @sql:Column {name: "notifyConsent"}
+    boolean notifyConsent;
+
+    @sql:Column {name: "frequency"}
+    string 'frequency?;
+
+    @sql:Column {name: "DonerID"}
+    string DonerID;
+
+    string campaignId;
+    
+};

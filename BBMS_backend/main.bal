@@ -42,6 +42,27 @@ service / on listener9191 {
         return result;
     }
 
+    //POST donation eligibility
+    isolated resource function post eligibility(@http:Payload Eligible eligible) returns json|error {
+        json|error result = check determine_eligibility(eligible);
+        return result;
+    }
+
+    isolated resource function post donationHis(@http:Payload DonHistory donHistory) returns json|error{
+        json|error result = check addHistory(donHistory);
+        return result;
+    }
+
+    isolated resource function post medicalRisk(@http:Payload MedRisks medRisks) returns json|error{
+        json|error result = check addmedicalRisk(medRisks);
+        return result;
+    }
+
+    isolated resource function post consent(@http:Payload Consent consent) returns json|error {
+        json|error result = check addConsent(consent);
+        return result;
+    }
+
 }
 
 @http:ServiceConfig {
@@ -199,12 +220,30 @@ service /dashboard on listener9191 {
     resource function get donor(@http:Query string donor_id) returns json|error{
         string|error dateResult = getLastDonation(donor_id);
         string lastDonation = "";
+        string status = "No";
+        int donationscount = 0;
+
         if dateResult is string {
+            int|error count = gateLastDonCount(donor_id);
+            if count is int {
+                if count > 0{
+                    donationscount = count;
+                    status = "Yes";
+
+                }else{
+                    donationscount = count;
+                    status = "No";
+                }
+            }
             lastDonation = dateResult;
+
         } else {
             lastDonation = "";
         }
         json body = {
+            "LastDonation": "",
+            "Status": "",
+            "Count": "",
             "LastDonationYR": "",
             "LastDonationMonth": "",
             "BYear": "",
@@ -242,6 +281,9 @@ service /dashboard on listener9191 {
 
 
                 body = {
+                    LastDonation: lastDonation,
+                    Status: status,
+                    Count: donationscount,
                     LastDonationYR: lastYear,
                     LastDonationMonth: lastMonth,
                     BYear : b_yr,
@@ -254,7 +296,6 @@ service /dashboard on listener9191 {
             }else {
                 return error("Doner not found");
             }
-
 
         return body;
     }
