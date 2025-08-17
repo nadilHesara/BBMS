@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+function logOut(){
+    sessionStorage.removeItem("userId");
+    sessionStorage.removeItem("userType");
+    sessionStorage.removeItem("userData");
+}
+
 export default function useVerifyAccess(pageName) {
     const navigate = useNavigate();
     const [verified, setVerified] = useState(null); // null = loading
@@ -26,6 +32,7 @@ export default function useVerifyAccess(pageName) {
                 console.error(`Access error for ${pageName}:`, error);
                 toast.error(`Unauthorized access to ${pageName}`);
                 setVerified(false);
+                logOut();
                 if (pageName == "dashboard") {
                     navigate("/login", { replace: true }); // redirect unauthorized
                 } else {

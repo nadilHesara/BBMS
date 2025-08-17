@@ -54,7 +54,7 @@ isolated function loginUser(string username, string password) returns http:Respo
         user_type: role,
         access_token: token,
         token_type: "Bearer",
-        expires_in: 3600
+        expires_in: 36000
     };
     
     response.setJsonPayload(responseBody);
