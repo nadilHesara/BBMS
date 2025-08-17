@@ -6,12 +6,11 @@ import MyCalender from "../../components/MyCalender/MyCalender";
 import "./Dashboard.css";
 import districts from "../../SharedData/districts";
 import { LoadingContext } from "../../context/LoadingContext";
-
+import { toast } from "react-toastify";
+import verifyAccess from "../../SharedData/verifyFunction";
 
 const Dashboard = ({ theme, setTheme }) => {
-
   const { loading, setLoading } = useContext(LoadingContext);
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,83 +19,81 @@ const Dashboard = ({ theme, setTheme }) => {
 
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState("");
 
+  // ✅ Use the hook properly
+  const verified = verifyAccess("dashboard");
+
+  // Redirect if userId or userType missing
   useEffect(() => {
-    console.log(userId + "    " + userType);
-
-    if (userId == undefined || userType == undefined) {
+    if (!userId || !userType) {
       navigate("/login", { replace: true });
     }
   }, [userId, userType, navigate]);
 
-
+  // Fetch dashboard data only if verified
   useEffect(() => {
-    if (!userId || !userType) return;
+    if (!userId || !userType || verified !== true) return;
 
-    try {
-      setLoading(true);
-      fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}`)
-        .then((res) => {
-          if (!res.ok) throw new Error("Fetch failed");
-          return res.json();
-        })
-        .then((data) => {
-          console.log(data)
-          setUserData(data);
-          sessionStorage.setItem("userData", JSON.stringify(data));
-        })
-        .catch((err) => {
-          console.error("Error fetching dashboard data:", err.message);
-          setError("Failed to load dashboard data.");
-        });
-    } catch (error) {
-      setError("Server Error");
-    } finally {
-      setLoading(false);
-    }
-  }, [userId, userType]);
-  console.log("user: ", userData?.District);
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}`,
+          { method: "GET", credentials: "include" }
+        );
 
-  const [selectedDistrict, setSelectedDistrict] = useState(userData?.District);
+        if (!res.ok) throw new Error("Fetch failed");
 
-  useEffect(() => {
-    if (userData && userData?.District) {
-      setSelectedDistrict(userData.District);
-    }
-  }, [userData]);
+        const data = await res.json();
+        setUserData(data);
+        console.log(data);
+        
+        sessionStorage.setItem("userData", JSON.stringify(data));
 
-  const handleSelectedDistrict = (e) => {
-    setSelectedDistrict(e.target.value);
-  }
-
-  const isOnDashboard = location.pathname === "/dashboard";
-
-  useEffect(() => {
-    const handleBackButton = () => {
-      if (!userId || !userType) {
-        navigate("/login", { replace: true });
+        if (data?.District) setSelectedDistrict(data.District);
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err.message);
+        toast.error("Failed to load dashboard data.");
+        setError("Failed to load dashboard data.");
+      } finally {
+        setLoading(false);
       }
     };
 
-    window.addEventListener("popstate", handleBackButton);
+    fetchDashboardData();
+  }, [userId, userType, verified, setLoading]);
 
-    return () => {
-      window.removeEventListener("popstate", handleBackButton);
+  // Handle back button redirect
+  useEffect(() => {
+    const handleBackButton = () => {
+      if (!userId || !userType) navigate("/login", { replace: true });
     };
+    window.addEventListener("popstate", handleBackButton);
+    return () => window.removeEventListener("popstate", handleBackButton);
   }, [navigate, userId, userType]);
 
-  if (!userId || !userType) return null;
-  if (error) return <p>{error}</p>;
-  if (!userData) return <p>Loading...</p>;
+  const handleSelectedDistrict = (e) => setSelectedDistrict(e.target.value);
+  const isOnDashboard = location.pathname === "/dashboard";
 
+  // Early returns
+  if (verified === null || loading) return <p>Loading...</p>;
+  if (!userId || !userType) return null;
+  if (verified === false) return null; // user redirected in hook
+  if (error) return <p>{error}</p>;
+  if (!userData) return <p>Loading dashboard data...</p>;
 
   return (
     <div className="dashboard-layout">
       <NaviBar theme={theme} setTheme={setTheme} />
       <div className={`main-layout ${theme}`}>
-        <LeftSlideBar theme={theme} userType={userType} username={userData.userName} />
+        <LeftSlideBar
+          theme={theme}
+          userType={userType}
+          username={userData.userName || userData.Name}
+        />
         <div className={`content-area ${theme}`}>
-          {isOnDashboard &&
+          {isOnDashboard ? (
             <div className="dashboard-content">
               <div className="calender-container">
                 <div className="bg-gradient-to-r from-red-600 to-pink-600 rounded-2xl p-8 text-white">
@@ -144,6 +141,9 @@ const Dashboard = ({ theme, setTheme }) => {
                focus:ring-red-500 focus:border-red-500 transition duration-200"
                   >
                     {districts.map((city, index) => (
+                      <option key={index} value={city}>
+                        {city}
+                      </option>
                       <option key={index} value={city}>
                         {city}
                       </option>
@@ -254,10 +254,9 @@ const Dashboard = ({ theme, setTheme }) => {
                 </div>
               </div>
             </div>
-          }
-          {!isOnDashboard &&
+          ) : (
             <Outlet />
-          }
+          )}
         </div>
       </div>
     </div>
