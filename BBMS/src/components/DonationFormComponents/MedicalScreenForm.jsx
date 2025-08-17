@@ -19,7 +19,7 @@ export default function MedicalScreenForm() {
     riskyCategoriesAwareness: '',
     riskSymptoms: '',
   });
-
+  console.log(document.documentElement.classList);
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -30,123 +30,427 @@ export default function MedicalScreenForm() {
   };
 
   return (
-    <div className="form-container">
-      <h2>Step 4: Medical & Risk Screening</h2>
-      <form onSubmit={handleNext}>
-        <label>Have you ever had jaundice/hepatitis?
-          <select name="jaundice" /*required*/ onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    // <div className="form-container">
+    //   <h2>Step 4: Medical & Risk Screening</h2>
+    //   <form onSubmit={handleNext}>
+    //     <label>Have you ever had jaundice/hepatitis?
+    //       <select name="jaundice" /*required*/ onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <label>Had TB or typhoid in the past 2 years?
-          <select name="tbTyphoid" /*required*/ onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    //     <label>Had TB or typhoid in the past 2 years?
+    //       <select name="tbTyphoid" /*required*/ onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <label>Received vaccinations in past 12 months?
-          <select name="vaccinations" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    //     <label>Received vaccinations in past 12 months?
+    //       <select name="vaccinations" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <label>Any tattoos, piercings or acupuncture in past year?
-          <select name="tattoos" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    //     <label>Any tattoos, piercings or acupuncture in past year?
+    //       <select name="tattoos" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <label>Ever imprisoned?
-          <select name="imprisoned" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    //     <label>Ever imprisoned?
+    //       <select name="imprisoned" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <label>You or your partner traveled abroad in the last 3 months?
-          <select name="foreignTravel" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    //     <label>You or your partner traveled abroad in the last 3 months?
+    //       <select name="foreignTravel" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <label>You or your partner received blood products?
-          <select name="bloodTransfusion" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    //     <label>You or your partner received blood products?
+    //       <select name="bloodTransfusion" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <label>Had malaria or treatment for it?
-          <select name="malaria" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    //     <label>Had malaria or treatment for it?
+    //       <select name="malaria" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <label>Dengue in the last 6 months?
-          <select name="dengue" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    //     <label>Dengue in the last 6 months?
+    //       <select name="dengue" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <label>Fever, measles, diarrhea, or long illness in the past month?
-          <select name="recentIllness" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    //     <label>Fever, measles, diarrhea, or long illness in the past month?
+    //       <select name="recentIllness" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <label>Dental extraction in the last week?
-          <select name="dentalWork" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    //     <label>Dental extraction in the last week?
+    //       <select name="dentalWork" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <label>Used aspirin, antibiotics, or medications recently?
-          <select name="recentMeds" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    //     <label>Used aspirin, antibiotics, or medications recently?
+    //       <select name="recentMeds" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <label>Are you aware of disqualifying categories (HIV, Hep B/C, risky behavior)?
-          <select name="riskyCategoriesAwareness" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes, I’m aware</option>
-            <option value="no">No, not sure</option>
-          </select>
-        </label>
+    //     <label>Are you aware of disqualifying categories (HIV, Hep B/C, risky behavior)?
+    //       <select name="riskyCategoriesAwareness" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes, I’m aware</option>
+    //         <option value="no">No, not sure</option>
+    //       </select>
+    //     </label>
 
-        <label>Do you have symptoms like unexplained fever, weight loss, or swollen lymph nodes?
-          <select name="riskSymptoms" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
+    //     <label>Do you have symptoms like unexplained fever, weight loss, or swollen lymph nodes?
+    //       <select name="riskSymptoms" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="yes">Yes</option>
+    //         <option value="no">No</option>
+    //       </select>
+    //     </label>
 
-        <button type="submit">Next</button>
-      </form>
-    </div>
+    //     <button type="submit">Next</button>
+    //   </form>
+    // </div>
+    
+      <div className="max-w-6xl mx-auto mt-5">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+          Step 4: Medical & Risk Screening
+        </h2>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Column - Medical History */}
+          <div className="bg-white dark:bg-red-500 rounded-lg shadow-md p-6 sm:p-8">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-black mb-4 text-center">
+              Medical History
+            </h3>
+            <div className="  text-gray-700 dark:text-black space-y-6">
+              {/* Jaundice/Hepatitis */}
+              <div >
+                <label className="block text-sm font-medium  dark:text-black mb-2">
+                  Have you ever had jaundice/hepatitis?
+                </label>
+                <select 
+                  name="jaundice" 
+                  onChange={handleChange}
+                  value={form.jaundice}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {/* TB/Typhoid */}
+              <div>
+                <label className="block text-sm font-medium dark:text-gray-300 mb-2">
+                  Had TB or typhoid in the past 2 years?
+                </label>
+                <select 
+                  name="tbTyphoid" 
+                  onChange={handleChange}
+                  value={form.tbTyphoid}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {/* Vaccinations */}
+              <div>
+                <label className="block text-sm font-medium">
+                  Received vaccinations in past 12 months?
+                </label>
+                <select 
+                  name="vaccinations" 
+                  onChange={handleChange}
+                  value={form.vaccinations}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {/* Tattoos/Piercings */}
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Any tattoos, piercings or acupuncture in past year?
+                </label>
+                <select 
+                  name="tattoos" 
+                  onChange={handleChange}
+                  value={form.tattoos}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {/* Imprisonment */}
+              <div>
+                <label className="block text-sm font-medium  mb-2">
+                  Ever imprisoned?
+                </label>
+                <select 
+                  name="imprisoned" 
+                  onChange={handleChange}
+                  value={form.imprisoned}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {/* Recent Medications */}
+              <div>
+                <label className="block text-sm font-medium  mb-2">
+                  Used aspirin, antibiotics, or medications recently?
+                </label>
+                <select 
+                  name="recentMeds" 
+                  onChange={handleChange}
+                  value={form.recentMeds}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {/* Risk Symptoms */}
+              <div>
+                <label className="block text-sm font-medium  mb-2">
+                  Do you have symptoms like unexplained fever, weight loss, or swollen lymph nodes?
+                </label>
+                <select 
+                  name="riskSymptoms" 
+                  onChange={handleChange}
+                  value={form.riskSymptoms}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Risk Assessment */}
+          <div className="bg-white dark:bg-red-400 rounded-lg shadow-md p-6 sm:p-8">
+            <h3 className="text-2xl font-bold text-black dark:text-gray-900 mb-4 text-center">
+              Risk Assessment
+            </h3>
+            <div className="space-y-6  text-gray-700 dark:text-black">
+              {/* Foreign Travel */}
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  You or your partner traveled abroad in the last 3 months?
+                </label>
+                <select 
+                  name="foreignTravel" 
+                  onChange={handleChange}
+                  value={form.foreignTravel}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {/* Blood Transfusion */}
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  You or your partner received blood products?
+                </label>
+                <select 
+                  name="bloodTransfusion" 
+                  onChange={handleChange}
+                  value={form.bloodTransfusion}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {/* Malaria */}
+              <div>
+                <label className="block text-sm font-medium  mb-2">
+                  Had malaria or treatment for it?
+                </label>
+                <select 
+                  name="malaria" 
+                  onChange={handleChange}
+                  value={form.malaria}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {/* Dengue */}
+              <div>
+                <label className="block text-sm font-medium  mb-2">
+                  Dengue in the last 6 months?
+                </label>
+                <select 
+                  name="dengue" 
+                  onChange={handleChange}
+                  value={form.dengue}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {/* Recent Illness */}
+              <div>
+                <label className="block text-sm font-medium  mb-2">
+                  Fever, measles, diarrhea, or long illness in the past month?
+                </label>
+                <select 
+                  name="recentIllness" 
+                  onChange={handleChange}
+                  value={form.recentIllness}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {/* Dental Work */}
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Dental extraction in the last week?
+                </label>
+                <select 
+                  name="dentalWork" 
+                  onChange={handleChange}
+                  value={form.dentalWork}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {/* Risk Categories Awareness */}
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Are you aware of disqualifying categories (HIV, Hep B/C, risky behavior)?
+                </label>
+                <select 
+                  name="riskyCategoriesAwareness" 
+                  onChange={handleChange}
+                  value={form.riskyCategoriesAwareness}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">--Select--</option>
+                  <option value="yes">Yes, I'm aware</option>
+                  <option value="no">No, not sure</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Submit Button - Full Width Below Both Columns */}
+        <div className="mt-6 max-w-md mx-auto">
+          <button 
+            type="submit"
+            onClick={handleNext}
+            className="w-full py-3 px-4 bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 
+                     focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800
+                     text-white font-medium text-sm rounded-md transition-colors duration-200"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    
   );
 }

@@ -63,7 +63,7 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("current_theme", theme);
-    
+
     // For Tailwind dark mode, we need to add/remove 'dark' class from html element
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -72,7 +72,7 @@ function App() {
       document.documentElement.classList.remove('dark');
       console.log('Removed dark class from HTML');
     }
-    
+
     document.body.className = theme;
   }, [theme]);
 
