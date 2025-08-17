@@ -76,12 +76,6 @@ export default function ConsentForm() {
     }  
   };
 
-  const handleBack = (e) => {
-    e.preventDefault();
-    navigate("../medical");
-  }
-
-
   return (
     <div className="form-container">
       <h2>Step 5: Consent & Submission</h2>
@@ -144,6 +138,5 @@ export default function ConsentForm() {
       )}
 
     </div>
-
   );
 }
