@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState , useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import NaviBar from "../../components/Navibar/NaviBar";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import { LoadingContext } from "../../context/LoadingContext";
 import districts from '../../SharedData/districts';
 import "./HospitalReg.css";
 
 function HospitalReg({ theme, setTheme }) {
+
+    const { loading, setLoading } = useContext(LoadingContext);
     const navigate = useNavigate();
 
     const [hospital, setHospital] = useState({
@@ -33,9 +36,8 @@ function HospitalReg({ theme, setTheme }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
-        
+        setLoading(true);
             
-        
         try {
             const response = await fetch("http://localhost:9191/hospitalReg", {
                 method: "POST",
@@ -56,6 +58,8 @@ function HospitalReg({ theme, setTheme }) {
         } catch (error) {
             console.error("Error submitting form:", error.message);
             setMessage("Submission failed. Check server and data.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -63,7 +67,7 @@ function HospitalReg({ theme, setTheme }) {
         <div>
             <NaviBar theme={theme} setTheme={setTheme} />
             <div className={theme === "light" ? "hospital-reg" : "hospital-reg dark"}>
-                <form className="hospital-reg-form"  onSubmit={handleSubmit}>
+                <form className="doner-reg-form"  onSubmit={handleSubmit}>
                     <h1>Hospital Registration</h1>
                     <label htmlFor="name">Hospital Name:</label>
                     <input type="text" name="name" onChange={handleChange} required />

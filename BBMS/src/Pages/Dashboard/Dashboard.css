@@ -32,21 +32,23 @@
 .main-layout{
   display:flex;
   flex:1;
-  background-color:rgb(255, 213, 213);
+  background-color: rgb(255, 187, 187);
   padding-top: 60px;
   margin:0;
 
 }
 
+.dashboard-content{
+  margin:50px;
+}
 
 
 .content-area{
-  padding:60px;
   width:100%;
 }
 
 .content-area.dark{
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: linear-gradient(135deg, #1f252f 0%, #092143 100%);
 }
 
 .main-layout.dark{

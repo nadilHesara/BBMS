@@ -1,6 +1,7 @@
 import ballerina/http;
 // import ballerina/io;
 import ballerina/sql;
+import ballerina/io;
 
 listener http:Listener listener9191 = new (9191);
 
@@ -24,7 +25,7 @@ service / on listener9191 {
     }
 
     isolated resource function post login(@http:Payload LoginRequest loginReq) returns json|error {
-        json|error result = check checkPassword(loginReq.username, loginReq.password);
+        json|error result = check loginUser(loginReq.username, loginReq.password);
         return result;
     }
 
@@ -39,6 +40,63 @@ service / on listener9191 {
 
     isolated resource function post donations(@http:Payload Donates donates) returns json|error {
         json|error result = check addDonation(donates);
+        return result;
+    }
+
+    isolated resource function post campaignRequest(@http:Payload CampaignRequest data) returns json|error {
+        string emailBody = "<!DOCTYPE html>" +
+                    "<html>" +
+                    "<head>" +
+                    "<style>" +
+                    "  .container { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; border-radius: 10px; }" +
+                    "  .header { color: #d32f2f; font-size: 22px; font-weight: bold; margin-bottom: 20px; }" +
+                    "  .content { font-size: 16px; margin-bottom: 10px; }" +
+                    "  .label { font-weight: bold; color: #333; }" +
+                    "  .footer { font-size: 14px; color: #555; margin-top: 20px; }" +
+                    "</style>" +
+                    "</head>" +
+                    "<body>" +
+                    "  <div class='container'>" +
+                    "    <div class='header'>New Blood Donation Campaign Request</div>" +
+                    "    <div class='content'><span class='label'>Organizer Name:</span> " + data.organizerName + "</div>" +
+                    "    <div class='content'><span class='label'>Email:</span> " + data.email + "</div>" +
+                    "    <div class='content'><span class='label'>Phone Number:</span> " + data.phone + "</div>" +
+                    "    <div class='content'><span class='label'>Campaign Name:</span> " + data.campaignName + "</div>" +
+                    "    <div class='content'><span class='label'>Location:</span> " + data.location + "</div>" +
+                    "    <div class='content'><span class='label'>Date:</span> " + data.date + "</div>" ;
+        string? details = data.details;
+        if details is string {
+                emailBody += "<div class='content'><span class='label'>Additional Details:</span> " + details + "</div>";
+            }
+
+            emailBody += "<div class='footer'>This is an auto-generated email. Please do not reply.</div>" +
+            "  </div>" +
+            "</body>" +
+            "</html>";
+
+        string subject = "New Blood Donation Campaign Request | " + data.campaignName+"";
+        json|error result =  sendEmail("thilokyaangeesa@gmail.com",subject,emailBody);
+
+        return result;
+    }
+    //POST donation eligibility
+    isolated resource function post eligibility(@http:Payload Eligible eligible) returns json|error {
+        json|error result = check determine_eligibility(eligible);
+        return result;
+    }
+
+    isolated resource function post donationHis(@http:Payload DonHistory donHistory) returns json|error{
+        json|error result = check addHistory(donHistory);
+        return result;
+    }
+
+    isolated resource function post medicalRisk(@http:Payload MedRisks medRisks) returns json|error{
+        json|error result = check addmedicalRisk(medRisks);
+        return result;
+    }
+
+    isolated resource function post consent(@http:Payload Consent consent) returns json|error {
+        json|error result = check addConsent(consent);
         return result;
     }
 
@@ -187,6 +245,7 @@ service /dashboard on listener9191 {
     }
 
     isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
+        io:println(campaign);
         json|error result = check addCamp(campaign);
         return result;
     }
@@ -199,12 +258,30 @@ service /dashboard on listener9191 {
     resource function get donor(@http:Query string donor_id) returns json|error{
         string|error dateResult = getLastDonation(donor_id);
         string lastDonation = "";
+        string status = "No";
+        int donationscount = 0;
+
         if dateResult is string {
+            int|error count = gateLastDonCount(donor_id);
+            if count is int {
+                if count > 0{
+                    donationscount = count;
+                    status = "Yes";
+
+                }else{
+                    donationscount = count;
+                    status = "No";
+                }
+            }
             lastDonation = dateResult;
+
         } else {
             lastDonation = "";
         }
         json body = {
+            "LastDonation": "",
+            "Status": "",
+            "Count": "",
             "LastDonationYR": "",
             "LastDonationMonth": "",
             "BYear": "",
@@ -242,6 +319,9 @@ service /dashboard on listener9191 {
 
 
                 body = {
+                    LastDonation: lastDonation,
+                    Status: status,
+                    Count: donationscount,
                     LastDonationYR: lastYear,
                     LastDonationMonth: lastMonth,
                     BYear : b_yr,
@@ -255,7 +335,6 @@ service /dashboard on listener9191 {
                 return error("Doner not found");
             }
 
-
         return body;
     }
 
@@ -264,14 +343,30 @@ service /dashboard on listener9191 {
         return campaigns;
     };
 
-    resource function get CampaignHistory(@http:Query string user_id) returns Campaign[]|error {
-        Campaign[]|error campaigns = getCampaignHistory(user_id);
+    resource function get CampaignHistory(@http:Query string user_id) returns CampaignDetails[]|error {
+        CampaignDetails[]|error campaigns = getCampaignHistory(user_id);
+        io:println(campaigns);
         return campaigns;
     }
 
     resource function post ChangePassword(@http:Payload passwordData passwordData) returns json|error {
         json|error result = check changePassword(passwordData.userType, passwordData.userName, passwordData.newPassword, passwordData.currentPassword);
         return result;
+    }
+
+    resource function get addBloodCampaigns(@http:Query string hospital) returns CampaignIdName[]|error {
+        CampaignIdName[]|error hospitals = getCampaignHospital(hospital);
+        if hospitals is error {
+            return hospitals;
+        }
+        return hospitals;
         
     }
+    resource function post addBlood(@http:Payload BloodData bloodData) returns json|error {
+
+        json|error result = check addBloodStock(bloodData);
+        return result;
+        
+    }
+
 }

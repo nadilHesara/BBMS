@@ -1,43 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { LoadingContext } from "../../context/LoadingContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "./ForgotPassword.css";
+import NaviBar from "../../components/Navibar/NaviBar";
 
 function ForgotPassword() {
-
+  const { loading, setLoading } = useContext(LoadingContext);
   const [userType, setUserType] = useState("Donor");
   const [identifier, setIdentifier] = useState("");
 
-  const handleSubmit = async(e) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(userType);
-    console.log(identifier);
-    
-    try{
-      const response = await fetch("http://localhost:9191/forgotpassword",{
-      method:"POST",
-      headers: {
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:9191/forgotpassword", {
+        method: "POST",
+        headers: {
           "Content-Type": "application/json"
         },
-      body: JSON.stringify({
-        userType : userType,
-        userInfo : identifier
+        body: JSON.stringify({
+          userType: userType,
+          userInfo: identifier
+        })
       })
-      })
-
       const result = await response.json();
-      console.log(result);
-      if (response.ok){
-        alert("Successfully Reset Your Password!");
-  
-      }else{
-        alert(result.message);
-      }
-    }catch (error){
-      alert("Registration failed. Check server and data.");
-    }
-      };
+      if (response.ok) {
+        navigate("/login")
+        toast.success("Successfully Reset Your Password!");
 
-return (
+      } else {
+        toast.error("Please check your details and try again.");
+      }
+    } catch (error) {
+      toast.error("Registration failed. Check server and data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
     <div className="forgot-password-container">
+
       <h2>Forgot Password</h2>
       <form onSubmit={handleSubmit} className="forgot-password-form">
         <div className="radio-group">

@@ -1,0 +1,266 @@
+/* ------------------- General Form ------------------- */
+.campaign-form {
+  max-width: 500px;
+  margin: 13vh auto;
+  padding: 40px 30px;
+  background: #f2f2f2;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  transition: all 0.3s ease;
+}
+
+.campaign-form h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2em;
+  color: #d32f2f;
+  font-weight: 600;
+}
+
+/* ------------------- Input Groups ------------------- */
+.input-group {
+  position: relative;
+  margin: 20px 0;
+}
+
+.input-group input,
+.input-group textarea {
+  width: 100%;
+  padding: 16px 12px;
+  font-size: 1em;
+  border: none;
+  border-bottom: 2px solid #ddd;
+  background: none;
+  outline: none;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.input-group textarea {
+  resize: none;
+  height: 100px;
+}
+
+/* ------------------- Floating Labels ------------------- */
+.input-group label {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 1em;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  background: transparent;
+  padding: 0 4px;
+  z-index: 2;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label,
+.input-group textarea:focus + label,
+.input-group textarea:not(:placeholder-shown) + label {
+  top: -10px;
+  font-size: 0.85em;
+  color: #d32f2f;
+}
+
+/* ------------------- Animated Underline ------------------- */
+.input-group::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: #d32f2f;
+  transition: 0.3s ease;
+}
+
+.input-group input:focus::after,
+.input-group textarea:focus::after {
+  width: 100%;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+  box-shadow: 0 2px 6px rgba(211, 47, 47, 0.2);
+}
+
+/* ------------------- Submit Button ------------------- */
+.campaign-form button {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(45deg, #d32f2f, #f44336);
+  color: white;
+  font-size: 1.1em;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.campaign-form button:hover {
+  background: linear-gradient(45deg, #b71c1c, #e53935);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+/* ------------------- Status Message ------------------- */
+.status {
+  text-align: center;
+  margin-top: 15px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ------------------- Dark Mode ------------------- */
+[data-theme="dark"] .campaign-form {
+  background: #1e1e1e;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .campaign-form h2 {
+  color: #f44336;
+}
+
+[data-theme="dark"] .input-group input,
+[data-theme="dark"] .input-group textarea {
+  border-bottom: 2px solid #555;
+  color: #eee;
+  background: none;
+}
+
+[data-theme="dark"] .input-group label {
+  color: #aaa;
+  background: transparent;
+}
+
+[data-theme="dark"] .input-group input:focus + label,
+[data-theme="dark"] .input-group input:not(:placeholder-shown) + label,
+[data-theme="dark"] .input-group textarea:focus + label,
+[data-theme="dark"] .input-group textarea:not(:placeholder-shown) + label {
+  color: #f44336;
+}
+
+[data-theme="dark"] .input-group::after {
+  background: #f44336;
+}
+
+[data-theme="dark"] .input-group input:focus,
+[data-theme="dark"] .input-group textarea:focus {
+  box-shadow: 0 2px 6px rgba(244, 67, 54, 0.4);
+}
+
+[data-theme="dark"] .campaign-form button {
+  background: linear-gradient(45deg, #f44336, #d32f2f);
+}
+
+[data-theme="dark"] .campaign-form button:hover {
+  background: linear-gradient(45deg, #e53935, #b71c1c);
+}
+
+[data-theme="dark"] .status {
+  color: #eee;
+}
+
+
+
+/* ---------- Location input + icon ---------- */
+
+.location-group {
+  position: relative;
+}
+
+/* Float the label when the field has a value or is focused */
+.location-group.has-value > label,
+.location-group input:focus + label {
+  top: -10px;
+  font-size: 0.85em;
+  color: #d32f2f;
+}
+
+/* Extra safety: auto-float when user typed (modern browsers) */
+.location-group:has(input:not(:placeholder-shown)) > label {
+  top: -10px;
+  font-size: 0.85em;
+  color: #d32f2f;
+}
+
+/* Icon button in the input (slightly nudged up) */
+.location-group .map-icon-btn {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-55%);  /* nudge upward for optical centering */
+  height: 28px;
+  width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #c62828;
+  background: transparent;
+  border: none;
+  outline: none;
+  z-index: 3;
+}
+
+.location-group .map-icon-btn:hover { filter: brightness(0.9); }
+.location-group .map-icon-btn:focus {
+  outline: 2px solid #d32f2f;
+  outline-offset: 2px;
+}
+
+/* Keep text clear of the icon */
+.location-group input { padding-right: 45px; }
+
+/* Optional hint under the field */
+.address-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+
+/* ---------- Map picker modal (center overlay) ---------- */
+
+.mappicker-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.mappicker-card {
+  width: min(900px, 94vw);
+  background: var(--card, #fff);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.2);
+}
+
+.mappicker-map {
+  width: 100%;
+  height: 420px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mappicker-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+.mappicker-info { font-size: .9rem; line-height: 1.3; }
+.mappicker-buttons button { margin-left: 8px; }

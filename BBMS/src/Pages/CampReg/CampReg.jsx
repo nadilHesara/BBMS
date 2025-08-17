@@ -1,9 +1,15 @@
 import NaviBar from "../../components/Navibar/NaviBar";
 import "./CampReg.css";
-import React,{ use, useState } from 'react';
+import React,{ use, useState , useContext } from 'react';
+import { LoadingContext } from "../../context/LoadingContext";
 import districts from '../../SharedData/districts';
 
 function CampReg({ theme, setTheme }) {
+
+  const { loading, setLoading } = useContext(LoadingContext);
+  const userId = sessionStorage.getItem("userId");
+  console.log("userId: ",userId);
+
   const [campaign, setCampaign] = useState({
     campain_id:'C001',
     district:'',
@@ -17,7 +23,8 @@ function CampReg({ theme, setTheme }) {
     end_time:'',
     org_tele:'',
     org_email:'',
-    blood_quantity:0
+    blood_quantity:0,
+    hospital_id: userId
   })
 
   const [message,setMessage] = useState("");
@@ -38,8 +45,9 @@ function CampReg({ theme, setTheme }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-
+    console.log(campaign);
     try{
+      setLoading(true);
       const response = await fetch("http://localhost:9191/dashboard/campReg",{
       method:"POST",
       headers: {  
@@ -47,20 +55,19 @@ function CampReg({ theme, setTheme }) {
         },
       body: JSON.stringify(campaign)
       })
-
+      console.log("campaign: ", campaign);
       const result = await response.json();
 
       if (response.ok){
-        alert("Successfully added the campaign");
         setMessage(`Successfully registered by ${campaign.org_name}`);
       }else{
-        alert("Registration failed. Check server and data.");
+        console.log("error:", campaign);
         setMessage("Error : " + JSON.stringify(result));
       }
     }catch (error){
-      //console.error(error.message);
-      alert("Registration failed. Check server and data.");
       setMessage("Registration failed. Check server and data.");
+    }finally {
+      setLoading(false);
     }
   }
 
