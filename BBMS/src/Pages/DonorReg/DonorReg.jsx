@@ -63,12 +63,13 @@ function DonorReg({ theme, setTheme }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // setLoading(true);
+    setLoading(true);
     if (password != conformPassword) {
       toast.error("Password is miss match!")
       return;
     } else {
-      const validate = validatePassword(password)
+      if (userType == "Doner"){
+        const validate = validatePassword(password)
       if (validate == true) {
         setDoner({
           ...doner.password = password
@@ -76,6 +77,7 @@ function DonorReg({ theme, setTheme }) {
       } else {
         toast.warning(validate);
         return;
+      }
       }
     }
     try {
