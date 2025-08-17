@@ -37,6 +37,22 @@ function App() {
   const [theme, setTheme] = useState(current_theme || "light");
   const toastPosition = window.innerWidth <= 768 ? "top-center" : "top-right";
 
+  const [dark, setDark] = useState(
+    localStorage.getItem("theme") === "dark" ||
+    (!("theme" in localStorage) &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches)
+  );
+
+  useEffect(() => {
+    if (dark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [dark]);
+
 
   // Initialize dark mode class on first load and handle theme changes
   useEffect(() => {
@@ -47,7 +63,7 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("current_theme", theme);
-    
+
     // For Tailwind dark mode, we need to add/remove 'dark' class from html element
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -56,7 +72,7 @@ function App() {
       document.documentElement.classList.remove('dark');
       console.log('Removed dark class from HTML');
     }
-    
+
     document.body.className = theme;
   }, [theme]);
 

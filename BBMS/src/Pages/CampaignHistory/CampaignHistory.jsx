@@ -10,6 +10,8 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
 import { LoadingContext } from "../../context/LoadingContext";
+import verifyAccess from "../../SharedData/verifyFunction";
+
 
 function descendingComparator(a, b, orderBy) {
   if (orderBy === "Date") {
@@ -45,6 +47,7 @@ const headCells = [
 ];
 
 export default function CampaignHistory() {
+  verifyAccess("campaignHistory");
   const [rows, setRows] = React.useState([]);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Date");
@@ -55,7 +58,9 @@ export default function CampaignHistory() {
   React.useEffect(() => {
     try{
     const userId = localStorage.getItem("userId");
-    fetch(`http://localhost:9191/dashboard/CampaignHistory?user_id=${userId}`)
+    fetch(`http://localhost:9191/dashboard/CampaignHistory?user_id=${userId}`,
+      {method:"GET" , credentials:"include"}
+    )
       .then((res) => {
         if (!res.ok) throw new Error("Server Error!");
         return res.json();

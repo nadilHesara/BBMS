@@ -4,7 +4,7 @@ import NaviBar from '../../components/Navibar/NaviBar';
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link, useNavigate } from 'react-router-dom';
 import { LoadingContext } from "../../context/LoadingContext";
-
+import { toast } from "react-toastify";
 
 const Login = ({ theme, setTheme }) => {
 
@@ -56,7 +56,8 @@ const Login = ({ theme, setTheme }) => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
+        credentials: "include"
       });
 
       if (rememberMe) {
@@ -70,7 +71,7 @@ const Login = ({ theme, setTheme }) => {
 
       const result = await response.json();
       if (response.ok) {
-        setMessage(result.message);
+        toast.success(result.message);
         console.log("Login successful to " + result.user_type + " !");
         setUserType(result.user_type);
         sessionStorage.setItem("username", result.username);
@@ -79,12 +80,12 @@ const Login = ({ theme, setTheme }) => {
         navigate("/dashboard");
 
       } else {
-        setMessage("Error: " + (result.message || JSON.stringify(result)));
+        toast.error( (result.message.error || JSON.stringify(result)));
         console.error("Error response:", result);
       }
     } catch (error) {
       console.error("Error login form :", error.message);
-      setMessage("Login failed. Check server and data.");
+      toast.error("Login failed. Check server and data.");
     } finally {
       setLoading(false);
     }

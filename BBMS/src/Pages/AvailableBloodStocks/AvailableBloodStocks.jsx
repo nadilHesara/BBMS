@@ -12,6 +12,8 @@ import {
   Cell,
 } from "recharts";
 import "./AvailableBloodStocks.css";
+import verifyAccess from "../../SharedData/verifyFunction";
+
 
 
 const typeMap = {
@@ -34,6 +36,9 @@ const statusColor = {
 
 
 function AvailableBloodStocks({ theme }) {
+
+  // ✅ Use the hook properly
+  const verified = verifyAccess("availableBloodStock");
   const { loading, setLoading } = useContext(LoadingContext);
   const HandleBlood = (item, blood) => {
 
@@ -163,7 +168,14 @@ function AvailableBloodStocks({ theme }) {
     try {
       setLoading(true);
       fetch(
-        `http://localhost:9191/dashboard/bloodStock?district=${district}&hospital=${hospital}`
+        `http://localhost:9191/dashboard/bloodStock?district=${district}&hospital=${hospital}`, {
+
+          method: "GET",
+          credentials: "include", // <-- This tells fetch to send cookies
+          headers: {
+            "Content-Type": "application/json",
+        },
+      }
       )
         .then((res) => {
           if (!res.ok) throw new Error("Fetch failed");
@@ -188,7 +200,7 @@ function AvailableBloodStocks({ theme }) {
     } finally {
       setLoading(false);
     }
-  }, [district, hospital , showAddModal]);
+  }, [district, hospital, showAddModal]);
 
 
   return (
