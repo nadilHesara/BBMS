@@ -128,22 +128,17 @@ isolated function formatDate(int year, int month, int day, string format) return
 }
 
 // Password encryption utility functions
-public isolated function encryptPassword(string password, byte[]? salt = ()) returns string|error {
+public isolated function hashPassword(string password) returns string|error {
     byte[] passwordBytes = password.toBytes();
-    byte[] saltBytes;
+    byte[] saltBytes = [];
     
-    if salt is () {
-        // Generate random salt if not provided
-        saltBytes = [];
-        foreach int i in 0...15 {
-            int randomByte = check random:createIntInRange(0, 255);
-            saltBytes.push(<byte>randomByte);
-        }
-    } else {
-        saltBytes = salt;
+    // Generate random salt
+    foreach int i in 0...15 {
+        int randomByte = check random:createIntInRange(0, 255);
+        saltBytes.push(<byte>randomByte);
     }
     
-    // Hash password with salt using SHA-256
+    // Hash password with salt using SHA-256 (assuming this function exists based on crypto module)
     byte[] hashedPassword = crypto:hashSha256(input = passwordBytes, salt = saltBytes);
     
     // Convert hash to hex string for storage
@@ -154,6 +149,7 @@ public isolated function encryptPassword(string password, byte[]? salt = ()) ret
     return hexSalt + hexHash;
 }
 
+// Verify password (for login)
 public isolated function verifyPassword(string password, string storedHash) returns boolean|error {
     if storedHash.length() < 64 {
         return error("Invalid stored hash format");
@@ -164,10 +160,11 @@ public isolated function verifyPassword(string password, string storedHash) retu
     string hashHex = storedHash.substring(32);
     
     byte[] salt = check hexToBytes(saltHex);
+    byte[] passwordBytes = password.toBytes();
     
     // Hash the provided password with the extracted salt
-    string encryptedPassword = check encryptPassword(password, salt);
-    string newHashHex = encryptedPassword.substring(32);
+    byte[] hashedPassword = crypto:hashSha256(input = passwordBytes, salt = salt);
+    string newHashHex = bytesToHex(hashedPassword);
     
     // Compare hashes
     return hashHex == newHashHex;

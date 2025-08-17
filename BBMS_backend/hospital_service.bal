@@ -17,7 +17,7 @@ isolated function addHospital(Hospital hospital) returns json|error {
     Hospital newHospital = hospital.clone();
     newHospital.hospital_id = newHospitalId;
     string password = check generatePassword(12);
-    newHospital.password = check encryptPassword(password);
+    newHospital.password = check hashPassword(password);
     // Insert into Hospital table (now includes password)
     sql:ParameterizedQuery addHospital = `INSERT INTO hospital(
         HospitalID, Name, District, Contact, AddressLine1, AddressLine2, AddressLine3, Username, Email)

@@ -38,7 +38,7 @@ isolated function changePassword(string userType, string username, string newPas
     }
 
     // Encrypt the new password
-    string encryptedNewPassword = check encryptPassword(newPassword);
+    string encryptedNewPassword = check hashPassword(newPassword);
  
     sql:ExecutionResult|error loginUpdateResult = dbClient->execute(
         `UPDATE login SET Password = ${encryptedNewPassword} WHERE UserName = ${username}`
