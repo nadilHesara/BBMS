@@ -2,20 +2,18 @@ import { useState, useRef, useEffect, useContext } from 'react';
 {/*import NaviBar from '../../components/Navibar/NaviBar';*/ }
 import districts from '../../SharedData/districts';
 import { FaUserCircle } from 'react-icons/fa';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import "./ProfileInfo.css"
 import { LoadingContext } from '../../context/LoadingContext';
 import { toast } from 'react-toastify';
-import verifyAccess from "../../SharedData/verifyFunction";
-
 {/*import { use } from 'react';*/ }
 
 function ProfileInfo({ theme, setTheme }) {
-  verifyAccess("profileInfo");
-
   const { loading, setLoading } = useContext(LoadingContext);
   const location = useLocation();
+  const navigate = useNavigate();
   const from = location.state?.from;
+
   const [doner, setDoner] = useState({
     doner_id: '',
     username: '',
@@ -58,10 +56,9 @@ function ProfileInfo({ theme, setTheme }) {
 
     const fetchUserData = async () => {
       try {
+        setLoading(true);
         const user_id = userData?.userId;
-        const response = await fetch(`http://localhost:9191/dashboard?user_id=${user_id}&user_type=${user_Type}`,
-          { method: "GET", credentials: "include" }
-        );
+        const response = await fetch(`http://localhost:9191/dashboard?user_id=${user_id}&user_type=${user_Type}`);
 
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
@@ -155,23 +152,26 @@ sessionStorage.setItem("userType", res.user_type);*/}
       fetch(`http://localhost:9191/dashboard?user_id=${userID}&user_type=${userType}`,
         {
           method: 'PUT',
-          credentials: "include",
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(userType === "Doner" ? { doner: userData } : { hospital: userData })
         })
 
-        .then(response => response.json())
         .then(data => {
           toast.success("Saved Changes Successfully");
+          if (from === "DonationForm"){
+            navigate('../donation-history');
+          } 
 
         })
+        
     } catch (error) {
       toast.error("⚠️ Failed to save changes");
     } finally {
       setLoading(false);
     }
+
   };
 
   return (
@@ -236,6 +236,8 @@ sessionStorage.setItem("userType", res.user_type);*/}
 
           <br />
           <input type="submit" value="Save Changes" />
+          <br/>
+          <input type="submit" value={from ==="LeftSideBar" ? "Save Changes" : "Next"}/>
 
         </form>
 
@@ -247,3 +249,4 @@ sessionStorage.setItem("userType", res.user_type);*/}
 
 }
 export default ProfileInfo
+
