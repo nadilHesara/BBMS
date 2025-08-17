@@ -2,8 +2,11 @@ import React, { use, useState, useContext } from 'react'
 import "./Donates.css"
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoadingContext } from "../../context/LoadingContext";
+import verifyAccess from "../../SharedData/verifyFunction";
+
 
 function Donates({ theme, setTheme }) {
+    verifyAccess("donates");
     const [username_email, setUsername_email] = useState('');
     const [nic, setNic] = useState('');
     const [showPopup, setShowPopup] = useState(false);

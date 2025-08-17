@@ -54,7 +54,7 @@ public isolated function addDoner(Doner doner) returns json|error {
     // Encrypt password before storing
     password = newDoner.password;
     if !(password is string){return error("Password does not exist");}
-    string encryptedPassword = check encryptPassword(password);
+    string encryptedPassword = check hashPassword(password);
 
     // Insert donor details
     sql:ParameterizedQuery addDoner = `INSERT INTO Doner(DonerID, DonerName, Gender, BloodGroup, NICNo, Dob, Telephone, AddressLine1, AddressLine2, AddressLine3, District, Username, Email)

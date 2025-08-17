@@ -3,9 +3,12 @@ import "./CampReg.css";
 import React,{ use, useState , useContext } from 'react';
 import { LoadingContext } from "../../context/LoadingContext";
 import districts from '../../SharedData/districts';
+import verifyAccess from "../../SharedData/verifyFunction";
+
+
 
 function CampReg({ theme, setTheme }) {
-
+  verifyAccess("campReg");
   const { loading, setLoading } = useContext(LoadingContext);
   const userId = sessionStorage.getItem("userId");
 
