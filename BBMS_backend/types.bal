@@ -294,6 +294,7 @@ public type CampaignRequest record {|
 public type BloodData record {|
     string bloodType;
     string? campaignId;
+    string hospitalId;
     int units;
     string? notes;
 |};

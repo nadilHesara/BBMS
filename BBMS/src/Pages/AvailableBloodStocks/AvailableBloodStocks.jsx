@@ -71,10 +71,12 @@ function AvailableBloodStocks({ theme }) {
   const [hospital, setHospital] = useState("All");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const userId = sessionStorage.getItem("userId");
   const [newBlood, setNewBlood] = useState({
     bloodType: "A+",
     units: 0,
     campaignId: null,
+    hospitalId : userId,
     notes: "",
   });
   const [Campaigns, setCampaigns] = useState([]);
@@ -131,13 +133,13 @@ function AvailableBloodStocks({ theme }) {
 
   const handleAddBloodSubmit = async (e, actionType) => {
     e.preventDefault();
-
+    let message = "added";
     let dataToSend = { ...newBlood };
     if (actionType === "remove") {
       dataToSend.units = dataToSend.units * -1;
+      message = "removed";
     }
 
-    console.log(dataToSend);
 
     try {
       setLoading(true);
@@ -152,7 +154,7 @@ function AvailableBloodStocks({ theme }) {
       if (!response.ok) {
         toast.error("Registration failed. Check server and data.");
       } else {
-        toast.success("Blood package added successfully!");
+        toast.success(`Blood package ${message} successfully!`);
         closeAddModal();
         setHospital("All");
       }

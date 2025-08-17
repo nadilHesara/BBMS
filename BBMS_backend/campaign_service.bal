@@ -1,5 +1,4 @@
 import ballerina/sql;
-import ballerina/io;
 
 isolated function addCamp(Campaign campaign) returns json|error {
     CampaignID|error c = dbClient->queryRow(`SELECT CampaignID FROM campaign ORDER BY CampaignID DESC LIMIT 1`);
@@ -17,7 +16,6 @@ isolated function addCamp(Campaign campaign) returns json|error {
     }
 
     campaign.campain_id = newID;
-    io:println("newID:" + newID);
     sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, StartTime, EndTime , HospitalID)
             VALUES (
                 ${campaign.campain_id},
@@ -127,10 +125,11 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
 
 isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[]|error {
     CampaignIdName[] campaigns = [];
-    string curruntDate = getCurrentDate();
-    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND DateofCampaign <= ${curruntDate} ORDER BY DateofCampaign DESC`;
+    // string curruntDate = getCurrentDate();
+    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID}  ORDER BY DateofCampaign DESC`;
     
     stream<CampaignIdName, error?> resultStream = dbClient->query(query);
+
     check from CampaignIdName campaign in resultStream
         do {
             campaigns.push(campaign);
