@@ -207,7 +207,7 @@ isolated function issueToken(string username, string userId, string role) return
         issuer: JWT_ISSUER, 
         username: username,          // becomes `sub`
         audience: JWT_AUDIENCE,
-        expTime: 300,               // seconds
+        expTime: 3600,               // seconds
         customClaims: { "uid": userId, "role": role },
         signatureConfig: { algorithm: jwt:HS256, config: JWT_SECRET }
     };
