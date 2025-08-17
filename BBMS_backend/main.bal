@@ -204,7 +204,6 @@ service /dashboard on listener9191 {
             if existingHospital is Hospital {
                 if hospitalJson is map<json> {
                     hospitalJson["password"] = existingHospital.password;
-
                 }
             }
 
@@ -213,11 +212,9 @@ service /dashboard on listener9191 {
             sql:ExecutionResult|error result = updateHospital(hospital);
             if result is sql:ExecutionResult {
                 return {"message": "Hospital updated successfully"};
-
             } else {
                 return result;
             }
-
         }
     }
 

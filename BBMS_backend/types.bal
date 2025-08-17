@@ -88,7 +88,7 @@ public type Hospital record {
     @sql:Column {name: "Username"}
     string username;
 
-    string password;
+    string? password;
 
     @sql:Column {name: "Email"}
     string email;

@@ -1,5 +1,6 @@
 import ballerina/sql;
 
+
 isolated function addHospital(Hospital hospital) returns json|error {
     // Generate a new HOSPITAL ID
     HospitalID|error h = dbClient->queryRow(`SELECT HospitalID FROM Hospital ORDER BY HospitalID DESC LIMIT 1`);
@@ -96,15 +97,14 @@ isolated function getAllHospitals(string? district) returns HospitalDetails[]|er
 
 isolated function updateHospital(Hospital hospital) returns sql:ExecutionResult|error {
     sql:ExecutionResult|error result = check dbClient->execute(`
-        UPDATE Hospital SET
+        UPDATE Hospital SET 
             Name = ${hospital.name},
             District = ${hospital.District},
-            Conatct = ${hospital.contact_no},
+            Contact = ${hospital.contact_no},
             AddressLine1 = ${hospital.address_line1},
             AddressLine2 = ${hospital.address_line2},
-            AddressLine3 = ${hospital.address_line3},
-            ProfileImage = ${hospital.profileImage}
-        WHERE  (HospitalID = ${hospital.hospital_id} AND Username = ${hospital.username} AND Email = ${hospital.email})
+            AddressLine3 = ${hospital.address_line3} 
+        WHERE   HospitalID = ${hospital.hospital_id} AND Username = ${hospital.username} AND Email = ${hospital.email}
     `);
     return result;
 }
