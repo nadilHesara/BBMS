@@ -166,34 +166,168 @@ export default function EligibilityCheck() {
   };
 
   return (
-    <div className="form-container">
-      <h2>Eligibility Check</h2>
-      <form>
-        <label>Age (yrs): <input name="age"  value={form.age} yrs readOnly/></label><br />
-        <label>Weight (kg): <input name="weight" type="number" onChange={handleChange} 
-           onBlur={() => {if (form.weight && form.weight < 50) {alert("Sorry, you must meet the minimum weight to donate safely");}}} /></label><br />
+    // <div className="form-container">
+    //   <h2>Eligibility Check</h2>
+    //   <form>
+    //     <label>Age (yrs): <input name="age"  value={form.age} yrs readOnly/></label><br />
+    //     <label>Weight (kg): <input name="weight" type="number" onChange={handleChange} 
+    //        onBlur={() => {if (form.weight && form.weight < 50) {alert("Sorry, you must meet the minimum weight to donate safely");}}} /></label><br />
 
-        <label>Months since last donation: <input name="lastDonation" value={form.lastDonation} readOnly/></label><br />
-        {/* <label>Hemoglobin (g/dL): <input name="hemoglobin" type="number" step="0.1" onChange={handleChange} /></label><br /> */}
+    //     <label>Months since last donation: <input name="lastDonation" value={form.lastDonation} readOnly/></label><br />
+    //     {/* <label>Hemoglobin (g/dL): <input name="hemoglobin" type="number" step="0.1" onChange={handleChange} /></label><br /> */}
 
-        <label>Months since foreign travel: <input name="foreignTravel" type="number" onChange={handleChange} 
-          onBlur={() => {if (form.foreignTravel && form.foreignTravel < 3) {alert("Sorry, Foreign travels within the last 3 months makes you temporarily ineligible to donate");}}} /></label><br />
+    //     <label>Months since foreign travel: <input name="foreignTravel" type="number" onChange={handleChange} 
+    //       onBlur={() => {if (form.foreignTravel && form.foreignTravel < 3) {alert("Sorry, Foreign travels within the last 3 months makes you temporarily ineligible to donate");}}} /></label><br />
 
-        <label>Any risk behavior? 
-          <select name="risk" onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
-          </select>
-        </label><br />
-        <button
-          type="button"
-          disabled={!isEligible()}
-          onClick={() => navigate("profileInfo", {state:{from:"DonationForm"}})}
-        >
-          Proceed to Declaration
-        </button>
-      </form>
-    </div>
+    //     <label>Any risk behavior? 
+    //       <select name="risk" onChange={handleChange}>
+    //         <option value="">--Select--</option>
+    //         <option value="no">No</option>
+    //         <option value="yes">Yes</option>
+    //       </select>
+    //     </label><br />
+    //     <button
+    //       type="button"
+    //       disabled={!isEligible()}
+    //       onClick={() => navigate("profileInfo", {state:{from:"DonationForm"}})}
+    //     >
+    //       Proceed to Declaration
+    //     </button>
+    //   </form>
+    // </div>
+    
+      <div className=" max-w-md mx-auto mt-5">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 sm:p-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+            Eligibility Check
+          </h2>
+          
+          <div className="space-y-6">
+            {/* Age Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Age (yrs)
+              </label>
+              <input
+                name="age"
+                value={form.age}
+                
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                         bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white 
+                         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
+            </div>
+
+            {/* Weight Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Weight (kg)
+              </label>
+              <input
+                name="weight"
+                type="number"
+                value={form.weight}
+                onChange={handleChange}
+                onBlur={() => {
+                  if (form.weight && form.weight < 50) {
+                    alert("Sorry, you must meet the minimum weight to donate safely");
+                  }
+                }}
+                placeholder="Enter weight in kg"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                         placeholder-gray-400 dark:placeholder-gray-400
+                         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
+            </div>
+
+            {/* Last Donation Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Months since last donation
+              </label>
+              <input
+                name="lastDonation"
+                value={form.lastDonation}
+               
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                         bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white 
+                         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
+            </div>
+
+            {/* Foreign Travel Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Months since foreign travel
+              </label>
+              <input
+                name="foreignTravel"
+                type="number"
+                value={form.foreignTravel}
+                onChange={handleChange}
+                onBlur={() => {
+                  if (form.foreignTravel && form.foreignTravel < 3) {
+                    alert("Sorry, Foreign travels within the last 3 months makes you temporarily ineligible to donate");
+                  }
+                }}
+                placeholder="Enter number of months"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                         placeholder-gray-400 dark:placeholder-gray-400
+                         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
+            </div>
+
+            {/* Risk Behavior Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Any risk behavior?
+              </label>
+              <select
+                name="risk"
+                value={form.risk}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+                         appearance-none cursor-pointer"
+              >
+                <option value="">--Select--</option>
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </select>
+            </div>
+
+            {/* Submit Button */}
+            <div className="pt-4">
+              <button
+                type="button"
+                disabled={!isEligible()}
+                onClick={() => navigate("profileInfo", {state:{from:"DonationForm"}})}
+                className={`w-full py-3 px-4 rounded-md text-white font-medium text-sm transition-colors duration-200 
+                          ${isEligible() 
+                            ? 'bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800' 
+                            : 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                          }`}
+              >
+                Proceed to Declaration
+              </button>
+            </div>
+          </div>
+
+          {/* Eligibility Status Indicator */}
+          <div className="mt-4 text-center">
+            <span className={`text-sm font-medium ${
+              isEligible() 
+                ? 'text-green-600 dark:text-green-400' 
+                : 'text-gray-500 dark:text-gray-400'
+            }`}>
+              {isEligible() ? '✓ Eligible to proceed' : 'Please complete all requirements'}
+            </span>
+          </div>
+        </div>
+      </div>
+    
   );
 }
