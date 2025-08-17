@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { HiArrowCircleLeft } from  "react-icons/hi";
 
 export default function MedicalScreenForm() {
   const navigate = useNavigate();
@@ -28,6 +29,11 @@ export default function MedicalScreenForm() {
     localStorage.setItem('medicalScreen', JSON.stringify(form));
     navigate('../consent');
   };
+
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate("../donation-history");
+  }
 
   return (
     // <div className="form-container">
@@ -149,14 +155,26 @@ export default function MedicalScreenForm() {
     //   </form>
     // </div>
     
-      <div className="max-w-6xl mx-auto mt-5">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-          Step 4: Medical & Risk Screening
-        </h2>
+      <div className="max-w-6xl mx-auto mt-5 bg-white rounded-xl p-5">
+        <div className='flex justify-left flex-row align-baseline gap-2'>
+          <button
+                      onClick={handleBack}
+                      className="mb-4 pl-0 pt-2 pb-2 justify-left text-red-600  hover:text-gray-900 dark:hover:text-white 
+                              transition-colors duration-200
+                             focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    >
+                      <HiArrowCircleLeft size={40} />
+                    </button>
+          <div className='flex w-full flex-row justify-center'>
+            <h2 className="text-2xl p-2 mt-1 font-bold text-gray-900 dark:text-white mb-4  ">
+              Step 4: Medical & Risk Screening
+            </h2>
+          </div>
+        </div > 
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className=" grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column - Medical History */}
-          <div className="bg-white dark:bg-red-500 rounded-lg shadow-md p-6 sm:p-8">
+          <div className="bg-gray-200 dark:bg-red-500 rounded-lg shadow-3xl p-6 sm:p-8">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-black mb-4 text-center">
               Medical History
             </h3>
@@ -297,7 +315,7 @@ export default function MedicalScreenForm() {
           </div>
 
           {/* Right Column - Risk Assessment */}
-          <div className="bg-white dark:bg-red-400 rounded-lg shadow-md p-6 sm:p-8">
+          <div className="bg-gray-200 dark:bg-red-400 rounded-lg shadow-md p-6 sm:p-8">
             <h3 className="text-2xl font-bold text-black dark:text-gray-900 mb-4 text-center">
               Risk Assessment
             </h3>
