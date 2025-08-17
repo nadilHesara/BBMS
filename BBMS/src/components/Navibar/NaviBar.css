@@ -1,135 +1,132 @@
-/* ===== Base Styles ===== */
-.navibar {
-    position: fixed;
-    height: 70px;
-    width : 100%;
-    background-color: rgb(77, 77, 77,1);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 50px;
-    top: 0;
-    left: 0;
-    transition: 0.5s;
-    z-index: 1000;
-}
-
-/* ===== Dark Mode ===== */
-.navibar.dark {
+/* Navbar base */
+.navbar {
+  width: 100%;
   position: fixed;
-  height: 70px;
-  width : 100%;
-  background-color: rgb(41, 41, 41);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 15px 50px;
   top: 0;
   left: 0;
-  transition: 0.5s;
-  z-index: 1000;
-
-  
+  z-index: 50;
+  transition: background-color 0.5s, color 0.5s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-/* ===== Logo and Brand ===== */
-.logo-link {
+/* Light/Dark theme */
+.navbar.light {
+  background-color: #ffffff;
+  color: #111111;
+}
+
+.navbar.dark {
+  background-color: #373030;
+  color: #ffffff;
+}
+
+/* Container */
+.navbar-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  gap : 50vh;
+}
+
+/* Logo */
+.navbar-logo {
   display: flex;
   align-items: center;
   gap: 10px;
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.navbar-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* Desktop Links */
+.navbar-links {
+  display: none;
+  gap: 30px;
+  list-style: none;
+}
+
+.navbar-links li a {
   text-decoration: none;
-   transition: ease 0.5s;
-}
-
-.logo{
-  width: 45px;
-  height: 45px;
-  object-fit: cover;
-  transition: ease 0.5s;
-}
-
-.logo-link:hover{
-  transform: scale(1.05);
-  transition: ease 0.5s;
-}
-
-.logo-text {
-  font-size: 22px;
-  font-weight: 700;
-  color: rgb(0, 0, 0);
+  font-weight: 600;
   transition: color 0.3s;
 }
 
-.navibar.dark .logo-text {
-  color: rgb(255, 255, 255);
+.navbar-links li a:hover {
+  color: #f44336;
 }
 
-/* ===== Navigation Links ===== */
-.nav-links {
+/* Icons */
+.navbar-icons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Buttons */
+.theme-btn, .user-btn, .mobile-btn {
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.theme-btn:hover, .user-btn:hover, .mobile-btn:hover {
+  background: rgba(0,0,0,0.1);
+}
+
+/* Hamburger */
+.mobile-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 24px;
+  height: 20px;
+  justify-content: center;
+}
+
+.mobile-btn span {
+  display: block;
+  height: 2px;
+  background-color: currentColor;
+  border-radius: 1px;
+}
+
+/* Mobile menu */
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 20px;
   list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 30px;
-  margin: 0;
-  padding: 0;
+  gap: 12px;
 }
 
-.nav-links li a {
+.mobile-menu li a {
   text-decoration: none;
-  font-size: 16px;
   font-weight: 600;
-  color: rgb(0, 0, 0);
-  transition: all 0.3s ease;
+  transition: color 0.3s;
 }
 
-.navibar.dark .nav-links li a {
-  color: rgb(255, 255, 255);
+.mobile-menu li a:hover {
+  color: #f44336;
 }
 
-.nav-links li a:hover {
-  color: #ff4c4c;
-  transform: scale(1.05);
-}
-
-/* ===== Icons Section (Right) ===== */
-.user-toggle-icons {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.toggle-icon,
-.user-icon {
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.toggle-icon:hover,
-.user-icon:hover {
-  transform: scale(1.1);
-}
-
-/* ===== Image Style (e.g., Blood Drop Icon) ===== */
-.navibar-img {
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.navibar-img:hover {
-  transform: scale(1.1);
-}
-
-/* ===== Responsive for Mobile ===== */
-@media screen and (max-width: 768px) {
-  .nav-links {
-    display: none;
+/* Responsive */
+@media (min-width: 768px) {
+  .navbar-links {
+    display: flex;
   }
 
-  .logo-text {
+  .mobile-btn, .mobile-menu {
     display: none;
-  }
-
-  .navibar {
-    padding: 0 20px;
   }
 }
