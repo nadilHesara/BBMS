@@ -1,9 +1,9 @@
-import React, { use, useState, useEffect} from 'react'
+import React, { use, useState, useContext } from 'react'
 import "./Donates.css"
 import { useLocation, useNavigate } from 'react-router-dom';
+import { LoadingContext } from "../../context/LoadingContext";
 
-
-function Donates({theme,setTheme}) {
+function Donates({ theme, setTheme }) {
     const [username_email, setUsername_email] = useState('');
     const [nic, setNic] = useState('');
     const [showPopup, setShowPopup] = useState(false);
@@ -11,16 +11,18 @@ function Donates({theme,setTheme}) {
     const navigate = useNavigate();
     const campaign_id = location.state?.campaignId;
     const campdate = location.state?.campdate;
+    const { loading, setLoading } = useContext(LoadingContext);
 
-    const handleSearchSubmit = async (e) => { 
+    const handleSearchSubmit = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true);
             const response = await fetch("http://localhost:9191/donates", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({username_email, nic})
+                body: JSON.stringify({ username_email, nic })
             });
 
             if (!response.ok) {
@@ -30,10 +32,10 @@ function Donates({theme,setTheme}) {
                 return;
             }
 
-            else{
+            else {
                 const data = await response.json();
                 console.log(data);
-                navigate("/dashboard/DonationInfo",{
+                navigate("/dashboard/DonationInfo", {
                     state: {
                         campaign_Id: campaign_id,
                         donorId: data.user_id,
@@ -46,9 +48,9 @@ function Donates({theme,setTheme}) {
         } catch (error) {
             console.error("Error:", error);
             setShowPopup(true);
+        } finally {
+            setLoading(false);
         }
-
-
     }
 
 
@@ -64,23 +66,23 @@ function Donates({theme,setTheme}) {
 
 
     return (
-    <div className="search_container">
-        <form onSubmit={handleSearchSubmit}>
-            <h1>Campaign {campaign_id}</h1>
-            <div className = "field_container">
-                <label className='Label' htmlFor="username_email">Username or Email</label>
-                <input type="text" id="username_email" name="username_email" value={username_email} onChange={(e) => setUsername_email(e.target.value)}></input>
-                <br/>
-                <label className='Label' htmlFor="nic">NIC No</label>
-                <input type="text" id="nic" name="nic" value={nic} onChange={(e) => setNic(e.target.value)}></input>
-                <br/>
-                <input type="submit" value="Search"/>
+        <div className="search_container">
+            <form classname="doner-reg-form" onSubmit={handleSearchSubmit}>
+                <h1>Campaign {campaign_id}</h1>
+                <div className="field_container">
+                    <label className='Label' htmlFor="username_email">Username or Email</label>
+                    <input type="text" id="username_email" name="username_email" value={username_email} onChange={(e) => setUsername_email(e.target.value)}></input>
+                    <br />
+                    <label className='Label' htmlFor="nic">NIC No</label>
+                    <input type="text" id="nic" name="nic" value={nic} onChange={(e) => setNic(e.target.value)}></input>
+                    <br />
+                    <input type="submit" value="Search" />
 
-            </div>
-        </form>
+                </div>
+            </form>
 
 
-    {showPopup && (
+            {showPopup && (
                 <div className="popup-backdrop">
                     <div className="popup-box">
                         <p>No registered doner. Please Check Your Username or Email</p>
@@ -90,7 +92,7 @@ function Donates({theme,setTheme}) {
                 </div>
             )}
 
-    </div>
+        </div>
 
     );
 }

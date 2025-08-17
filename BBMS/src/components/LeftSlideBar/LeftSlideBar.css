@@ -3,15 +3,17 @@
   flex-direction: column;
   justify-content: baseline;
   background-color: #e3e3e3;
-  transition: width 0.3s ease;
+  transition: width 1s ease;
   overflow: hidden;
   height: 100%;
   max-width: 300px;
   flex-shrink: 0;
+  padding-bottom: 5rem;
+
 }
 
 .left-slide-bar.closed{
-  width: 100px;
+  width: 80px;
 }
 
 
@@ -23,11 +25,15 @@
   border: none;
   color: white;
   cursor: pointer;
-  margin: 20px;
-  padding:5px;
+  margin-top:30px;
+  margin-left: 15px;
+  padding-top:5px;
+  padding-bottom:5px;
   font-size: 16px;
   width: 50px;
   text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 .sidebar-toggle-btn:hover {
@@ -47,8 +53,10 @@
 
 .profile-section h4 {
   margin: 0;
-  font-size: 35px;
+  font-size: 25px;
   text-align: center;
+  font-weight: 600;
+  font-style:initial;
 }
 
 .slide-bar-nav-links {
@@ -69,6 +77,10 @@
   transition: all 0.3s ease;
   border-radius: 8px;
   font-size: 16px;
+}
+
+.slide-bar-nav-links.dark a:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .slide-bar-nav-links a:hover {
@@ -92,17 +104,19 @@
 }
 
 /* Dark mode support */
- .left-slide-bar.dark {
+.left-slide-bar.dark {
   background-color: #1a1a1a;
 }
 
- .left-slide-bar.dark .slide-bar-nav-links span {
+.left-slide-bar.dark .slide-bar-nav-links span {
   color:#e3e3e3;
 }
 
 .left-slide-bar.dark  .profile-section h4 {
   color:#e3e3e3;
 }
+
+
 
 @media screen and (max-width: 768px) {
   .left-slide-bar {

@@ -37,7 +37,6 @@ public type Doner record {
     @sql:Column {name: "Username"}
     string username;
 
-    @sql:Column {name: "Password"}
     string? password = ();
 
     @sql:Column {name: "Email"}
@@ -89,7 +88,6 @@ public type Hospital record {
     @sql:Column {name: "Username"}
     string username;
 
-    @sql:Column {name: "Password"}
     string password;
 
     @sql:Column {name: "Email"}
@@ -170,9 +168,6 @@ public type Campaign record {
     @sql:Column {name: "DonerCount"}
     int? doner_count;
 
-    @sql:Column {name: "BloodQuantity"}
-    int? blood_quantity;
-
     @sql:Column {name: "StartTime"}
     string start_time;
 
@@ -242,6 +237,81 @@ public type HospitalDetails record {|
     string Name;
 |};
 
+
+public type CampaignDetails record {|
+    @sql:Column {name: "CampaignID"}
+    string CampaignID;
+    
+    @sql:Column {name: "District"}
+    string District;
+    
+    @sql:Column {name: "DateofCampaign"}
+    string Date;
+    
+    @sql:Column {name: "OrganizerName"}
+    string orgName;
+    
+    @sql:Column {name: "OrganizerTelephone"}
+    string orgTele;
+    
+    @sql:Column {name: "OrganizerEmail"}
+    string orgEmail;
+    
+    @sql:Column {name: "DonerCount"}
+    int DonerCount;
+    
+    @sql:Column {name: "A_plus"}
+    string? A_plus;
+    
+    @sql:Column {name: "B_plus"}
+    string? B_plus;
+    
+    @sql:Column {name: "O_plus"}
+    string? O_plus;
+    
+    @sql:Column {name: "AB_plus"}
+    string? AB_plus;
+    
+    @sql:Column {name: "A_minus"}
+    string? A_minus;
+    
+    @sql:Column {name: "B_minus"}
+    string? B_minus;
+    
+    @sql:Column {name: "O_minus"}
+    string? O_minus;
+    
+    @sql:Column {name: "AB_minus"}
+    string? AB_minus;
+|};
+
+
+public type CampaignRequest record {|
+    string organizerName;
+    string email;
+    string phone;
+    string campaignName;
+    string location;
+    string date;
+    string? details;
+|};
+
+public type BloodData record {|
+    string bloodType;
+    string? campaignId;
+    int units;
+    string? notes;
+|};
+
+public type CampaignIdName record {|
+    string CampaignID;
+    string CampaignName;
+|};
+
+public type BloodStockDetails record {|
+    int StockId;
+    string CampaignID;
+|};
 public type Eligible record {
     @sql:Column {name: "submitID"}
     string submitID;

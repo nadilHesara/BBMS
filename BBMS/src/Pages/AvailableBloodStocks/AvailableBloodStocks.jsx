@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext, use } from "react";
 import districts from "../../SharedData/districts";
+import { LoadingContext } from "../../context/LoadingContext";
+import { toast } from "react-toastify";
 import {
   BarChart,
   Bar,
@@ -32,7 +34,7 @@ const statusColor = {
 
 
 function AvailableBloodStocks({ theme }) {
-
+  const { loading, setLoading } = useContext(LoadingContext);
   const HandleBlood = (item, blood) => {
 
     if (blood[typeMap[item.type]] == null) {
@@ -63,6 +65,14 @@ function AvailableBloodStocks({ theme }) {
   const [error, setError] = useState(null);
   const [hospital, setHospital] = useState("All");
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newBlood, setNewBlood] = useState({
+    bloodType: "A+",
+    units: 0,
+    campaignId: null,
+    notes: "",
+  });
+  const [Campaigns, setCampaigns] = useState([]);
 
 
   useEffect(() => {
@@ -77,41 +87,119 @@ function AvailableBloodStocks({ theme }) {
     setHospital(e.target.value);
   };
 
+  const openAddModal = () => setShowAddModal(true);
+  const closeAddModal = () => {
+    setShowAddModal(false);
+    setNewBlood({
+      bloodType: "",
+      units: "",
+      campaignId: "",
+      notes: "",
+    });
+  };
+  const handleNewBloodChange = (e) => {
+    const { name, value } = e.target;
+    setNewBlood(prev => ({
+      ...prev,
+      [name]: name === "units" ? parseInt(value, 10) : value
+    }));
+  };
+
   useEffect(() => {
-    fetch(
-      `http://localhost:9191/dashboard/bloodStock?district=${district}&hospital=${hospital}`
-    )
-      .then((res) => {
-        if (!res.ok) throw new Error("Fetch failed");
-        return res.json();
-      })
-      .then((data) => {
-        setHospitals(data.hospitals || []);
-        setHospital("All")
+    try {
+      setLoading(true);
+      const userId = sessionStorage.getItem("userId");
+      fetch(`http://localhost:9191/dashboard/addBloodCampaigns?hospital=${userId}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Fetch failed");
+          return res.json();
+        })
+        .then((data) => {
+          setCampaigns(data || []);
+        });
+    } catch (error) {
+      toast.error("Server Error");
+    } finally {
+      setLoading(false);
+    }
+  }, [showAddModal, hospital]);
 
-        const updatedData = bloodData.map(item => ({
-          ...item,
-          units: HandleBlood(item, data.blood)
-        }));
+  const handleAddBloodSubmit = async (e, actionType) => {
+    e.preventDefault();
 
-        setBloodData(updatedData);
-      })
-      .catch((err) => {
-        console.error("Error fetching hospital data:", err.message);
-        setError("Failed to load hospitals data.");
+    let dataToSend = { ...newBlood };
+    if (actionType === "remove") {
+      dataToSend.units = dataToSend.units * -1;
+    }
+
+    console.log(dataToSend);
+
+    try {
+      setLoading(true);
+      const response = await fetch(`http://localhost:9191/dashboard/addBlood`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataToSend)
       });
-  }, [district, hospital]);
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        toast.error("Registration failed. Check server and data.");
+      } else {
+        toast.success("Blood package added successfully!");
+        closeAddModal();
+        setHospital("All");
+      }
+    } catch (error) {
+      toast.error("Failed to add the package. Check server and data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+    try {
+      setLoading(true);
+      fetch(
+        `http://localhost:9191/dashboard/bloodStock?district=${district}&hospital=${hospital}`
+      )
+        .then((res) => {
+          if (!res.ok) throw new Error("Fetch failed");
+          return res.json();
+        })
+        .then((data) => {
+          setHospitals(data.hospitals || []);
+          setHospital("All")
+
+          const updatedData = bloodData.map(item => ({
+            ...item,
+            units: HandleBlood(item, data.blood)
+          }));
+          setBloodData(updatedData);
+        })
+        .catch((err) => {
+          toast.error("Server");
+          setError("Failed to load hospitals data.");
+        });
+    } catch (error) {
+      setError("Server Error")
+    } finally {
+      setLoading(false);
+    }
+  }, [district, hospital , showAddModal]);
 
 
   return (
 
     <>
       <div className={`blood-stock-container ${isDarkMode ? 'dark-mode' : ''}`}>
-        <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'dark-title' : ''}`}>Available Blood Stocks</h2>
-        <div className="selects">
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          <div></div>
+        <div className="page-header-row">
+          <h2 className={`page-header ${isDarkMode ? 'dark-title' : ''}`}>Available Blood Stocks</h2>
+          <button className="add-blood-btn" onClick={openAddModal}>Add or Remove Blood</button>
         </div>
+
         <div className="header-controls">
           <div className="district-control">
             <label className={isDarkMode ? 'dark-label' : ''}>District:</label>
@@ -133,6 +221,10 @@ function AvailableBloodStocks({ theme }) {
                 </option>
               ))}
             </select>
+          </div>
+          <div className="selects">
+            {error && <p >{error}</p>}
+            <div></div>
           </div>
         </div>
 
@@ -185,6 +277,63 @@ function AvailableBloodStocks({ theme }) {
             </BarChart>
           </ResponsiveContainer>
         </div>
+
+        {showAddModal && (
+          <div className="modal-overlay" onClick={closeAddModal}>
+            <div className="add-blood-container">
+              <div className={`modal-content ${isDarkMode ? 'dark-modal' : ''}`} onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <h3>Add or Remove Blood</h3>
+                  <button className="modal-close-btn" onClick={closeAddModal}>×</button>
+                </div>
+
+                <form className="modal-form" onSubmit={handleAddBloodSubmit}>
+                  <div className="form-row">
+                    <label>Blood Type</label>
+                    <select name="bloodType" onChange={handleNewBloodChange} required>
+                      <option value="">Select</option>
+                      {Object.keys(typeMap).map((t) => (
+                        <option key={t} value={typeMap[t]}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="form-row">
+                    <label>Units</label>
+                    <input type="number" min={0} name="units" onChange={handleNewBloodChange} required />
+                  </div>
+
+                  <div className="form-row">
+                    <label>Campaign</label>
+                    <select name="campaignId" onChange={handleNewBloodChange}>
+                      <option value={null}>Select</option>
+                      {Campaigns.map((d, i) => (
+                        <option key={i} value={d.CampaignID}>{d.CampaignName}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="form-row">
+                    <label>Notes</label>
+                    <textarea name="notes" rows="3" onChange={handleNewBloodChange} placeholder="Optional"></textarea>
+                  </div>
+
+
+
+                  <div className="form-actions">
+                    <button type="button" className="btn-secondary" onClick={closeAddModal}>Cancel</button>
+                    <button type="submit" className="btn-primary add" onClick={(e) => handleAddBloodSubmit(e, "add")}>Add</button>
+                    <button type="submit" className="btn-primary remove" onClick={(e) => handleAddBloodSubmit(e, "remove")}>Remove</button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+
       </div >
     </>
   );

@@ -1,16 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import NaviBar from "../../components/Navibar/NaviBar";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import districts from '../../SharedData/districts';
 import bloodgrp from '../../SharedData/bloodgrp';
+import { LoadingContext } from "../../context/LoadingContext";
+import { toast } from "react-toastify";
 import "./DonorReg.css";
+
+
+function validatePassword(pwd) {
+  if (pwd.length < 8) return "Password must be at least 8 characters long.";
+  if (!/[A-Z]/.test(pwd)) return "Password must contain at least one uppercase letter.";
+  if (!/[a-z]/.test(pwd)) return "Password must contain at least one lowercase letter.";
+  if (!/[0-9]/.test(pwd)) return "Password must contain at least one number.";
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) return "Password must contain at least one special character.";
+  return true;
+};
+
 
 function DonorReg({ theme, setTheme }) {
   const navigate = useNavigate();
-  const [userType,_] = useState(sessionStorage.getItem("userType") ? sessionStorage.getItem("userType"):undefined);
-  console.log(userType);
-
+  const [userType, _] = useState(sessionStorage.getItem("userType") ? sessionStorage.getItem("userType") : undefined);
+  const { loading, setLoading } = useContext(LoadingContext);
 
   const [doner, setDoner] = useState({
     doner_id: "D001",
@@ -26,13 +38,11 @@ function DonorReg({ theme, setTheme }) {
     address_line2: "",
     address_line3: "",
     District: "",
-    password: ""
+    password: null
   });
 
-  const [show, setShow] = useState([false, false]);
-
-  const [conformPassword, setConformPassword] = useState('');
-  const [password, setPassword] = useState('');
+  const [conformPassword, setConformPassword] = useState(null);
+  const [password, setPassword] = useState(null);
 
   function toggleShow(n) {
     if (n == 1) {
@@ -49,59 +59,62 @@ function DonorReg({ theme, setTheme }) {
     });
   };
 
-  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage("");
+
+    // setLoading(true);
     if (password != conformPassword) {
-      setMessage("Password is miss match!");
+      toast.error("Password is miss match!")
       return;
     } else {
-      setDoner({
-        ...doner,
-        ["password"]: password
-      })
+      const validate = validatePassword(password)
+      if (validate == true) {
+        setDoner({
+          ...doner.password = password
+        })
+      } else {
+        toast.warning(validate);
+        return;
+      }
     }
     try {
+      console.log(doner);
       const response = await fetch("http://localhost:9191/donorReg", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
+
         body: JSON.stringify(doner)
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        setMessage("Donor Registration Successful!");
-        alert("Donor added successfully!");
+        toast.success("Donor Registration Successful!");
         navigate("/login");
 
       } else if (result.message.match(/Duplicate entry '.*?'/)) {
         const errorMsg = "Username already registered.";
-        setMessage("Error: " + errorMsg);
-        alert(errorMsg); // Optional: show an alert too
-        console.error("Duplicate Username Error:", result);
+        toast.warning(errorMsg);
 
-      } else {
-        setMessage("Error: " + (result.message || JSON.stringify(result)));
-        console.error("Error response:", result);
+
       }
 
     } catch (error) {
-      console.error("Error submitting form:", error.message);
-      alert("Submission failed. Check server and data.");
-      setMessage("Submission failed. Check server and data.");
+      toast.error("Submission failed. Check server and data.");
+    } finally {
+      setLoading(false);
     }
 
   };
-  
+
+  const [show, setShow] = useState([false, false]);
   return (
     <div>
       <NaviBar theme={theme} setTheme={setTheme} />
-      <div className={theme === "light" ? "donor-reg" : "donor-reg dark"}>
+      <div className={theme === "light" ? "doner-reg" : "doner-reg dark"}>
         <form className="doner-reg-form" onSubmit={handleSubmit}>
           <h1>Donor Registration</h1>
           <label htmlFor="name">Donor Name:</label>
@@ -160,27 +173,25 @@ function DonorReg({ theme, setTheme }) {
 
           <br />
 
-          
-
-{   userType == undefined && 
-          <>
-          <label htmlFor="pwd">Password: </label>
-          <input type={show[0] ? "text" : "password"} id="pwd" name="pwd" onChange={(e) => setPassword(e.target.value)}></input>
-          {show[0] ? <AiFillEyeInvisible onClick={() => toggleShow(0)} size={20} /> : <AiFillEye onClick={() => toggleShow(0)} size={20} />}
-          <br />
 
 
-          <label htmlFor="pwdconfirm">Confirm Password: </label>
-          <input type={show[1] ? "text" : "password"} id="pwdconfirm" name="pwdconfirm" onChange={(e) => setConformPassword(e.target.value)}></input>
-          {show[1] ? <AiFillEyeInvisible onClick={() => toggleShow(1)} size={20} /> : <AiFillEye onClick={() => toggleShow(1)} size={20} />}
-          <br />
-          
-          </>}
+          {userType == undefined &&
+            <>
+              <label htmlFor="pwd">Password: </label>
+              <input type={show[0] ? "text" : "password"} id="pwd" name="pwd" onChange={(e) => setPassword(e.target.value)}></input>
+              {show[0] ? <AiFillEyeInvisible onClick={() => toggleShow(0)} size={20} /> : <AiFillEye onClick={() => toggleShow(0)} size={20} />}
+              <br />
+
+
+              <label htmlFor="pwdconfirm">Confirm Password: </label>
+              <input type={show[1] ? "text" : "password"} id="pwdconfirm" name="pwdconfirm" onChange={(e) => setConformPassword(e.target.value)}></input>
+              {show[1] ? <AiFillEyeInvisible onClick={() => toggleShow(1)} size={20} /> : <AiFillEye onClick={() => toggleShow(1)} size={20} />}
+              <br />
+
+            </>}
 
           <input type="submit" value="Register" />
-          <div className="message">
-            <p style={message == "Password is miss match!" ? { color: "red" } : { color: "black" }}>{message}</p>
-          </div>
+
         </form>
 
       </div >

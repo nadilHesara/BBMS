@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect ,useContext } from 'react'
 import './Login.css';
 import NaviBar from '../../components/Navibar/NaviBar';
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link, useNavigate } from 'react-router-dom';
-
+import { LoadingContext } from "../../context/LoadingContext";
 
 
 const Login = ({ theme, setTheme }) => {
+
+  const { loading, setLoading } = useContext(LoadingContext);
+
   const navigate = useNavigate();
 
   const login = sessionStorage.getItem("userType");
   const [userType, setUserType] = useState(login ? login : "");
 
+
   useEffect(() => {
     sessionStorage.setItem("userType", userType)
+    
   }, [userType]);
 
   const [username, setUsername] = useState('');
@@ -44,7 +49,7 @@ const Login = ({ theme, setTheme }) => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-
+    setLoading(true);
     try {
       const response = await fetch("http://localhost:9191/login", {
         method: "POST",
@@ -69,10 +74,9 @@ const Login = ({ theme, setTheme }) => {
         console.log("Login successful to " + result.user_type + " !");
         setUserType(result.user_type);
         sessionStorage.setItem("username", result.username);
-        navigate("/dashboard");
-        sessionStorage.setItem("userId", result.user_id); // or whatever key name you use
+        sessionStorage.setItem("userId", result.user_id);
         sessionStorage.setItem("userType", result.user_type);
-
+        navigate("/dashboard");
 
       } else {
         setMessage("Error: " + (result.message || JSON.stringify(result)));
@@ -81,6 +85,8 @@ const Login = ({ theme, setTheme }) => {
     } catch (error) {
       console.error("Error login form :", error.message);
       setMessage("Login failed. Check server and data.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -94,8 +100,10 @@ const Login = ({ theme, setTheme }) => {
         <br />
 
         <label htmlFor="pwd">Password:</label>
-        <input type={show ? "text" : "password"} id="pwd" name="pwd" value={password} onChange={(e) => setPassword(e.target.value)}></input>
-        {show ? <AiFillEyeInvisible onClick={() => toggleShow()} size={20} /> : <AiFillEye onClick={() => toggleShow()} size={20} />}
+        
+          <input type={show ? "text" : "password"} id="pwd" name="pwd" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+          <div className="password-toggle-icon">{show ?  <AiFillEyeInvisible onClick={() => toggleShow()} size={20}  /> : <AiFillEye onClick={() => toggleShow()} size={20} className="password-toggle-icon" />}
+        </div>
         <br />
 
 
