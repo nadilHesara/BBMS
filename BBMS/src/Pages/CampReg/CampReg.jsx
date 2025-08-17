@@ -76,7 +76,6 @@ function CampReg({ theme, setTheme }) {
 
   return (
     <>
-      <NaviBar theme={theme} setTheme={setTheme} />
       <div className="campreg-container">
         <form className="doner-reg-form" onSubmit={handleSubmit}>
           <h1 >Campaign Registration</h1>
