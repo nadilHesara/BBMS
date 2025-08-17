@@ -35,15 +35,32 @@ public isolated function addDoner(Doner doner) returns json|error {
 
         // Send email to user
         string donerEmail = newDoner.email;
-        string htmlBody = "<!DOCTYPE html>" +
-            "<html>" +
-            "<head>" +
-            "<style>/* Your email styling here */</style>" +
-            "</head>" +
-            "<body>" +
-            "Hello " + newDoner.name + ",<br/>" +
-            "Your login password is: <b>" + defaultPassword + "</b>" +
-            "</body></html>";
+        string htmlBody = "<html>" +
+                "<head>" +
+                "<meta charset='UTF-8'>" +
+                "<title>Password Reset</title>" +
+                "<style>" +
+                "body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }" +
+                ".container { max-width: 600px; margin: 40px auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }" +
+                "h2 { color: #333333; }" +
+                "p { color: #555555; font-size: 16px; }" +
+                ".password-box { background-color: #f0f0f0; border-radius: 5px; padding: 15px; font-size: 18px; font-weight: bold; text-align: center; margin: 20px 0; letter-spacing: 1px; }" +
+                ".footer { font-size: 12px; color: #999999; margin-top: 30px; text-align: center; }" +
+                "</style>" +
+                "</head>" +
+                "<body>" +
+                "<div class='container'>" +
+                "<h2>Password Reset Request</h2>" +
+                "<p>Dear "+ newDoner.name +",</p>" +
+                "<p>Your account password has been requested. Use the following password to log in:</p>" +
+                "<div class='password-box'> "+defaultPassword+"</div>" +
+                "<p>For security reasons, we recommend changing this password after your first login.</p>" +
+                "<p>Thank you,<br>Support Team</p>" +
+                "<div class='footer'>&copy; 2025 Your Company Name. All rights reserved.</div>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
+
         
         error? emailResult = sendEmail(donerEmail, "Welcome to BBMS - Your Account Details", htmlBody);
         if emailResult is error {

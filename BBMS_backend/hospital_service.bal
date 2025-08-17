@@ -1,4 +1,5 @@
 import ballerina/sql;
+import ballerina/io;
 
 isolated function addHospital(Hospital hospital) returns json|error {
     // Generate a new HOSPITAL ID
@@ -15,12 +16,14 @@ isolated function addHospital(Hospital hospital) returns json|error {
     // Create a new Hospital record with the new Hospital Id
     Hospital newHospital = hospital.clone();
     newHospital.hospital_id = newHospitalId;
-    newHospital.password = check generatePassword(12);
+    string password = check generatePassword(12);
+    newHospital.password = check encryptPassword(password);
+    io:println(newHospital);
 
     // Insert into Hospital table (now includes password)
-    sql:ParameterizedQuery addHospital = `INSERT INTO Hospital(
-        HospitalID, Name, District, Contact, AddressLine1, AddressLine2, AddressLine3, Username, Email
-    ) VALUES(
+    sql:ParameterizedQuery addHospital = `INSERT INTO hospital(
+        HospitalID, Name, District, Contact, AddressLine1, AddressLine2, AddressLine3, Username, Email)
+         VALUES(
         ${newHospital.hospital_id},
         ${newHospital.name},
         ${newHospital.District},
@@ -29,7 +32,7 @@ isolated function addHospital(Hospital hospital) returns json|error {
         ${newHospital.address_line2},
         ${newHospital.address_line3},
         ${newHospital.username},
-        ${newHospital.email},
+        ${newHospital.email}
 
     )`;
 
@@ -42,6 +45,7 @@ isolated function addHospital(Hospital hospital) returns json|error {
         "Hospital")`;
 
     sql:ExecutionResult|error result = dbClient->execute(addHospital);
+    io:println(result);
     sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
 
     if result is error && loginResult is error {
@@ -49,8 +53,33 @@ isolated function addHospital(Hospital hospital) returns json|error {
     } else if result is error {
         return error("Please enter valid data");
     }
+            string htmlBody = "<html>" +
+                "<head>" +
+                "<meta charset='UTF-8'>" +
+                "<title>Password Reset</title>" +
+                "<style>" +
+                "body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }" +
+                ".container { max-width: 600px; margin: 40px auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }" +
+                "h2 { color: #333333; }" +
+                "p { color: #555555; font-size: 16px; }" +
+                ".password-box { background-color: #f0f0f0; border-radius: 5px; padding: 15px; font-size: 18px; font-weight: bold; text-align: center; margin: 20px 0; letter-spacing: 1px; }" +
+                ".footer { font-size: 12px; color: #999999; margin-top: 30px; text-align: center; }" +
+                "</style>" +
+                "</head>" +
+                "<body>" +
+                "<div class='container'>" +
+                "<h2>Password Reset Request</h2>" +
+                "<p>Dear "+ newHospital.name +",</p>" +
+                "<p>Your account password has been requested. Use the following password to log in:</p>" +
+                "<div class='password-box'> "+password+"</div>" +
+                "<p>For security reasons, we recommend changing this password after your first login.</p>" +
+                "<p>Thank you,<br>Support Team</p>" +
+                "<div class='footer'>&copy; 2025 Your Company Name. All rights reserved.</div>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
 
-    _ = check sendEmail(newHospital.email, newHospital.password, newHospital.username);
+    _ = check sendEmail(newHospital.email,"Welcome to BBMS - Your Account Details",htmlBody);
     return {"message": "Hospital added successfully!"};
 }
 
