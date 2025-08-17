@@ -6,7 +6,7 @@ import './DonationInfo.css';
 
 
 function DonationInfo({ theme, setTheme }) {
-    const { loading, setLoading } = useContext(LoadingContext);
+    // const { loading, setLoading } = useContext(LoadingContext);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -110,7 +110,7 @@ function DonationInfo({ theme, setTheme }) {
             fetchdonorData();
         }
 
-    }, [donate.doner_id, donate.campaign_id]);
+    }, [donate.doner_id]);
 
 
     const handleChange = (e) => {

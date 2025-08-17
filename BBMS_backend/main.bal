@@ -234,7 +234,7 @@ service /dashboard on listener9191 {
         res.setJsonPayload({ status: "error", message: "Invalid token: missing role" });
         check caller->respond(res);
         return;
-    } else if roleValue != "admin" {
+    } else if roleValue != "Admin" {
         // Unauthorized role
         http:Response res = new;
         res.statusCode = 403;
