@@ -72,7 +72,9 @@ function DonationInfo({ theme, setTheme }) {
 
             try {
                 setLoading(true);
-                const response = await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${donate.doner_id}`);
+                const response = await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${donate.doner_id}` ,{
+                    withCredentials: true
+                });
 
                 const data = response.data;
 
