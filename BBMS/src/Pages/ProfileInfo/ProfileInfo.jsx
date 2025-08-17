@@ -6,9 +6,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import "./ProfileInfo.css"
 import { LoadingContext } from '../../context/LoadingContext';
 import { toast } from 'react-toastify';
+import verifyAccess from "../../SharedData/verifyFunction";
+
 {/*import { use } from 'react';*/ }
 
 function ProfileInfo({ theme, setTheme }) {
+  verifyAccess("profileInfo");
+
   const { loading, setLoading } = useContext(LoadingContext);
   const location = useLocation();
   const navigate = useNavigate();
@@ -56,9 +60,10 @@ function ProfileInfo({ theme, setTheme }) {
 
     const fetchUserData = async () => {
       try {
-        setLoading(true);
         const user_id = userData?.userId;
-        const response = await fetch(`http://localhost:9191/dashboard?user_id=${user_id}&user_type=${user_Type}`);
+        const response = await fetch(`http://localhost:9191/dashboard?user_id=${user_id}&user_type=${user_Type}`,
+          { method: "GET", credentials: "include" }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
@@ -152,6 +157,7 @@ sessionStorage.setItem("userType", res.user_type);*/}
       fetch(`http://localhost:9191/dashboard?user_id=${userID}&user_type=${userType}`,
         {
           method: 'PUT',
+          credentials: "include",
           headers: {
             'Content-Type': 'application/json',
           },
@@ -249,4 +255,3 @@ sessionStorage.setItem("userType", res.user_type);*/}
 
 }
 export default ProfileInfo
-

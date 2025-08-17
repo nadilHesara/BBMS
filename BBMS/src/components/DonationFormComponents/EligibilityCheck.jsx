@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from "axios";
-
+import { toast } from "react-toastify";
 
 
 export default function EligibilityCheck() {
@@ -30,7 +30,7 @@ export default function EligibilityCheck() {
 
   const parseDate = (dateString) => {
     if (!dateString) return null;
-    try{
+    try {
       const dateParts = dateString.split('-');
       if (dateParts.length !== 3) return null;
       const [yearStr, monthStr, dayStr] = dateParts;
@@ -39,31 +39,31 @@ export default function EligibilityCheck() {
         month: parseInt(monthStr, 10),
         day: parseInt(dayStr, 10)
       };
-    }catch (error) {
+    } catch (error) {
       console.error("Error parsing date:", error);
       return null;
     }
   };
 
-    const durationCalculator = (last_m, last_yr, currentMonth, currentYear) => {
-      let duration_yr = currentYear - last_yr;
-      let duration_m = currentMonth - last_m;
+  const durationCalculator = (last_m, last_yr, currentMonth, currentYear) => {
+    let duration_yr = currentYear - last_yr;
+    let duration_m = currentMonth - last_m;
 
-      if (duration_m < 0) {
-          duration_yr--;
-          duration_m += 12;
-      }
-      return duration_yr * 12 + duration_m;
-    };
+    if (duration_m < 0) {
+      duration_yr--;
+      duration_m += 12;
+    }
+    return duration_yr * 12 + duration_m;
+  };
 
-    const ageCalculator = (b_m,b_yr, currentMonth, currentYear) => {
-      let ageYears = currentYear - b_yr;
-      if (currentMonth < b_m) {
-          ageYears--;
-      }
+  const ageCalculator = (b_m, b_yr, currentMonth, currentYear) => {
+    let ageYears = currentYear - b_yr;
+    if (currentMonth < b_m) {
+      ageYears--;
+    }
 
-      return ageYears;
-    };
+    return ageYears;
+  };
 
 
 
@@ -77,10 +77,10 @@ export default function EligibilityCheck() {
 
 
   useEffect(() => {
-        
-        const fetchdonorData = async () => {
-        try {
-            const response =await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${donor_id}`);
+
+    const fetchdonorData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${donor_id}`);
 
             const data = response.data;
   
@@ -94,9 +94,9 @@ export default function EligibilityCheck() {
             const currentYear = campdate.year;
             const currentMonth = campdate.month;
 
-            const b_yr = data.BYear;
-            const b_m = data.BMonth;
-            const DAge = ageCalculator(b_m, b_yr, currentMonth, currentYear);
+        const b_yr = data.BYear;
+        const b_m = data.BMonth;
+        const DAge = ageCalculator(b_m, b_yr, currentMonth, currentYear);
 
             const lastDonation_yr = data.LastDonationYR;
             const lastDonation_m = data.LastDonationMonth;
@@ -108,21 +108,21 @@ export default function EligibilityCheck() {
               duration = "No Previous Donations";
             }
 
-            setForm(prev => ({
-                ...prev,
-                age: DAge,
-                lastDonation: duration,
-            }));
+        setForm(prev => ({
+          ...prev,
+          age: DAge,
+          lastDonation: duration,
+        }));
 
-        } catch (error) {
-            console.error("Error fetching Donor data:", error);
-        }
+      } catch (error) {
+        console.error("Error fetching Donor data:", error);
+      }
 
     };
 
     if (donor_id) {
-        fetchdonorData();
-  }  
+      fetchdonorData();
+    }
 
 }, [donor_id]);
 
@@ -364,5 +364,6 @@ return (
 
       </form>
     </div>
+
   );
 }

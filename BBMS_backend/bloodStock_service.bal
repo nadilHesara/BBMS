@@ -1,10 +1,9 @@
 import ballerina/sql;
-import ballerina/io;
+
+
 
 isolated function getBloodStockHospital(string district, string hospitalID) returns bloodData|error {
     sql:ParameterizedQuery query;
-    io:println(hospitalID);
-
     if district == "All" {
         if hospitalID == "All" {
             query = `SELECT
@@ -29,8 +28,7 @@ isolated function getBloodStockHospital(string district, string hospitalID) retu
                     SUM(O_minus) AS O_minus,
                     SUM(AB_minus) AS AB_minus
                         FROM bloodstocks  
-                        JOIN campaign ON bloodstocks.CampaignID = campaign.CampaignID
-                            WHERE campaign.HospitalID = ${hospitalID}`;
+                            WHERE HospitalID = ${hospitalID}`;
         }
     } else {
         query = `SELECT
@@ -43,8 +41,8 @@ isolated function getBloodStockHospital(string district, string hospitalID) retu
                     SUM(O_minus) AS O_minus,
                     SUM(AB_minus) AS AB_minus
                         FROM bloodstocks 
-                        JOIN campaign ON bloodstocks.CampaignID = campaign.CampaignID
-                            WHERE campaign.District = ${district}`;
+                        INNER JOIN hospital ON bloodstocks.HospitalID = hospital.HospitalID
+                            WHERE hospital.District = ${district} `;
     }
 
     bloodData|error result = dbClient->queryRow(query, bloodData);
@@ -53,35 +51,34 @@ isolated function getBloodStockHospital(string district, string hospitalID) retu
 }
 
 isolated function addBloodStock(BloodData bloodData) returns json|error {
-    io:println("Adding blood stock: ", bloodData);
     string bloodType = bloodData.bloodType;
     sql:ParameterizedQuery query;
 
     if bloodData.campaignId is () || bloodData.campaignId == "" {
         if bloodType == "A_plus" {
-            query = `INSERT INTO bloodstocks( A_plus, note)
-                     VALUES ( ${bloodData.units}, ${bloodData.notes})`;
+            query = `INSERT INTO bloodstocks( HospitalId , A_plus, note)
+                     VALUES ( ${bloodData.hospitalId},${bloodData.units}, ${bloodData.notes})`;
         } else if bloodType == "B_plus" {
-            query = `INSERT INTO bloodstocks( B_plus, note)
-                     VALUES ( ${bloodData.units}, ${bloodData.notes})`;
+            query = `INSERT INTO bloodstocks( HospitalId , B_plus, note)
+                     VALUES (${bloodData.hospitalId}, ${bloodData.units}, ${bloodData.notes})`;
         } else if bloodType == "O_plus" {
-            query = `INSERT INTO bloodstocks( O_plus, note)
-                     VALUES ( ${bloodData.units}, ${bloodData.notes})`;
+            query = `INSERT INTO bloodstocks( HospitalId , O_plus, note)
+                     VALUES (${bloodData.hospitalId}, ${bloodData.units}, ${bloodData.notes})`;
         } else if bloodType == "AB_plus" {
-            query = `INSERT INTO bloodstocks( AB_plus, note)
-                     VALUES ( ${bloodData.units}, ${bloodData.notes})`;
+            query = `INSERT INTO bloodstocks( HospitalId , AB_plus, note)
+                     VALUES (${bloodData.hospitalId}, ${bloodData.units}, ${bloodData.notes})`;
         } else if bloodType == "A_minus" {
-            query = `INSERT INTO bloodstocks( A_minus, note)
-                     VALUES ( ${bloodData.units}, ${bloodData.notes})`;
+            query = `INSERT INTO bloodstocks( HospitalId , A_minus, note)
+                     VALUES (${bloodData.hospitalId}, ${bloodData.units}, ${bloodData.notes})`;
         } else if bloodType == "B_minus" {
-            query = `INSERT INTO bloodstocks( B_minus, note)
-                     VALUES ( ${bloodData.units}, ${bloodData.notes})`;
+            query = `INSERT INTO bloodstocks( HospitalId , B_minus, note)
+                     VALUES (${bloodData.hospitalId}, ${bloodData.units}, ${bloodData.notes})`;
         } else if bloodType == "O_minus" {
-            query = `INSERT INTO bloodstocks( O_minus, note)
-                     VALUES ( ${bloodData.units}, ${bloodData.notes})`;
+            query = `INSERT INTO bloodstocks( HospitalId , O_minus, note)
+                     VALUES (${bloodData.hospitalId}, ${bloodData.units}, ${bloodData.notes})`;
         } else if bloodType == "AB_minus" {
-            query = `INSERT INTO bloodstocks( AB_minus, note)
-                     VALUES ( ${bloodData.units}, ${bloodData.notes})`;
+            query = `INSERT INTO bloodstocks( HospitalId , AB_minus, note)
+                     VALUES (${bloodData.hospitalId}, ${bloodData.units}, ${bloodData.notes})`;
         } else {
             return error("Invalid blood type: " + bloodType);
         }
@@ -94,16 +91,19 @@ isolated function addBloodStock(BloodData bloodData) returns json|error {
 
         if existingRecord is error {
             // No existing record, INSERT new one
-            sql:ExecutionResult|error newRowResult = dbClient->execute(`INSERT INTO bloodstocks CampaignID , A_plus, B_plus, O_plus, AB_plus, A_minus, B_minus, O_minus, AB_minus
-                VALUES (${bloodData.campaignId}, 
-                        ${bloodType == "A_plus" ? bloodData.units : null}, 
-                        ${bloodType == "B_plus" ? bloodData.units : null}, 
-                        ${bloodType == "O_plus" ? bloodData.units : null}, 
-                        ${bloodType == "AB_plus" ? bloodData.units : null}, 
-                        ${bloodType == "A_minus" ? bloodData.units : null}, 
-                        ${bloodType == "B_minus" ? bloodData.units : null}, 
-                        ${bloodType == "O_minus" ? bloodData.units : null}, 
-                        ${bloodType == "AB_minus" ? bloodData.units : null})`);
+            int aPlus     = bloodType == "A_plus" ? bloodData.units : 0;
+            int bPlus     = bloodType == "B_plus" ? bloodData.units : 0;
+            int oPlus     = bloodType == "O_plus" ? bloodData.units : 0;
+            int abPlus    = bloodType == "AB_plus" ? bloodData.units : 0;
+            int aMinus    = bloodType == "A_minus" ? bloodData.units : 0;
+            int bMinus    = bloodType == "B_minus" ? bloodData.units : 0;
+            int oMinus    = bloodType == "O_minus" ? bloodData.units : 0;
+            int abMinus   = bloodType == "AB_minus" ? bloodData.units : 0;
+
+            sql:ExecutionResult|error newRowResult = dbClient->execute(`INSERT INTO bloodstocks
+                    (CampaignID, HospitalId, A_plus, B_plus, O_plus, AB_plus, A_minus, B_minus, O_minus, AB_minus)
+                    VALUES (${bloodData.campaignId}, ${bloodData.hospitalId}, ${aPlus}, ${bPlus}, ${oPlus}, ${abPlus}, 
+                            ${aMinus}, ${bMinus}, ${oMinus}, ${abMinus})`);
 
             // Check if the insert was successful
             if newRowResult is error {

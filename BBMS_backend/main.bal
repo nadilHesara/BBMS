@@ -1,14 +1,15 @@
 import ballerina/http;
-// import ballerina/io;
+import ballerina/jwt;
 import ballerina/sql;
-import ballerina/io;
+// import ballerina/io;
 
 listener http:Listener listener9191 = new (9191);
 
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
-        allowMethods: ["POST", "GET", "OPTIONS"]
+        allowMethods: ["POST", "GET", "OPTIONS"],
+        allowCredentials: true
     }
 }
 
@@ -19,13 +20,8 @@ service / on listener9191 {
         return result;
     }
 
-    isolated resource function post hospitalReg(@http:Payload Hospital hospital) returns json|error {
-        json|error result = check addHospital(hospital);
-        return result;
-    }
-
-    isolated resource function post login(@http:Payload LoginRequest loginReq) returns json|error {
-        json|error result = check loginUser(loginReq.username, loginReq.password);
+    isolated resource function post login(@http:Payload LoginRequest loginReq) returns http:Response|error {
+        http:Response|error result = check loginUser(loginReq.username, loginReq.password);
         return result;
     }
 
@@ -106,7 +102,8 @@ service / on listener9191 {
     cors: {
         allowOrigins: ["http://localhost:5173"],
         allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowHeaders: ["Content-Type", "Authorization"]
+        allowHeaders: ["Content-Type", "Authorization"],
+        allowCredentials: true
     }
 }
 
@@ -169,6 +166,12 @@ service /dashboard on listener9191 {
             } else {
                 return hospital;
             }
+        } else {
+            body= {
+                userId: "Admin",
+                userName: "Admin",
+                Name: "Admin"
+            };
         }
         return body;
     }
@@ -204,7 +207,6 @@ service /dashboard on listener9191 {
             if existingHospital is Hospital {
                 if hospitalJson is map<json> {
                     hospitalJson["password"] = existingHospital.password;
-
                 }
             }
 
@@ -213,12 +215,42 @@ service /dashboard on listener9191 {
             sql:ExecutionResult|error result = updateHospital(hospital);
             if result is sql:ExecutionResult {
                 return {"message": "Hospital updated successfully"};
-
             } else {
                 return result;
             }
-
         }
+    }
+    
+    resource function post hospitalReg(@http:Payload Hospital hospital, http:Caller caller, http:Request req) returns error? {
+    // Verify JWT from request
+    jwt:Payload payload = check verifyJwtFromRequest(req);
+
+    // Extract role from token
+    anydata roleValue = payload["role"];
+    if roleValue is () {
+        // Missing role
+        http:Response res = new;
+        res.statusCode = 401;
+        res.setJsonPayload({ status: "error", message: "Invalid token: missing role" });
+        check caller->respond(res);
+        return;
+    } else if roleValue != "admin" {
+        // Unauthorized role
+        http:Response res = new;
+        res.statusCode = 403;
+        res.setJsonPayload({ status: "error", message: "Unauthorized: Only admin can register hospitals" });
+        check caller->respond(res);
+        return;
+    }
+
+    // Authorized, proceed with adding hospital
+    json result = check addHospital(hospital);
+
+    // Respond with success
+    http:Response res = new;
+    res.statusCode = 200;
+    res.setJsonPayload(result);
+    check caller->respond(res);
     }
 
     resource function get bloodStock(@http:Query string district, string hospital) returns json|error {
@@ -244,8 +276,7 @@ service /dashboard on listener9191 {
         return body;
     }
 
-    isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
-        io:println(campaign);
+    resource function post campReg(@http:Payload Campaign campaign) returns json|error {
         json|error result = check addCamp(campaign);
         return result;
     }
@@ -345,7 +376,6 @@ service /dashboard on listener9191 {
 
     resource function get CampaignHistory(@http:Query string user_id) returns CampaignDetails[]|error {
         CampaignDetails[]|error campaigns = getCampaignHistory(user_id);
-        io:println(campaigns);
         return campaigns;
     }
 
@@ -367,6 +397,57 @@ service /dashboard on listener9191 {
         json|error result = check addBloodStock(bloodData);
         return result;
         
+    }
+
+    resource function get verifyRole(http:Request req, @http:Query string pageName) returns json|error {
+        
+        // Get JWT from request (cookie or Authorization header)
+        jwt:Payload payload = check verifyJwtFromRequest(req);
+
+        // Extract role directly from payload
+        anydata roleValue = payload["role"];
+        if !(roleValue is string) {
+            return { "status": "error", "message": "Invalid token: missing or invalid role" };
+        }
+
+        // Allowed roles per page
+        map<string[]> allowedRoles = {
+            "hospitalReg": ["Admin"],
+            "availableBloodStock": ["Admin", "Hospital"],
+            "dashboard": ["Admin", "Hospital", "Doner"],
+            "donates" : ["Hospital"],
+            "campReg" : ["Hospital"],
+            "donation-history" : ["Doner"],
+            "profileInfo" : ["Doner" , "Hospital"],
+            "campaignHistory" : ["Hospital" , "Admin"]
+        };
+
+        string[]? rolesForPage = allowedRoles[pageName];
+        if rolesForPage is () {
+            return { "status": "error", "message": "Unknown page: " + pageName };
+        }
+
+        boolean isAuthorized = false;
+        foreach string allowedRole in rolesForPage {
+            if allowedRole.toLowerAscii() == roleValue.toLowerAscii() {
+                isAuthorized = true;
+                break;
+            }
+        }
+
+        if !isAuthorized {
+            return { 
+                "status": "error", 
+                "message": "Unauthorized: role '" + roleValue + "' cannot access page '" + pageName + "'" 
+            };
+        }
+
+        // ✅ Success
+        return {
+            "status": "authorized",
+            "role": roleValue,
+            "page": pageName
+        };
     }
 
 }

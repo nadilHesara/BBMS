@@ -12,6 +12,8 @@ import {
   Cell,
 } from "recharts";
 import "./AvailableBloodStocks.css";
+import verifyAccess from "../../SharedData/verifyFunction";
+
 
 
 const typeMap = {
@@ -34,6 +36,9 @@ const statusColor = {
 
 
 function AvailableBloodStocks({ theme }) {
+
+  // ✅ Use the hook properly
+  const verified = verifyAccess("availableBloodStock");
   const { loading, setLoading } = useContext(LoadingContext);
   const HandleBlood = (item, blood) => {
 
@@ -66,10 +71,12 @@ function AvailableBloodStocks({ theme }) {
   const [hospital, setHospital] = useState("All");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const userId = sessionStorage.getItem("userId");
   const [newBlood, setNewBlood] = useState({
     bloodType: "A+",
     units: 0,
     campaignId: null,
+    hospitalId : userId,
     notes: "",
   });
   const [Campaigns, setCampaigns] = useState([]);
@@ -126,13 +133,13 @@ function AvailableBloodStocks({ theme }) {
 
   const handleAddBloodSubmit = async (e, actionType) => {
     e.preventDefault();
-
+    let message = "added";
     let dataToSend = { ...newBlood };
     if (actionType === "remove") {
       dataToSend.units = dataToSend.units * -1;
+      message = "removed";
     }
 
-    console.log(dataToSend);
 
     try {
       setLoading(true);
@@ -147,7 +154,7 @@ function AvailableBloodStocks({ theme }) {
       if (!response.ok) {
         toast.error("Registration failed. Check server and data.");
       } else {
-        toast.success("Blood package added successfully!");
+        toast.success(`Blood package ${message} successfully!`);
         closeAddModal();
         setHospital("All");
       }
@@ -163,7 +170,14 @@ function AvailableBloodStocks({ theme }) {
     try {
       setLoading(true);
       fetch(
-        `http://localhost:9191/dashboard/bloodStock?district=${district}&hospital=${hospital}`
+        `http://localhost:9191/dashboard/bloodStock?district=${district}&hospital=${hospital}`, {
+
+          method: "GET",
+          credentials: "include", // <-- This tells fetch to send cookies
+          headers: {
+            "Content-Type": "application/json",
+        },
+      }
       )
         .then((res) => {
           if (!res.ok) throw new Error("Fetch failed");
@@ -188,7 +202,7 @@ function AvailableBloodStocks({ theme }) {
     } finally {
       setLoading(false);
     }
-  }, [district, hospital , showAddModal]);
+  }, [district, hospital, showAddModal]);
 
 
   return (
