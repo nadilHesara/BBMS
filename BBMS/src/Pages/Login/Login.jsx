@@ -13,13 +13,9 @@ const Login = ({ theme, setTheme }) => {
   const navigate = useNavigate();
 
   const login = sessionStorage.getItem("userType");
-  const [userType, setUserType] = useState(login ? login : "");
+  const [userType, setUserType] = useState(login ? login : null);
 
 
-  useEffect(() => {
-    sessionStorage.setItem("userType", userType)
-    
-  }, [userType]);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -63,6 +59,7 @@ const Login = ({ theme, setTheme }) => {
       if (rememberMe) {
         sessionStorage.setItem("rememberedUsername", username);
         sessionStorage.setItem("rememberedPassword", password);
+        sessionStorage.setItem("userType", userType)
 
       } else {
         sessionStorage.removeItem("rememberedUsername");
@@ -71,8 +68,7 @@ const Login = ({ theme, setTheme }) => {
 
       const result = await response.json();
       if (response.ok) {
-        toast.success(result.message);
-        console.log("Login successful to " + result.user_type + " !");
+        toast.success("Login successful to " + result.user_type + " !");
         setUserType(result.user_type);
         sessionStorage.setItem("username", result.username);
         sessionStorage.setItem("userId", result.user_id);

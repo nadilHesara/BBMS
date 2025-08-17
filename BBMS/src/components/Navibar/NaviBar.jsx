@@ -6,7 +6,7 @@ import "./NaviBar.css"; // Import CSS file
 
 const NaviBar = ({ theme, setTheme }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const userType = sessionStorage.getItem("userType");
+  const userType = sessionStorage.getItem("userType") && null;
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -26,7 +26,7 @@ const NaviBar = ({ theme, setTheme }) => {
           <li><Link to="/">Home</Link></li>
           {userType && <li><Link to="/dashboard">Dashboard</Link></li>}
           <li><Link to="/login">Login</Link></li>
-          <li><Link to="/donorReg">Become Donor</Link></li>
+          {userType ===  null ? <li><Link to="/donorReg">Become Donor</Link></li> : <></>}
           <li><Link to="/campaignRequest">Organize Campaign</Link></li>
         </ul>
 
@@ -44,9 +44,9 @@ const NaviBar = ({ theme, setTheme }) => {
             className="mobile-btn"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            <span></span>
-            <span></span>
-            <span></span>
+            <span>-</span>
+            <span>-</span>
+            <span>-</span>
           </button>
         </div>
       </div>
@@ -57,7 +57,7 @@ const NaviBar = ({ theme, setTheme }) => {
           <li><Link to="/">Home</Link></li>
           {userType && <li><Link to="/dashboard">Dashboard</Link></li>}
           <li><Link to="/login">Login</Link></li>
-          <li><Link to="/donorReg">Become Donor</Link></li>
+          {userType == null ? <li><Link to="/donorReg">Become Donor</Link></li> : <></>}
           <li><Link to="/campaignRequest">Organize Campaign</Link></li>
         </ul>
       )}
