@@ -3,10 +3,11 @@ import bloodgrp from '../../SharedData/bloodgrp';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import './DonationInfo.css';
+import { LoadingContext } from '../../context/LoadingContext';
 
 
 function DonationInfo({ theme, setTheme }) {
-    // const { loading, setLoading } = useContext(LoadingContext);
+    const { loading, setLoading } = useContext(LoadingContext);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -108,7 +109,7 @@ function DonationInfo({ theme, setTheme }) {
             fetchdonorData();
         }
 
-    }, [donate.doner_id]);
+    }, [donate.doner_id, loading]);
 
 
     const handleChange = (e) => {

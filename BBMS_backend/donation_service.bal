@@ -21,7 +21,7 @@ isolated function addDonation(Donates donates) returns json|error {
     Donates newDonation = donates.clone();
     newDonation.donate_id = newDonationId;
 
-    sql:ParameterizedQuery addDonation = `INSERT INTO donates(DonateID, DonerID, CampaignID, DonateTime, Pressure, Weight, Sugar, BloodQuantity, BloodGroup)
+    sql:ParameterizedQuery addDonation = `INSERT INTO donates(DonateID, DonerID, CampaignID, DonateTime, Pressure, Weight, Sugar, BloodQuantity)
         VALUES(
             ${newDonation.donate_id},
             ${newDonation.doner_id},
@@ -30,11 +30,8 @@ isolated function addDonation(Donates donates) returns json|error {
             ${newDonation.pressure},
             ${newDonation.weight},
             ${newDonation.sugar},
-            ${newDonation.blood_quantity},
-            ${newDonation.blood_group}
+            ${newDonation.blood_quantity}
         )`;
-
-    io:println("Blood Quantity: ", newDonation.blood_quantity);
 
 
     sql:ParameterizedQuery updateDonorBloodGroup = `UPDATE doner 
