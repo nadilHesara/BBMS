@@ -11,10 +11,7 @@ const Home = ({ theme, setTheme }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-900 to-red-500 dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800">
-      {/* Debug: Test Tailwind classes */}
-      <div className="fixed top-0 left-0 z-50 p-2 bg-yellow-300 text-black text-xs">
-        Theme: {theme} | HTML has 'dark': {document.documentElement.classList.contains('dark') ? 'YES' : 'NO'}
-      </div>
+
       <NaviBar theme={theme} setTheme={setTheme} />
       {/* Hero Section with Blood Drop Visual */}
       <section className="relative overflow-hidden h-[100vh] py-20 px-6">

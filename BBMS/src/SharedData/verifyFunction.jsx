@@ -4,8 +4,9 @@ import { toast } from "react-toastify";
 
 function logOut(){
     sessionStorage.removeItem("userId");
-    sessionStorage.removeItem("userType");
     sessionStorage.removeItem("userData");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("userType");
 }
 
 export default function useVerifyAccess(pageName) {

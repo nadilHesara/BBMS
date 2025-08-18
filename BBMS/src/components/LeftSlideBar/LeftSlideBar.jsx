@@ -24,9 +24,15 @@ const LeftSlideBar = ({ theme, userType, username }) => {
 
   const LoggingOut = () => {
     sessionStorage.removeItem("userId");
-    sessionStorage.removeItem("userType");
     sessionStorage.removeItem("userData");
-    navigate("/login", { replace: true });
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("userType");
+
+    // Clear JWT cookie if you store the token in a cookie
+    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    // Redirect to login page
+    navigate("/login");
   };
 
   const toggleSidebar = () => setIsOpen(!isOpen);
