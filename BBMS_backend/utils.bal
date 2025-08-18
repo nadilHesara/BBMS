@@ -5,8 +5,6 @@ import ballerina/crypto;
 import ballerina/jwt;
 import ballerina/http;
 
-configurable string JWT_SECRET = ?;
-
 public isolated function IdIncriment(string currentId) returns string {
     string prefix = currentId[0].toString();
     string numericPart = currentId.substring(1);
@@ -129,6 +127,7 @@ isolated function formatDate(int year, int month, int day, string format) return
     return year.toString() + "-" + month.toString() + "-" + day.toString();
 }
 
+// Password encryption utility functions
 public isolated function hashPassword(string password) returns string|error {
     byte[] passwordBytes = password.toBytes();
     byte[] saltBytes = [];
@@ -198,14 +197,14 @@ isolated function hexToBytes(string hex) returns byte[]|error {
     }
     return bytes;
 }
-
+configurable string JWT_SECRET = ?;
 const JWT_ISSUER   = "bbms";
 const JWT_AUDIENCE = "bbms-app";
 
 isolated function issueToken(string username, string userId, string role) returns string|error {
     jwt:IssuerConfig cfg = {
         issuer: JWT_ISSUER, 
-        username: username,          // becomes `sub`
+        username: username,          // becomes sub
         audience: JWT_AUDIENCE,
         expTime: 3600,               // seconds
         customClaims: { "uid": userId, "role": role },
@@ -219,7 +218,7 @@ isolated function validateToken(string token) returns jwt:Payload|error {
         issuer: JWT_ISSUER,
         audience: JWT_AUDIENCE,
         clockSkew: 60,
-        // HS256/HMAC validation uses `secret`
+        // HS256/HMAC validation uses secret
         signatureConfig: { secret: JWT_SECRET }
     };
     // Returns jwt:Payload (all available claims)

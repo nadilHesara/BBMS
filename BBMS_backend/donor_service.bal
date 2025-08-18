@@ -220,5 +220,21 @@ public isolated function getLastDonation(string donor_id) returns string|error {
     } else {
         return error("No Previous Donations found");
     }
+    
     return LastDonation;
+}
+
+public isolated function gateLastDonCount(string donor_id) returns int|error {
+    int last_count;
+
+    sql:ParameterizedQuery query = `SELECT COUNT(DISTINCT CampaignID) FROM donates WHERE DonerID = ${donor_id}`;
+    int|error count = check dbClient->queryRow(query);
+
+    if count is int{
+        last_count = count;
+        return last_count;
+    }
+     else {
+        return error("No Previous Donations found");
+    }
 }
