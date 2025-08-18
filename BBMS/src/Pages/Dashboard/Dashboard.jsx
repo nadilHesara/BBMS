@@ -123,7 +123,7 @@ const Dashboard = ({ theme, setTheme }) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row items-center gap-3 mt-5">
+                <div className="ml-5 mr-5 flex flex-col sm:flex-row items-center gap-3 mt-5">
                   <label
                     htmlFor="district"
                     className="text-lg font-medium m text-gray-700 dark:text-gray-200"
@@ -149,7 +149,7 @@ const Dashboard = ({ theme, setTheme }) => {
                     ))}
                   </select>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                <div className="mr-10 grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
                   {/* Left Column - Calendar Component */}
                   <div className="space-y-6">
                     <MyCalender selectedDistrict={selectedDistrict} />

@@ -178,7 +178,7 @@ function CalendarComponent(props) {
                     <button
                       className="donation-request-btn"
                       onClick={() => handleDonationRequest(campaign)}
-                    > Update Donation
+                    >Update Donation
                     </button>
                   </div>
                   </div>
