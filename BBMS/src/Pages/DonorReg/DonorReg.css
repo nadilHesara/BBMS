@@ -1,105 +1,182 @@
-.doner-reg{
-    height:auto;
+
+
+/* Container */
+.doner-reg {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin:60px;
+  padding: 40px 20px;
+  min-height: 100vh;
 }
 
-.doner-reg-form  h1 {
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 30px;
-    color: #691212;
-}
-
-
-.doner-reg-form label {
-    gap: 20px;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 15px;
-    margin-bottom: 10px;
-    color: rgb(77, 77, 77);
-    font-weight: 540;
-    display: inline-block;
-    width: 130px;
-
-}
-
-
+/* Form Box */
 .doner-reg-form {
-    animation: slideIn 0.5s ease;
-    background-color: #f2f2f2;
-    padding: 30px 40px;
-    width: 500px;
-    margin: 120px auto 50px auto;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  padding: 35px 40px;
+  width: 100%;
+  max-width: 550px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.5s ease;
 }
 
+/* Heading */
+.doner-reg-form h1 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #691212;
+  font-weight: 700;
+}
+
+/* Labels */
+.doner-reg-form label {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+/* Inputs & Select */
 .doner-reg-form input[type="text"],
-input[type="email"],
+.doner-reg-form input[type="email"],
 .doner-reg-form input[type="date"],
 .doner-reg-form input[type="time"],
+.doner-reg-form input[type="password"],
 .doner-reg-form input[type="tel"],
 .doner-reg-form select {
-    width: 60%;
-    padding: 5px;
-    font-size: 15px;
-    border-radius: 5px;
-    border: 1px solid black;
-    margin-bottom: 20px;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #440202;
+  margin-bottom: 18px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
 }
 
-.doner-reg-form div input[type="text"] {
-    width: 87%;
-    padding: 5px;
-    font-size: 15px;
-    border-radius: 5px;
-    border: 1px solid black;
+.doner-reg-form input:focus,
+.doner-reg-form select:focus {
+  border-color: #861f1f;
+  box-shadow: 0 0 0 2px rgba(134, 31, 31, 0.2);
+  outline: none;
 }
 
-.doner-reg-form input[type="radio"] {
-    margin-left: 2px;
-
+/* Address lines */
+.address-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
+/* Radio buttons */
+.doner-reg-form input[type="radio"] { 
+  transform: scale(1.1);
+  gap:10px
+}
 
+.doner-reg-radio{
+    display:flex;
+    flex-direction:row;
+    gap:20px;
+}
+.doner-reg-form label.inline {
+  display: inline-block;
+  margin-right: 15px;
+  font-weight: normal;
+  color: #444;
+}
+
+/* Password fields */
+.pwd-field {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.pwd-field input {
+  width: 100%;
+  padding-right: 40px; /* space for icon */
+}
+
+.dpassword-toggle-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+  font-size: 20px;
+}
+
+/* Submit Button */
 .doner-reg-form input[type="submit"] {
-    background-color: #861f1f;
-    color: white;
-    border: none;
-    width:100%;
-    padding:  10px;
-    margin-top: 10px;
-    margin-left:0;
-    font-size: 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  background: #861f1f;
+  color: #fff;
+  border: none;
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .doner-reg-form input[type="submit"]:hover {
-    background-color: #bf1212;
+  background: #bf1212;
+  transform: translateY(-1px);
 }
 
-.dark form label {
-    color: rgb(0, 0, 0);
+.doner-reg-form input[type="submit"]:active {
+  transform: translateY(1px);
 }
 
-.dark h1 {
-    color: rgba(12, 11, 11, 0.696);
+/* Dark Mode */
+.dark .doner-reg-form {
+  background: #1e1e1e;
+  color: #f1f1f1;
 }
 
+.dark .doner-reg-form label {
+  color: #ddd;
+}
+
+.dark .doner-reg-form input,
+.dark .doner-reg-form select {
+  background: #2a2a2a;
+  color: #eee;
+  border: 1px solid #444;
+}
+
+.dark .doner-reg-form input:focus,
+.dark .doner-reg-form select:focus {
+  border-color: #bf1212;
+  box-shadow: 0 0 0 2px rgba(191, 18, 18, 0.4);
+}
+
+.dark .doner-reg-form h1 {
+  color: #f36c6c;
+}
+
+/* Slide-in animation */
 @keyframes slideIn {
-    0% {
-        transform: translateY(-30px);
-        opacity: 0;
-    }
-
-    100% {
-        transform: translateY(0px);
-        opacity: 1;
-    }
+  0% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
 }
 
-.address-lines {
-    margin-left: 130px;
+/* Responsive */
+@media (max-width: 600px) {
+  .doner-reg-form {
+    padding: 25px;
+    width: 100%;
+  }
 }
