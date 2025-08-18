@@ -33,15 +33,9 @@
   display:flex;
   flex:1;
   background-color: rgb(255, 187, 187);
-  padding-top: 60px;
-  margin:0;
+  margin-top:80px;
 
 }
-
-.dashboard-content{
-  margin:50px;
-}
-
 
 .content-area{
   width:100%;
