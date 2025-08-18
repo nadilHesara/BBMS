@@ -6,7 +6,7 @@ import "./NaviBar.css"; // Import CSS file
  
 const NaviBar = ({ theme, setTheme }) => { 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false); 
-  const userType = sessionStorage.getItem("userType"); 
+  const userType = sessionStorage.getItem("userType") || null; 
  
   const toggleTheme = () => { 
     setTheme(theme === "light" ? "dark" : "light"); 
@@ -52,7 +52,7 @@ const NaviBar = ({ theme, setTheme }) => {
                 Home
               </Link>
             </li> 
-            {userType && (
+            {["admin", "doner", "hospital"].includes(userType?.toLowerCase()) && (
               <li>
                 <Link 
                   to="/dashboard" 
@@ -78,7 +78,7 @@ const NaviBar = ({ theme, setTheme }) => {
                 Login
               </Link>
             </li> 
-            <li>
+            { ["admin", "doner", "hospital"].includes(userType?.toLowerCase()) || <li>
               <Link 
                 to="/donorReg" 
                 className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 ${
@@ -89,7 +89,8 @@ const NaviBar = ({ theme, setTheme }) => {
               >
                 Become Donor
               </Link>
-            </li> 
+            </li>
+            } 
             <li>
               <Link 
                 to="/campaignRequest" 

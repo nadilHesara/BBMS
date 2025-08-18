@@ -95,7 +95,8 @@ function AvailableBloodStocks({ theme }) {
     setNewBlood({
       bloodType: "",
       units: "",
-      campaignId: "",
+      campaignId: null,
+      hospitalId: userId,
       notes: "",
     });
   };

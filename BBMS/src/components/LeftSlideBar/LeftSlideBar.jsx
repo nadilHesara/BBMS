@@ -3,8 +3,6 @@ import { IoMdLogOut } from "react-icons/io";
 import {
   FaUserCircle,
   FaHistory,
-  FaNotesMedical,
-  FaHandsHelping,
   FaBars,
 } from "react-icons/fa";
 import { IoBagAddSharp } from "react-icons/io5";
@@ -53,16 +51,6 @@ const LeftSlideBar = ({ theme, userType, username }) => {
             <Link to="donation-history">
               <FaHistory size={30} color={theme === 'dark' ? 'white' : 'black'} />
               {isOpen && <span>Donation History</span>}
-            </Link>
-
-            {/* <Link to="#">
-              <FaNotesMedical size={30} color={theme === 'dark' ? 'white' : 'black'}/>
-              {isOpen && <span>Medical Records</span>}
-            </Link> */}
-
-            <Link to="/dashboard/DonationForm">
-              <FaNotesMedical size={30 } color={theme === 'dark' ? 'white' : 'black'} />
-              {isOpen && <span>Donation Form</span>}
             </Link>
 
             <Link to="ChangePassword">
