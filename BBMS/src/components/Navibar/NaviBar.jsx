@@ -24,7 +24,7 @@ const NaviBar = ({ theme, setTheme }) => {
         {/* Desktop Links */}
         <ul className="navbar-links">
           <li><Link to="/">Home</Link></li>
-          {userType && <li><Link to="/dashboard">Dashboard</Link></li>}
+          {(userType==null || userType == undefined) && <li><Link to="/dashboard">Dashboard</Link></li>}
           <li><Link to="/login">Login</Link></li>
           {userType ===  null ? <li><Link to="/donorReg">Become Donor</Link></li> : <></>}
           <li><Link to="/campaignRequest">Organize Campaign</Link></li>

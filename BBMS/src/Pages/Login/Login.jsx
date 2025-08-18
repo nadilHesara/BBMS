@@ -4,7 +4,7 @@ import NaviBar from '../../components/Navibar/NaviBar';
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link, useNavigate } from 'react-router-dom';
 import { LoadingContext } from "../../context/LoadingContext";
-
+import { toast } from 'react-toastify';
 
 const Login = ({ theme, setTheme }) => {
 
