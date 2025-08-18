@@ -6,12 +6,13 @@ import "./NaviBar.css"; // Import CSS file
 
 const NaviBar = ({ theme, setTheme }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const userType = sessionStorage.getItem("userType") && null;
+  const userType = sessionStorage.getItem("userType") || null;
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
-
+  console.log("Navibar user Type : "+userType);
+  
   return (
     <nav className={`navbar ${theme === "dark" ? "dark" : "light"}`}>
       <div className="navbar-container">
@@ -24,9 +25,20 @@ const NaviBar = ({ theme, setTheme }) => {
         {/* Desktop Links */}
         <ul className="navbar-links">
           <li><Link to="/">Home</Link></li>
-          {(userType==null || userType == undefined) && <li><Link to="/dashboard">Dashboard</Link></li>}
+
+          {["admin", "doner", "hospital"].includes(userType?.toLowerCase()) && (
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+          )}
+
           <li><Link to="/login">Login</Link></li>
-          {userType ===  null ? <li><Link to="/donorReg">Become Donor</Link></li> : <></>}
+
+          {["admin", "doner", "hospital"].includes(userType?.toLowerCase())
+            ? null
+            : <li><Link to="/donorReg">Become Donor</Link></li>
+          }
+
           <li><Link to="/campaignRequest">Organize Campaign</Link></li>
         </ul>
 
