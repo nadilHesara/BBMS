@@ -182,7 +182,7 @@ export default function EligibilityCheck() {
         setIsSubmitting(true);
 
         try { 
-          await new Promise(resolve => setTimeout(resolve, 8000));
+          await new Promise(resolve => setTimeout(resolve, 5000));
 
           const response = await axios.post("http://localhost:9191/eligibility", {
             submitID: form.submitID,
@@ -198,6 +198,12 @@ export default function EligibilityCheck() {
 
         }catch(error){
           console.error("Auto submit failed:", error);
+          if(error.response.data.message === "Duplicate entry found"){
+            setMessages(prev => [...prev,"You've already registered for the campaign and currently not eligible to donate"]);
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            navigate('/dashboard');
+
+          }
           setMessages(prev => [...prev, "Failed to submit. Please try again."]);
         }finally{
           setIsSubmitting(false);
