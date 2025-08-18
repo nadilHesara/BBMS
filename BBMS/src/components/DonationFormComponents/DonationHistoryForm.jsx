@@ -120,72 +120,221 @@ export default function DonationHistoryForm() {
   };
 
   return (
-    <div className="form-container">
-      <h2>Step 3: Donation History</h2>
-      <form onSubmit={handleSubmit}>
-        <label>Have you donated blood before?
-        <input name="donatedBefore" type="text" value={form.donatedBefore} readOnly/>
-        </label>
-        <br/>
+    <div className="max-w-md mx-auto mt-5">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 sm:p-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+            Step 3: Donation History
+          </h2>
+          
+          <div className="space-y-6">
+            {/* Have you donated before */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Have you donated blood before?
+              </label>
+              <select 
+                name="donatedBefore" 
+                onChange={handleChange}
+                value={form.donatedBefore}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+                         appearance-none cursor-pointer"
+              >
+                <option value="">--Select--</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
 
-        {form.donatedBefore === 'Yes' && (
-          <>
-            <label>How many times?
-              <input name="timesDonated" type="number" value={form.timesDonated} readOnly/>
-            </label><br/>
+            {/* Conditional fields for previous donors */}
+            {form.donatedBefore === 'yes' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    How many times?
+                  </label>
+                  <input 
+                    name="timesDonated" 
+                    type="number" 
+                    
+                    value={form.timesDonated}
+                    readOnly
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                             bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                             placeholder-gray-400 dark:placeholder-gray-400
+                             focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  />
+                </div>
 
-            <label>Date of last donation:
-              <input name="lastDonationDate" type="date" value={form.lastDonationDate} readOnly/>
-            </label><br/>
-          </>
-        )}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Date of last donation:
+                  </label>
+                  <input 
+                    name="lastDonationDate" 
+                    type="date" 
+                    readOnly
+                    value={form.lastDonationDate}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                             bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                             focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  />
+                </div>
+              </>
+            )}
 
-        <label>Did you experience issues during previous donation? <span className="required">*</span>
-          <select name="hadIssuesBefore" value={form.hadIssuesBefore} onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label><br/>
+            {/* Issues during donation */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Did you experience issues during donation?
+              </label>
+              <select 
+                name="hadIssuesBefore" 
+                onChange={handleChange}
+                value={form.hadIssuesBefore}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+                         appearance-none cursor-pointer"
+              >
+                <option value="">--Select--</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
 
-        {form.hadIssuesBefore === 'yes' && (
-          <label>What was the difficulty?
-            <textarea name="issueDetails" onChange={handleChange}></textarea>
-          </label>
-        )}<br/>
+            {/* Issue details */}
+            {form.hadIssuesBefore === 'yes' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  What was the difficulty?
+                </label>
+                <textarea 
+                  name="issueDetails" 
+                  onChange={handleChange}
+                  value={form.issueDetails}
+                  rows="3"
+                  placeholder="Please describe the issues you experienced..."
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                           placeholder-gray-400 dark:placeholder-gray-400
+                           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
+                />
+              </div>
+            )}
 
-        <label>Have you been advised not to donate? <span className="required">*</span>
-          <select name="advisedNotToDonate" value={form.advisedNotToDonate} onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label><br/>
+            {/* Advised not to donate */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Have you been advised not to donate?
+              </label>
+              <select 
+                name="advisedNotToDonate" 
+                onChange={handleChange}
+                value={form.advisedNotToDonate}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+                         appearance-none cursor-pointer"
+              >
+                <option value="">--Select--</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
 
-        <label>Have you read the information leaflet? <span className="required">*</span>
-          <select name="readInfoLeaflet" value={form.readInfoLeaflet} onChange={handleChange}>
-            <option value="">--Select--</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label><br/>
+            {/* Read info leaflet */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Have you read the information leaflet?
+              </label>
+              <select 
+                name="readInfoLeaflet" 
+                onChange={handleChange}
+                value={form.readInfoLeaflet}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+                         appearance-none cursor-pointer"
+              >
+                <option value="">--Select--</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
 
-        <fieldset>
-          <legend>Any of these medical conditions?</legend>
-          <label><input type="checkbox" value="Heart Disease" onChange={handleCheckbox} checked={form.medicalConditions.includes("Heart Disease")}/> Heart Disease</label>
-          <label><input type="checkbox" value="Diabetes" onChange={handleCheckbox} checked={form.medicalConditions.includes("Diabetes")}/> Diabetes</label>
-          <label><input type="checkbox" value="Fits" onChange={handleCheckbox} checked={form.medicalConditions.includes("Fits")}/> Fits</label>
-          <label><input type="checkbox" value="Stroke" onChange={handleCheckbox} checked={form.medicalConditions.includes("Stroke")}/> Stroke</label>
-          <label><input type="checkbox" value="Asthma/Lung" onChange={handleCheckbox} checked={form.medicalConditions.includes("Asthma/Lung")}/> Asthma/Lung</label>
-          <label><input type="checkbox" value="Liver Disease" onChange={handleCheckbox} checked={form.medicalConditions.includes("Liver Disease")}/> Liver Disease</label>
-          <label><input type="checkbox" value="Kidney Disease" onChange={handleCheckbox} checked={form.medicalConditions.includes("Kidney Disease")}/> Kidney Disease</label>
-          <label><input type="checkbox" value="Blood Disorder" onChange={handleCheckbox} checked={form.medicalConditions.includes("Blood Disorder")}/> Blood Disorder</label>
-        </fieldset><br/>
+            {/* Feeling well today */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Are you feeling well today?
+              </label>
+              <select 
+                name="feelingWell" 
+                onChange={handleChange}
+                value={form.feelingWell}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+                         appearance-none cursor-pointer"
+              >
+                <option value="">--Select--</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
 
-        <button type="submit" disabled={isSubmitting}> Next </button>
-        <br/>
-        <p>{message}</p>
-      </form>
-    </div>
+            {/* Medical conditions fieldset */}
+            <div>
+              <fieldset className="border border-gray-300 dark:border-gray-600 rounded-md p-4">
+                <legend className="text-sm font-medium text-gray-700 dark:text-gray-300 px-2">
+                  Any of these medical conditions?
+                </legend>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                  {[
+                    { value: 'heart', label: 'Heart Disease' },
+                    { value: 'diabetes', label: 'Diabetes' },
+                    { value: 'fits', label: 'Fits' },
+                    { value: 'stroke', label: 'Stroke' },
+                    { value: 'asthma', label: 'Asthma/Lung' },
+                    { value: 'liver', label: 'Liver Disease' },
+                    { value: 'kidney', label: 'Kidney Disease' },
+                    { value: 'blood', label: 'Blood Disorder' }
+                  ].map((condition) => (
+                    <label key={condition.value} className="flex items-center space-x-2 cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        value={condition.label} 
+                        onChange={handleCheckbox}
+                        checked={form.medicalConditions.includes(condition.label)}
+                        className="h-4 w-4 text-red-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 
+                                 rounded focus:ring-red-500 focus:ring-2"
+                      />
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        {condition.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            </div>
+
+            {/* Submit Button */}
+            <div className="pt-4">
+              <button 
+                type="submit"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="w-full py-3 px-4 bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 
+                         focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800
+                         text-white font-medium text-sm rounded-md transition-colors duration-200"
+              >
+                Next
+              </button>
+            </div>
+            <p>{message}</p>
+          </div>
+        </div>
+      </div>
   );
 }
