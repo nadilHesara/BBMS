@@ -90,6 +90,7 @@ isolated function addHospital(Hospital hospital) returns json|error {
     if newHospital.isCampaign == 1 {
         Campaign hospitalCamp = {
             campain_id: newHospitalId,
+            CampaignName: newHospital.name,
             district: newHospital.District,
             org_name: newHospital.name,
             org_email: newHospital.email,
@@ -149,7 +150,7 @@ isolated function getAllHospitals(string? district) returns HospitalDetails[]|er
 }
 
 isolated function updateHospital(Hospital hospital) returns sql:ExecutionResult|error {
-    sql:ExecutionResult|error result = check dbClient->execute(`
+    sql:ExecutionResult|error result = dbClient->execute(`
         UPDATE Hospital SET 
             Name = ${hospital.name},
             District = ${hospital.District},
@@ -159,5 +160,23 @@ isolated function updateHospital(Hospital hospital) returns sql:ExecutionResult|
             AddressLine3 = ${hospital.address_line3} 
         WHERE   HospitalID = ${hospital.hospital_id} AND Username = ${hospital.username} AND Email = ${hospital.email}
     `);
+
+    if result is error {
+        return result;
+    }
+
+    sql:ExecutionResult|error updateCamp = dbClient->execute(`UPDATE campaign SET
+                District = ${hospital.District},
+                OrganizerTelephone = ${hospital.contact_no},
+                AddressLine1 = ${hospital.address_line1},
+                AddressLine2 = ${hospital.address_line2},
+                AddressLine3 = ${hospital.address_line3},
+            WHERE HospitalID = ${hospital.hospital_id} AND CampaignName = ${hospital.name}`);
+    
+    if updateCamp is error{
+        return updateCamp;
+    }
+
+
     return result;
 }

@@ -23,6 +23,7 @@ function HospitalReg({ theme, setTheme }) {
         address_line3: "",
         District: "",
         contact_no: "",
+        password:"",
         isCampaign: 0
     });
 
