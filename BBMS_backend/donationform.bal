@@ -40,6 +40,11 @@ isolated function determine_eligibility(Eligible eligible) returns json|error{
         readonly ecVal = e.detail()["errorCode"];
 
         if ecVal is int && ecVal == 1062 {
+
+            sql:ExecutionResult|error UpdateDup = dbClient->execute(`UPDATE eligibility SET foreignTravel=${newSubmission.foreignTravel},risk=${newSubmission.risk}, eligible=${newSubmission.eligible} WHERE DonerID=${newSubmission.DonerID} AND CampaignID=${newSubmission.CampaignID}`);
+            if UpdateDup is error {
+                return error("Eligibility Updating Failed!");
+            }
             return error("Duplicate entry found");
         }
         return error("Eligibility Updating Failed!");

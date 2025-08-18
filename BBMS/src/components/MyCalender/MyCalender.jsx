@@ -72,7 +72,7 @@ function CalendarComponent(props) {
 
   // Handle donation request
   const handleDonationRequest = (campaign) => {
-    const userID = localStorage.getItem("userId");
+    const userID = sessionStorage.getItem("userId");
     const user_type = sessionStorage.getItem("userType")
     if (!userID) {
       alert("Please login to request a donation");
