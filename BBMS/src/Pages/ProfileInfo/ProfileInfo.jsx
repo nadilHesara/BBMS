@@ -4,10 +4,12 @@ import districts from '../../SharedData/districts';
 import { useLocation, useNavigate } from 'react-router-dom';
 import "./ProfileInfo.css"
 import { LoadingContext } from '../../context/LoadingContext';
+// import useVerifyAccess from '../../SharedData/verifyFunction';
 import { toast } from 'react-toastify';
 {/*import { use } from 'react';*/ }
 
 function ProfileInfo({ theme, setTheme }) {
+  // useVerifyAccess("profileInfo")
   const { loading, setLoading } = useContext(LoadingContext);
   const location = useLocation();
   const navigate = useNavigate();

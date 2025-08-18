@@ -49,6 +49,7 @@ const Login = ({ theme, setTheme }) => {
     try {
       const response = await fetch("http://localhost:9191/login", {
         method: "POST",
+        credentials : "include",
         headers: {
           "Content-Type": "application/json"
         },
@@ -92,12 +93,12 @@ const Login = ({ theme, setTheme }) => {
       <form className='login-form' onSubmit={handleLoginSubmit} >
         <h1 className='login-header'>Login</h1>
         <label htmlFor="Username"> Username: </label>
-        <input type="text" id="Username" name="Username" value={username} onChange={(e) => setUsername(e.target.value)}></input>
+        <input type="text" id="Username" name="Username" value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username"></input>
         <br />
 
         <label htmlFor="pwd">Password:</label>
         
-          <input type={show ? "text" : "password"} id="pwd" name="pwd" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+          <input type={show ? "text" : "password"} id="pwd" name="pwd" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password"></input>
           <div className="password-toggle-icon">{show ?  <AiFillEyeInvisible onClick={() => toggleShow()} size={20}  /> : <AiFillEye onClick={() => toggleShow()} size={20} className="password-toggle-icon" />}
         </div>
         <br />

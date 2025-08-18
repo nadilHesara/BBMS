@@ -413,5 +413,55 @@ resource function get donatesCamp(@http:Query string hospitalId, http:Caller cal
     check caller->respond(res);
 }
 
+    // resource function get verifyRole(http:Request req, @http:Query string pageName) returns json|error {
+        
+    //     // Get JWT from request (cookie or Authorization header)
+    //     jwt:Payload payload = check verifyJwtFromRequest(req);
+
+    //     // Extract role directly from payload
+    //     anydata roleValue = payload["role"];
+    //     if !(roleValue is string) {
+    //         return { "status": "error", "message": "Invalid token: missing or invalid role" };
+    //     }
+
+    //     // Allowed roles per page
+    //     map<string[]> allowedRoles = {
+    //         "hospitalReg": ["Admin"],
+    //         "availableBloodStock": ["Admin", "Hospital"],
+    //         "dashboard": ["Admin", "Hospital", "Doner"],
+    //         "donates" : ["Hospital"],
+    //         "campReg" : ["Hospital"],
+    //         "donation-history" : ["Doner"],
+    //         "profileInfo" : ["Doner" , "Hospital"],
+    //         "campaignHistory" : ["Hospital" , "Admin"]
+    //     };
+
+    //     string[]? rolesForPage = allowedRoles[pageName];
+    //     if rolesForPage is () {
+    //         return { "status": "error", "message": "Unknown page: " + pageName };
+    //     }
+
+    //     boolean isAuthorized = false;
+    //     foreach string allowedRole in rolesForPage {
+    //         if allowedRole.toLowerAscii() == roleValue.toLowerAscii() {
+    //             isAuthorized = true;
+    //             break;
+    //         }
+    //     }
+
+    //     if !isAuthorized {
+    //         return { 
+    //             "status": "error", 
+    //             "message": "Unauthorized: role '" + roleValue + "' cannot access page '" + pageName + "'" 
+    //         };
+    //     }
+
+    //     // ✅ Success
+    //     return {
+    //         "status": "authorized",
+    //         "role": roleValue,
+    //         "page": pageName
+    //     };
+    // }
 
 }
