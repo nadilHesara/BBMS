@@ -1,8 +1,10 @@
 import ballerina/http;
-// import ballerina/io;
 import ballerina/jwt;
 import ballerina/sql;
-import ballerina/io;
+// import ballerina/io;
+
+
+
 listener http:Listener listener9191 = new (9191);
 
 @http:ServiceConfig {
@@ -227,7 +229,6 @@ service /dashboard on listener9191 {
 
     // Extract role from token
     anydata roleValue = payload["role"];
-    io:println(roleValue);
     if roleValue is () {
         // Missing role
         http:Response res = new;
@@ -393,11 +394,24 @@ service /dashboard on listener9191 {
         return hospitals;
         
     }
+
     resource function post addBlood(@http:Payload BloodData bloodData) returns json|error {
 
         json|error result = check addBloodStock(bloodData);
         return result;
         
     }
+
+resource function get donatesCamp(@http:Query string hospitalId, http:Caller caller) returns error? {
+    // Call your logic to get campaigns
+    json result = check getCamp(hospitalId);
+    
+    // Send response
+    http:Response res = new;
+    res.statusCode = 200;
+    res.setJsonPayload(result);
+    check caller->respond(res);
+}
+
 
 }

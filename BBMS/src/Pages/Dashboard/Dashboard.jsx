@@ -35,13 +35,12 @@ const Dashboard = ({ theme, setTheme }) => {
 
     try {
       setLoading(true);
-      fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}`)
+      fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}` )
         .then((res) => {
           if (!res.ok) throw new Error("Fetch failed");
           return res.json();
         })
         .then((data) => {
-          console.log(data)
           setUserData(data);
           sessionStorage.setItem("userData", JSON.stringify(data));
         })
@@ -55,7 +54,6 @@ const Dashboard = ({ theme, setTheme }) => {
       setLoading(false);
     }
   }, [userId, userType]);
-  console.log("user: ", userData?.District);
 
   const [selectedDistrict, setSelectedDistrict] = useState(userData?.District);
 

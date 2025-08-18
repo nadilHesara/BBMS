@@ -1,4 +1,5 @@
 import ballerina/sql;
+import ballerina/io;
 
 isolated function addCamp(Campaign campaign) returns json|error {
     CampaignID|error c = dbClient->queryRow(`SELECT CampaignID FROM campaign ORDER BY CampaignID DESC LIMIT 1`);
@@ -138,4 +139,17 @@ isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[
     check resultStream.close();
     
     return campaigns;
+}
+
+isolated function getCamp(string hospitalId) returns CampaignIdName|error {
+    sql:ParameterizedQuery query = `
+        SELECT c.CampaignID, c.CampaignName
+        FROM campaign c
+        INNER JOIN hospital h ON c.HospitalID = h.HospitalID
+        WHERE c.HospitalID = ${hospitalId};
+    `;
+
+    CampaignIdName|error campaignId = dbClient->queryRow(query, CampaignIdName);
+    io:println(campaignId);
+    return campaignId;
 }

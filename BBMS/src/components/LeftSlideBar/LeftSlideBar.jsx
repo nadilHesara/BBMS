@@ -92,7 +92,7 @@ const LeftSlideBar = ({ theme, userType }) => {
               {isOpen && <span>Add Campaign</span>}
             </Link>
 
-            <Link to="#">
+            <Link to="donates">
               <FaClinicMedical  size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Campaign On Hospital</span>}
             </Link>

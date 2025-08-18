@@ -35,7 +35,7 @@ export default function useVerifyAccess(pageName) {
                 setVerified(false);
                 logOut();
                 if (pageName == "dashboard") {
-                    navigate("/login", { replace: true }); // redirect unauthorized
+                    navigate("/login", { replace: true }); 
                 } else {
                     navigate("/dashboard")
                 }
