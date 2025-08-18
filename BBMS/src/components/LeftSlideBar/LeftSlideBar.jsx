@@ -3,8 +3,6 @@ import { IoMdLogOut } from "react-icons/io";
 import {
   FaUserCircle,
   FaHistory,
-  FaNotesMedical,
-  FaHandsHelping,
   FaBars,
 } from "react-icons/fa";
 import { IoBagAddSharp } from "react-icons/io5";
@@ -26,9 +24,15 @@ const LeftSlideBar = ({ theme, userType, username }) => {
 
   const LoggingOut = () => {
     sessionStorage.removeItem("userId");
-    sessionStorage.removeItem("userType");
     sessionStorage.removeItem("userData");
-    navigate("/login", { replace: true });
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("userType");
+
+    // Clear JWT cookie if you store the token in a cookie
+    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    // Redirect to login page
+    navigate("/login");
   };
 
   const toggleSidebar = () => setIsOpen(!isOpen);
@@ -47,16 +51,6 @@ const LeftSlideBar = ({ theme, userType, username }) => {
             <Link to="donation-history">
               <FaHistory size={30} color={theme === 'dark' ? 'white' : 'black'} />
               {isOpen && <span>Donation History</span>}
-            </Link>
-
-            {/* <Link to="#">
-              <FaNotesMedical size={30} color={theme === 'dark' ? 'white' : 'black'}/>
-              {isOpen && <span>Medical Records</span>}
-            </Link> */}
-
-            <Link to="/dashboard/DonationForm">
-              <FaNotesMedical size={30 } color={theme === 'dark' ? 'white' : 'black'} />
-              {isOpen && <span>Donation Form</span>}
             </Link>
 
             <Link to="ChangePassword">

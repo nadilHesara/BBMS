@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from "axios";
-import { toast } from 'react-toastify';
-
 
 export default function EligibilityCheck() {
 
@@ -182,7 +180,7 @@ export default function EligibilityCheck() {
         setIsSubmitting(true);
 
         try { 
-          await new Promise(resolve => setTimeout(resolve, 8000));
+          await new Promise(resolve => setTimeout(resolve, 5000));
 
           const response = await axios.post("http://localhost:9191/eligibility", {
             submitID: form.submitID,
@@ -197,7 +195,12 @@ export default function EligibilityCheck() {
           
 
         }catch(error){
-          console.error("Auto submit failed:", error);
+          if(error.response.data.message === "Duplicate entry found"){
+            setMessages(prev => [...prev,"You've already registered for the campaign and currently not eligible to donate"]);
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            navigate('/dashboard');
+
+          }
           setMessages(prev => [...prev, "Failed to submit. Please try again."]);
         }finally{
           setIsSubmitting(false);
@@ -267,6 +270,11 @@ export default function EligibilityCheck() {
         }
 
       }catch(error){
+        if(error.response.data.message === "Duplicate entry found"){
+            setMessages(prev => [...prev,"You've already registered for the campaign and eligible to donate"]);
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            navigate('/dashboard');
+        }
         setMessages(["Error submitting form. Please try again."]);
         console.error("Error submitting form:", error.message);
 
@@ -287,7 +295,7 @@ export default function EligibilityCheck() {
 
       if(response.status==201){
         setMessages(["You are not eligible to donate. Redirecting to dashboard"]);
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise(resolve => setTimeout(resolve, 3000));
         navigate('/dashboard');
       }
       

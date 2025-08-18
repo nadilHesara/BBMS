@@ -62,26 +62,24 @@ function DonorReg({ theme, setTheme }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    setLoading(true);
     if (password != conformPassword) {
       toast.error("Password is miss match!")
       return;
     } else {
-      if (userType == "Doner"){
+      if (userType != "Hospital" || userType != "Admin") {
         const validate = validatePassword(password)
-      if (validate == true) {
-        setDoner({
-          ...doner.password = password
-        })
-      } else {
-        toast.warning(validate);
-        return;
-      }
+        if (validate == true) {
+          setDoner({
+            ...doner.password = password
+          })
+        } else {
+          toast.warning(validate);
+          return;
+        }
       }
     }
     try {
-      console.log(doner);
+      setLoading(true);
       const response = await fetch("http://localhost:9191/donorReg", {
         method: "POST",
         headers: {
@@ -177,7 +175,7 @@ function DonorReg({ theme, setTheme }) {
 
 
 
-          {userType == undefined &&
+          { (userType != "Hospital" || userType != "Admin") &&
             <>
               <label htmlFor="pwd">Password: </label>
               <input type={show[0] ? "text" : "password"} id="pwd" name="pwd" onChange={(e) => setPassword(e.target.value)}></input>

@@ -3,6 +3,7 @@ import "./CampReg.css";
 import React,{ use, useState , useContext } from 'react';
 import { LoadingContext } from "../../context/LoadingContext";
 import districts from '../../SharedData/districts';
+import { toast } from 'react-toastify';
 
 function CampReg({ theme, setTheme }) {
 
@@ -12,6 +13,7 @@ function CampReg({ theme, setTheme }) {
 
   const [campaign, setCampaign] = useState({
     campain_id:'C001',
+    CampaignName: '',
     district:'',
     org_name:'',
     add_line1:'',
@@ -59,7 +61,11 @@ function CampReg({ theme, setTheme }) {
       const result = await response.json();
 
       if (response.ok){
-        setMessage(`Successfully registered by ${campaign.org_name}`);
+        toast.success(`Successfully registered by ${campaign.org_name}`);
+        setTimeout(() => {
+          window.location.reload();
+        }, 4000);
+
       }else{
         console.log("error:", campaign);
         setMessage("Error : " + JSON.stringify(result));
@@ -73,12 +79,15 @@ function CampReg({ theme, setTheme }) {
 
   return (
     <>
-      <NaviBar theme={theme} setTheme={setTheme} />
       <div className="campreg-container">
         <form className="doner-reg-form" onSubmit={handleSubmit}>
           <h1 >Campaign Registration</h1>
           <label htmlFor="org_name"> Organizer Name: </label>
           <input type="text" id="org_name" name="org_name" onChange={handleChange} required></input>
+          <br />
+
+          <label htmlFor="CampaignName"> Campaign Name: </label>
+          <input type="text" id="CampaignName" name="CampaignName" onChange={handleChange} required></input>
           <br />
 
         <label> District: </label>

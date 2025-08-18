@@ -99,7 +99,7 @@ const Dashboard = ({ theme, setTheme }) => {
           {isOnDashboard &&
             <div className="dashboard-content">
               <div className="calender-container">
-                <div className="bg-gradient-to-r from-red-600 to-pink-600 rounded-2xl p-8 text-white">
+                <div className="bg-gradient-to-r from-red-600 to-pink-600 rounded-2xl p-8 m-8 text-white">
                   <div className="flex items-center justify-between">
                     <div>
                       <h1 className="text-3xl font-bold mb-2">
@@ -127,7 +127,7 @@ const Dashboard = ({ theme, setTheme }) => {
                 <div className="flex flex-col sm:flex-row items-center gap-3 mt-5">
                   <label
                     htmlFor="district"
-                    className="text-lg font-medium  text-gray-700 dark:text-gray-200"
+                    className="text-lg font-medium m text-gray-700 dark:text-gray-200"
                   >
                     Sort the campaigns by district:
                   </label>
