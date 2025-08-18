@@ -177,7 +177,7 @@ function DonorReg({ theme, setTheme }) {
 
 
 
-          {userType == undefined &&
+          {userType == "Hospital" || userType == "Admin" &&
             <>
               <label htmlFor="pwd">Password: </label>
               <input type={show[0] ? "text" : "password"} id="pwd" name="pwd" onChange={(e) => setPassword(e.target.value)}></input>
