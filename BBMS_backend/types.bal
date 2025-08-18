@@ -95,6 +95,8 @@ public type Hospital record {
 
     @sql:Column {name: "ProfileImage"}
     string profileImage?;
+
+    int? isCampaign;
 };
 
 public type Donates record {
@@ -145,7 +147,7 @@ public type Campaign record {
     string district;
 
     @sql:Column {name: "DateofCampaign"}
-    string date;
+    string? date;
 
     @sql:Column {name: "OrganizerName"}
     string org_name;
@@ -169,10 +171,10 @@ public type Campaign record {
     int? doner_count;
 
     @sql:Column {name: "StartTime"}
-    string start_time;
+    string? start_time;
 
     @sql:Column {name: "EndTime"}
-    string end_time;
+    string? end_time;
 
     @sql:Column {name: "HospitalID"}
     string hospital_id;
@@ -246,7 +248,7 @@ public type CampaignDetails record {|
     string District;
     
     @sql:Column {name: "DateofCampaign"}
-    string Date;
+    string? Date;
     
     @sql:Column {name: "OrganizerName"}
     string orgName;
@@ -258,7 +260,7 @@ public type CampaignDetails record {|
     string orgEmail;
     
     @sql:Column {name: "DonerCount"}
-    int DonerCount;
+    int? DonerCount;
     
     @sql:Column {name: "A_plus"}
     string? A_plus;

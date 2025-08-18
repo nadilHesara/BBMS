@@ -85,10 +85,9 @@ const Dashboard = ({ theme, setTheme }) => {
     };
   }, [navigate, userId, userType]);
 
-  if (!userId || !userType) return null;
-  if (error) return <p>{error}</p>;
-  if (!userData) return <p>Loading...</p>;
-
+  if (!userId || !userType) return setLoading(true);
+  if (error) return setLoading(error);
+  if (!userData) return setLoading(true);
 
   return (
     <div className="dashboard-layout">
@@ -157,7 +156,7 @@ const Dashboard = ({ theme, setTheme }) => {
                   </div>
 
                   
-                                     {/* Right Column - Mission & Vision */}
+                  {/* Right Column - Mission & Vision */}
                    <div className="relative">
                      {/* Timeline Layout */}
                      <div className="space-y-0">

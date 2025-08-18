@@ -2,6 +2,7 @@ import ballerina/http;
 // import ballerina/io;
 import ballerina/jwt;
 import ballerina/sql;
+import ballerina/io;
 listener http:Listener listener9191 = new (9191);
 
 @http:ServiceConfig {
@@ -225,6 +226,7 @@ service /dashboard on listener9191 {
 
     // Extract role from token
     anydata roleValue = payload["role"];
+    io:println(roleValue);
     if roleValue is () {
         // Missing role
         http:Response res = new;

@@ -14,7 +14,7 @@ import { MdAppRegistration } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import "./LeftSlideBar.css";
 
-const LeftSlideBar = ({ theme, userType, username }) => {
+const LeftSlideBar = ({ theme, userType }) => {
   const navigate = useNavigate();
   const [currentPos,setCurrentPos] = useState(true);
   const [isOpen, setIsOpen] = useState(currentPos);

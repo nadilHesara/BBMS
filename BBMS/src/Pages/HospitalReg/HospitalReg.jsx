@@ -1,10 +1,12 @@
-import React, { useState , useContext } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import NaviBar from "../../components/Navibar/NaviBar";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { LoadingContext } from "../../context/LoadingContext";
 import districts from '../../SharedData/districts';
+import LeftSlideBar from "../../components/LeftSlideBar/LeftSlideBar";
 import "./HospitalReg.css";
+import { toast } from "react-toastify";
 
 function HospitalReg({ theme, setTheme }) {
 
@@ -21,24 +23,25 @@ function HospitalReg({ theme, setTheme }) {
         address_line3: "",
         District: "",
         contact_no: "",
-        password: ""
+        isCampaign: 0
     });
 
     const handleChange = (e) => {
-        setHospital({
-            ...hospital,
-            [e.target.name]: e.target.value
-        });
+        const { name, value } = e.target;
+        console.log(name + "  :  " + value);
+        
+        setHospital(prev => ({
+            ...prev,
+            [name]: name === "isCampaign" ? parseInt(value, 10) : value
+        }));
     };
 
-    const [message, setMessage] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage("");
-        setLoading(true);
-            
+        
         try {
+            setLoading(true);
             const response = await fetch("http://localhost:9191/hospitalReg", {
                 method: "POST",
                 headers: {
@@ -46,18 +49,19 @@ function HospitalReg({ theme, setTheme }) {
                 },
                 body: JSON.stringify(hospital)
             });
+            
             const result = await response.json();
             if (response.ok) {
-                setMessage("Hospital Registration Successful!");
+                toast.success("Hospital Registration Successful! \n Your password was send to your email!");
                 navigate("/dashboard");
 
             } else {
-                setMessage("Error: " + (result.message || JSON.stringify(result)));
+                toast.error((result.message || JSON.stringify(result)));
                 console.error("Error response:", result);
             }
         } catch (error) {
             console.error("Error submitting form:", error.message);
-            setMessage("Submission failed. Check server and data.");
+            toast.error("Submission failed. Check server and data.");
         } finally {
             setLoading(false);
         }
@@ -67,7 +71,7 @@ function HospitalReg({ theme, setTheme }) {
         <div>
             <NaviBar theme={theme} setTheme={setTheme} />
             <div className={theme === "light" ? "hospital-reg" : "hospital-reg dark"}>
-                <form className="doner-reg-form"  onSubmit={handleSubmit}>
+                <form className="doner-reg-form" onSubmit={handleSubmit}>
                     <h1>Hospital Registration</h1>
                     <label htmlFor="name">Hospital Name:</label>
                     <input type="text" name="name" onChange={handleChange} required />
@@ -104,14 +108,16 @@ function HospitalReg({ theme, setTheme }) {
                     <label htmlFor="contact_no">Telephone:</label>
                     <input type="text" name="contact_no" onChange={handleChange} required />
 
+                    <br />
+
+                    <lable htmlFor="isCampaign">Campaign in this hospital</lable>
+                    <select name="isCampaign" onChange={handleChange} required>
+                        <option>-- select -- </option>
+                        <option value={1}> Yes </option>
+                        <option value={0}> No </option>
+                    </select>
+
                     <input type="submit" value="Register" />
-                    
-                    {message && 
-                    <div className="message">
-                        <p style={message == "Password is miss match!" ? { color: "red" } : { color: "black" }}>{message}</p><br />
-                        <p>Your password was send to your email!</p>
-                    </div>
-                    }
 
                 </form>
             </div>
