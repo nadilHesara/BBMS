@@ -122,8 +122,10 @@ function DonorReg({ theme, setTheme }) {
           <label>Gender:</label>
 
 
-          <input type="radio" name="gender" value="Male" onChange={handleChange} required />{" "}  Male
-          <input type="radio" name="gender" value="Female" onChange={handleChange} />{" "} Female
+          <div className="doner-reg-radio">
+            <div className="flex flex-row gap-2"><input type="radio" name="gender" value="Male" onChange={handleChange} required /> Male</div>
+            <div className="flex flex-row gap-2"><input type="radio" name="gender" value="Female" onChange={handleChange} />Female</div>
+          </div>
           <br />
 
           <label htmlFor="username">Username: </label>
@@ -175,18 +177,23 @@ function DonorReg({ theme, setTheme }) {
 
 
 
-          { (userType != "Hospital" || userType != "Admin") &&
+          {(userType != "Hospital" || userType != "Admin") &&
             <>
-              <label htmlFor="pwd">Password: </label>
-              <input type={show[0] ? "text" : "password"} id="pwd" name="pwd" onChange={(e) => setPassword(e.target.value)}></input>
-              {show[0] ? <AiFillEyeInvisible onClick={() => toggleShow(0)} size={20} /> : <AiFillEye onClick={() => toggleShow(0)} size={20} />}
+              <div className="pwd-field">
+                <label htmlFor="pwd">Password: </label>
+
+                <input type={show[0] ? "text" : "password"} id="pwd" name="pwd" onChange={(e) => setPassword(e.target.value)}></input>
+                <div className="dpassword-toggle-icon">{show ? <AiFillEyeInvisible onClick={() => toggleShow()} size={20} /> : <AiFillEye onClick={() => toggleShow()} size={20} />}
+                </div>
+              </div>
               <br />
 
-
-              <label htmlFor="pwdconfirm">Confirm Password: </label>
-              <input type={show[1] ? "text" : "password"} id="pwdconfirm" name="pwdconfirm" onChange={(e) => setConformPassword(e.target.value)}></input>
-              {show[1] ? <AiFillEyeInvisible onClick={() => toggleShow(1)} size={20} /> : <AiFillEye onClick={() => toggleShow(1)} size={20} />}
-              <br />
+              <div className="pwd-field">
+                <label htmlFor="pwdconfirm">Confirm Password: </label>
+                <input type={show[1] ? "text" : "password"} id="pwdconfirm" name="pwdconfirm" onChange={(e) => setConformPassword(e.target.value)}></input>
+                <div className="dpassword-toggle-icon"><span>{show[1] ? <AiFillEyeInvisible onClick={() => toggleShow(1)} size={20} /> : <AiFillEye onClick={() => toggleShow(1)} size={20} />}</span>
+                </div><br />
+              </div>
 
             </>}
 
