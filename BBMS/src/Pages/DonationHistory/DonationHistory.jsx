@@ -1,69 +1,10 @@
-// import { useState, useEffect, useContext } from 'react';
-// import axios from 'axios';
-// import { LoadingContext } from '../../context/LoadingContext';
-// import './DonationHistory.css';
-
-// function DonationHistory({ theme, setTheme }) {
-//     const [donations, setDonations] = useState([]);
-//     const { loading, setLoading } = useContext(LoadingContext);
-//     const userData = JSON.parse(sessionStorage.getItem("userData"));
-//     const user_Type = sessionStorage.getItem("userType");
-//     const userID = sessionStorage.getItem("userId");
-
-//     useEffect(() => {
-//         try {
-//             setLoading(true);
-//             if (userID) {
-//                 axios.get(`http://localhost:9191/dashboard/donations?user_id=${userID}`)
-//                     .then(res => {
-//                         setDonations(res.data);
-//                         console.log(res.data);
-//                     })
-//                     .catch(err => console.error(err));
-//             }
-//         } catch (error) {
-//             console.error("Error fetching donation history:", error);
-//         } finally {
-//             setLoading(false);
-//         }
-
-//     }, [user_Type, userID]);
-
-//     return (
-//         <div className="donation-history">
-//             <h2>Donation History</h2>
-//             {donations.length === 0 ? (
-//                 <div className="no-donations-message">
-//                     <p><strong>No donations yet.</strong></p>
-//                     <p>You haven’t donated blood through any campaigns so far.</p>
-//                     <p>Check out the <a href="/dashboard" style={{ color: "#007bff", textDecoration: "underline" }}>dashboard</a> to see upcoming blood donation campaigns and contribute to saving lives.</p>
-//                 </div>
-
-//             ) : (
-//                 <div className="donations-list">
-//                     {donations.map((donation, index) => (
-//                         <div key={donation.donate_id || index} className="donation-item">
-//                             <h3>Donation #{index + 1}</h3>
-//                             <div className="donation-details">
-//                                 <p><strong>Campaign Name:</strong> {donation.org_name}</p>
-//                                 <p><strong>Date:</strong> {new Date(donation.date).toISOString().slice(0, 10)}</p>
-//                                 <p><strong>District:</strong> {donation.district} </p>
-//                             </div>
-//                         </div>
-//                     ))}
-//                 </div>
-//             )}
-//         </div>
-//     )
-// }
-
-// export default DonationHistory
 
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { LoadingContext } from '../../context/LoadingContext';
 import verifyAccess from "../../SharedData/verifyFunction";
-import { Heart, Calendar, MapPin, Award, Users, ExternalLink } from 'lucide-react';
+import { Heart, Calendar, MapPin, Award, Users, ExternalLink, User, Hospital  } from 'lucide-react';
+
 
 function DonationHistory({ theme, setTheme }) {
     
@@ -80,6 +21,7 @@ function DonationHistory({ theme, setTheme }) {
                 axios.get(`http://localhost:9191/dashboard/donations?user_id=${userID}`)
                     .then(res => {
                         setDonations(res.data);
+                        console.log(donations);
                         console.log(res.data);
                     })
                     .catch(err => console.error(err));
@@ -231,7 +173,39 @@ function DonationHistory({ theme, setTheme }) {
                                                                     Campaign Organization
                                                                 </div>
                                                                 <div className="text-base font-semibold text-gray-900 dark:text-white">
+                                                                    {donation.CampaignName}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-3">
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="p-2 bg-pink-200 dark:bg-green-900/30 rounded-lg">
+                                                                <User className="w-4 h-4 text-red-600 dark:text-green-400" />
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Organizer
+                                                                </div>
+                                                                <div className="text-base font-semibold text-gray-900 dark:text-white">
                                                                     {donation.org_name}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-3">
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="p-2 bg-gray-300 dark:bg-green-900/30 rounded-lg">
+                                                                <Hospital className="w-4 h-4 text-black dark:text-green-400" />
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Blood Transferred to
+                                                                </div>
+                                                                <div className="text-base font-semibold text-gray-900 dark:text-white">
+                                                                    {donation.HospitalName}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -252,6 +226,8 @@ function DonationHistory({ theme, setTheme }) {
                                                             </div>
                                                         </div>
                                                     </div>
+
+                                                    
                                                 </div>
                                             </div>
                                             

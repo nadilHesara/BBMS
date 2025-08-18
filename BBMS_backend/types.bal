@@ -134,6 +134,12 @@ public type DonateRecord record {
 
     @sql:Column {name: "District"}
     string district;
+
+    @sql:Column {name: "CampaignName"}
+    string CampaignName;
+
+    @sql:Column {name: "Name"}
+    string HospitalName;
 };
 
 public type Campaign record {
