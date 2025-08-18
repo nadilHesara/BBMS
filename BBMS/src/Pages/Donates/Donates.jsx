@@ -2,11 +2,8 @@ import React, { use, useState, useContext } from 'react'
 import "./Donates.css"
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoadingContext } from "../../context/LoadingContext";
-import verifyAccess from "../../SharedData/verifyFunction";
-
 
 function Donates({ theme, setTheme }) {
-    verifyAccess("donates");
     const [username_email, setUsername_email] = useState('');
     const [nic, setNic] = useState('');
     const [showPopup, setShowPopup] = useState(false);
@@ -19,7 +16,7 @@ function Donates({ theme, setTheme }) {
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         try {
-            setLoading(true);
+            // setLoading(true);
             const response = await fetch("http://localhost:9191/donates", {
                 method: "POST",
                 headers: {
@@ -70,7 +67,7 @@ function Donates({ theme, setTheme }) {
 
     return (
         <div className="search_container">
-            <form classname="doner-reg-form" onSubmit={handleSearchSubmit}>
+            <form className="doner-reg-form" onSubmit={handleSearchSubmit}>
                 <h1>Campaign {campaign_id}</h1>
                 <div className="field_container">
                     <label className='Label' htmlFor="username_email">Username or Email</label>

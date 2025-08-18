@@ -1,8 +1,7 @@
 import ballerina/http;
+// import ballerina/io;
 import ballerina/jwt;
 import ballerina/sql;
-// import ballerina/io;
-
 listener http:Listener listener9191 = new (9191);
 
 @http:ServiceConfig {
@@ -20,8 +19,13 @@ service / on listener9191 {
         return result;
     }
 
-    isolated resource function post login(@http:Payload LoginRequest loginReq) returns http:Response|error {
-        http:Response|error result = check loginUser(loginReq.username, loginReq.password);
+    isolated resource function post hospitalReg(@http:Payload Hospital hospital) returns json|error {
+        json|error result = check addHospital(hospital);
+        return result;
+    }
+
+    isolated resource function post login(@http:Payload LoginRequest loginReq) returns json|error {
+        json|error result = check loginUser(loginReq.username, loginReq.password);
         return result;
     }
 
@@ -75,6 +79,27 @@ service / on listener9191 {
 
         return result;
     }
+    //POST donation eligibility
+    isolated resource function post eligibility(@http:Payload Eligible eligible) returns json|error {
+        json|error result = check determine_eligibility(eligible);
+        return result;
+    }
+
+    isolated resource function post donationHis(@http:Payload DonHistory donHistory) returns json|error{
+        json|error result = check addHistory(donHistory);
+        return result;
+    }
+
+    isolated resource function post medicalRisk(@http:Payload MedRisks medRisks) returns json|error{
+        json|error result = check addmedicalRisk(medRisks);
+        return result;
+    }
+
+    isolated resource function post consent(@http:Payload Consent consent) returns json|error {
+        json|error result = check addConsent(consent);
+        return result;
+    }
+
 }
 
 @http:ServiceConfig {
@@ -145,12 +170,6 @@ service /dashboard on listener9191 {
             } else {
                 return hospital;
             }
-        } else {
-            body= {
-                userId: "Admin",
-                userName: "Admin",
-                Name: "Admin"
-            };
         }
         return body;
     }
@@ -213,7 +232,7 @@ service /dashboard on listener9191 {
         res.setJsonPayload({ status: "error", message: "Invalid token: missing role" });
         check caller->respond(res);
         return;
-    } else if roleValue != "admin" {
+    } else if roleValue != "Admin" {
         // Unauthorized role
         http:Response res = new;
         res.statusCode = 403;
@@ -255,7 +274,7 @@ service /dashboard on listener9191 {
         return body;
     }
 
-    resource function post campReg(@http:Payload Campaign campaign) returns json|error {
+    isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
         json|error result = check addCamp(campaign);
         return result;
     }
@@ -268,12 +287,30 @@ service /dashboard on listener9191 {
     resource function get donor(@http:Query string donor_id) returns json|error{
         string|error dateResult = getLastDonation(donor_id);
         string lastDonation = "";
+        string status = "No";
+        int donationscount = 0;
+
         if dateResult is string {
+            int|error count = gateLastDonCount(donor_id);
+            if count is int {
+                if count > 0{
+                    donationscount = count;
+                    status = "Yes";
+
+                }else{
+                    donationscount = count;
+                    status = "No";
+                }
+            }
             lastDonation = dateResult;
+
         } else {
             lastDonation = "";
         }
         json body = {
+            "LastDonation": "",
+            "Status": "",
+            "Count": "",
             "LastDonationYR": "",
             "LastDonationMonth": "",
             "BYear": "",
@@ -311,6 +348,9 @@ service /dashboard on listener9191 {
 
 
                 body = {
+                    LastDonation: lastDonation,
+                    Status: status,
+                    Count: donationscount,
                     LastDonationYR: lastYear,
                     LastDonationMonth: lastMonth,
                     BYear : b_yr,
@@ -323,7 +363,6 @@ service /dashboard on listener9191 {
             }else {
                 return error("Doner not found");
             }
-
 
         return body;
     }
@@ -356,57 +395,6 @@ service /dashboard on listener9191 {
         json|error result = check addBloodStock(bloodData);
         return result;
         
-    }
-
-    resource function get verifyRole(http:Request req, @http:Query string pageName) returns json|error {
-        
-        // Get JWT from request (cookie or Authorization header)
-        jwt:Payload payload = check verifyJwtFromRequest(req);
-
-        // Extract role directly from payload
-        anydata roleValue = payload["role"];
-        if !(roleValue is string) {
-            return { "status": "error", "message": "Invalid token: missing or invalid role" };
-        }
-
-        // Allowed roles per page
-        map<string[]> allowedRoles = {
-            "hospitalReg": ["Admin"],
-            "availableBloodStock": ["Admin", "Hospital"],
-            "dashboard": ["Admin", "Hospital", "Doner"],
-            "donates" : ["Hospital"],
-            "campReg" : ["Hospital"],
-            "donation-history" : ["Doner"],
-            "profileInfo" : ["Doner" , "Hospital"],
-            "campaignHistory" : ["Hospital" , "Admin"]
-        };
-
-        string[]? rolesForPage = allowedRoles[pageName];
-        if rolesForPage is () {
-            return { "status": "error", "message": "Unknown page: " + pageName };
-        }
-
-        boolean isAuthorized = false;
-        foreach string allowedRole in rolesForPage {
-            if allowedRole.toLowerAscii() == roleValue.toLowerAscii() {
-                isAuthorized = true;
-                break;
-            }
-        }
-
-        if !isAuthorized {
-            return { 
-                "status": "error", 
-                "message": "Unauthorized: role '" + roleValue + "' cannot access page '" + pageName + "'" 
-            };
-        }
-
-        // ✅ Success
-        return {
-            "status": "authorized",
-            "role": roleValue,
-            "page": pageName
-        };
     }
 
 }

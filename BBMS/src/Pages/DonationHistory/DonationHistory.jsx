@@ -2,10 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { LoadingContext } from '../../context/LoadingContext';
 import './DonationHistory.css';
-import verifyAccess from "../../SharedData/verifyFunction";
 
 function DonationHistory({ theme, setTheme }) {
-    verifyAccess("donation-history")
     const [donations, setDonations] = useState([]);
     const { loading, setLoading } = useContext(LoadingContext);
     const userData = JSON.parse(sessionStorage.getItem("userData"));

@@ -1,19 +1,15 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState , useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import NaviBar from "../../components/Navibar/NaviBar";
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { LoadingContext } from "../../context/LoadingContext";
 import districts from '../../SharedData/districts';
 import "./HospitalReg.css";
-import verification from "../../SharedData/verifyFunction";
-import { toast } from "react-toastify";
 
 function HospitalReg({ theme, setTheme }) {
-    const navigate = useNavigate();
+
     const { loading, setLoading } = useContext(LoadingContext);
-
-    const verified = verification("hospitalReg"); // hook
-
-    // Show loading or block page until verified
+    const navigate = useNavigate();
 
     const [hospital, setHospital] = useState({
         hospital_id: "H001",
@@ -41,31 +37,27 @@ function HospitalReg({ theme, setTheme }) {
         e.preventDefault();
         setMessage("");
         setLoading(true);
-
+            
         try {
-            const response = await fetch("http://localhost:9191/dashboard/hospitalReg", {
+            const response = await fetch("http://localhost:9191/hospitalReg", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(hospital),
-                credentials: "include" // ensures cookies are sent
+                body: JSON.stringify(hospital)
             });
-
             const result = await response.json();
-
             if (response.ok) {
-                toast.success("Hospital Registration Successful!");
+                setMessage("Hospital Registration Successful!");
                 navigate("/dashboard");
-            } else if (response.status === 401) {
-                toast.warning("Unauthorized: Please log in.");
-                navigate("/login");
-            } else if (response.status === 403) {
-                toast.warning("Forbidden: You do not have permission.");
+
+            } else {
+                setMessage("Error: " + (result.message || JSON.stringify(result)));
+                console.error("Error response:", result);
             }
         } catch (error) {
             console.error("Error submitting form:", error.message);
-            toast.error("Submission failed. Check server and data.");
+            setMessage("Submission failed. Check server and data.");
         } finally {
             setLoading(false);
         }
@@ -75,7 +67,7 @@ function HospitalReg({ theme, setTheme }) {
         <div>
             <NaviBar theme={theme} setTheme={setTheme} />
             <div className={theme === "light" ? "hospital-reg" : "hospital-reg dark"}>
-                <form className="hospital-reg-form" onSubmit={handleSubmit}>
+                <form className="doner-reg-form"  onSubmit={handleSubmit}>
                     <h1>Hospital Registration</h1>
                     <label htmlFor="name">Hospital Name:</label>
                     <input type="text" name="name" onChange={handleChange} required />
@@ -113,12 +105,12 @@ function HospitalReg({ theme, setTheme }) {
                     <input type="text" name="contact_no" onChange={handleChange} required />
 
                     <input type="submit" value="Register" />
-
-                    {message &&
-                        <div className="message">
-                            <p style={message == "Password is miss match!" ? { color: "red" } : { color: "black" }}>{message}</p><br />
-                            <p>Your password was send to your email!</p>
-                        </div>
+                    
+                    {message && 
+                    <div className="message">
+                        <p style={message == "Password is miss match!" ? { color: "red" } : { color: "black" }}>{message}</p><br />
+                        <p>Your password was send to your email!</p>
+                    </div>
                     }
 
                 </form>

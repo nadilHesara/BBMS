@@ -3,6 +3,7 @@ import bloodgrp from '../../SharedData/bloodgrp';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import './DonationInfo.css';
+import { LoadingContext } from '../../context/LoadingContext';
 
 
 function DonationInfo({ theme, setTheme }) {
@@ -72,9 +73,7 @@ function DonationInfo({ theme, setTheme }) {
 
             try {
                 setLoading(true);
-                const response = await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${donate.doner_id}` ,{
-                    withCredentials: true
-                });
+                const response = await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${donate.doner_id}`);
 
                 const data = response.data;
 
@@ -110,7 +109,7 @@ function DonationInfo({ theme, setTheme }) {
             fetchdonorData();
         }
 
-    }, [donate.doner_id, donate.campaign_id]);
+    }, [donate.doner_id, loading]);
 
 
     const handleChange = (e) => {
