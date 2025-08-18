@@ -30,7 +30,6 @@ function ProfileInfo({ theme, setTheme }) {
     address_line2: '',
     address_line3: '',
     District: '',
-    profileimg: null,
   });
 
   const [hospital, setHospital] = useState({
@@ -43,8 +42,7 @@ function ProfileInfo({ theme, setTheme }) {
     address_line2: '',
     address_line3: '',
     District: '',
-    profileimg: null,
-
+    isCampaign : null,
   });
 
   const [userType, setUserType] = useState("");
@@ -82,7 +80,6 @@ function ProfileInfo({ theme, setTheme }) {
             address_line2: data.AddressLine2,
             address_line3: data.AddressLine3,
             District: data.District,
-            profileimg: data.ProfileImage
           });
 
         } else if (user_Type === "Hospital") {
@@ -96,7 +93,7 @@ function ProfileInfo({ theme, setTheme }) {
             address_line2: data.AddressLine2,
             address_line3: data.AddressLine3,
             District: data.District,
-            profileimg: data.ProfileImage
+            
           });
         }
 
@@ -115,22 +112,6 @@ function ProfileInfo({ theme, setTheme }) {
     }
   }, []);
 
-
-  {/*sessionStorage.setItem("userData", JSON.stringify(res.user_id));
-sessionStorage.setItem("userType", res.user_type);*/}
-
-
-  {/*const handleImageChange = (e) => {const file = e.target.files[0];
-    if (file) {
-      setDoner(prevDoner => ({ ...prevDoner, ProfileImage:file}));
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setDoner(prevDoner => ({
-      ...prevDoner,ProfileImage: null}));
-  };*/}
-
   const handleChange = (e) => {
 
     const { name, value } = e.target;
@@ -148,7 +129,6 @@ sessionStorage.setItem("userType", res.user_type);*/}
 
     const userData = userType === "Doner" ? doner : hospital;
     const userID = userType === "Doner" ? doner.doner_id : hospital.hospital_id;
-    console.log(userType === "Doner" ? doner : hospital);
 
     try {
       setLoading(true);

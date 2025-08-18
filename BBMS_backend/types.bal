@@ -93,9 +93,6 @@ public type Hospital record {
     @sql:Column {name: "Email"}
     string email;
 
-    @sql:Column {name: "ProfileImage"}
-    string profileImage?;
-
     int? isCampaign;
 };
 

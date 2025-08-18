@@ -206,9 +206,10 @@ service /dashboard on listener9191 {
             if existingHospital is Hospital {
                 if hospitalJson is map<json> {
                     hospitalJson["password"] = existingHospital.password;
+                    hospitalJson["isCampaign"] = 0;
                 }
             }
-
+          
             Hospital hospital = checkpanic hospitalJson.fromJsonWithType(Hospital);
 
             sql:ExecutionResult|error result = updateHospital(hospital);
