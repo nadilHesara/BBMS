@@ -143,6 +143,9 @@ public type Campaign record {
     @sql:Column {name: "CampaignID"}
     string campain_id;
 
+    @sql:Column {name: "CampaignName"}
+    string CampaignName;
+
     @sql:Column {name: "District"}
     string district;
 

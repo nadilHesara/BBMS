@@ -16,9 +16,10 @@ isolated function addCamp(Campaign campaign) returns json|error {
     }
 
     campaign.campain_id = newID;
-    sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, StartTime, EndTime , HospitalID)
+    sql:ParameterizedQuery query = `Insert INTO campaign(CampaignID, CampaignName, District, DateofCampaign, OrganizerName, OrganizerTelephone, OrganizerEmail, AddressLine1, AddressLine2, AddressLine3, DonerCount, StartTime, EndTime , HospitalID)
             VALUES (
                 ${campaign.campain_id},
+                ${campaign.CampaignName},
                 ${campaign.district},
                 ${campaign.date},
                 ${campaign.org_name},

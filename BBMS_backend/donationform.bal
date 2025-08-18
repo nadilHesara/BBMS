@@ -1,5 +1,4 @@
 import ballerina/sql;
-// import ballerina/io;
 
 isolated function determine_eligibility(Eligible eligible) returns json|error{
 

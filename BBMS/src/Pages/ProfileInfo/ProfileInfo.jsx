@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 {/*import NaviBar from '../../components/Navibar/NaviBar';*/ }
 import districts from '../../SharedData/districts';
-import { FaUserCircle } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 import "./ProfileInfo.css"
 import { LoadingContext } from '../../context/LoadingContext';
@@ -13,6 +12,8 @@ function ProfileInfo({ theme, setTheme }) {
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from;
+  const [isChanged, setIsChange] = useState(false);
+  
 
   const [doner, setDoner] = useState({
     doner_id: '',
@@ -49,7 +50,6 @@ function ProfileInfo({ theme, setTheme }) {
   {/*const fileInputRef = useRef(null);*/ }
 
   useEffect(() => {
-
     const userData = JSON.parse(sessionStorage.getItem("userData"));
     const user_Type = sessionStorage.getItem("userType");
     setUserType(user_Type);
@@ -135,8 +135,10 @@ sessionStorage.setItem("userType", res.user_type);*/}
     const { name, value } = e.target;
     if (userType === "Doner") {
       setDoner(prev => ({ ...prev, [name]: value }));
+      setIsChange(true);
     } else {
       setHospital(prev => ({ ...prev, [name]: value }));
+      setIsChange(true);
     }
   };
 
@@ -159,7 +161,10 @@ sessionStorage.setItem("userType", res.user_type);*/}
         })
 
         .then(data => {
-          toast.success("Saved Changes Successfully");
+          if (isChanged){
+            toast.success("Saved Changes Successfully");
+            setIsChange(false);
+          }
           if (from === "DonationForm"){
             navigate('../donation-history');
           } 
@@ -234,12 +239,15 @@ sessionStorage.setItem("userType", res.user_type);*/}
 
           </select>
 
-          <br />
-          <input type="submit" value="Save Changes" />
-          <br/>
-          <input type="submit" value={from ==="LeftSideBar" ? "Save Changes" : "Next"}/>
+          <div>
+            {isChanged && from === "LeftSideBar" ? (
+              <input type="submit" value="Save Changes"/>
+            ) : from === "DonationForm" ? (
+              <input type="submit" value="Next" />
+            ) : null}
+          </div>
 
-        </form>
+          </form>
 
       </div>
 
