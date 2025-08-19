@@ -1,6 +1,5 @@
-import ballerina/sql;
 import ballerina/io;
-
+import ballerina/sql;
 
 isolated function addHospital(Hospital hospital) returns json|error {
     io:println(hospital);
@@ -45,7 +44,6 @@ isolated function addHospital(Hospital hospital) returns json|error {
         ${newHospital.hospital_id},
         "Hospital")`;
 
-
     string htmlBody = "<html>" +
         "<head>" +
         "<meta charset='UTF-8'>" +
@@ -62,9 +60,9 @@ isolated function addHospital(Hospital hospital) returns json|error {
         "<body>" +
         "<div class='container'>" +
         "<h2>Password Reset Request</h2>" +
-        "<p>Dear "+ newHospital.name +",</p>" +
+        "<p>Dear " + newHospital.name + ",</p>" +
         "<p>Your account password has been requested. Use the following password to log in:</p>" +
-        "<div class='password-box'> "+password+"</div>" +
+        "<div class='password-box'> " + password + "</div>" +
         "<p>For security reasons, we recommend changing this password after your first login.</p>" +
         "<p>Thank you,<br>Support Team</p>" +
         "<div class='footer'>&copy; 2025 Your Company Name. All rights reserved.</div>" +
@@ -72,9 +70,9 @@ isolated function addHospital(Hospital hospital) returns json|error {
         "</body>" +
         "</html>";
 
-    error? mail =  sendEmail(newHospital.email,"Welcome to BBMS - Your Account Details",htmlBody);
+    error? mail = sendEmail(newHospital.email, "Welcome to BBMS - Your Account Details", htmlBody);
 
-    if mail != (){
+    if mail != () {
         return mail;
     }
 
@@ -86,7 +84,7 @@ isolated function addHospital(Hospital hospital) returns json|error {
     } else if result is error {
         return error("Please enter valid data");
     }
-    
+
     if newHospital.isCampaign == 1 {
         Campaign hospitalCamp = {
             campain_id: newHospitalId,
@@ -104,8 +102,8 @@ isolated function addHospital(Hospital hospital) returns json|error {
             end_time: (),
             hospital_id: newHospitalId,
             location: ()
-            };
-            _ = check addCamp(hospitalCamp);
+        };
+        _ = check addCamp(hospitalCamp);
     }
     return {"message": "Hospital added successfully!"};
 }
@@ -136,12 +134,12 @@ isolated function getHospital(string? id = (), string? username = (), string? em
 isolated function getAllHospitals(string? district) returns HospitalDetails[]|error {
     HospitalDetails[] hospitals = [];
     stream<HospitalDetails, error?> resultStream;
-    if district == "All"{
-        resultStream = dbClient->query( `SELECT HospitalID,Name FROM Hospital`,HospitalDetails);
-    }else{
-        resultStream = dbClient->query(`SELECT HospitalID,Name FROM Hospital WHERE District = ${district}` ,HospitalDetails);
+    if district == "All" {
+        resultStream = dbClient->query(`SELECT HospitalID,Name FROM Hospital`, HospitalDetails);
+    } else {
+        resultStream = dbClient->query(`SELECT HospitalID,Name FROM Hospital WHERE District = ${district}`, HospitalDetails);
     }
-    
+
     check from HospitalDetails hospital in resultStream
         do {
             hospitals.push(hospital);
@@ -173,11 +171,10 @@ isolated function updateHospital(Hospital hospital) returns sql:ExecutionResult|
                 AddressLine2 = ${hospital.address_line2},
                 AddressLine3 = ${hospital.address_line3},
             WHERE HospitalID = ${hospital.hospital_id} AND CampaignName = ${hospital.name}`);
-    
-    if updateCamp is error{
+
+    if updateCamp is error {
         return updateCamp;
     }
-
 
     return result;
 }
