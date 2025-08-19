@@ -25,8 +25,8 @@ service / on listener9191 {
         return result;
     }
 
-    isolated resource function post login(@http:Payload LoginRequest loginReq) returns json|error {
-        json|error result = check loginUser(loginReq.username, loginReq.password);
+    isolated resource function post login(@http:Payload LoginRequest loginReq) returns http:Response|error {
+        http:Response|error result = check loginUser(loginReq.username, loginReq.password);
         return result;
     }
 
