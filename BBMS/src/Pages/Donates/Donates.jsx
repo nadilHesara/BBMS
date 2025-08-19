@@ -73,7 +73,6 @@ function Donates({ theme, setTheme }) {
 
             else {
                 const data = await response.json();
-                console.log(data);
                 navigate("/dashboard/DonationInfo", {
                     state: {
                         campaign_Id: campaign_id,
