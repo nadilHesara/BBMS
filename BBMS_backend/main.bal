@@ -442,7 +442,7 @@ service /dashboard on listener9191 {
         // Define allowed roles per page (using consistent role names)
         map<string[]> allowedRoles = {
             "hospitalReg": ["Admin"],
-            "  ": ["Admin", "Hospital"],
+            "availableBloodStock": ["Admin", "Hospital"],
             "dashboard": ["Admin", "Hospital", "Doner"],
             "donates": ["Hospital"],
             "campReg": ["Hospital"],
