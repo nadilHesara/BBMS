@@ -4,7 +4,7 @@ import ballerina/sql;
 
 isolated function getBloodStockHospital(string district, string hospitalID) returns bloodData|error {
     sql:ParameterizedQuery query;
-    if district == "All" {
+    if district != "All" {
         if hospitalID == "All" {
             query = `SELECT
                     SUM(A_plus) AS A_plus,
@@ -15,7 +15,9 @@ isolated function getBloodStockHospital(string district, string hospitalID) retu
                     SUM(B_minus) AS B_minus,
                     SUM(O_minus) AS O_minus,
                     SUM(AB_minus) AS AB_minus
-                        FROM bloodstocks `;
+                        FROM bloodstocks 
+                        INNER JOIN hospital ON bloodstocks.HospitalID = hospital.HospitalID
+                            WHERE hospital.District = ${district}`;
         } else {
 
             query = `SELECT
@@ -28,21 +30,21 @@ isolated function getBloodStockHospital(string district, string hospitalID) retu
                     SUM(O_minus) AS O_minus,
                     SUM(AB_minus) AS AB_minus
                         FROM bloodstocks  
-                            WHERE HospitalID = ${hospitalID}`;
+                        INNER JOIN hospital ON bloodstocks.HospitalID = hospital.HospitalID
+                            WHERE hospital.District = ${district} AND bloodstocks.HospitalID = ${hospitalID}`;
         }
     } else {
         query = `SELECT
-                    SUM(A_plus) AS A_plus,
-                    SUM(B_plus) AS B_plus,
-                    SUM(O_plus) AS O_plus,
-                    SUM(AB_plus) AS AB_plus,
-                    SUM(A_minus) AS A_minus,
-                    SUM(B_minus) AS B_minus,
-                    SUM(O_minus) AS O_minus,
-                    SUM(AB_minus) AS AB_minus
-                        FROM bloodstocks 
-                        INNER JOIN hospital ON bloodstocks.HospitalID = hospital.HospitalID
-                            WHERE hospital.District = ${district} `;
+            SUM(A_plus) AS A_plus,
+            SUM(B_plus) AS B_plus,
+            SUM(O_plus) AS O_plus,
+            SUM(AB_plus) AS AB_plus,
+            SUM(A_minus) AS A_minus,
+            SUM(B_minus) AS B_minus,
+            SUM(O_minus) AS O_minus,
+            SUM(AB_minus) AS AB_minus
+                FROM bloodstocks `;
+        
     }
 
     bloodData|error result = dbClient->queryRow(query, bloodData);

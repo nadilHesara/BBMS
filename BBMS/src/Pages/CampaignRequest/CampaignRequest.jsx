@@ -16,10 +16,7 @@ export default function CampaignForm({ theme, setTheme }) {
     email: "",
     phone: "",
     campaignName: "",
-    locationAddress: "",
-    locationLat: null,
-    locationLng: null,
-    locationLink: "",
+    location: "",
     date: "",
     details: "",
   });
@@ -37,6 +34,7 @@ export default function CampaignForm({ theme, setTheme }) {
     try {
       const res = await fetch("http://localhost:9191/campaignRequest", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
@@ -46,10 +44,7 @@ export default function CampaignForm({ theme, setTheme }) {
           email: "",
           phone: "",
           campaignName: "",
-          locationAddress: "",
-          locationLat: null,
-          locationLng: null,
-          locationLink: "",
+          location: "",
           date: "",
           details: "",
         });
@@ -118,15 +113,14 @@ export default function CampaignForm({ theme, setTheme }) {
 
        <div
   className={`input-group location-group ${
-    formData.locationLink ? "has-value" : ""
+    formData.location ? "has-value" : ""
   }`}
 >
   <input
     type="url"
-    name="locationLink"
-    value={formData.locationLink}
+    name="location"
+    value={formData.location}
     onChange={handleChange}
-    placeholder="Pick on map or paste a Google Maps link"
     required
     readOnly
   />
@@ -177,10 +171,7 @@ export default function CampaignForm({ theme, setTheme }) {
           setPickerOpen(false);
           setFormData((p) => ({
             ...p,
-            locationLat: lat,
-            locationLng: lng,
-            locationAddress: address,
-            locationLink: link,
+            location: link,
           }));
         }}
       />

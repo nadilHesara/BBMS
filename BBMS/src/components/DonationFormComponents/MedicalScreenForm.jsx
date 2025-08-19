@@ -212,7 +212,7 @@ export default function MedicalScreenForm() {
               {/* Tattoos/Piercings */}
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Any tattoos, piercings or acupuncture in past year?
+                  Any tattoos, piercings or acupuncture in past year? <span className='text-red-500'>*</span>
                 </label>
                 <select 
                   name="tattoos" 
@@ -231,7 +231,7 @@ export default function MedicalScreenForm() {
               {/* Imprisonment */}
               <div>
                 <label className="block text-sm font-medium  mb-2">
-                  Ever imprisoned?
+                  Ever imprisoned? <span className='text-red-500'>*</span>
                 </label>
                 <select 
                   name="imprisoned" 
@@ -250,7 +250,7 @@ export default function MedicalScreenForm() {
               {/* Recent Medications */}
               <div>
                 <label className="block text-sm font-medium  mb-2">
-                  Used aspirin, antibiotics, or medications recently?
+                  Used aspirin, antibiotics, or medications recently? <span className='text-red-500'>*</span>
                 </label>
                 <select 
                   name="recentMeds" 
@@ -269,7 +269,7 @@ export default function MedicalScreenForm() {
               {/* Risk Symptoms */}
               <div>
                 <label className="block text-sm font-medium  mb-2">
-                  Do you have symptoms like unexplained fever, weight loss, or swollen lymph nodes?
+                  Do you have symptoms like unexplained fever, weight loss, or swollen lymph nodes? <span className='text-red-500'>*</span>
                 </label>
                 <select 
                   name="riskSymptoms" 
@@ -296,7 +296,7 @@ export default function MedicalScreenForm() {
               {/* Foreign Travel */}
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  You or your partner traveled abroad in the last 3 months?
+                  You or your partner traveled abroad in the last 3 months? <span className='text-red-500'>*</span>
                 </label>
                 <select 
                   name="foreignTravel" 
@@ -315,7 +315,7 @@ export default function MedicalScreenForm() {
               {/* Blood Transfusion */}
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  You or your partner received blood products?
+                  You or your partner received blood products? <span className='text-red-500'>*</span>
                 </label>
                 <select 
                   name="bloodTransfusion" 
@@ -334,7 +334,7 @@ export default function MedicalScreenForm() {
               {/* Malaria */}
               <div>
                 <label className="block text-sm font-medium  mb-2">
-                  Had malaria or treatment for it?
+                  Had malaria or treatment for it? <span className='text-red-500'>*</span>
                 </label>
                 <select 
                   name="malaria" 
@@ -353,7 +353,7 @@ export default function MedicalScreenForm() {
               {/* Dengue */}
               <div>
                 <label className="block text-sm font-medium  mb-2">
-                  Dengue in the last 6 months?
+                  Dengue in the last 6 months? <span className='text-red-500'>*</span>
                 </label>
                 <select 
                   name="dengue" 
@@ -372,7 +372,7 @@ export default function MedicalScreenForm() {
               {/* Recent Illness */}
               <div>
                 <label className="block text-sm font-medium  mb-2">
-                  Fever, measles, diarrhea, or long illness in the past month?
+                  Fever, measles, diarrhea, or long illness in the past month? <span className='text-red-500'>*</span>
                 </label>
                 <select 
                   name="recentIllness" 
@@ -391,7 +391,7 @@ export default function MedicalScreenForm() {
               {/* Dental Work */}
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Dental extraction in the last week?
+                  Dental extraction in the last week? <span className='text-red-500'>*</span>
                 </label>
                 <select 
                   name="dentalWork" 
@@ -410,7 +410,7 @@ export default function MedicalScreenForm() {
               {/* Risk Categories Awareness */}
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Are you aware of disqualifying categories (HIV, Hep B/C, risky behavior)?
+                  Are you aware of disqualifying categories (HIV, Hep B/C, risky behavior)? <span className='text-red-500'>*</span>
                 </label>
                 <select 
                   name="riskyCategoriesAwareness" 

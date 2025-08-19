@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import './DonationInfo.css';
 import { LoadingContext } from '../../context/LoadingContext';
+import { toast } from 'react-toastify';
 
 
 function DonationInfo({ theme, setTheme }) {
@@ -109,7 +110,7 @@ function DonationInfo({ theme, setTheme }) {
             fetchdonorData();
         }
 
-    }, [donate.doner_id, loading]);
+    }, [donate.doner_id]);
 
 
     const handleChange = (e) => {
@@ -145,7 +146,7 @@ function DonationInfo({ theme, setTheme }) {
             const result = await response.json();
 
             if (response.ok) {
-                alert(result.message);
+                toast.success(result.message);
                 navigate('/dashboard/Donates', {
                     state: {
                         campaignId: donate.campaign_id,
@@ -155,12 +156,12 @@ function DonationInfo({ theme, setTheme }) {
                 );
 
             } else {
-                alert("Update failed. Check server and data.");
+                toast.error("Update failed. Check server and data.");
                 console.error("Error:", result);
             }
         } catch (error) {
             console.error("Error:", error);
-            alert("Update failed. Check server and data.");
+            toast.error("Update failed. Check server and data.");
         }
     }
 

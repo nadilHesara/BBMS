@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import NaviBar from "../../components/Navibar/NaviBar";
+import LeftSlideBar from "../../components/LeftSlideBar/LeftSlideBar";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import districts from '../../SharedData/districts';
 import bloodgrp from '../../SharedData/bloodgrp';
@@ -17,12 +18,13 @@ function validatePassword(pwd) {
   if (!/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) return "Password must contain at least one special character.";
   return true;
 };
-
+ 
 
 function DonorReg({ theme, setTheme }) {
   const navigate = useNavigate();
-  const [userType, _] = useState(sessionStorage.getItem("userType") ? sessionStorage.getItem("userType") : undefined);
+  const [userType, _] = useState(sessionStorage.getItem("userType") ? sessionStorage.getItem("userType") : null);
   const { loading, setLoading } = useContext(LoadingContext);
+  const userData = sessionStorage.getItem("userData") || null;
 
   const [doner, setDoner] = useState({
     doner_id: "D001",
@@ -114,6 +116,7 @@ function DonorReg({ theme, setTheme }) {
   return (
     <div>
       <NaviBar theme={theme} setTheme={setTheme} />
+      
       <div className={theme === "light" ? "doner-reg" : "doner-reg dark"}>
         <form className="doner-reg-form" onSubmit={handleSubmit}>
           <h1>Donor Registration</h1>
@@ -175,9 +178,7 @@ function DonorReg({ theme, setTheme }) {
 
           <br />
 
-
-
-          {(userType != "Hospital" || userType != "Admin") &&
+          { ["Doner", null].includes(userType) &&
             <>
               <div className="pwd-field">
                 <label htmlFor="pwd">Password: </label>
