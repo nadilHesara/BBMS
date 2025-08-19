@@ -16,7 +16,7 @@ function Donates({ theme, setTheme }) {
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         try {
-            // setLoading(true);
+            setLoading(true);
             const response = await fetch("http://localhost:9191/donates", {
                 method: "POST",
                 headers: {
@@ -34,7 +34,6 @@ function Donates({ theme, setTheme }) {
 
             else {
                 const data = await response.json();
-                console.log(data);
                 navigate("/dashboard/DonationInfo", {
                     state: {
                         campaign_Id: campaign_id,
