@@ -94,7 +94,7 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
                 FROM campaign AS c
                 INNER JOIN bloodstocks AS b 
                     ON c.CampaignID = b.CampaignID
-                where c.HospitalID = ${hospital_id} AND c.DateofCampaign <= ${curruntDate}`;
+                where c.HospitalID = ${hospital_id} AND c.DateofCampaign <= ${curruntDate} `;
     } else {
         string date  = month + "-01";
         query = `SELECT 
@@ -131,7 +131,7 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
 isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[]|error {
     CampaignIdName[] campaigns = [];
     string curruntDate = getCurrentDate();
-    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND DateofCampaign <= ${curruntDate}   ORDER BY DateofCampaign DESC`;
+    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND (DateofCampaign <= ${curruntDate} OR  DateofCampaign = NULL  ) ORDER BY DateofCampaign DESC`;
     
     stream<CampaignIdName, error?> resultStream = dbClient->query(query);
 
@@ -140,7 +140,8 @@ isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[
             campaigns.push(campaign);
         };
     check resultStream.close();
-    
+    CampaignIdName camp = check  getCamp(hospitalID);
+    campaigns.push(camp);
     return campaigns;
 }
 
@@ -148,7 +149,7 @@ isolated function getCamp(string hospitalId) returns CampaignIdName|error {
     sql:ParameterizedQuery query = `
         SELECT c.CampaignID, c.CampaignName
         FROM campaign c
-        INNER JOIN hospital h ON c.HospitalID = h.HospitalID
+        INNER JOIN hospital h ON c.CampaignName = h.Name
         WHERE c.HospitalID = ${hospitalId};
     `;
 
