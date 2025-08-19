@@ -74,7 +74,7 @@ isolated function changePassword(string userType, string username, string newPas
     string encryptedNewPassword = check hashPassword(newPassword);
 
     sql:ExecutionResult|error loginUpdateResult = dbClient->execute(
-        `UPDATE login SET Password = ${encryptedNewPassword} WHERE UserName = ${username}`
+       ` UPDATE login SET Password = ${encryptedNewPassword} WHERE UserName = ${username}`
     );
 
     if loginUpdateResult is sql:ExecutionResult {
