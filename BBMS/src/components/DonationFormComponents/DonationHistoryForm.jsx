@@ -32,13 +32,11 @@ export default function DonationHistoryForm() {
     const fetchdonorData = async () => {
     try {
         const response =await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${donor_id}`);
-        const data = response.data;
-
         setForm(prev => ({
             ...prev,
-            donatedBefore:data.Status,
-            timesDonated:data.Count,
-            lastDonationDate: data.LastDonation,                              
+            donatedBefore:response.data.Status,
+            timesDonated:response.data.Count,
+            lastDonationDate: response.data.LastDonation,                           
         }));
 
     }catch (error) {
@@ -52,7 +50,7 @@ export default function DonationHistoryForm() {
 
   }, [donor_id]);
 
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
@@ -132,23 +130,19 @@ export default function DonationHistoryForm() {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Have you donated blood before?
               </label>
-              <select 
-                name="donatedBefore" 
-                onChange={handleChange}
+                <input
                 value={form.donatedBefore}
+                readOnly
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
                          focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
                          appearance-none cursor-pointer"
-              >
-                <option value="">--Select--</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
+                ></input>
+              
             </div>
 
             {/* Conditional fields for previous donors */}
-            {form.donatedBefore === 'yes' && (
+            {form.donatedBefore === 'Yes' && (
               <>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -187,7 +181,7 @@ export default function DonationHistoryForm() {
             {/* Issues during donation */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Did you experience issues during donation?
+                Did you experience issues during donation? <span className='text-red-500'>*</span>
               </label>
               <select 
                 name="hadIssuesBefore" 
@@ -227,7 +221,7 @@ export default function DonationHistoryForm() {
             {/* Advised not to donate */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Have you been advised not to donate?
+                Have you been advised not to donate? <span className='text-red-500'>*</span>
               </label>
               <select 
                 name="advisedNotToDonate" 
@@ -247,7 +241,7 @@ export default function DonationHistoryForm() {
             {/* Read info leaflet */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Have you read the information leaflet?
+                Have you read the information leaflet? <span className='text-red-500'>*</span>
               </label>
               <select 
                 name="readInfoLeaflet" 
@@ -264,31 +258,11 @@ export default function DonationHistoryForm() {
               </select>
             </div>
 
-            {/* Feeling well today */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Are you feeling well today?
-              </label>
-              <select 
-                name="feelingWell" 
-                onChange={handleChange}
-                value={form.feelingWell}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
-                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
-                         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
-                         appearance-none cursor-pointer"
-              >
-                <option value="">--Select--</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-
             {/* Medical conditions fieldset */}
             <div>
               <fieldset className="border border-gray-300 dark:border-gray-600 rounded-md p-4">
                 <legend className="text-sm font-medium text-gray-700 dark:text-gray-300 px-2">
-                  Any of these medical conditions?
+                  Any of these medical conditions? 
                 </legend>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                   {[

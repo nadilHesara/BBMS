@@ -51,6 +51,19 @@ function CalendarComponent(props) {
     }
   };
 
+  const formatTime = (timeString) => {
+  // Split into parts (HH, MM, SS)
+  const [hour, minute] = timeString.split(":");
+  let h = parseInt(hour, 10);
+  const m = minute;
+  const ampm = h >= 12 ? "pm" : "am";
+
+  // Convert to 12-hour format
+  h = h % 12 || 12;
+
+  return `${h}.${m} ${ampm}`;
+}
+
   // Show details on date click
   const onDateClick = (date) => {
     console.log(formatDateLocal(date));
@@ -72,7 +85,7 @@ function CalendarComponent(props) {
 
   // Handle donation request
   const handleDonationRequest = (campaign) => {
-    const userID = localStorage.getItem("userId");
+    const userID = sessionStorage.getItem("userId");
     const user_type = sessionStorage.getItem("userType")
     if (!userID) {
       alert("Please login to request a donation");
@@ -80,12 +93,12 @@ function CalendarComponent(props) {
     }
 
     // You can implement the donation request logic here
-    console.log("Requesting donation for campaign:", campaign.campain_id);
+    console.log("Requesting donation for campaign:", campaign);
     // alert(`Donation request sent for ${campaign.org_name} campaign!`);
     if(user_type === "Doner"){
-      navigate("/dashboard/DonationForm",{state: { campaignId: campaign.campain_id, campdate: campaign.date}});
+      navigate("/dashboard/DonationForm",{state: { campaignId: campaign.campain_id, campdate: campaign.date,  campName: campaign.CampaignName}});
     }else if (user_type === "Hospital"){
-      navigate('donates',{state: { campaignId: campaign.campain_id, campdate: campaign.date}});
+      navigate('donates',{state: { campaignId: campaign.campain_id, campdate: campaign.date,  campName: campaign.CampaignName }});
      }
 
   };
@@ -123,11 +136,11 @@ function CalendarComponent(props) {
           {selectedDateDetails.map((campaign, index) => (
             <div key={campaign.campaign_id || index} className="campaign-details">
               <div className="campaign-basic-info">
-                <strong className="org-name">{campaign.org_name}</strong>
+                <strong className="org-name">{campaign.CampaignName}</strong>
                 <div className="location-info">
                   {campaign.add_line1} {campaign.add_line2} {campaign.add_line3}
                 </div>
-                <div className="time-info">Starts at {campaign.start_time}</div>
+                <div className="time-info">Starts at {formatTime(campaign.start_time)}</div>
                 <button 
                   className={`expand-btn ${expandedCampaign && expandedCampaign.campain_id === campaign.campain_id ? 'expanded' : ''}`}
                   onClick={() => toggleExpandedView(campaign)}
@@ -136,6 +149,7 @@ function CalendarComponent(props) {
                     ? "Show Less" 
                     : "More Details"}
                 </button>
+                <button className="map-btn">See Location 📌 </button>
               </div>
 
               {/* Expanded View */}
@@ -144,7 +158,7 @@ function CalendarComponent(props) {
                   <div className="details">
                     <div className="detail-item">
                       <span className="detail-label">Organization:</span>
-                      <span className="detail-value">{campaign.org_name}</span>
+                      <span className="detail-value">{campaign.CampaignName}</span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Date:</span>
@@ -152,11 +166,11 @@ function CalendarComponent(props) {
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Start Time:</span>
-                      <span className="detail-value">{campaign.start_time}</span>
+                      <span className="detail-value">{formatTime(campaign.start_time)}</span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">End Time:</span>
-                      <span className="detail-value">{campaign.end_time || "Not specified"}</span>
+                      <span className="detail-value">{formatTime(campaign.end_time) || "Not specified"}</span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">District:</span>
@@ -178,7 +192,7 @@ function CalendarComponent(props) {
                     <button
                       className="donation-request-btn"
                       onClick={() => handleDonationRequest(campaign)}
-                    > Update Donation
+                    >Update Donation
                     </button>
                   </div>
                   </div>

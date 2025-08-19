@@ -24,7 +24,6 @@ import EligibilityCheck from "./components/DonationFormComponents/EligibilityChe
 import DonationHistoryForm from "./components/DonationFormComponents/DonationHistoryForm";
 import MedicalScreenForm from "./components/DonationFormComponents/MedicalScreenForm";
 import ConsentForm from "./components/DonationFormComponents/ConsentForm";
-import SuccessPage from "./components/DonationFormComponents/SuccessPage";
 import Donates from "./Pages/Donates/Donates";
 import Footer from "./components/Footer/Footer";
 import { LoadingProvider } from "./context/LoadingContext";
@@ -107,7 +106,6 @@ function App() {
                   <Route path="donation-history" element={<DonationHistoryForm />} />
                   <Route path="medical" element={<MedicalScreenForm />} />
                   <Route path="consent" element={<ConsentForm />} />
-                  <Route path="success" element={<SuccessPage />} />
                 </Route>
               </Route>
 

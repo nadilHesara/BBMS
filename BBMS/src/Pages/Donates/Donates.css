@@ -1,6 +1,20 @@
+
+
+.search_container input[type="text"] {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #440202;
+  margin-bottom: 18px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
 .search_container{
     margin-top:200px;
     align-self: center;
+    margin-left:300px;
 }
 
 .popup-backdrop {
