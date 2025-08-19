@@ -1,4 +1,4 @@
-# Blood Bank Management System (BBMS) Backend
+# Blood Bank Management System
 
 A comprehensive Blood Bank Management System backend built with Ballerina, providing secure and efficient management of blood donations, inventory, and user operations.
 
@@ -198,10 +198,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📞 Support
 
 For support and questions, please contact the development team or create an issue in the repository.
-   - Thilokya Angeesa
-   - Nadil Hrsara
-   - Sandeni Vithana
-   - Hesandi Siwmini
 
 ## 🔄 Version History
 
