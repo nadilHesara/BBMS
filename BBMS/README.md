@@ -184,7 +184,7 @@ We welcome contributions to improve BBMS Frontend! 🚀
    ```
 5. Open a **Pull Request**.  
 
-> Please ensure your code is clean, well-documented, and follows project coding standards.
+  > Please ensure your code is clean, well-documented, and follows project coding standards.
 
 ---
 
@@ -195,6 +195,15 @@ We welcome contributions to improve BBMS Frontend! 🚀
 - ✅ QR code scanning for donor check-in.  
 - ✅ AI-based prediction for blood demand analysis.  
 - ✅ Offline PWA support for hospitals in low-connectivity areas.  
+
+---
+## 📞 Support
+
+For support and questions, please contact the development team or create an issue in the repository.
+   - Thilokya Angeesa
+   - Nadil Hrsara
+   - Sandeni Vithana
+   - Hesandi Siwmini
 
 ---
 
