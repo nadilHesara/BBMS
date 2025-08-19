@@ -1,4 +1,3 @@
-import ballerina/http;
 import ballerina/sql;
 import ballerina/http;
 
