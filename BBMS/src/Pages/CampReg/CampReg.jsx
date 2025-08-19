@@ -64,9 +64,9 @@ function CampReg({ theme, setTheme }) {
 
       if (response.ok) {
         toast.success(`Successfully registered by ${campaign.org_name}`);
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 4000);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       } else {
         console.log("error:", campaign);
         setMessage("Error : " + JSON.stringify(result));

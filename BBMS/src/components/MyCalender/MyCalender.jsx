@@ -4,6 +4,7 @@ import axios from "axios";
 import 'react-calendar/dist/Calendar.css';
 import './MyCalender.css';
 import {useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 
@@ -116,7 +117,8 @@ function CalendarComponent(props) {
         }
         return null;
       }
-
+      console.log(campaigns);
+      
   return (
     <div>
       <Calendar
@@ -149,7 +151,7 @@ function CalendarComponent(props) {
                     ? "Show Less" 
                     : "More Details"}
                 </button>
-                <button className="map-btn">See Location 📌 </button>
+              <a href={campaign.location} target="_blank" rel="noopener noreferrer" className="map-btn">See Location 📌</a>
               </div>
 
               {/* Expanded View */}

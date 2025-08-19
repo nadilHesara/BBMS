@@ -57,7 +57,6 @@ isolated function getCampaignEvent(string year_month, string district) returns C
     string d = district;
     int year = check int:fromString(parts[0]);
     int mon = check int:fromString(parts[1]);
-
     stream<Campaign, error?> resultStream = dbClient->query(
         `SELECT * FROM campaign where year(DateofCampaign) = ${year} and month(DateofCampaign) = ${mon} and District = ${d}`
     );
