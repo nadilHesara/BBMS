@@ -4,9 +4,11 @@ import React,{ use, useState , useContext } from 'react';
 import { LoadingContext } from "../../context/LoadingContext";
 import districts from '../../SharedData/districts';
 import { toast } from 'react-toastify';
+import useVerifyAccess from '../../SharedData/verifyFunction';
+
 
 function CampReg({ theme, setTheme }) {
-
+  useVerifyAccess("campReg");
   const { loading, setLoading } = useContext(LoadingContext);
   const userId = sessionStorage.getItem("userId");
   console.log("userId: ",userId);

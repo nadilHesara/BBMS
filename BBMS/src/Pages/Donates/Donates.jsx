@@ -2,10 +2,10 @@ import React, { use, useState, useContext, useEffect } from 'react'
 import "./Donates.css"
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoadingContext } from "../../context/LoadingContext";
-// import useVerifyAccess from '../../SharedData/verifyFunction';
+import useVerifyAccess from '../../SharedData/verifyFunction';
 
 function Donates({ theme, setTheme }) {
-    // useVerifyAccess("donates");
+    useVerifyAccess("donates");
     const userId = sessionStorage.getItem("userId");
     const [username_email, setUsername_email] = useState('');
     const [nic, setNic] = useState('');
