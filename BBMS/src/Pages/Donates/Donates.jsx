@@ -36,7 +36,10 @@ function Donates({ theme, setTheme }) {
             const data = await res.json();
             setCampaign_id(data.CampaignID);
             setCampName(data.CampaignName);
-            setCampdate(new Date().toLocaleDateString());
+            const date = new Date().toISOString().split("T")[0];
+            setCampdate(date);
+            console.log(date);
+            
         } catch (error) {
             console.error("Error:", error);
         } finally {
