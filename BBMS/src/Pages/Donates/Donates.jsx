@@ -2,6 +2,8 @@ import React, { use, useState, useContext } from 'react'
 import "./Donates.css"
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoadingContext } from "../../context/LoadingContext";
+import Cookies from 'js-cookie';
+
 
 function Donates({ theme, setTheme }) {
     const [username_email, setUsername_email] = useState('');
@@ -10,11 +12,12 @@ function Donates({ theme, setTheme }) {
     const location = useLocation();
     
     const navigate = useNavigate();
-    const campaign_id = location.state?.campaignId;
-    const campdate = location.state?.campdate;
-    const campName = location.state?.campName;
+    const campaign_id = location.state?.campaignId || Cookies.get('campaign_Id');
+    const campdate = location.state?.campdate || Cookies.get('cdate');
+    const campName = location.state?.campName|| Cookies.get('campName');
     const { loading, setLoading } = useContext(LoadingContext);
     console.log("campName: ",campaign_id);
+    
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -36,13 +39,19 @@ function Donates({ theme, setTheme }) {
 
             else {
                 const data = await response.json();
-                navigate("/dashboard/DonationInfo", {
-                    state: {
-                        campaign_Id: campaign_id,
-                        donorId: data.user_id,
-                        cdate: campdate
-                    }
-                });
+                Cookies.set('donorId', data.user_id,);
+                Cookies.set('campaign_Id',campaign_id);
+                Cookies.set('cdate', campdate);
+                Cookies.set('campName',campName);
+                navigate("/dashboard/DonationInfo"
+                //     , {
+                //     state: {
+                //         campaign_Id: campaign_id,
+                //         donorId: data.user_id,
+                //         cdate: campdate
+                //     }
+                // }
+            );
 
             }
 

@@ -57,3 +57,23 @@ isolated function addDonation(Donates donates) returns json|error {
 
 
 }
+
+isolated function checkEligibility(string donor_id, string campaign_Id) returns json|error{
+
+        record {| boolean eligible; string filled; |}|error result = dbClient->queryRow(`SELECT eligible, filled FROM eligibility e WHERE e.DonerID = ${donor_id}  AND e.CampaignID = ${campaign_Id}`);
+
+        if result is error{
+            return error("Failed to fetch data");
+        }
+        
+        json data = {
+            "eligible": result.eligible,
+            "filled": result.filled
+        };
+
+
+        io:println(data);
+        return data;
+
+    
+}

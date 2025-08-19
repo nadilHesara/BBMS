@@ -5,12 +5,16 @@ import axios from "axios";
 import './DonationInfo.css';
 import { LoadingContext } from '../../context/LoadingContext';
 import { toast } from 'react-toastify';
-
+import Cookies from 'js-cookie';
 
 function DonationInfo({ theme, setTheme }) {
     const { loading, setLoading } = useContext(LoadingContext);
-    const location = useLocation();
+    const campaign_Id = Cookies.get('campaign_Id');
+    const donorId = Cookies.get('donorId');
+    const cdate = Cookies.get('cdate');
     const navigate = useNavigate();
+    const [eligible, setEligible] = useState();
+    const [filled, setFilled] = useState();
 
     const [donate, setDonate] = useState({
         donate_id: "M001",
@@ -57,27 +61,46 @@ function DonationInfo({ theme, setTheme }) {
     };
 
     useEffect(() => {
-        const { campaign_Id, donorId, cdate } = location.state || {};
+        console.log("Donor_ID:",donorId);
+        console.log("Camp_ID",campaign_Id);
+        console.log(cdate);
         setDonate(prev => ({
             ...prev,
             campaign_id: campaign_Id,
             doner_id: donorId,
             camp_date: cdate,
         }));
-
-
-    }, [location.state]);
+    }, []);
 
     useEffect(() => {
+        const fetch_eligibility = async () => {
+            try {
+                const response2 = await axios.get(`http://localhost:9191/dashboard/eligibility?donor_id=${donate.doner_id}&campaign_Id=${donate.campaign_id}`);
+                const data = response2.data;
+                setEligible(data.eligible);
+                if(data.filled==="Yes"){
+                    setFilled(true);
+                }else{
+                    setFilled(false);
+                }
+                 
+                
+            } catch (error) {
+                console.error("Error fetching eligibility data:", error);
+            } 
+        };
 
+        if (donate.doner_id && donate.campaign_id) {
+            fetch_eligibility();
+        }
+    }, [donate.doner_id,donate.campaign_id]);
+
+    useEffect(() => {
         const fetchdonorData = async () => {
-
             try {
                 setLoading(true);
                 const response = await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${donate.doner_id}`);
-
                 const data = response.data;
-
                 const campdate = parseDate(donate.camp_date);
 
                 if (!campdate) {
@@ -86,7 +109,6 @@ function DonationInfo({ theme, setTheme }) {
                 }
                 const currentYear = campdate.year;
                 const currentMonth = campdate.month;
-
                 const b_yr = data.BYear;
                 const b_m = data.BMonth;
                 const DAge = ageCalculator(b_m, b_yr, currentMonth, currentYear);
@@ -97,36 +119,30 @@ function DonationInfo({ theme, setTheme }) {
                     age: DAge,
                     blood_group: data.BloodGroup,
                 }));
-
             } catch (error) {
                 console.error("Error fetching donor data:", error);
             } finally {
                 setLoading(false);
             }
-
         };
 
         if (donate.doner_id) {
             fetchdonorData();
         }
-
     }, [donate.doner_id]);
 
-
     const handleChange = (e) => {
-
         let value = e.target.value;
 
         if (e.target.name === 'blood_quantity') {
             value = parseInt(value);
-
         } else if (e.target.type === 'number') {
             value = parseFloat(value);
-        } setDonate({
+        } 
+        setDonate({
             ...donate,
             [e.target.name]: value
         });
-
     };
 
     const handleUpdate = async (e) => {
@@ -152,9 +168,7 @@ function DonationInfo({ theme, setTheme }) {
                         campaignId: donate.campaign_id,
                         campdate: donate.camp_date
                     }
-                }
-                );
-
+                });
             } else {
                 toast.error("Update failed. Check server and data.");
                 console.error("Error:", result);
@@ -166,16 +180,12 @@ function DonationInfo({ theme, setTheme }) {
     }
 
     return (
-
         <div className='donerinfoForm'>
             <div className='donerinfoCard'>
-
                 <label htmlFor="campaignId" className='campID'>Campaign ID: {donate.campaign_id || 'Loading...'}</label>
-
-                <h1 className='full-width'>Donor's Information </h1>
+                <h1 className='full-width'>Donor's Information</h1>
 
                 <div className='content-wrapper'>
-
                     <div className="label-value-pair">
                         <span className='label'>Donor ID :</span>
                         <span className='valtext'>{donate.doner_id}</span>
@@ -188,7 +198,7 @@ function DonationInfo({ theme, setTheme }) {
 
                     <div className="label-value-pair">
                         <span className='label'>Age :</span>
-                        <span className='valtext'> {donate.age}+  yrs </span>
+                        <span className='valtext'> {donate.age}+ yrs </span>
                     </div>
 
                     <div className="blood-group-container">
@@ -203,38 +213,99 @@ function DonationInfo({ theme, setTheme }) {
                         </select>
                     </div>
 
+                    {/* Status Badges Section */}
+                    <div className="mt-6 space-y-3">
+                        {/* Eligibility Status */}
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Eligibility Status:
+                            </span>
+                            <div className="flex items-center">
+                                {eligible ? (
+                                    <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                        <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                        </svg>
+                                        Eligible
+                                    </div>
+                                ) : (
+                                    <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                        <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                        </svg>
+                                        Not Eligible
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Form Status - Only show if eligible */}
+                        {eligible && (
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Form Status:
+                                </span>
+                                <div className="flex items-center">
+                                    {filled ? (
+                                        <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z" clipRule="evenodd" />
+                                                <path fillRule="evenodd" d="M6 10a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1z" clipRule="evenodd" />
+                                            </svg>
+                                            Completed
+                                        </div>
+                                    ) : (
+                                        <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                            </svg>
+                                            Pending
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                    </div>
+                </div>
+            </div>
+                
+                <div className='donationinputsection'>
+                    {eligible && filled ? (
+                    <>
+                    <div className='donationinputgrouprow'>
+                        <div className='inputblock'>
+                            <label htmlFor="weight">Weight:</label>
+                            <input type="number" step='0.01' min='50' id="weight" name="weight" placeholder='kgs' onChange={handleChange} required />
+                        </div>
+                        <div className='inputblock'>
+                            <label htmlFor="bsugar">Blood Sugar:</label>
+                            <input type='text' id="bsugar" name="sugar" placeholder='mg/dL' onChange={handleChange} required />
+                        </div>
+                        <div className='inputblock'>
+                            <label htmlFor="pressure">Blood Pressure:</label>
+                            <input type="text" id="pressure" name="pressure" placeholder='mmHg' onChange={handleChange} required />
+                        </div>
+                        <div className='inputblock'>
+                            <label htmlFor="bquantity">Blood Quantity:</label>
+                            <input type="int" step='1' min='0' id="bquantity" name="blood_quantity" placeholder='ml' onChange={handleChange} />
+                        </div>
+                    </div>
+                    <label htmlFor="time">Donated Time:</label>
+                    <input type="time" id="time" name="donate_time" onChange={handleChange} required />
+                    <br />
+                    <button type="button" className='updatebtn' onClick={handleUpdate}>Update</button>
+                    </>
+                    ):(
+                    <input
+                    className="navigatebtn"
+                    onClick={() => navigate("/dashboard/Donates")}
+                    value={"Fill the form"} readonly>                    
+                    </input>
+                )}
                 </div>
 
-            </div>
-            <div className='donationinputsection'>
-                <div className='donationinputgrouprow'>
-
-                    <div className='inputblock'>
-                        <label htmlFor="weight">Weight:</label>
-                        <input type="number" step='0.01' min='50' id="weight" name="weight" placeholder='kgs' onChange={handleChange} required />
-                    </div>
-                    <div className='inputblock'>
-                        <label htmlFor="bsugar">Blood Sugar:</label>
-                        <input type='text' id="bsugar" name="sugar" placeholder='mg/dL' onChange={handleChange} required />
-                    </div>
-                    <div className='inputblock'>
-                        <label htmlFor="pressure">Blood Pressure:</label>
-                        <input type="text" id="pressure" name="pressure" placeholder='mmHg' onChange={handleChange} required />
-                    </div>
-                    <div className='inputblock'>
-                        <label htmlFor="bquantity">Blood Quantity:</label>
-                        <input type="int" step='1' min='0' id="bquantity" name="blood_quantity" placeholder='ml' onChange={handleChange} />
-                    </div>
-
-                </div>
-                <label htmlFor="time">Donated Time:</label>
-                <input type="time" id="time" name="donate_time" onChange={handleChange} required />
-                <br />
-                <button type="button" className='updatebtn' onClick={handleUpdate}>Update</button>
-
-            </div>
         </div>
-
     );
 }
 

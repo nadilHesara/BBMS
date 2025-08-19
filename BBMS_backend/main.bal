@@ -398,4 +398,11 @@ service /dashboard on listener9191 {
         
     }
 
+    resource function get eligibility(@http:Query string donor_id, @http:Query string campaign_Id) returns json|error {
+        json|error result = check checkEligibility(donor_id,campaign_Id);
+        io:println(result);
+        return result;
+        
+    }
+
 }
