@@ -1,5 +1,5 @@
-import ballerina/sql;
 import ballerina/http;
+import ballerina/sql;
 
 isolated function getUserByUsername(string username) returns Login|error {
     sql:ParameterizedQuery query = `SELECT * FROM login WHERE UserName=${username};`;
@@ -10,7 +10,7 @@ isolated function getUserByUsername(string username) returns Login|error {
 isolated function loginUser(string username, string password) returns http:Response|error {
     Login user = check getUserByUsername(username);
     boolean isValidPassword = check verifyPassword(password, user.password);
-    
+
     if !isValidPassword {
         http:Response response = new;
         response.statusCode = 401;
@@ -20,7 +20,7 @@ isolated function loginUser(string username, string password) returns http:Respo
         response.setJsonPayload(errorBody);
         return response;
     }
-    
+
     string? donerId = user.doner_id;
     string userId = donerId is string ? donerId : user.hospital_id ?: "Admin";
     string role = user.user_type;
@@ -29,7 +29,7 @@ isolated function loginUser(string username, string password) returns http:Respo
 
     // Create HTTP response
     http:Response response = new;
-    
+
     // Create and set cookie with JWT token
     http:Cookie jwtCookie = new (
         name = "auth_token",
@@ -39,14 +39,14 @@ isolated function loginUser(string username, string password) returns http:Respo
         secure = false, // Set to true in production with HTTPS
         maxAge = 3600 // 1 hour in seconds
     );
-    
+
     // Add cookie to response
     response.addCookie(jwtCookie);
-    
+
     // Set response headers for token (alternative to cookie)
     response.setHeader("Authorization", "Bearer " + token);
     response.setHeader("Access-Control-Expose-Headers", "Authorization");
-    
+
     // Set response body
     json responseBody = {
         message: "Login successful",
@@ -56,7 +56,7 @@ isolated function loginUser(string username, string password) returns http:Respo
         token_type: "Bearer",
         expires_in: 36000
     };
-    
+
     response.setJsonPayload(responseBody);
     return response;
 }
@@ -72,7 +72,7 @@ isolated function changePassword(string userType, string username, string newPas
 
     // Encrypt the new password
     string encryptedNewPassword = check hashPassword(newPassword);
- 
+
     sql:ExecutionResult|error loginUpdateResult = dbClient->execute(
         `UPDATE login SET Password = ${encryptedNewPassword} WHERE UserName = ${username}`
     );
@@ -86,26 +86,26 @@ isolated function changePassword(string userType, string username, string newPas
 
 isolated function resetPassword(string userType, string userInfo) returns json|error {
     string newPassword = check generatePassword(12);
-    Doner|Hospital|error result ;
+    Doner|Hospital|error result;
     if userType == "Doner" {
         result = dbClient->queryRow(`SELECT * from Doner where ( Username = ${userInfo} OR Email =${userInfo} OR NICNo = ${userInfo} OR Telephone = ${userInfo});`);
-        
-    }else if userType == "Hospital" {
+
+    } else if userType == "Hospital" {
         result = dbClient->queryRow(`SELECT * from Hospital where (Username = ${userInfo} OR Email =${userInfo} OR Contact = ${userInfo});`);
-    
-    }else {
+
+    } else {
         result = error("Incorrect type");
     }
 
-    if result is error{
+    if result is error {
         return result;
     }
     string? username = result.username;
     string? name = result.name;
     string? Email = result.email;
 
-    if username is string && name is string  && Email is string{
-        string htmlBody = 
+    if username is string && name is string && Email is string {
+        string htmlBody =
             "<!DOCTYPE html>" +
             "<html>" +
             "<head>" +
@@ -117,7 +117,7 @@ isolated function resetPassword(string userType, string userInfo) returns json|e
             "  .password { font-weight: bold; color: #d32f2f; }" +
             "  .footer { font-size: 14px; color: #777; text-align: center; margin-top: 30px; }" +
             "  .btn { display: inline-block; padding: 10px 20px; background-color: #d32f2f; color: #fff; text-decoration: none; border-radius: 6px; }" +
-            "  .btn a {color: #fff; text-decoration: none}"+
+            "  .btn a {color: #fff; text-decoration: none}" +
             "</style>" +
             "</head>" +
             "<body>" +
@@ -138,9 +138,9 @@ isolated function resetPassword(string userType, string userInfo) returns json|e
             "  </div>" +
             "</body>" +
             "</html>";
-            
-        _ = check sendEmail(Email , "Password Reset", htmlBody);
-        return changePassword(userType, username,newPassword, ());
+
+        _ = check sendEmail(Email, "Password Reset", htmlBody);
+        return changePassword(userType, username, newPassword, ());
     }
     return error("Incorrect user");
 }
@@ -148,13 +148,13 @@ isolated function resetPassword(string userType, string userInfo) returns json|e
 isolated function search_Doner(string username_email, string nic) returns json|error {
     sql:ParameterizedQuery query = `SELECT * FROM doner WHERE ((UserName=${username_email} OR Email=${username_email}) AND NICNo=${nic});`;
     Doner|error result = check dbClient->queryRow(query);
-    
-        if result is Doner {
+
+    if result is Doner {
         return {
             "message": "A Registered Doner",
             "user_id": result.doner_id
         };
-                   
+
     } else {
         return error("No Registered Doner found");
 
