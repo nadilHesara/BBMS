@@ -1,55 +1,91 @@
 import ballerina/sql;
+import ballerina/http;
 
-isolated function checkPassword(string username) returns Login|error {
+
+
+isolated function getUserByUsername(string username) returns Login|error {
     sql:ParameterizedQuery query = `SELECT * FROM login WHERE UserName=${username};`;
-    Login|error result =  dbClient->queryRow(query);
+    Login|error result = dbClient->queryRow(query);
     return result;
 }
 
-isolated function loginUser(string username, string password) returns json|error {
-    Login user = check checkPassword(username);
+isolated function loginUser(string username, string password) returns http:Response|error {
+    Login user = check getUserByUsername(username);
+    boolean isValidPassword = check verifyPassword(password, user.password);
 
-    boolean valid = check verifyPassword(password, user.password);
-    if valid {
-        if user.doner_id is string {
-            return {
-                "message": "Doner Login successful",
-                "user_id": user.doner_id,
-                "user_type": user.user_type
-            };
-        } else {
-            return {
-                "message": "Hospital Login successful",
-                "user_id": user.hospital_id,
-                "user_type": user.user_type
-            };
-        }
-    } else {
-        return error("Invalid username or password");
+    if !isValidPassword {
+        http:Response response = new;
+        response.statusCode = 401;
+        json errorBody = {
+            "error": "Invalid username or password"
+        };
+        response.setJsonPayload(errorBody);
+        return response;
     }
+
+    string? donerId = user.doner_id;
+    string userId = donerId is string ? donerId : user.hospital_id ?: "Admin";
+    string role = user.user_type;
+
+    string token = check issueToken(username, userId, role);
+
+    // Create HTTP response
+    http:Response response = new;
+
+    // Create and set cookie with JWT token
+    http:Cookie jwtCookie = new (
+        name = "auth_token",
+        value = token,
+        path = "/",
+        httpOnly = true,
+        secure = false, // Set to true in production with HTTPS
+        maxAge = 3600 // 1 hour in seconds
+    );
+
+    // Add cookie to response
+    response.addCookie(jwtCookie);
+
+    // Set response headers for token (alternative to cookie)
+    response.setHeader("Authorization", "Bearer " + token);
+    response.setHeader("Access-Control-Expose-Headers", "Authorization");
+
+    // Set response body
+    json responseBody = {
+        message: "Login successful",
+        user_id: userId,
+        user_type: role,
+        access_token: token,
+        token_type: "Bearer",
+        expires_in: 36000
+    };
+
+    response.setJsonPayload(responseBody);
+    return response;
 }
 
 isolated function changePassword(string userType, string username, string newPassword, string? previousPassword) returns json|error {
     if previousPassword is string {
-        json|error loginCheck =  loginUser(username, previousPassword);
-        if loginCheck is error {
-            return error("User Does not Exist");
+        Login user = check getUserByUsername(username);
+        boolean isValidPassword = check verifyPassword(previousPassword, user.password);
+        if !isValidPassword {
+            return error("Current password is incorrect");
         }
     }
 
     // Encrypt the new password
     string encryptedNewPassword = check hashPassword(newPassword);
- 
+
     sql:ExecutionResult|error loginUpdateResult = dbClient->execute(
         `UPDATE login SET Password = ${encryptedNewPassword} WHERE UserName = ${username}`
-        );
+    );
 
     if loginUpdateResult is sql:ExecutionResult {
-        return { "Message": "Password changed successfully" };
+        return {"Message": "Password changed successfully"};
     } else {
         return loginUpdateResult;
     }
 }
+
 
 isolated function resetPassword(string userType, string userInfo) returns json|error {
     string newPassword = check generatePassword(12);
