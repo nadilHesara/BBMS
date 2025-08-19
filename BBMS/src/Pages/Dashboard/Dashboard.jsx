@@ -6,11 +6,11 @@ import MyCalender from "../../components/MyCalender/MyCalender";
 import "./Dashboard.css";
 import districts from "../../SharedData/districts";
 import { LoadingContext } from "../../context/LoadingContext";
-// import useVerifyAccess from "../../SharedData/verifyFunction";
+import useVerifyAccess from "../../SharedData/verifyFunction";
 
 
 const Dashboard = ({ theme, setTheme }) => {
-  // useVerifyAccess("dashboard");
+  useVerifyAccess("dashboard");
   const { loading, setLoading } = useContext(LoadingContext);
 
   const navigate = useNavigate();

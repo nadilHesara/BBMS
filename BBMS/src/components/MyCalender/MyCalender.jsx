@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 
 
 function CalendarComponent(props) {
-  console.log("The selecteddistrict: ", props.selectedDistrict);
   const selectedDistrict = props.selectedDistrict;
   const [activeStartDate, setActiveStartDate] = useState(new Date());
   const [value, setValue] = useState(new Date());

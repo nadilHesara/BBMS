@@ -1,9 +1,9 @@
+import ballerina/crypto;
 import ballerina/email;
+import ballerina/http;
+import ballerina/jwt;
 import ballerina/random;
 import ballerina/time;
-import ballerina/crypto;
-import ballerina/jwt;
-import ballerina/http;
 
 public isolated function IdIncriment(string currentId) returns string {
     string prefix = currentId[0].toString();
@@ -93,13 +93,13 @@ public isolated function sendEmail(string toEmail, string subject, string body) 
         port = 465,
         username = "thilokyabusness@gmail.com",
         password = "xbcq ajjd gsvr pgag"
-        
+
     );
 
     email:Message message = {
         to: [toEmail],
         subject: subject,
-        htmlBody:  body
+        htmlBody: body
     };
     check smtpClient->sendMessage(message);
 }
@@ -107,13 +107,13 @@ public isolated function sendEmail(string toEmail, string subject, string body) 
 isolated function getCurrentDate() returns string {
     // Get current UTC time with millisecond precision
     time:Utc currentUtc = time:utcNow(precision = 3);
-    
+
     // Convert to string and extract date part
     string currentTimeString = time:utcToString(currentUtc);
-    
+
     // Extract date part (YYYY-MM-DD) from RFC 3339 format
     string dateOnly = currentTimeString.substring(0, 10);
-    
+
     return dateOnly;
 }
 
@@ -132,20 +132,20 @@ isolated function formatDate(int year, int month, int day, string format) return
 public isolated function hashPassword(string password) returns string|error {
     byte[] passwordBytes = password.toBytes();
     byte[] saltBytes = [];
-    
+
     // Generate random salt
-    foreach int i in 0...15 {
+    foreach int i in 0 ... 15 {
         int randomByte = check random:createIntInRange(0, 255);
         saltBytes.push(<byte>randomByte);
     }
-    
+
     // Hash password with salt using SHA-256 (assuming this function exists based on crypto module)
     byte[] hashedPassword = crypto:hashSha256(input = passwordBytes, salt = saltBytes);
-    
+
     // Convert hash to hex string for storage
     string hexHash = bytesToHex(hashedPassword);
     string hexSalt = bytesToHex(saltBytes);
-    
+
     // Return salt + hash combined (salt first 32 chars, hash remaining)
     return hexSalt + hexHash;
 }
@@ -155,18 +155,18 @@ public isolated function verifyPassword(string password, string storedHash) retu
     if storedHash.length() < 64 {
         return error("Invalid stored hash format");
     }
-    
+
     // Extract salt (first 32 hex chars = 16 bytes) and hash
     string saltHex = storedHash.substring(0, 32);
     string hashHex = storedHash.substring(32);
-    
+
     byte[] salt = check hexToBytes(saltHex);
     byte[] passwordBytes = password.toBytes();
-    
+
     // Hash the provided password with the extracted salt
     byte[] hashedPassword = crypto:hashSha256(input = passwordBytes, salt = salt);
     string newHashHex = bytesToHex(hashedPassword);
-    
+
     // Compare hashes
     return hashHex == newHashHex;
 }
@@ -187,7 +187,7 @@ isolated function hexToBytes(string hex) returns byte[]|error {
     if hex.length() % 2 != 0 {
         return error("Invalid hex string length");
     }
-    
+
     byte[] bytes = [];
     int i = 0;
     while i < hex.length() {
@@ -200,16 +200,16 @@ isolated function hexToBytes(string hex) returns byte[]|error {
 }
 
 configurable string JWT_SECRET = ?;
-const JWT_ISSUER   = "bbms";
+const JWT_ISSUER = "bbms";
 const JWT_AUDIENCE = "bbms-app";
 
 // ✅ This function works correctly
 isolated function issueToken(string username, string userId, string role) returns string|error {
     jwt:IssuerConfig cfg = {
-        issuer: JWT_ISSUER, 
-        username: username,           // 🔑 should be "subject"
+        issuer: JWT_ISSUER,
+        username: username, // 🔑 should be "subject"
         audience: JWT_AUDIENCE,
-        expTime: 3600,               // seconds
+        expTime: 3600, // seconds
         customClaims: {
             "uid": userId,
             "role": role
@@ -222,8 +222,6 @@ isolated function issueToken(string username, string userId, string role) return
     return check jwt:issue(cfg);
 }
 
-
-
 // ✅ This function works correctly
 isolated function validateToken(string token) returns jwt:Payload|error {
     jwt:ValidatorConfig vcfg = {
@@ -231,7 +229,7 @@ isolated function validateToken(string token) returns jwt:Payload|error {
         audience: JWT_AUDIENCE,
         clockSkew: 60,
         // HS256/HMAC validation uses secret
-        signatureConfig: { secret: JWT_SECRET }
+        signatureConfig: {secret: JWT_SECRET}
     };
     // Returns jwt:Payload (all available claims)
     return check jwt:validate(token, vcfg);
@@ -242,7 +240,7 @@ isolated function generateJwt(Login user) returns string|error {
     // Get user ID - either doner_id or hospital_id
     string? donerId = user.doner_id;
     string userId = donerId is string ? donerId : user.hospital_id ?: "";
-    
+
     // Use the existing issueToken function which works correctly
     return issueToken(user.user_name, userId, user.user_type);
 }
@@ -250,7 +248,7 @@ isolated function generateJwt(Login user) returns string|error {
 // ⚠️ This function works but has been improved for better error handling
 isolated function verifyJwtFromRequest(http:Request req) returns jwt:Payload|error {
     string? token = ();
-    
+
     // Try to get token from Cookie header
     string|http:HeaderNotFoundError cookieHeaderResult = req.getHeader("Cookie");
     if cookieHeaderResult is string {

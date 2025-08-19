@@ -1,8 +1,6 @@
 import ballerina/http;
-import ballerina/io;
 import ballerina/jwt;
 import ballerina/sql;
-// import ballerina/io;
 
 listener http:Listener listener9191 = new (9191);
 
@@ -26,13 +24,13 @@ service / on listener9191 {
         return result;
     }
 
-    isolated resource function post login(@http:Payload LoginRequest loginReq) returns json|error {
-        json|error result = check loginUser(loginReq.username, loginReq.password);
+    isolated resource function post login(@http:Payload LoginRequest loginReq) returns http:Response|error {
+        http:Response|error result = check loginUser(loginReq.username, loginReq.password);
         return result;
     }
 
-    isolated resource function post forgotpassword(@http:Payload ForgotPasswordRequest request) returns json|error{
-        return resetPassword(request.userType,request.userInfo);         
+    isolated resource function post forgotpassword(@http:Payload ForgotPasswordRequest request) returns json|error {
+        return resetPassword(request.userType, request.userInfo);
     }
 
     isolated resource function post donates(@http:Payload SearchRequest searchReq) returns json|error {
@@ -46,7 +44,6 @@ service / on listener9191 {
     }
 
     isolated resource function post campaignRequest(@http:Payload CampaignRequest data) returns json|error {
-        io:println(data);
         string emailBody = "<!DOCTYPE html>" +
                     "<html>" +
                     "<head>" +
@@ -66,34 +63,34 @@ service / on listener9191 {
                     "    <div class='content'><span class='label'>Phone Number:</span> " + data.phone + "</div>" +
                     "    <div class='content'><span class='label'>Campaign Name:</span> " + data.campaignName + "</div>" +
                     "    <div class='content'><span class='label'>Location:</span> " + data.location + "</div>" +
-                    "    <div class='content'><span class='label'>Date:</span> " + data.date + "</div>" ;
+                    "    <div class='content'><span class='label'>Date:</span> " + data.date + "</div>";
         string? details = data.details;
         if details is string {
-                emailBody += "<div class='content'><span class='label'>Additional Details:</span> " + details + "</div>";
-            }
+            emailBody += "<div class='content'><span class='label'>Additional Details:</span> " + details + "</div>";
+        }
 
-            emailBody += "<div class='footer'>This is an auto-generated email. Please do not reply.</div>" +
+        emailBody += "<div class='footer'>This is an auto-generated email. Please do not reply.</div>" +
             "  </div>" +
             "</body>" +
             "</html>";
 
-        string subject = "New Blood Donation Campaign Request | " + data.campaignName+"";
-        json|error result =  sendEmail("thilokyaangeesa@gmail.com",subject,emailBody);
-        io:println(result);
+        string subject = "New Blood Donation Campaign Request | " + data.campaignName + "";
+        json|error result = sendEmail("thilokyaangeesa@gmail.com", subject, emailBody);
         return result;
     }
+
     //POST donation eligibility
     isolated resource function post eligibility(@http:Payload Eligible eligible) returns json|error {
         json|error result = check determine_eligibility(eligible);
         return result;
     }
 
-    isolated resource function post donationHis(@http:Payload DonHistory donHistory) returns json|error{
+    isolated resource function post donationHis(@http:Payload DonHistory donHistory) returns json|error {
         json|error result = check addHistory(donHistory);
         return result;
     }
 
-    isolated resource function post medicalRisk(@http:Payload MedRisks medRisks) returns json|error{
+    isolated resource function post medicalRisk(@http:Payload MedRisks medRisks) returns json|error {
         json|error result = check addmedicalRisk(medRisks);
         return result;
     }
@@ -176,8 +173,8 @@ service /dashboard on listener9191 {
         }
         return body;
     }
-    
-    resource function put .(@http:Query string user_id , @http:Query string user_type, @http:Payload json user_data) returns json|error {
+
+    resource function put .(@http:Query string user_id, @http:Query string user_type, @http:Payload json user_data) returns json|error {
         if user_type == "Doner" {
             map<json> userMap = <map<json>>user_data;
             json donerJson = userMap["doner"];
@@ -211,7 +208,7 @@ service /dashboard on listener9191 {
                     hospitalJson["isCampaign"] = 0;
                 }
             }
-          
+
             Hospital hospital = checkpanic hospitalJson.fromJsonWithType(Hospital);
 
             sql:ExecutionResult|error result = updateHospital(hospital);
@@ -223,7 +220,7 @@ service /dashboard on listener9191 {
         }
         return {"message": "Invalid user type"};
     }
-    
+
     resource function post hospitalReg(@http:Payload Hospital hospital, http:Caller caller, http:Request req) returns error? {
         // Verify JWT from request
         jwt:Payload payload = check verifyJwtFromRequest(req);
@@ -234,14 +231,14 @@ service /dashboard on listener9191 {
             // Missing role
             http:Response res = new;
             res.statusCode = 401;
-            res.setJsonPayload({ status: "error", message: "Invalid token: missing role" });
+            res.setJsonPayload({status: "error", message: "Invalid token: missing role"});
             check caller->respond(res);
             return;
         } else if roleValue != "Admin" {
             // Unauthorized role
             http:Response res = new;
             res.statusCode = 403;
-            res.setJsonPayload({ status: "error", message: "Unauthorized: Only admin can register hospitals" });
+            res.setJsonPayload({status: "error", message: "Unauthorized: Only admin can register hospitals"});
             check caller->respond(res);
             return;
         }
@@ -259,7 +256,7 @@ service /dashboard on listener9191 {
     resource function get bloodStock(@http:Query string district, string hospital) returns json|error {
         HospitalDetails[]|error hospitalsResult = getAllHospitals(district);
 
-        bloodData|error bloodResult = getBloodStockHospital(district,hospital);
+        bloodData|error bloodResult = getBloodStockHospital(district, hospital);
         if district == "All" {
             hospitalsResult = [];
         }
@@ -273,7 +270,7 @@ service /dashboard on listener9191 {
 
         json body = {
             "hospitals": hospitalsResult.toJson(),
-            "blood":bloodResult.toJson()
+            "blood": bloodResult.toJson()
         };
 
         return body;
@@ -283,13 +280,13 @@ service /dashboard on listener9191 {
         json|error result = check addCamp(campaign);
         return result;
     }
-    
-    resource function get donations(@http:Query string user_id) returns DonateRecord[]|error{
-        DonateRecord[]|error donations= get_DonationHistory(user_id);
+
+    resource function get donations(@http:Query string user_id) returns DonateRecord[]|error {
+        DonateRecord[]|error donations = get_DonationHistory(user_id);
         return donations;
     }
 
-    resource function get donor(@http:Query string donor_id) returns json|error{
+    resource function get donor(@http:Query string donor_id) returns json|error {
         string|error dateResult = getLastDonation(donor_id);
         string lastDonation = "";
         string status = "No";
@@ -298,11 +295,11 @@ service /dashboard on listener9191 {
         if dateResult is string {
             int|error count = gateLastDonCount(donor_id);
             if count is int {
-                if count > 0{
+                if count > 0 {
                     donationscount = count;
                     status = "Yes";
 
-                }else{
+                } else {
                     donationscount = count;
                     status = "No";
                 }
@@ -320,57 +317,57 @@ service /dashboard on listener9191 {
             "LastDonationMonth": "",
             "BYear": "",
             "BMonth": "",
-            "Name" : "",
-            "BloodGroup" : ""
+            "Name": "",
+            "BloodGroup": ""
         };
 
         Doner|error doner = getDoner(donor_id);
-            if doner is Doner {
-                string DOB = doner.dob;
-                string[] parts1 = re `-`.split(DOB);
+        if doner is Doner {
+            string DOB = doner.dob;
+            string[] parts1 = re `-`.split(DOB);
 
-                if parts1.length() > 3 {
+            if parts1.length() > 3 {
+                return error("Invalid month format");
+            }
+
+            int b_yr = checkpanic int:fromString(parts1[0]);
+            int b_m = checkpanic int:fromString(parts1[1]);
+
+            (string|int) lastYear = " ";
+            (string|int) lastMonth = " ";
+
+            if lastDonation != "" {
+                string[] parts2 = re `-`.split(lastDonation);
+
+                if parts2.length() > 3 {
                     return error("Invalid month format");
                 }
 
-                int b_yr = checkpanic int:fromString(parts1[0]);
-                int b_m = checkpanic int:fromString(parts1[1]);
-
-                (string|int) lastYear = " ";
-                (string|int) lastMonth = " ";
-
-                if lastDonation != "" {
-                    string[] parts2 = re `-`.split(lastDonation);
-
-                    if parts2.length() > 3 {
-                        return error("Invalid month format");
-                    }
-
-                    lastYear = checkpanic int:fromString(parts2[0]);
-                    lastMonth = checkpanic int:fromString(parts2[1]);
-                }
-
-                body = {
-                    LastDonation: lastDonation,
-                    Status: status,
-                    Count: donationscount,
-                    LastDonationYR: lastYear,
-                    LastDonationMonth: lastMonth,
-                    BYear : b_yr,
-                    BMonth : b_m,
-                    Name : doner.name,
-                    BloodGroup : doner.blood_group
-
-                };
-
-            }else {
-                return error("Doner not found");
+                lastYear = checkpanic int:fromString(parts2[0]);
+                lastMonth = checkpanic int:fromString(parts2[1]);
             }
+
+            body = {
+                LastDonation: lastDonation,
+                Status: status,
+                Count: donationscount,
+                LastDonationYR: lastYear,
+                LastDonationMonth: lastMonth,
+                BYear: b_yr,
+                BMonth: b_m,
+                Name: doner.name,
+                BloodGroup: doner.blood_group
+
+            };
+
+        } else {
+            return error("Doner not found");
+        }
         return body;
     }
 
     resource function get campaigns(@http:Query string date, string district) returns Campaign[]|error {
-        Campaign[]|error campaigns = getCampaignEvent(date,district);
+        Campaign[]|error campaigns = getCampaignEvent(date, district);
         return campaigns;
     };
 
@@ -390,20 +387,20 @@ service /dashboard on listener9191 {
             return hospitals;
         }
         return hospitals;
-        
+
     }
 
     resource function post addBlood(@http:Payload BloodData bloodData) returns json|error {
 
         json|error result = check addBloodStock(bloodData);
         return result;
-        
+
     }
 
     resource function get donatesCamp(@http:Query string hospitalId, http:Caller caller) returns error? {
         // Call your logic to get campaigns
         json result = check getCamp(hospitalId);
-        
+
         // Send response
         http:Response res = new;
         res.statusCode = 200;
@@ -415,9 +412,9 @@ service /dashboard on listener9191 {
         // Verify JWT from request
         jwt:Payload|error payloadResult = verifyJwtFromRequest(req);
         if payloadResult is error {
-            return { 
-                "status": "error", 
-                "message": "Authentication failed: " + payloadResult.message() 
+            return {
+                "status": "error",
+                "message": "Authentication failed: " + payloadResult.message()
             };
         }
 
@@ -426,9 +423,9 @@ service /dashboard on listener9191 {
         // Extract role from token payload
         anydata roleData = payload["role"];
         if roleData is () {
-            return { 
-                "status": "error", 
-                "message": "Invalid token: missing role" 
+            return {
+                "status": "error",
+                "message": "Invalid token: missing role"
             };
         }
 
@@ -436,9 +433,9 @@ service /dashboard on listener9191 {
         if roleData is string {
             userRole = roleData;
         } else {
-            return { 
-                "status": "error", 
-                "message": "Invalid token: role must be a string" 
+            return {
+                "status": "error",
+                "message": "Invalid token: role must be a string"
             };
         }
 
@@ -457,9 +454,9 @@ service /dashboard on listener9191 {
         // Check if page exists
         string[]? rolesForPage = allowedRoles[pageName];
         if rolesForPage is () {
-            return { 
-                "status": "error", 
-                "message": "Unknown page: " + pageName 
+            return {
+                "status": "error",
+                "message": "Unknown page: " + pageName
             };
         }
 

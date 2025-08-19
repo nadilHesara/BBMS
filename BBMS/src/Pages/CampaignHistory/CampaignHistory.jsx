@@ -10,6 +10,7 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
 import { LoadingContext } from "../../context/LoadingContext";
+import useVerifyAccess from "../../SharedData/verifyFunction";
 
 function descendingComparator(a, b, orderBy) {
   if (orderBy === "Date") {
@@ -44,6 +45,7 @@ const headCells = [
 ];
 
 export default function CampaignHistory() {
+  useVerifyAccess("campaignHistory");
   const [rows, setRows] = React.useState([]);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Date");

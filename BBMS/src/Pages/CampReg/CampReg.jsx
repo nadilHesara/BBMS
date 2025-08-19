@@ -5,8 +5,11 @@ import { LoadingContext } from "../../context/LoadingContext";
 import districts from "../../SharedData/districts";
 import { toast } from "react-toastify";
 import MapPicker from "../../components/MapPicker/MapPicker";
+import useVerifyAccess from '../../SharedData/verifyFunction';
+
 
 function CampReg({ theme, setTheme }) {
+  useVerifyAccess("campReg");
   const { loading, setLoading } = useContext(LoadingContext);
   const userId = sessionStorage.getItem("userId");
   const [pickerOpen, setPickerOpen] = useState(false);
