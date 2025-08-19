@@ -295,12 +295,13 @@ function DonationInfo({ theme, setTheme }) {
                     <input type="time" id="time" name="donate_time" onChange={handleChange} required />
                     <br />
                     <button type="button" className='updatebtn' onClick={handleUpdate}>Update</button>
+                    <button type="button" className='updatebtn2' onClick={() => navigate("/dashboard/InfoGrid")}>Form Details</button>
                     </>
                     ):(
                     <input
                     className="navigatebtn"
                     onClick={() => navigate("/dashboard/Donates")}
-                    value={"Fill the form"} readonly>                    
+                    value={"Fill the form"} readOnly>                    
                     </input>
                 )}
                 </div>

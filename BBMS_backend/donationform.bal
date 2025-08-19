@@ -177,3 +177,65 @@ isolated function addConsent(Consent consent) returns json|error{
     
     }    
 }
+
+isolated function FormDeatils(string donorId, string campaignId) returns json|error{
+
+    string|error submitID = dbClient->queryRow(`SELECT submitID FROM eligibility WHERE DonerID=${donorId} AND CampaignID=${campaignId}`);
+
+    if submitID is string{
+        DonHistory|error resultHistory = dbClient->queryRow(`SELECT hadIssuesBefore, issueDetails, advisedNotToDonate, readInfoLeaflet, medicalConditions  FROM donationhistory WHERE submitID=${submitID}`);
+
+        if resultHistory is error{
+            return error("Donor's Donations History Fetching Error");
+        }
+        DonHistory newHistory=resultHistory;
+
+        MedRisks|error medRisks =  dbClient->queryRow(`SELECT jaundice, tbTyphoid, vaccinations, tattoos, imprisoned, foreignTravel, bloodTransfusion, malaria, dengue, recentIllness, dentalWork, recentMeds, riskyCategoriesAwareness, riskSymptoms FROM medicalrisk WHERE submitID=${submitID}`);
+
+        if medRisks is error{
+            return error("Donor's Medical Risks Fetching Error");
+        }
+        MedRisks newMed = medRisks;
+
+        Consent|error consent = dbClient->queryRow(`SELECT testConsent, instructionConsent, notifyConsent, frequency FROM consent WHERE submitID=${submitID}`);
+
+        if consent is error{
+            return error("Donor's Consent Info Fetching Error");
+        }
+
+        Consent newConsent = consent;
+
+
+    json info = {
+        hadIssuesBefore: newHistory.hadIssuesBefore,
+        issueDetails:newHistory.issueDetails,
+        advisedNotToDonate:newHistory.advisedNotToDonate,
+        readInfoLeaflet:newHistory.readInfoLeaflet,
+        medicalConditions:newHistory.medicalConditions,
+        jaundice:newMed.jaundice, 
+        tbTyphoid:newMed.tbTyphoid, 
+        vaccinations:newMed.vaccinations, 
+        tattoos:newMed.tattoos,
+        imprisoned:newMed.imprisoned,
+        foreignTravel:newMed.foreignTravel, 
+        bloodTransfusion:newMed.bloodTransfusion, 
+        malaria:newMed.malaria, 
+        dengue:newMed.dengue, 
+        recentIllness:newMed.recentIllness,
+        dentalWork:newMed.dentalWork, 
+        recentMeds:newMed.recentMeds, 
+        riskyCategoriesAwareness:newMed.riskyCategoriesAwareness, 
+        riskSymptoms:newMed.riskSymptoms,
+        testConsent:newConsent.testConsent,
+        instructionConsent:newConsent.instructionConsent,
+        notifyConsent:newConsent.notifyConsent,
+        frequency:newConsent.frequency
+
+    }; 
+
+        return info;
+    }
+
+    return error("Database Error");
+
+}

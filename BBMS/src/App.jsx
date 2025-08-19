@@ -25,6 +25,7 @@ import DonationHistoryForm from "./components/DonationFormComponents/DonationHis
 import MedicalScreenForm from "./components/DonationFormComponents/MedicalScreenForm";
 import ConsentForm from "./components/DonationFormComponents/ConsentForm";
 import Donates from "./Pages/Donates/Donates";
+import InfoGrid from "./Pages/DonationInfo/InfoGrid";
 import Footer from "./components/Footer/Footer";
 import { LoadingProvider } from "./context/LoadingContext";
 import { ToastContainer } from "react-toastify";
@@ -99,6 +100,7 @@ function App() {
                 <Route path="donates" element={<Donates theme={theme} setTheme={setTheme} />} />
                 <Route path="CampaignHistory" element={<CampaignHistory theme={theme} setTheme={setTheme} />} />
                 <Route path="DonationInfo" element={<DonationInfo theme={theme} setTheme={setTheme} />} />
+                <Route path="InfoGrid" element={<InfoGrid theme={theme} setTheme={setTheme} />} />
 
                 <Route path="DonationForm" element={<DonationFormLayout />}>
                   <Route index element={<EligibilityCheck />} />
