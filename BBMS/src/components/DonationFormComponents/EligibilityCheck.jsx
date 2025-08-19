@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from "axios";
+import { toast } from 'react-toastify';
+
 
 export default function EligibilityCheck() {
 
@@ -8,6 +10,7 @@ export default function EligibilityCheck() {
   const [messages, setMessages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [autoSubmitCases, setAutoSubmitCases] = useState(false);
+  const [isalready,setIsalready] = useState(false);
 
   const [form, setForm] = useState({
     submitID: "S001",
@@ -189,19 +192,20 @@ export default function EligibilityCheck() {
             CampaignID: campaignId
           });
 
-          if(response.status==201){
+          if(response.status==201 || response.data?.message === "Duplicate entry found" ){
+            setMessages([]);
+            if(response.data?.message === "Duplicate entry found"){
+              toast.error("Alreday Registered Ineligible Donor");
+            }else{
+              toast.error("Ineligible Donor for this campaign");
+            }
             navigate('/dashboard');
           }
           
 
         }catch(error){
-          if(error.response.data.message === "Duplicate entry found"){
-            setMessages(prev => [...prev,"You've already registered for the campaign and currently not eligible to donate"]);
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            navigate('/dashboard');
-
-          }
           setMessages(prev => [...prev, "Failed to submit. Please try again."]);
+
         }finally{
           setIsSubmitting(false);
         }
@@ -256,25 +260,24 @@ export default function EligibilityCheck() {
           CampaignID: campaignId
         });
 
-
-        if (response.status === 201) {
+        if (response.status === 201 && response.data?.message !== "Duplicate entry found") {
           setMessages(["You are eligible to donate. Redirecting..."]);
           await new Promise(resolve => setTimeout(resolve, 2000));
           sessionStorage.setItem("submitID", response.data?.SubmitID)
           sessionStorage.setItem("campaignId", campaignId);
           navigate("profileInfo", {state:{from:"DonationForm"}});
 
-        }else {
-          console.log(response);
+        }else if(response.data?.message==="Duplicate entry found"){
+          setIsalready(true);
+          sessionStorage.setItem("submitID", response.data?.SubmitID)
+          sessionStorage.setItem("campaignId", campaignId);
+
+        }
+        else {
           setMessages([response.data?.message || "Eligibility check failed"]); 
         }
 
       }catch(error){
-        if(error.response.data.message === "Duplicate entry found"){
-            setMessages(prev => [...prev,"You've already registered for the campaign and eligible to donate"]);
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            navigate('/dashboard');
-        }
         setMessages(["Error submitting form. Please try again."]);
         console.error("Error submitting form:", error.message);
 
@@ -293,15 +296,20 @@ export default function EligibilityCheck() {
         CampaignID: campaignId
       });
 
-      if(response.status==201){
+      if(response.status === 201 && response.data?.message !== "Duplicate entry found"){
         setMessages(["You are not eligible to donate. Redirecting to dashboard"]);
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        toast.error("Ineligible Donor for this campaign");
         navigate('/dashboard');
+
+      }else if(response.data?.message==="Duplicate entry found"){
+        setIsalready(true);
+        sessionStorage.setItem("submitID", response.data?.SubmitID)
+        sessionStorage.setItem("campaignId", campaignId);
       }
       
 
     }catch(error){
-      console.error("Auto submit failed:", error);
       setMessages(prev => [...prev, "Failed to submit. Please try again."]);
     }finally{
       setIsSubmitting(false);
@@ -337,10 +345,10 @@ return (
             <form className="space-y-6">
               <div className="space-y-2">
                 <label className="flex flex-col text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Age (yrs): 
+                  Age: 
                   <input 
                     name="age" 
-                    value={form.age} 
+                    value={`${form.age}  yrs`} 
                     readOnly
                     className="mt-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors cursor-not-allowed"
                   />
@@ -364,6 +372,7 @@ return (
                     className="mt-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
                     placeholder="Enter your weight"
                   />
+
                 </label>
               </div>
 
@@ -372,7 +381,7 @@ return (
                   Months since last donation: 
                   <input 
                     name="lastDonation" 
-                    value={form.lastDonation} 
+                    value={`${form.lastDonation}  months`} 
                     readOnly
                     className="mt-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors cursor-not-allowed"
                   />
@@ -470,6 +479,48 @@ return (
           </div>
         </div>
       </div>
+
+      {isalready && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        {!form.eligible? ("Already Registered ineligible donor"):(
+          "Already Registered eligible donor"
+        )} 
+        
+      </h3>
+
+
+      <div className="flex justify-end space-x-3">
+        <button
+          onClick={() => {
+            setIsalready(false);
+            sessionStorage.removeItem("submitID");
+            sessionStorage.removeItem("campaignId");
+            navigate('/dashboard');
+          }}
+          className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+        >
+          Return to Dashboard
+        </button>
+        <button
+          onClick={() => {
+            setIsalready(false);
+            navigate("profileInfo", {state:{from:"DonationForm"}});
+          }}
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        >
+          Proceed
+        </button>
+      </div>
     </div>
+  </div>
+)}
+    </div>
+    
+    
   );
+
+
+
 }

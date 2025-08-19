@@ -28,12 +28,11 @@ function getComparator(order, orderBy) {
 
 // Removed CampaignID from headCells
 const headCells = [
-   { id: "orgName", label: "Organizer Name" },
+  { id: "orgName", label: "Organizer Name" },
   { id: "orgTele", label: "Organizer Telephone" },
   { id: "orgEmail", label: "Organizer Email" },
   { id: "Date", label: "Date" },
   { id: "District", label: "District" },
-  { id: "DonerCount", label: "Donor Count" },
   { id: "A_plus", label: "A+" },
   { id: "B_plus", label: "B+" },
   { id: "O_plus", label: "O+" },

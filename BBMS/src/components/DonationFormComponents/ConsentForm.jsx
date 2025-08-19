@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './DonationForm.css';
 import { HiArrowCircleLeft } from "react-icons/hi";
+import { toast } from 'react-toastify';
 
 export default function ConsentForm() {
   const navigate = useNavigate();
-  const [message, setMessage] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const donor_id = sessionStorage.getItem("userId");
   const submitID = sessionStorage.getItem("submitID");
   const campaignId = sessionStorage.getItem("campaignId");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
+
 
   const [form, setForm] = useState({
     testConsent: false,
@@ -49,28 +47,28 @@ export default function ConsentForm() {
       });
 
       if (res.status === 201){
-        setSuccessMessage(  
+
+        setTimeout(() => {
+          sessionStorage.removeItem("submitID");
+          sessionStorage.removeItem("campaignId");
+          navigate('/dashboard');
+      }, 2000);
+        toast.success(  
         <>
         See you at {res.data?.Address} <br />
         on {res.data?.Date}
         </>
         );
-        setShowPopup(true);
 
-        setTimeout(() => {
-          sessionStorage.removeItem("submitID");
-          sessionStorage.removeItem("campaignId");
-          setShowPopup(false);
-          navigate('/dashboard');
-      }, 8000);
+
 
       } else {
         console.log(res);
-        setMessage([res.data?.message || "Submission failed. Please try again."]); 
+        toast.error([res.data?.message || "Submission failed. Please try again."]); 
       }
 
     } catch (error) {
-      setMessage('Error connecting to server.');
+      toast.error('Error connecting to server.');
 
     }finally{
       setIsSubmitting(false);
@@ -108,6 +106,7 @@ export default function ConsentForm() {
               name="testConsent"
               checked={form.testConsent}
               onChange={handleChange}
+              required
               className="mt-1 h-4 w-4 text-red-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 
                          rounded focus:ring-red-500 focus:ring-2"
             />
@@ -123,6 +122,7 @@ export default function ConsentForm() {
               name="instructionConsent"
               checked={form.instructionConsent}
               onChange={handleChange}
+              required
               className="mt-1 h-4 w-4 text-red-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 
                          rounded focus:ring-red-500 focus:ring-2"
             />
@@ -138,6 +138,7 @@ export default function ConsentForm() {
               name="notifyConsent"
               checked={form.notifyConsent}
               onChange={handleChange}
+              required
               className="mt-1 h-4 w-4 text-red-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 
                          rounded focus:ring-red-500 focus:ring-2"
             />
@@ -180,11 +181,7 @@ export default function ConsentForm() {
               Submit Declaration
             </button>
           </div>
-          {showPopup && (
-        <div className="popup">
-          {successMessage}
-      </div>
-      )}
+          
         </div>
       </div>
     </div>

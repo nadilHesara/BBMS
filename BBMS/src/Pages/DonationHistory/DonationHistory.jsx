@@ -3,7 +3,8 @@ import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { LoadingContext } from '../../context/LoadingContext';
 import verifyAccess from "../../SharedData/verifyFunction";
-import { Heart, Calendar, MapPin, Award, Users, ExternalLink } from 'lucide-react';
+import { Heart, Calendar, MapPin, Award, Users, ExternalLink, User, Hospital  } from 'lucide-react';
+
 
 function DonationHistory({ theme, setTheme }) {
     
@@ -20,6 +21,7 @@ function DonationHistory({ theme, setTheme }) {
                 axios.get(`http://localhost:9191/dashboard/donations?user_id=${userID}`)
                     .then(res => {
                         setDonations(res.data);
+                        console.log(donations);
                         console.log(res.data);
                     })
                     .catch(err => console.error(err));
@@ -171,7 +173,39 @@ function DonationHistory({ theme, setTheme }) {
                                                                     Campaign Organization
                                                                 </div>
                                                                 <div className="text-base font-semibold text-gray-900 dark:text-white">
+                                                                    {donation.CampaignName}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-3">
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="p-2 bg-pink-200 dark:bg-green-900/30 rounded-lg">
+                                                                <User className="w-4 h-4 text-red-600 dark:text-green-400" />
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Organizer
+                                                                </div>
+                                                                <div className="text-base font-semibold text-gray-900 dark:text-white">
                                                                     {donation.org_name}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-3">
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="p-2 bg-gray-300 dark:bg-green-900/30 rounded-lg">
+                                                                <Hospital className="w-4 h-4 text-black dark:text-green-400" />
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                    Blood Transferred to
+                                                                </div>
+                                                                <div className="text-base font-semibold text-gray-900 dark:text-white">
+                                                                    {donation.HospitalName}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -192,6 +226,8 @@ function DonationHistory({ theme, setTheme }) {
                                                             </div>
                                                         </div>
                                                     </div>
+
+                                                    
                                                 </div>
                                             </div>
                                             

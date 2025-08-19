@@ -1,4 +1,5 @@
 import ballerina/sql;
+import ballerina/io;
 
 
 isolated function addCamp(Campaign campaign) returns json|error {
@@ -73,7 +74,7 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
     CampaignDetails[] campaigns = [];
 
     sql:ParameterizedQuery query;
-
+    string curruntDate = getCurrentDate();
     if month is () {
         query = `SELECT 
                     c.CampaignID, 
@@ -94,7 +95,7 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
                 FROM campaign AS c
                 INNER JOIN bloodstocks AS b 
                     ON c.CampaignID = b.CampaignID
-                where c.HospitalID = ${hospital_id}`;
+                where c.HospitalID = ${hospital_id} AND c.DateofCampaign <= ${curruntDate}`;
     } else {
         string date  = month + "-01";
         query = `SELECT 
@@ -130,8 +131,8 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
 
 isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[]|error {
     CampaignIdName[] campaigns = [];
-    // string curruntDate = getCurrentDate();
-    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID}  ORDER BY DateofCampaign DESC`;
+    string curruntDate = getCurrentDate();
+    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND DateofCampaign <= ${curruntDate}   ORDER BY DateofCampaign DESC`;
     
     stream<CampaignIdName, error?> resultStream = dbClient->query(query);
 
@@ -142,4 +143,17 @@ isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[
     check resultStream.close();
     
     return campaigns;
+}
+
+isolated function getCamp(string hospitalId) returns CampaignIdName|error {
+    sql:ParameterizedQuery query = `
+        SELECT c.CampaignID, c.CampaignName
+        FROM campaign c
+        INNER JOIN hospital h ON c.HospitalID = h.HospitalID
+        WHERE c.HospitalID = ${hospitalId};
+    `;
+
+    CampaignIdName|error campaignId = dbClient->queryRow(query, CampaignIdName);
+    io:println(campaignId);
+    return campaignId;
 }

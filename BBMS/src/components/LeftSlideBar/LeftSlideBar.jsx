@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { IoMdLogOut } from "react-icons/io";
 import {
+  FaClinicMedical ,
   FaUserCircle,
   FaHistory,
   FaBars,
@@ -12,7 +13,7 @@ import { MdAppRegistration } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import "./LeftSlideBar.css";
 
-const LeftSlideBar = ({ theme, userType, username }) => {
+const LeftSlideBar = ({ theme, userType }) => {
   const navigate = useNavigate();
   const [currentPos,setCurrentPos] = useState(true);
   const [isOpen, setIsOpen] = useState(currentPos);
@@ -84,16 +85,19 @@ const LeftSlideBar = ({ theme, userType, username }) => {
               {isOpen && <span>Available Blood Stock</span>}
             </Link>
 
-            {userType == "Hospital" && <Link to="campReg">
+            {userType == "Hospital" && 
+            <>
+            <Link to="campReg">
               <IoBagAddSharp size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Add Campaign</span>}
-            </Link>}
+            </Link>
 
-            {/* <Link to="#">
-              <FaNotesMedical size={30} color={theme === 'dark' ? 'white' : 'black'}/>
-              {isOpen && <span>Ongoing Campaign</span>}
-            </Link> */}
-
+            <Link to="donates">
+              <FaClinicMedical  size={30} color={theme === 'dark' ? 'white' : 'black'}/>
+              {isOpen && <span>Campaign On Hospital</span>}
+            </Link>
+            </>
+            }
             <Link to="CampaignHistory">
               <FaHistory size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Campaign History</span>}
@@ -134,23 +138,24 @@ const LeftSlideBar = ({ theme, userType, username }) => {
   
   return (
    
-    <aside className={`left-slide-bar ${theme} ${isOpen ? "open" : "closed"}`}>
+    <div className="">
+      <aside className={`left-slide-bar ${theme} ${isOpen ? "open" : "closed"}`}>
       
-      <div className={`sidebar-toggle-btn ${theme}`} onClick={toggleSidebar}>
-        <FaBars size={24} />
-      </div>
-
-      
-        <div className="profile-section">
-          {isOpen && (
-            <>
-              <FaUserCircle size={80} color={theme === 'dark' ? 'rgba(181, 181, 181, 0.9)' : 'rgba(75, 75, 75, 0.9)'} />
-              <h4 >{userData.Name}</h4>
-            </>
-          )}
+        <div className={`sidebar-toggle-btn ${theme}`} onClick={toggleSidebar}>
+          <FaBars size={24} />
         </div>
-        {SelectUser(userType , theme)}
-      </aside>
+      
+          <div className="profile-section">
+            {isOpen && (
+             <>
+                <FaUserCircle size={80} color={theme === 'dark' ? 'rgba(181, 181, 181, 0.9)' : 'rgba(75, 75, 75, 0.9)'} />
+                <h4 className="mt-3">{userData.Name}</h4>
+              </>
+            )}
+          </div>
+          {SelectUser(userType , theme)}
+        </aside>
+    </div>
     
   );
 };

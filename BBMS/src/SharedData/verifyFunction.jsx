@@ -7,6 +7,7 @@ function logOut(){
     sessionStorage.removeItem("userData");
     sessionStorage.removeItem("username");
     sessionStorage.removeItem("userType");
+    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=dashboard;";
 }
 
 export default function useVerifyAccess(pageName) {
@@ -35,7 +36,7 @@ export default function useVerifyAccess(pageName) {
                 setVerified(false);
                 logOut();
                 if (pageName == "dashboard") {
-                    navigate("/login", { replace: true }); // redirect unauthorized
+                    navigate("/login", { replace: true }); 
                 } else {
                     navigate("/dashboard")
                 }

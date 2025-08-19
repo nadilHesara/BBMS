@@ -6,10 +6,11 @@ import MyCalender from "../../components/MyCalender/MyCalender";
 import "./Dashboard.css";
 import districts from "../../SharedData/districts";
 import { LoadingContext } from "../../context/LoadingContext";
+// import useVerifyAccess from "../../SharedData/verifyFunction";
 
 
 const Dashboard = ({ theme, setTheme }) => {
-
+  // useVerifyAccess("dashboard");
   const { loading, setLoading } = useContext(LoadingContext);
 
   const navigate = useNavigate();
@@ -35,13 +36,14 @@ const Dashboard = ({ theme, setTheme }) => {
 
     try {
       setLoading(true);
-      fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}`)
+      fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}` ,{
+            method: "GET", credentials:"include"
+      })
         .then((res) => {
           if (!res.ok) throw new Error("Fetch failed");
           return res.json();
         })
         .then((data) => {
-          console.log(data)
           setUserData(data);
           sessionStorage.setItem("userData", JSON.stringify(data));
         })
@@ -55,7 +57,6 @@ const Dashboard = ({ theme, setTheme }) => {
       setLoading(false);
     }
   }, [userId, userType]);
-  console.log("user: ", userData?.District);
 
   const [selectedDistrict, setSelectedDistrict] = useState(userData?.District);
 
@@ -85,10 +86,9 @@ const Dashboard = ({ theme, setTheme }) => {
     };
   }, [navigate, userId, userType]);
 
-  if (!userId || !userType) return null;
-  if (error) return <p>{error}</p>;
-  if (!userData) return <p>Loading...</p>;
-
+  if (!userId || !userType) return ;
+  if (error) return ;
+  if (!userData) return ;
 
   return (
     <div className="dashboard-layout">
@@ -124,7 +124,7 @@ const Dashboard = ({ theme, setTheme }) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row items-center gap-3 mt-5">
+                <div className="ml-5 mr-5 flex flex-col sm:flex-row items-center gap-3 mt-5">
                   <label
                     htmlFor="district"
                     className="text-lg font-medium m text-gray-700 dark:text-gray-200"
@@ -150,14 +150,14 @@ const Dashboard = ({ theme, setTheme }) => {
                     ))}
                   </select>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                <div className="mr-10 grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
                   {/* Left Column - Calendar Component */}
                   <div className="space-y-6">
                     <MyCalender selectedDistrict={selectedDistrict} />
                   </div>
 
                   
-                                     {/* Right Column - Mission & Vision */}
+                  {/* Right Column - Mission & Vision */}
                    <div className="relative">
                      {/* Timeline Layout */}
                      <div className="space-y-0">

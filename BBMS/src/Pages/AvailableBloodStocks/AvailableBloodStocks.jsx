@@ -174,7 +174,6 @@ function AvailableBloodStocks({ theme }) {
         })
         .then((data) => {
           setHospitals(data.hospitals || []);
-          setHospital("All")
 
           const updatedData = bloodData.map(item => ({
             ...item,

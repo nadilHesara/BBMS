@@ -2,6 +2,10 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/jwt;
 import ballerina/sql;
+// import ballerina/io;
+
+
+
 listener http:Listener listener9191 = new (9191);
 
 @http:ServiceConfig {
@@ -206,9 +210,10 @@ service /dashboard on listener9191 {
             if existingHospital is Hospital {
                 if hospitalJson is map<json> {
                     hospitalJson["password"] = existingHospital.password;
+                    hospitalJson["isCampaign"] = 0;
                 }
             }
-
+          
             Hospital hospital = checkpanic hospitalJson.fromJsonWithType(Hospital);
 
             sql:ExecutionResult|error result = updateHospital(hospital);
@@ -364,7 +369,6 @@ service /dashboard on listener9191 {
             }else {
                 return error("Doner not found");
             }
-
         return body;
     }
 
@@ -391,11 +395,74 @@ service /dashboard on listener9191 {
         return hospitals;
         
     }
+
     resource function post addBlood(@http:Payload BloodData bloodData) returns json|error {
 
         json|error result = check addBloodStock(bloodData);
         return result;
         
     }
+
+resource function get donatesCamp(@http:Query string hospitalId, http:Caller caller) returns error? {
+    // Call your logic to get campaigns
+    json result = check getCamp(hospitalId);
+    
+    // Send response
+    http:Response res = new;
+    res.statusCode = 200;
+    res.setJsonPayload(result);
+    check caller->respond(res);
+}
+
+// resource function get verifyRole(http:Request req, @http:Query string pageName) returns json|error {
+
+//     // 🔐 Validate JWT and extract payload
+//     jwt:Payload payload = check verifyJwtFromRequest(req);
+
+//     // 🏷️ Extract role from token
+//     string|error roleValue = 
+//         payload["role"] is string 
+//             ? <string>payload["role"] 
+//             : error("Invalid token: missing or invalid role");
+
+//     if roleValue is error {
+//         return { "status": "error", "message": roleValue.message() };
+//     }
+
+//     // Allowed roles per page
+//     map<string[]> allowedRoles = {
+//         "hospitalReg": ["Admin"],
+//         "availableBloodStock": ["Admin", "Hospital"],
+//         "dashboard": ["Admin", "Hospital", "Doner"],
+//         "donates": ["Hospital"],
+//         "campReg": ["Hospital"],
+//         "donation-history": ["Doner"],
+//         "profileInfo": ["Doner", "Hospital"],
+//         "campaignHistory": ["Hospital", "Admin"]
+//     };
+
+//     // 🔍 Find allowed roles for page
+//     string[]? rolesForPage = allowedRoles[pageName];
+//     if rolesForPage is () {
+//         return { "status": "error", "message": "Unknown page: " + pageName };
+//     }
+
+//     // 🔑 Case-insensitive match
+//     boolean isAuthorized = rolesForPage.any(r => r.toLowerAscii() == roleValue.toLowerAscii());
+
+//     if !isAuthorized {
+//         return {
+//             "status": "error",
+//             "message": "Unauthorized: role '" + roleValue + "' cannot access page '" + pageName + "'"
+//         };
+//     }
+
+//     // ✅ Success response
+//     return {
+//         "status": "authorized",
+//         "role": roleValue,
+//         "page": pageName
+//     };
+// }
 
 }
