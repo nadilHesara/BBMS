@@ -138,23 +138,24 @@ const LeftSlideBar = ({ theme, userType }) => {
   
   return (
    
-    <aside className={`left-slide-bar ${theme} ${isOpen ? "open" : "closed"}`}>
+    <div className="">
+      <aside className={`left-slide-bar ${theme} ${isOpen ? "open" : "closed"}`}>
       
-      <div className={`sidebar-toggle-btn ${theme}`} onClick={toggleSidebar}>
-        <FaBars size={24} />
-      </div>
-
-      
-        <div className="profile-section">
-          {isOpen && (
-            <>
-              <FaUserCircle size={80} color={theme === 'dark' ? 'rgba(181, 181, 181, 0.9)' : 'rgba(75, 75, 75, 0.9)'} />
-              <h4 >{userData.Name}</h4>
-            </>
-          )}
+        <div className={`sidebar-toggle-btn ${theme}`} onClick={toggleSidebar}>
+          <FaBars size={24} />
         </div>
-        {SelectUser(userType , theme)}
-      </aside>
+      
+          <div className="profile-section">
+            {isOpen && (
+             <>
+                <FaUserCircle size={80} color={theme === 'dark' ? 'rgba(181, 181, 181, 0.9)' : 'rgba(75, 75, 75, 0.9)'} />
+                <h4 className="mt-3">{userData.Name}</h4>
+              </>
+            )}
+          </div>
+          {SelectUser(userType , theme)}
+        </aside>
+    </div>
     
   );
 };

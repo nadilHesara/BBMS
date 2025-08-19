@@ -11,9 +11,11 @@ function Donates({ theme, setTheme }) {
     const [nic, setNic] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const location = useLocation();
+    
     const navigate = useNavigate();
     const campaignid = location.state?.campaignId;
     const campdate = location.state?.campdate;
+    const campName = location.state?.campName;
     const { loading, setLoading } = useContext(LoadingContext);
     const [campaign_id, setCampaign_id] = useState(campaignid || null);
 
@@ -104,7 +106,7 @@ function Donates({ theme, setTheme }) {
     return (
         <div className="search_container">
             <form className="doner-reg-form" onSubmit={handleSearchSubmit}>
-                <h1>Campaign {campaign_id}</h1>
+                <h1>Campaign :- <span><i>{campName}</i></span></h1>
                 <div className="field_container">
                     <label className='Label' htmlFor="username_email">Username or Email</label>
                     <input type="text" id="username_email" name="username_email" value={username_email} onChange={(e) => setUsername_email(e.target.value)}></input>

@@ -193,9 +193,10 @@ public isolated function get_DonationHistory(string userID) returns DonateRecord
     DonateRecord[] donations = [];
 
     stream<DonateRecord, error?> resultStream = dbClient->query(
-        `select campaign.OrganizerName, campaign.DateofCampaign, campaign.District from donates 
-            join doner on donates.DonerID = doner.DonerID
-            join campaign on donates.CampaignID = campaign.CampaignID
+        `select campaign.OrganizerName, campaign.DateofCampaign, campaign.District, campaign.CampaignName, hospital.Name from donates 
+            inner join doner on donates.DonerID = doner.DonerID
+            inner join campaign on donates.CampaignID = campaign.CampaignID
+            left join hospital on campaign.HospitalID = hospital.HospitalID
             where donates.donerID = ${userID}`
     );
     check from DonateRecord donation in resultStream

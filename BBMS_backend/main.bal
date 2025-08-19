@@ -413,55 +413,55 @@ resource function get donatesCamp(@http:Query string hospitalId, http:Caller cal
     check caller->respond(res);
 }
 
-    // resource function get verifyRole(http:Request req, @http:Query string pageName) returns json|error {
-        
-    //     // Get JWT from request (cookie or Authorization header)
-    //     jwt:Payload payload = check verifyJwtFromRequest(req);
+// resource function get verifyRole(http:Request req, @http:Query string pageName) returns json|error {
 
-    //     // Extract role directly from payload
-    //     anydata roleValue = payload["role"];
-    //     if !(roleValue is string) {
-    //         return { "status": "error", "message": "Invalid token: missing or invalid role" };
-    //     }
+//     // 🔐 Validate JWT and extract payload
+//     jwt:Payload payload = check verifyJwtFromRequest(req);
 
-    //     // Allowed roles per page
-    //     map<string[]> allowedRoles = {
-    //         "hospitalReg": ["Admin"],
-    //         "availableBloodStock": ["Admin", "Hospital"],
-    //         "dashboard": ["Admin", "Hospital", "Doner"],
-    //         "donates" : ["Hospital"],
-    //         "campReg" : ["Hospital"],
-    //         "donation-history" : ["Doner"],
-    //         "profileInfo" : ["Doner" , "Hospital"],
-    //         "campaignHistory" : ["Hospital" , "Admin"]
-    //     };
+//     // 🏷️ Extract role from token
+//     string|error roleValue = 
+//         payload["role"] is string 
+//             ? <string>payload["role"] 
+//             : error("Invalid token: missing or invalid role");
 
-    //     string[]? rolesForPage = allowedRoles[pageName];
-    //     if rolesForPage is () {
-    //         return { "status": "error", "message": "Unknown page: " + pageName };
-    //     }
+//     if roleValue is error {
+//         return { "status": "error", "message": roleValue.message() };
+//     }
 
-    //     boolean isAuthorized = false;
-    //     foreach string allowedRole in rolesForPage {
-    //         if allowedRole.toLowerAscii() == roleValue.toLowerAscii() {
-    //             isAuthorized = true;
-    //             break;
-    //         }
-    //     }
+//     // Allowed roles per page
+//     map<string[]> allowedRoles = {
+//         "hospitalReg": ["Admin"],
+//         "availableBloodStock": ["Admin", "Hospital"],
+//         "dashboard": ["Admin", "Hospital", "Doner"],
+//         "donates": ["Hospital"],
+//         "campReg": ["Hospital"],
+//         "donation-history": ["Doner"],
+//         "profileInfo": ["Doner", "Hospital"],
+//         "campaignHistory": ["Hospital", "Admin"]
+//     };
 
-    //     if !isAuthorized {
-    //         return { 
-    //             "status": "error", 
-    //             "message": "Unauthorized: role '" + roleValue + "' cannot access page '" + pageName + "'" 
-    //         };
-    //     }
+//     // 🔍 Find allowed roles for page
+//     string[]? rolesForPage = allowedRoles[pageName];
+//     if rolesForPage is () {
+//         return { "status": "error", "message": "Unknown page: " + pageName };
+//     }
 
-    //     // ✅ Success
-    //     return {
-    //         "status": "authorized",
-    //         "role": roleValue,
-    //         "page": pageName
-    //     };
-    // }
+//     // 🔑 Case-insensitive match
+//     boolean isAuthorized = rolesForPage.any(r => r.toLowerAscii() == roleValue.toLowerAscii());
+
+//     if !isAuthorized {
+//         return {
+//             "status": "error",
+//             "message": "Unauthorized: role '" + roleValue + "' cannot access page '" + pageName + "'"
+//         };
+//     }
+
+//     // ✅ Success response
+//     return {
+//         "status": "authorized",
+//         "role": roleValue,
+//         "page": pageName
+//     };
+// }
 
 }
