@@ -149,10 +149,10 @@ input#pwd {
 .password-toggle-icon {
   position: absolute;
   right: 59px;
-  top: 49%;
-  transform: translateY(-50%);
+  top: 44%;
   cursor: pointer;
   color: #666;
+  
 }
 
 .password-toggle-icon:hover {

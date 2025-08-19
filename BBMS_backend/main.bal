@@ -1,6 +1,7 @@
 import ballerina/http;
 import ballerina/jwt;
 import ballerina/sql;
+import ballerina/io;
 listener http:Listener listener9191 = new (9191);
 
 @http:ServiceConfig {
@@ -204,9 +205,10 @@ service /dashboard on listener9191 {
             if existingHospital is Hospital {
                 if hospitalJson is map<json> {
                     hospitalJson["password"] = existingHospital.password;
+                    hospitalJson["isCampaign"] = 0;
                 }
             }
-
+          
             Hospital hospital = checkpanic hospitalJson.fromJsonWithType(Hospital);
 
             sql:ExecutionResult|error result = updateHospital(hospital);
@@ -224,6 +226,7 @@ service /dashboard on listener9191 {
 
     // Extract role from token
     anydata roleValue = payload["role"];
+    io:println(roleValue);
     if roleValue is () {
         // Missing role
         http:Response res = new;

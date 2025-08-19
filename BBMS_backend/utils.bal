@@ -93,6 +93,7 @@ public isolated function sendEmail(string toEmail, string subject, string body) 
         port = 465,
         username = "thilokyabusness@gmail.com",
         password = "xbcq ajjd gsvr pgag"
+        
     );
 
     email:Message message = {
