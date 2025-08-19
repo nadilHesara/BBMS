@@ -1,21 +1,23 @@
+.campreg-container{
+  margin-top:30px;
+  margin-left:380px;
+}
+
 .location-field {
+  width:100%;
   display:inline-flex ;
-  align-items: center;
-  gap: 8px;
+  align-items: top;
+  gap: 4px;
   
 }
 
-.location-field input {
-  flex: 1;
-  
-  
-}
+
 
 .map-icon-btn {
   background: #f4f4f4;
   border: 1px solid #ccc;
   border-radius: 6px;
-  padding: 6px 10px ;
+  height: 45px;
   cursor: pointer;
   font-size: 18px;
   transition: background 0.2s;
