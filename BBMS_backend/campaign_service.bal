@@ -128,7 +128,7 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
 isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[]|error {
     CampaignIdName[] campaigns = [];
     string curruntDate = getCurrentDate();
-    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND (DateofCampaign <= ${curruntDate} OR  DateofCampaign = NULL  ) ORDER BY DateofCampaign DESC`;
+    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} ORDER BY DateofCampaign DESC`;
 
     stream<CampaignIdName, error?> resultStream = dbClient->query(query);
 
@@ -137,8 +137,10 @@ isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[
             campaigns.push(campaign);
         };
     check resultStream.close();
-    CampaignIdName camp = check getCamp(hospitalID);
-    campaigns.push(camp);
+    CampaignIdName|error camp =  getCamp(hospitalID);
+    if camp is CampaignIdName{
+        campaigns.push(camp);
+    }
     return campaigns;
 }
 
