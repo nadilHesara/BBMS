@@ -37,7 +37,9 @@ const Dashboard = ({ theme, setTheme }) => {
     try {
       setLoading(true);
       fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}` ,{
-            method: "GET", credentials:"include"
+            method: "GET", credentials:"include" ,headers: {  
+          "Content-Type": "application/json"
+        },
       })
         .then((res) => {
           if (!res.ok) throw new Error("Fetch failed");

@@ -4,8 +4,6 @@ import ballerina/jwt;
 import ballerina/sql;
 // import ballerina/io;
 
-
-
 listener http:Listener listener9191 = new (9191);
 
 @http:ServiceConfig {
@@ -223,38 +221,39 @@ service /dashboard on listener9191 {
                 return result;
             }
         }
+        return {"message": "Invalid user type"};
     }
     
     resource function post hospitalReg(@http:Payload Hospital hospital, http:Caller caller, http:Request req) returns error? {
-    // Verify JWT from request
-    jwt:Payload payload = check verifyJwtFromRequest(req);
+        // Verify JWT from request
+        jwt:Payload payload = check verifyJwtFromRequest(req);
 
-    // Extract role from token
-    anydata roleValue = payload["role"];
-    if roleValue is () {
-        // Missing role
+        // Extract role from token
+        anydata roleValue = payload["role"];
+        if roleValue is () {
+            // Missing role
+            http:Response res = new;
+            res.statusCode = 401;
+            res.setJsonPayload({ status: "error", message: "Invalid token: missing role" });
+            check caller->respond(res);
+            return;
+        } else if roleValue != "Admin" {
+            // Unauthorized role
+            http:Response res = new;
+            res.statusCode = 403;
+            res.setJsonPayload({ status: "error", message: "Unauthorized: Only admin can register hospitals" });
+            check caller->respond(res);
+            return;
+        }
+
+        // Authorized, proceed with adding hospital
+        json result = check addHospital(hospital);
+
+        // Respond with success
         http:Response res = new;
-        res.statusCode = 401;
-        res.setJsonPayload({ status: "error", message: "Invalid token: missing role" });
+        res.statusCode = 200;
+        res.setJsonPayload(result);
         check caller->respond(res);
-        return;
-    } else if roleValue != "Admin" {
-        // Unauthorized role
-        http:Response res = new;
-        res.statusCode = 403;
-        res.setJsonPayload({ status: "error", message: "Unauthorized: Only admin can register hospitals" });
-        check caller->respond(res);
-        return;
-    }
-
-    // Authorized, proceed with adding hospital
-    json result = check addHospital(hospital);
-
-    // Respond with success
-    http:Response res = new;
-    res.statusCode = 200;
-    res.setJsonPayload(result);
-    check caller->respond(res);
     }
 
     resource function get bloodStock(@http:Query string district, string hospital) returns json|error {
@@ -351,8 +350,6 @@ service /dashboard on listener9191 {
                     lastMonth = checkpanic int:fromString(parts2[1]);
                 }
 
-
-
                 body = {
                     LastDonation: lastDonation,
                     Status: status,
@@ -403,66 +400,90 @@ service /dashboard on listener9191 {
         
     }
 
-resource function get donatesCamp(@http:Query string hospitalId, http:Caller caller) returns error? {
-    // Call your logic to get campaigns
-    json result = check getCamp(hospitalId);
-    
-    // Send response
-    http:Response res = new;
-    res.statusCode = 200;
-    res.setJsonPayload(result);
-    check caller->respond(res);
-}
+    resource function get donatesCamp(@http:Query string hospitalId, http:Caller caller) returns error? {
+        // Call your logic to get campaigns
+        json result = check getCamp(hospitalId);
+        
+        // Send response
+        http:Response res = new;
+        res.statusCode = 200;
+        res.setJsonPayload(result);
+        check caller->respond(res);
+    }
 
-// resource function get verifyRole(http:Request req, @http:Query string pageName) returns json|error {
+    resource function get verifyRole(http:Request req, @http:Query string pageName) returns json|error {
+        // Verify JWT from request
+        jwt:Payload|error payloadResult = verifyJwtFromRequest(req);
+        if payloadResult is error {
+            return { 
+                "status": "error", 
+                "message": "Authentication failed: " + payloadResult.message() 
+            };
+        }
 
-//     // 🔐 Validate JWT and extract payload
-//     jwt:Payload payload = check verifyJwtFromRequest(req);
+        jwt:Payload payload = payloadResult;
 
-//     // 🏷️ Extract role from token
-//     string|error roleValue = 
-//         payload["role"] is string 
-//             ? <string>payload["role"] 
-//             : error("Invalid token: missing or invalid role");
+        // Extract role from token payload
+        anydata roleData = payload["role"];
+        if roleData is () {
+            return { 
+                "status": "error", 
+                "message": "Invalid token: missing role" 
+            };
+        }
 
-//     if roleValue is error {
-//         return { "status": "error", "message": roleValue.message() };
-//     }
+        string userRole;
+        if roleData is string {
+            userRole = roleData;
+        } else {
+            return { 
+                "status": "error", 
+                "message": "Invalid token: role must be a string" 
+            };
+        }
 
-//     // Allowed roles per page
-//     map<string[]> allowedRoles = {
-//         "hospitalReg": ["Admin"],
-//         "availableBloodStock": ["Admin", "Hospital"],
-//         "dashboard": ["Admin", "Hospital", "Doner"],
-//         "donates": ["Hospital"],
-//         "campReg": ["Hospital"],
-//         "donation-history": ["Doner"],
-//         "profileInfo": ["Doner", "Hospital"],
-//         "campaignHistory": ["Hospital", "Admin"]
-//     };
+        // Define allowed roles per page (using consistent role names)
+        map<string[]> allowedRoles = {
+            "hospitalReg": ["Admin"],
+            "availableBloodStock": ["Admin", "Hospital"],
+            "dashboard": ["Admin", "Hospital", "Doner"],
+            "donates": ["Hospital"],
+            "campReg": ["Hospital"],
+            "donation-history": ["Doner"],
+            "profileInfo": ["Doner", "Hospital"],
+            "campaignHistory": ["Hospital", "Admin"]
+        };
 
-//     // 🔍 Find allowed roles for page
-//     string[]? rolesForPage = allowedRoles[pageName];
-//     if rolesForPage is () {
-//         return { "status": "error", "message": "Unknown page: " + pageName };
-//     }
+        // Check if page exists
+        string[]? rolesForPage = allowedRoles[pageName];
+        if rolesForPage is () {
+            return { 
+                "status": "error", 
+                "message": "Unknown page: " + pageName 
+            };
+        }
 
-//     // 🔑 Case-insensitive match
-//     boolean isAuthorized = rolesForPage.any(r => r.toLowerAscii() == roleValue.toLowerAscii());
+        // Check if user role is authorized for this page
+        boolean isAuthorized = false;
+        foreach string allowedRole in rolesForPage {
+            if allowedRole == userRole {
+                isAuthorized = true;
+                break;
+            }
+        }
 
-//     if !isAuthorized {
-//         return {
-//             "status": "error",
-//             "message": "Unauthorized: role '" + roleValue + "' cannot access page '" + pageName + "'"
-//         };
-//     }
+        if !isAuthorized {
+            return {
+                "status": "error",
+                "message": "Unauthorized: role '" + userRole + "' cannot access page '" + pageName + "'"
+            };
+        }
 
-//     // ✅ Success response
-//     return {
-//         "status": "authorized",
-//         "role": roleValue,
-//         "page": pageName
-//     };
-// }
-
+        // Success response
+        return {
+            "status": "authorized",
+            "role": userRole,
+            "page": pageName
+        };
+    }
 }

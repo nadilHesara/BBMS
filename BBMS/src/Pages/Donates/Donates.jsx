@@ -14,10 +14,12 @@ function Donates({ theme, setTheme }) {
     
     const navigate = useNavigate();
     const campaignid = location.state?.campaignId;
-    const campdate = location.state?.campdate;
-    const campName = location.state?.campName;
+    const campaigndate = location.state?.campdate;
+    const campaignName = location.state?.campName;
     const { loading, setLoading } = useContext(LoadingContext);
     const [campaign_id, setCampaign_id] = useState(campaignid || null);
+    const [campdate, setCampdate] = useState(campaigndate || null);
+    const [campName, setCampName] = useState(campaignName || null);
 
 
     const handleCampainId = async () => {
@@ -32,7 +34,9 @@ function Donates({ theme, setTheme }) {
             if (!res.ok) throw new Error("Fetch failed");
 
             const data = await res.json();
-            setCampaign_id(data.campaignId); // set state
+            setCampaign_id(data.CampaignID);
+            setCampName(data.CampaignName);
+            setCampdate(new Date().toLocaleDateString());
         } catch (error) {
             console.error("Error:", error);
         } finally {
