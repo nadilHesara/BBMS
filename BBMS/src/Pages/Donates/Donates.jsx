@@ -2,10 +2,10 @@ import React, { use, useState, useContext, useEffect } from 'react'
 import "./Donates.css"
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoadingContext } from "../../context/LoadingContext";
-// import useVerifyAccess from '../../SharedData/verifyFunction';
+import useVerifyAccess from '../../SharedData/verifyFunction';
 
 function Donates({ theme, setTheme }) {
-    // useVerifyAccess("donates");
+    useVerifyAccess("donates");
     const userId = sessionStorage.getItem("userId");
     const [username_email, setUsername_email] = useState('');
     const [nic, setNic] = useState('');
@@ -36,7 +36,10 @@ function Donates({ theme, setTheme }) {
             const data = await res.json();
             setCampaign_id(data.CampaignID);
             setCampName(data.CampaignName);
-            setCampdate(new Date().toLocaleDateString());
+            const date = new Date().toISOString().split("T")[0];
+            setCampdate(date);
+            console.log(date);
+            
         } catch (error) {
             console.error("Error:", error);
         } finally {

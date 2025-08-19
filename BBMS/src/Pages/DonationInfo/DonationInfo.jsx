@@ -5,9 +5,11 @@ import axios from "axios";
 import './DonationInfo.css';
 import { LoadingContext } from '../../context/LoadingContext';
 import { toast } from 'react-toastify';
+import useVerifyAccess from '../../SharedData/verifyFunction';
 
 
 function DonationInfo({ theme, setTheme }) {
+    useVerifyAccess("donation-history");
     const { loading, setLoading } = useContext(LoadingContext);
     const location = useLocation();
     const navigate = useNavigate();

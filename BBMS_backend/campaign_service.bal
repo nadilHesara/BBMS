@@ -1,9 +1,7 @@
 import ballerina/sql;
-import ballerina/io;
-
 
 isolated function addCamp(Campaign campaign) returns json|error {
-   
+
     CampaignID|error c = dbClient->queryRow(`SELECT CampaignID FROM campaign ORDER BY CampaignID DESC LIMIT 1`);
     string newID;
 
@@ -39,7 +37,6 @@ isolated function addCamp(Campaign campaign) returns json|error {
             )`;
 
     sql:ExecutionResult|error result = dbClient->execute(query);
-   
 
     if result is error {
         return error("Campaign Adding Failed!");
@@ -94,9 +91,9 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
                 FROM campaign AS c
                 INNER JOIN bloodstocks AS b 
                     ON c.CampaignID = b.CampaignID
-                where c.HospitalID = ${hospital_id} AND c.DateofCampaign <= ${curruntDate}`;
+                where c.HospitalID = ${hospital_id} AND c.DateofCampaign <= ${curruntDate} `;
     } else {
-        string date  = month + "-01";
+        string date = month + "-01";
         query = `SELECT 
                     c.CampaignID, 
                     c.District, 
@@ -131,8 +128,8 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
 isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[]|error {
     CampaignIdName[] campaigns = [];
     string curruntDate = getCurrentDate();
-    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND DateofCampaign <= ${curruntDate}   ORDER BY DateofCampaign DESC`;
-    
+    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND DateofCampaign <= ${curruntDate} ORDER BY DateofCampaign DESC`;
+
     stream<CampaignIdName, error?> resultStream = dbClient->query(query);
 
     check from CampaignIdName campaign in resultStream
@@ -140,7 +137,10 @@ isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[
             campaigns.push(campaign);
         };
     check resultStream.close();
-    
+    CampaignIdName|error camp =  getCamp(hospitalID);
+    if camp is CampaignIdName{
+        campaigns.push(camp);
+    }
     return campaigns;
 }
 
@@ -148,11 +148,10 @@ isolated function getCamp(string hospitalId) returns CampaignIdName|error {
     sql:ParameterizedQuery query = `
         SELECT c.CampaignID, c.CampaignName
         FROM campaign c
-        INNER JOIN hospital h ON c.HospitalID = h.HospitalID
+        INNER JOIN hospital h ON c.CampaignName = h.Name
         WHERE c.HospitalID = ${hospitalId};
     `;
 
     CampaignIdName|error campaignId = dbClient->queryRow(query, CampaignIdName);
-    io:println(campaignId);
     return campaignId;
 }

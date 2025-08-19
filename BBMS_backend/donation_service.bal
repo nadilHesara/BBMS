@@ -1,5 +1,5 @@
 import ballerina/sql;
-import ballerina/io;
+
 isolated function addDonation(Donates donates) returns json|error {
     // Generate a new Doantion Id
 
@@ -33,7 +33,6 @@ isolated function addDonation(Donates donates) returns json|error {
             ${newDonation.blood_quantity}
         )`;
 
-
     sql:ParameterizedQuery updateDonorBloodGroup = `UPDATE doner 
         SET BloodGroup = ${newDonation.blood_group} 
         WHERE DonerID = ${newDonation.doner_id} 
@@ -42,7 +41,7 @@ isolated function addDonation(Donates donates) returns json|error {
     var updateResult = dbClient->execute(updateDonorBloodGroup);
 
     if updateResult is sql:Error {
-        io:println("Warning: Could not update donor blood group. ", updateResult.message());
+        return updateResult;
     }
 
     sql:ExecutionResult|error result = dbClient->execute(addDonation);
@@ -53,7 +52,5 @@ isolated function addDonation(Donates donates) returns json|error {
     else {
         return {"message": "Donation adedd sucsessfully!"};
     }
-
-
 
 }
