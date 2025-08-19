@@ -1,5 +1,8 @@
-import ballerina/http;
 import ballerina/sql;
+import ballerina/http;
+
+
+
 
 isolated function getUserByUsername(string username) returns Login|error {
     sql:ParameterizedQuery query = `SELECT * FROM login WHERE UserName=${username};`;
@@ -83,6 +86,7 @@ isolated function changePassword(string userType, string username, string newPas
         return loginUpdateResult;
     }
 }
+
 
 isolated function resetPassword(string userType, string userInfo) returns json|error {
     string newPassword = check generatePassword(12);
