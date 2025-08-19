@@ -148,3 +148,4 @@ isolated function addBloodStock(BloodData bloodData) returns json|error {
     return {"status": "success", "message": "Blood stock added successfully"};
 
 }
+
