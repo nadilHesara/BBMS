@@ -1,4 +1,5 @@
 import ballerina/sql;
+import ballerina/io;
 
 isolated function addCamp(Campaign campaign) returns json|error {
 
@@ -68,7 +69,7 @@ isolated function getCampaignEvent(string year_month, string district) returns C
 
 isolated function getCampaignHistory(string hospital_id, string? month = ()) returns CampaignDetails[]|error {
     CampaignDetails[] campaigns = [];
-
+    
     sql:ParameterizedQuery query;
     string curruntDate = getCurrentDate();
     if month is () {
@@ -87,7 +88,8 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
                     b.A_minus, 
                     b.B_minus, 
                     b.O_minus, 
-                    b.AB_minus
+                    b.AB_minus,
+                    c.completed
                 FROM campaign AS c
                 INNER JOIN bloodstocks AS b 
                     ON c.CampaignID = b.CampaignID
@@ -109,7 +111,8 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
                     b.A_minus, 
                     b.B_minus, 
                     b.O_minus, 
-                    b.AB_minus
+                    b.AB_minus,
+                    c.completed
                 FROM campaign AS c
                 INNER JOIN bloodstocks AS b 
                     ON c.CampaignID = b.CampaignID
@@ -121,14 +124,14 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
             campaigns.push(campaign);
         };
     check resultStream.close();
-
+    io:println(campaigns);
     return campaigns;
 }
 
 isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[]|error {
     CampaignIdName[] campaigns = [];
     string curruntDate = getCurrentDate();
-    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND (DateofCampaign <= ${curruntDate} OR  DateofCampaign = NULL  ) ORDER BY DateofCampaign DESC`;
+    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND DateofCampaign <= ${curruntDate} ORDER BY DateofCampaign DESC`;
 
     stream<CampaignIdName, error?> resultStream = dbClient->query(query);
 
@@ -137,8 +140,10 @@ isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[
             campaigns.push(campaign);
         };
     check resultStream.close();
-    CampaignIdName camp = check getCamp(hospitalID);
-    campaigns.push(camp);
+    CampaignIdName|error camp =  getCamp(hospitalID);
+    if camp is CampaignIdName{
+        campaigns.push(camp);
+    }
     return campaigns;
 }
 

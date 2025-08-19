@@ -294,6 +294,9 @@ public type CampaignDetails record {|
 
     @sql:Column {name: "AB_minus"}
     string? AB_minus;
+
+    @sql:Column { name: "completed" }
+    string? completed;
 |};
 
 public type CampaignRequest record {|
