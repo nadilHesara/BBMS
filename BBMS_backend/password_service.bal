@@ -4,7 +4,7 @@ import ballerina/http;
 
 
 
-isolated function getUserByUsername(string username) returns Login|error {
+
 isolated function getUserByUsername(string username) returns Login|error {
     sql:ParameterizedQuery query = `SELECT * FROM login WHERE UserName=${username};`;
     Login|error result = dbClient->queryRow(query);
