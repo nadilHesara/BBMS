@@ -14,14 +14,47 @@
 
 
 /* Highlight styling for campaign dates */
-.highlight {
+.highlight-red{
   background-color: #ffebee !important;
   border-radius: 50% !important;
   color: #d32f2f !important;
   font-weight: bold !important;
 }
+.highlight-green {
+  background-color: #b9fec7 !important;
+  border-radius: 50% !important;
+  color: #89e386 !important;
+  font-weight: bold !important;
+}
 
-.highlight:hover {
+.highlight-green:hover {
+  background-color: #92ffba !important;
+}
+
+.past-campaign {
+  opacity: 0.9;
+  background: #f3f3f3;
+  border-left: 4px solid #999;
+}
+
+.status-badge {
+  display: inline-block;
+  margin: 0.5rem 0;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+  color: white;
+  background-color: #666;
+  border-radius: 6px;
+}
+
+.notice {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #444;
+  font-style: italic;
+}
+
+.highlight-red:hover {
   background-color: #ffcdd2 !important;
 }
 

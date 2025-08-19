@@ -1,7 +1,5 @@
 import ballerina/sql;
 
-
-
 isolated function getBloodStockHospital(string district, string hospitalID) returns bloodData|error {
     sql:ParameterizedQuery query;
     if district != "All" {
@@ -44,7 +42,7 @@ isolated function getBloodStockHospital(string district, string hospitalID) retu
             SUM(O_minus) AS O_minus,
             SUM(AB_minus) AS AB_minus
                 FROM bloodstocks `;
-        
+
     }
 
     bloodData|error result = dbClient->queryRow(query, bloodData);
@@ -84,23 +82,22 @@ isolated function addBloodStock(BloodData bloodData) returns json|error {
         } else {
             return error("Invalid blood type: " + bloodType);
         }
-    }else {
+    } else {
         // Check if blood stock record exists for this campaign
         sql:ExecutionResult|error existingRecord = dbClient->queryRow(
             `SELECT StockId, CampaignID FROM bloodstocks WHERE CampaignID = ${bloodData.campaignId}`
         );
 
-
         if existingRecord is error {
             // No existing record, INSERT new one
-            int aPlus     = bloodType == "A_plus" ? bloodData.units : 0;
-            int bPlus     = bloodType == "B_plus" ? bloodData.units : 0;
-            int oPlus     = bloodType == "O_plus" ? bloodData.units : 0;
-            int abPlus    = bloodType == "AB_plus" ? bloodData.units : 0;
-            int aMinus    = bloodType == "A_minus" ? bloodData.units : 0;
-            int bMinus    = bloodType == "B_minus" ? bloodData.units : 0;
-            int oMinus    = bloodType == "O_minus" ? bloodData.units : 0;
-            int abMinus   = bloodType == "AB_minus" ? bloodData.units : 0;
+            int aPlus = bloodType == "A_plus" ? bloodData.units : 0;
+            int bPlus = bloodType == "B_plus" ? bloodData.units : 0;
+            int oPlus = bloodType == "O_plus" ? bloodData.units : 0;
+            int abPlus = bloodType == "AB_plus" ? bloodData.units : 0;
+            int aMinus = bloodType == "A_minus" ? bloodData.units : 0;
+            int bMinus = bloodType == "B_minus" ? bloodData.units : 0;
+            int oMinus = bloodType == "O_minus" ? bloodData.units : 0;
+            int abMinus = bloodType == "AB_minus" ? bloodData.units : 0;
 
             sql:ExecutionResult|error newRowResult = dbClient->execute(`INSERT INTO bloodstocks
                     (CampaignID, HospitalId, A_plus, B_plus, O_plus, AB_plus, A_minus, B_minus, O_minus, AB_minus)
@@ -111,9 +108,9 @@ isolated function addBloodStock(BloodData bloodData) returns json|error {
             if newRowResult is error {
                 return error("Failed to add new blood stock: " + newRowResult.message());
             }
-            
-        } 
-        
+
+        }
+
         //UPDATE it by adding new units to existing units
         if bloodType == "A_plus" {
             query = `UPDATE bloodstocks SET A_plus = COALESCE(A_plus, 0) + ${bloodData.units}, note = ${bloodData.notes}
@@ -142,12 +139,13 @@ isolated function addBloodStock(BloodData bloodData) returns json|error {
         } else {
             return error("Invalid blood type: " + bloodType);
         }
-    
+
     }
     sql:ExecutionResult|error result = dbClient->execute(query);
     if result is error {
         return result;
-    }   
+    }
     return {"status": "success", "message": "Blood stock added successfully"};
-   
+
 }
+

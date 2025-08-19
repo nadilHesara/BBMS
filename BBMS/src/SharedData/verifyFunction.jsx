@@ -18,8 +18,7 @@ export default function useVerifyAccess(pageName) {
         const checkAccess = async () => {
             try {
                 const cleanPageName = pageName.replace(/^\//, ""); // remove leading slash
-                const response = await fetch(
-                    `http://localhost:9191/dashboard/verifyRole?pageName=${cleanPageName}`,
+                const response = await fetch(`http://localhost:9191/dashboard/verifyRole?pageName=${cleanPageName}`,
                     {
                         method: "GET",
                         credentials: "include",

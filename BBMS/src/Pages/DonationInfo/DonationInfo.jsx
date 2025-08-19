@@ -5,9 +5,12 @@ import axios from "axios";
 import './DonationInfo.css';
 import { LoadingContext } from '../../context/LoadingContext';
 import { toast } from 'react-toastify';
+import useVerifyAccess from '../../SharedData/verifyFunction';
+
 import Cookies from 'js-cookie';
 
 function DonationInfo({ theme, setTheme }) {
+    useVerifyAccess("donation-history");
     const { loading, setLoading } = useContext(LoadingContext);
     const campaign_Id = Cookies.get('campaign_Id');
     const donorId = Cookies.get('donorId');
