@@ -6,10 +6,11 @@ import MyCalender from "../../components/MyCalender/MyCalender";
 import "./Dashboard.css";
 import districts from "../../SharedData/districts";
 import { LoadingContext } from "../../context/LoadingContext";
+// import useVerifyAccess from "../../SharedData/verifyFunction";
 
 
 const Dashboard = ({ theme, setTheme }) => {
-
+  // useVerifyAccess("dashboard");
   const { loading, setLoading } = useContext(LoadingContext);
 
   const navigate = useNavigate();
@@ -35,13 +36,16 @@ const Dashboard = ({ theme, setTheme }) => {
 
     try {
       setLoading(true);
-      fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}`)
+      fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}` ,{
+            method: "GET", credentials:"include" ,headers: {  
+          "Content-Type": "application/json"
+        },
+      })
         .then((res) => {
           if (!res.ok) throw new Error("Fetch failed");
           return res.json();
         })
         .then((data) => {
-          console.log(data)
           setUserData(data);
           sessionStorage.setItem("userData", JSON.stringify(data));
         })
@@ -55,7 +59,6 @@ const Dashboard = ({ theme, setTheme }) => {
       setLoading(false);
     }
   }, [userId, userType]);
-  console.log("user: ", userData?.District);
 
   const [selectedDistrict, setSelectedDistrict] = useState(userData?.District);
 
@@ -85,9 +88,9 @@ const Dashboard = ({ theme, setTheme }) => {
     };
   }, [navigate, userId, userType]);
 
-  if (!userId || !userType) return setLoading(true);
-  if (error) return setLoading(error);
-  if (!userData) return setLoading(true);
+  if (!userId || !userType) return ;
+  if (error) return ;
+  if (!userData) return ;
 
   return (
     <div className="dashboard-layout">

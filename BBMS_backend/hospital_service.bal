@@ -102,7 +102,8 @@ isolated function addHospital(Hospital hospital) returns json|error {
             doner_count: (),
             start_time: (),
             end_time: (),
-            hospital_id: newHospitalId
+            hospital_id: newHospitalId,
+            location: ()
             };
             _ = check addCamp(hospitalCamp);
     }

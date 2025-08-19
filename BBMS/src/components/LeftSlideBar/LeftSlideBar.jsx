@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { IoMdLogOut } from "react-icons/io";
 import {
+  FaClinicMedical ,
   FaUserCircle,
   FaHistory,
   FaBars,
@@ -84,16 +85,19 @@ const LeftSlideBar = ({ theme, userType }) => {
               {isOpen && <span>Available Blood Stock</span>}
             </Link>
 
-            {userType == "Hospital" && <Link to="campReg">
+            {userType == "Hospital" && 
+            <>
+            <Link to="campReg">
               <IoBagAddSharp size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Add Campaign</span>}
-            </Link>}
+            </Link>
 
-            {/* <Link to="#">
-              <FaNotesMedical size={30} color={theme === 'dark' ? 'white' : 'black'}/>
-              {isOpen && <span>Ongoing Campaign</span>}
-            </Link> */}
-
+            <Link to="donates">
+              <FaClinicMedical  size={30} color={theme === 'dark' ? 'white' : 'black'}/>
+              {isOpen && <span>Campaign On Hospital</span>}
+            </Link>
+            </>
+            }
             <Link to="CampaignHistory">
               <FaHistory size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Campaign History</span>}

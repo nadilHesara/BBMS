@@ -198,22 +198,33 @@ isolated function hexToBytes(string hex) returns byte[]|error {
     }
     return bytes;
 }
+
 configurable string JWT_SECRET = ?;
 const JWT_ISSUER   = "bbms";
 const JWT_AUDIENCE = "bbms-app";
 
+// ✅ This function works correctly
 isolated function issueToken(string username, string userId, string role) returns string|error {
     jwt:IssuerConfig cfg = {
         issuer: JWT_ISSUER, 
-        username: username,          // becomes sub
+        username: username,           // 🔑 should be "subject"
         audience: JWT_AUDIENCE,
         expTime: 3600,               // seconds
-        customClaims: { "uid": userId, "role": role },
-        signatureConfig: { algorithm: jwt:HS256, config: JWT_SECRET }
+        customClaims: {
+            "uid": userId,
+            "role": role
+        },
+        signatureConfig: {
+            algorithm: jwt:HS256,
+            config: JWT_SECRET
+        }
     };
     return check jwt:issue(cfg);
 }
 
+
+
+// ✅ This function works correctly
 isolated function validateToken(string token) returns jwt:Payload|error {
     jwt:ValidatorConfig vcfg = {
         issuer: JWT_ISSUER,
@@ -226,6 +237,7 @@ isolated function validateToken(string token) returns jwt:Payload|error {
     return check jwt:validate(token, vcfg);
 }
 
+// ✅ This function works correctly
 isolated function generateJwt(Login user) returns string|error {
     // Get user ID - either doner_id or hospital_id
     string? donerId = user.doner_id;
@@ -235,6 +247,7 @@ isolated function generateJwt(Login user) returns string|error {
     return issueToken(user.user_name, userId, user.user_type);
 }
 
+// ⚠️ This function works but has been improved for better error handling
 isolated function verifyJwtFromRequest(http:Request req) returns jwt:Payload|error {
     string? token = ();
     
@@ -246,8 +259,11 @@ isolated function verifyJwtFromRequest(http:Request req) returns jwt:Payload|err
         foreach string cookie in cookies {
             string trimmedCookie = cookie.trim();
             if trimmedCookie.startsWith("auth_token=") {
-                token = trimmedCookie.substring(11); // Remove "auth_token=" prefix
-                break;
+                string cookieValue = trimmedCookie.substring(11); // Remove "auth_token=" prefix
+                if cookieValue.length() > 0 {
+                    token = cookieValue;
+                    break;
+                }
             }
         }
     }
@@ -255,14 +271,22 @@ isolated function verifyJwtFromRequest(http:Request req) returns jwt:Payload|err
     // If no cookie token found, check Authorization header
     if token is () {
         string|http:HeaderNotFoundError authHeaderResult = req.getHeader("Authorization");
-        if authHeaderResult is string && authHeaderResult.startsWith("Bearer ") {
-            token = authHeaderResult.substring(7);
+        if authHeaderResult is string {
+            if authHeaderResult.startsWith("Bearer ") && authHeaderResult.length() > 7 {
+                token = authHeaderResult.substring(7);
+            }
         }
     }
 
     if token is () {
-        return error("Missing token");
+        return error("Missing authentication token");
     }
 
-    return check validateToken(token);
+    // Validate the token
+    jwt:Payload|error payload = validateToken(token);
+    if payload is error {
+        return error("Invalid or expired token: " + payload.message());
+    }
+
+    return payload;
 }

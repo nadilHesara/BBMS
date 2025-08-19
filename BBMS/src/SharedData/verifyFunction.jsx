@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-function logOut(){
+function logOut() {
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("userData");
     sessionStorage.removeItem("username");
     sessionStorage.removeItem("userType");
+    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=dashboard;";
 }
 
 export default function useVerifyAccess(pageName) {
@@ -19,7 +20,13 @@ export default function useVerifyAccess(pageName) {
                 const cleanPageName = pageName.replace(/^\//, ""); // remove leading slash
                 const response = await fetch(
                     `http://localhost:9191/dashboard/verifyRole?pageName=${cleanPageName}`,
-                    { method: "GET", credentials: "include" }
+                    {
+                        method: "GET",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    }
                 );
 
                 const data = await response.json();
@@ -35,7 +42,7 @@ export default function useVerifyAccess(pageName) {
                 setVerified(false);
                 logOut();
                 if (pageName == "dashboard") {
-                    navigate("/login", { replace: true }); // redirect unauthorized
+                    navigate("/login", { replace: true });
                 } else {
                     navigate("/dashboard")
                 }
