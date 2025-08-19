@@ -1,4 +1,4 @@
-# Blood Bank Management System (BBMS) Backend
+# Blood Bank Management System
 
 A comprehensive Blood Bank Management System backend built with Ballerina, providing secure and efficient management of blood donations, inventory, and user operations.
 
