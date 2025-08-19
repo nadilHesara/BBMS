@@ -1,5 +1,5 @@
 import ballerina/http;
-// import ballerina/io;
+import ballerina/io;
 import ballerina/jwt;
 import ballerina/sql;
 listener http:Listener listener9191 = new (9191);
@@ -44,6 +44,7 @@ service / on listener9191 {
     }
 
     isolated resource function post campaignRequest(@http:Payload CampaignRequest data) returns json|error {
+        io:println(data);
         string emailBody = "<!DOCTYPE html>" +
                     "<html>" +
                     "<head>" +
@@ -76,7 +77,7 @@ service / on listener9191 {
 
         string subject = "New Blood Donation Campaign Request | " + data.campaignName+"";
         json|error result =  sendEmail("thilokyaangeesa@gmail.com",subject,emailBody);
-
+        io:println(result);
         return result;
     }
     //POST donation eligibility

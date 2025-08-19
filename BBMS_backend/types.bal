@@ -179,6 +179,11 @@ public type Campaign record {
 
     @sql:Column {name: "HospitalID"}
     string hospital_id;
+
+    @sql:Column {name: "location"}
+    string? location;
+
+
 };
 
 public type DonerID record {
