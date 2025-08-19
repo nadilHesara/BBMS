@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 
 
 function CalendarComponent(props) {
-  console.log("The selecteddistrict: ",props.selectedDistrict);
   const selectedDistrict = props.selectedDistrict;
   const [activeStartDate,setActiveStartDate] = useState(new Date());
   const [value, setValue] = useState(new Date());
@@ -17,6 +16,7 @@ function CalendarComponent(props) {
   const [selectedDateDetails, setSelectedDateDetails] = useState([]);
   const [expandedCampaign, setExpandedCampaign] = useState(null);
   const navigate = useNavigate(); 
+  const date = new Date().toISOString().split("T")[0];
 
 
   // Helper function to format date in local timezone (YYYY-MM-DD)
