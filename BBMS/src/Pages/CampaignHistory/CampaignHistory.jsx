@@ -1,4 +1,4 @@
-import React , {useContext} from "react";
+import React, { useContext } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,8 +8,10 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
+import Checkbox from "@mui/material/Checkbox"; // ✅ Import Checkbox
 import { visuallyHidden } from "@mui/utils";
 import { LoadingContext } from "../../context/LoadingContext";
+import useVerifyAccess from "../../SharedData/verifyFunction";
 
 function descendingComparator(a, b, orderBy) {
   if (orderBy === "Date") {
@@ -26,7 +28,7 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// Removed CampaignID from headCells
+// ✅ Added "Complete" column
 const headCells = [
   { id: "orgName", label: "Organizer Name" },
   { id: "orgTele", label: "Organizer Telephone" },
@@ -40,58 +42,70 @@ const headCells = [
   { id: "A_minus", label: "A-" },
   { id: "B_minus", label: "B-" },
   { id: "O_minus", label: "O-" },
-  { id: "AB_minus", label: "AB-" }
+  { id: "AB_minus", label: "AB-" },
+  { id: "complete", label: "Complete" } // ✅ Checkbox column
 ];
 
 export default function CampaignHistory() {
+  useVerifyAccess("campaignHistory");
   const [rows, setRows] = React.useState([]);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("Date");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const { loading, setLoading } = useContext(LoadingContext);
+  const { setLoading } = useContext(LoadingContext);
 
   React.useEffect(() => {
-    try{
-    const userId = localStorage.getItem("userId");
-    fetch(`http://localhost:9191/dashboard/CampaignHistory?user_id=${userId}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Server Error!");
-        return res.json();
-      })
-      .then((data) => {
-        setRows(
-          data.map((campaign, index) => ({
-            id: index, // Use index for key since CampaignID is hidden
-            District: campaign.District,
-            Date: campaign.Date,
-            orgName: campaign.orgName,
-            orgTele: campaign.orgTele,
-            orgEmail: campaign.orgEmail,
-            DonerCount: campaign.DonerCount,
-            A_plus: campaign.A_plus,
-            B_plus: campaign.B_plus,
-            O_plus: campaign.O_plus,
-            AB_plus: campaign.AB_plus,
-            A_minus: campaign.A_minus,
-            B_minus: campaign.B_minus,
-            O_minus: campaign.O_minus,
-            AB_minus: campaign.AB_minus
-          }))
-        );
-      })
-      .catch((err) => console.error("Error fetching campaign history:", err));
+    try {
+      const userId = localStorage.getItem("userId");
+      fetch(`http://localhost:9191/dashboard/CampaignHistory?user_id=${userId}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Server Error!");
+          return res.json();
+        })
+        .then((data) => {
+          setRows(
+            data.map((campaign, index) => ({
+              id: index,
+              District: campaign.District,
+              Date: campaign.Date,
+              orgName: campaign.orgName,
+              orgTele: campaign.orgTele,
+              orgEmail: campaign.orgEmail,
+              DonerCount: campaign.DonerCount,
+              A_plus: campaign.A_plus,
+              B_plus: campaign.B_plus,
+              O_plus: campaign.O_plus,
+              AB_plus: campaign.AB_plus,
+              A_minus: campaign.A_minus,
+              B_minus: campaign.B_minus,
+              O_minus: campaign.O_minus,
+              AB_minus: campaign.AB_minus,
+              complete: false 
+            }))
+          );
+        })
+        .catch((err) => console.error("Error fetching campaign history:", err));
     } catch (error) {
       console.error("Error in CampaignHistory component:", error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setLoading]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
+  };
+
+  // ✅ Toggle checkbox value
+  const handleCheckboxChange = (id) => {
+    setRows((prevRows) =>
+      prevRows.map((row) =>
+        row.id === id ? { ...row, complete: !row.complete } : row
+      )
+    );
   };
 
   return (
@@ -130,7 +144,15 @@ export default function CampaignHistory() {
                 <TableRow hover key={row.id}>
                   {headCells.map((cell) => (
                     <TableCell key={cell.id}>
-                      {row[cell.id] ?? "-"}
+                      {cell.id === "complete" ? (
+                        <Checkbox
+                          checked={row.complete}
+                          onChange={() => handleCheckboxChange(row.id)}
+                          color="primary"
+                        />
+                      ) : (
+                        row[cell.id] ?? "-"
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>

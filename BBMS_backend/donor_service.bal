@@ -1,5 +1,5 @@
-import ballerina/sql;
 import ballerina/io;
+import ballerina/sql;
 
 public isolated function addDoner(Doner doner) returns json|error {
 
@@ -51,9 +51,9 @@ public isolated function addDoner(Doner doner) returns json|error {
                 "<body>" +
                 "<div class='container'>" +
                 "<h2>Password Reset Request</h2>" +
-                "<p>Dear "+ newDoner.name +",</p>" +
+                "<p>Dear " + newDoner.name + ",</p>" +
                 "<p>Your account password has been requested. Use the following password to log in:</p>" +
-                "<div class='password-box'> "+defaultPassword+"</div>" +
+                "<div class='password-box'> " + defaultPassword + "</div>" +
                 "<p>For security reasons, we recommend changing this password after your first login.</p>" +
                 "<p>Thank you,<br>Support Team</p>" +
                 "<div class='footer'>&copy; 2025 Your Company Name. All rights reserved.</div>" +
@@ -61,7 +61,6 @@ public isolated function addDoner(Doner doner) returns json|error {
                 "</body>" +
                 "</html>";
 
-        
         error? emailResult = sendEmail(donerEmail, "Welcome to BBMS - Your Account Details", htmlBody);
         if emailResult is error {
             io:println("Warning: Could not send welcome email. ", emailResult.message());
@@ -70,7 +69,9 @@ public isolated function addDoner(Doner doner) returns json|error {
 
     // Encrypt password before storing
     password = newDoner.password;
-    if !(password is string){return error("Password does not exist");}
+    if !(password is string) {
+        return error("Password does not exist");
+    }
     string encryptedPassword = check hashPassword(password);
 
     // Insert donor details
@@ -111,7 +112,6 @@ public isolated function addDoner(Doner doner) returns json|error {
     }
 }
 
-
 public isolated function getDoner(string? id = (), string? username = (), string? email = ()) returns Doner|error {
     Doner|error doner;
     if id is string {
@@ -150,7 +150,7 @@ public isolated function getAllDoners() returns Doner[]|error {
 
 public isolated function updateDoner(Doner doner) returns sql:ExecutionResult|error {
     sql:ExecutionResult result;
-    
+
     if (doner.password is string) {
         result = check dbClient->execute(`
             UPDATE Doner SET 
@@ -202,7 +202,7 @@ public isolated function get_DonationHistory(string userID) returns DonateRecord
     check from DonateRecord donation in resultStream
         do {
             donations.push(donation);
-            
+
         };
     check resultStream.close();
     io:println(donations);
@@ -214,14 +214,14 @@ public isolated function getLastDonation(string donor_id) returns string|error {
     sql:ParameterizedQuery query1 = `SELECT CampaignID FROM donates WHERE DonerID = ${donor_id} ORDER BY DonateID DESC LIMIT 1`;
     Campaign|error Camp = check dbClient->queryRow(query1);
 
-    if Camp is Campaign {  
+    if Camp is Campaign {
         sql:ParameterizedQuery query2 = `SELECT DateofCampaign FROM campaign WHERE CampaignID = ${Camp.campain_id}`;
         LastDonation = check dbClient->queryRow(query2);
-        
+
     } else {
         return error("No Previous Donations found");
     }
-    
+
     return LastDonation;
 }
 
@@ -231,11 +231,11 @@ public isolated function gateLastDonCount(string donor_id) returns int|error {
     sql:ParameterizedQuery query = `SELECT COUNT(DISTINCT CampaignID) FROM donates WHERE DonerID = ${donor_id}`;
     int|error count = check dbClient->queryRow(query);
 
-    if count is int{
+    if count is int {
         last_count = count;
         return last_count;
     }
-     else {
+    else {
         return error("No Previous Donations found");
     }
 }

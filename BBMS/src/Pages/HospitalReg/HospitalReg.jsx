@@ -7,9 +7,10 @@ import districts from '../../SharedData/districts';
 import LeftSlideBar from "../../components/LeftSlideBar/LeftSlideBar";
 import "./HospitalReg.css";
 import { toast } from "react-toastify";
+import useVerifyAccess from "../../SharedData/verifyFunction";
 
 function HospitalReg({ theme, setTheme }) {
-
+    useVerifyAccess("hospitalReg");
     const { loading, setLoading } = useContext(LoadingContext);
     const navigate = useNavigate();
 

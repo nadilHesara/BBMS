@@ -12,6 +12,7 @@ import {
   Cell,
 } from "recharts";
 import "./AvailableBloodStocks.css";
+import useVerifyAccess from "../../SharedData/verifyFunction";
 
 
 const typeMap = {
@@ -34,6 +35,7 @@ const statusColor = {
 
 
 function AvailableBloodStocks({ theme }) {
+  useVerifyAccess("availableBloodStock");
   const { loading, setLoading } = useContext(LoadingContext);
   const HandleBlood = (item, blood) => {
 

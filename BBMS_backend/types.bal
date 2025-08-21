@@ -188,7 +188,6 @@ public type Campaign record {
     @sql:Column {name: "location"}
     string? location;
 
-
 };
 
 public type DonerID record {
@@ -242,7 +241,7 @@ type passwordData record {|
     string newPassword;
     string userType;
     string userName;
-    
+
 |};
 
 public type HospitalDetails record {|
@@ -250,54 +249,55 @@ public type HospitalDetails record {|
     string Name;
 |};
 
-
 public type CampaignDetails record {|
     @sql:Column {name: "CampaignID"}
     string CampaignID;
-    
+
     @sql:Column {name: "District"}
     string District;
-    
+
     @sql:Column {name: "DateofCampaign"}
     string? Date;
-    
+
     @sql:Column {name: "OrganizerName"}
     string orgName;
-    
+
     @sql:Column {name: "OrganizerTelephone"}
     string orgTele;
-    
+
     @sql:Column {name: "OrganizerEmail"}
     string orgEmail;
-    
+
     @sql:Column {name: "DonerCount"}
     int? DonerCount;
-    
+
     @sql:Column {name: "A_plus"}
     string? A_plus;
-    
+
     @sql:Column {name: "B_plus"}
     string? B_plus;
-    
+
     @sql:Column {name: "O_plus"}
     string? O_plus;
-    
+
     @sql:Column {name: "AB_plus"}
     string? AB_plus;
-    
+
     @sql:Column {name: "A_minus"}
     string? A_minus;
-    
+
     @sql:Column {name: "B_minus"}
     string? B_minus;
-    
+
     @sql:Column {name: "O_minus"}
     string? O_minus;
-    
+
     @sql:Column {name: "AB_minus"}
     string? AB_minus;
-|};
 
+    @sql:Column { name: "completed" }
+    string? completed;
+|};
 
 public type CampaignRequest record {|
     string organizerName;
@@ -326,6 +326,7 @@ public type BloodStockDetails record {|
     int StockId;
     string CampaignID;
 |};
+
 public type Eligible record {
     @sql:Column {name: "submitID"}
     string submitID;
@@ -346,7 +347,7 @@ public type Eligible record {
     string CampaignID;
 };
 
-public type DonHistory record{
+public type DonHistory record {
     @sql:Column {name: "submitID"}
     string submitID;
 
@@ -363,11 +364,11 @@ public type DonHistory record{
     string readInfoLeaflet;
 
     @sql:Column {name: "medicalConditions"}
-    string medicalConditions;   
+    string medicalConditions;
 
 };
 
-public type MedRisks record{
+public type MedRisks record {
     @sql:Column {name: "submitID"}
     string submitID;
 
@@ -413,10 +414,9 @@ public type MedRisks record{
     @sql:Column {name: "riskSymptoms"}
     string riskSymptoms;
 
-
 };
 
-public type Consent record{
+public type Consent record {
     @sql:Column {name: "submitID"}
     string submitID;
 
@@ -436,5 +436,5 @@ public type Consent record{
     string DonerID;
 
     string campaignId;
-    
+
 };
