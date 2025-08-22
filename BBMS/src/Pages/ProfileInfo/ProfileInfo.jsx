@@ -165,11 +165,11 @@ function ProfileInfo({ theme, setTheme }) {
   return (
     <>
       <div className='mt-10 flex justify-center '>
-        <div className={` rounded-3xl justify-center mt-30 w-[1000px]   shadow-md ${theme === "light" ? "bg-[rgba(255,255,255,0.5)]" : "bg-gray-800 text-white"}`}>
+        <div className={` rounded-3xl justify-center mt-30 w-[1000px]   shadow-md ${theme === "light" ? "!bg-[rgba(255,255,255,0.5)]" : "bg-gray-800 text-white"}`}>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form className="space-y-4 " onSubmit={handleSubmit} >
             <div className='w-full h-[100px] flex items-center justify-center shadow-xl rounded-t-3xl'>
-              <h1 className="text-[40px] font-bold ">{userType} Profile Information</h1>
+              <h1 className="text-[40px] font-bold text-black dark:!text-white ">{userType} Profile Information</h1>
             </div>
 
             <div className="p-5 grid grid-cols-1- md:grid-cols-2 gap-5">
@@ -185,7 +185,7 @@ function ProfileInfo({ theme, setTheme }) {
                     defaultValue={userType === "Doner" ? doner.name : hospital.name}
                     onChange={handleChange}
                     required
-                    className=" w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:!bg-gray-500"
                   />
                 </div>
 
@@ -196,7 +196,7 @@ function ProfileInfo({ theme, setTheme }) {
                     name="username"
                     defaultValue={userType === "Doner" ? doner.username : hospital.username}
                     readOnly
-                    className="w-full px-3 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
+                    className="input-field w-full px-3 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
                   />
                 </div>
 
@@ -213,7 +213,7 @@ function ProfileInfo({ theme, setTheme }) {
                             onChange={handleChange}
                             checked={doner.gender === "Male"}
                             required
-                            className="h-4 w-4 text-blue-600"
+                            className="input-field  h-4 w-4 text-blue-600"
                           />
                           <span className="ml-2">Male</span>
                         </label>
@@ -224,7 +224,7 @@ function ProfileInfo({ theme, setTheme }) {
                             value="Female"
                             onChange={handleChange}
                             checked={doner.gender === "Female"}
-                            className="h-4 w-4 text-blue-600"
+                            className="input-field  h-4 w-4 text-blue-600"
                           />
                           <span className="ml-2">Female</span>
                         </label>
@@ -237,7 +237,7 @@ function ProfileInfo({ theme, setTheme }) {
                         type="text"
                         defaultValue={doner.blood_group}
                         readOnly
-                        className="w-full px-3 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
+                        className="input-field  w-full px-3 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
                       />
                     </div>
 
@@ -248,7 +248,7 @@ function ProfileInfo({ theme, setTheme }) {
                         name="nic_no"
                         defaultValue={doner.nic_no}
                         readOnly
-                        className="w-full px-3 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
+                        className="input-field  w-full px-3 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
                       />
                     </div>
 
@@ -258,7 +258,7 @@ function ProfileInfo({ theme, setTheme }) {
                         type="date"
                         value={doner.dob}
                         readOnly
-                        className="w-full px-3 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
+                        className="input-field  w-full px-3 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
                       />
                     </div>
                   </>
@@ -277,7 +277,7 @@ function ProfileInfo({ theme, setTheme }) {
                     defaultValue={userType === "Doner" ? doner.email : hospital.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field  w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -291,7 +291,7 @@ function ProfileInfo({ theme, setTheme }) {
                     defaultValue={userType === "Doner" ? doner.tele : hospital.contact_no}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field  w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -303,7 +303,7 @@ function ProfileInfo({ theme, setTheme }) {
                     defaultValue={userType === "Doner" ? doner.address_line1 : hospital.address_line1}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field  w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <div className="mt-2 space-y-2">
                     <input
@@ -312,7 +312,7 @@ function ProfileInfo({ theme, setTheme }) {
                       value={userType === "Doner" ? doner.address_line2 || "" : hospital.address_line2 || ""}
                       placeholder="Address Line 2"
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-field  w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <input
                       type="text"
@@ -320,7 +320,7 @@ function ProfileInfo({ theme, setTheme }) {
                       value={userType === "Doner" ? doner.address_line3 || "" : hospital.address_line3 || ""}
                       placeholder="Address Line 3"
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-field  w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -332,7 +332,7 @@ function ProfileInfo({ theme, setTheme }) {
                     value={userType === "Doner" ? doner.District || "" : hospital.District || ""}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field  w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">-- Select District --</option>
                     {districts.map((d, i) => (
@@ -347,7 +347,7 @@ function ProfileInfo({ theme, setTheme }) {
               {from === "LeftSideBar" ? (
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-red-800 text-white rounded-md hover:bg-rose-950 hover:scale-110 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  className="px-4 py-2 bg-red-800 dark:!bg-rose-600 text-white rounded-md hover:bg-rose-950 hover:scale-110 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
                   Save Changes
                 </button>
