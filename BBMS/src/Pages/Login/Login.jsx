@@ -5,6 +5,7 @@ import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link, useNavigate } from 'react-router-dom';
 import { LoadingContext } from "../../context/LoadingContext";
 import { toast } from 'react-toastify';
+import { Eye, EyeOff, User, Lock, Heart } from 'lucide-react';
 
 const Login = ({ theme, setTheme }) => {
 
@@ -77,10 +78,12 @@ const Login = ({ theme, setTheme }) => {
 
       } else {
         setMessage("Error: " + (result.message || JSON.stringify(result)));
+        toast.error("Enter all required information");
         console.error("Error response:", result);
       }
     } catch (error) {
       console.error("Error login form :", error.message);
+      toast.error("Login failed. Check server and data.");
       setMessage("Login failed. Check server and data.");
     } finally {
       setLoading(false);
@@ -88,44 +91,144 @@ const Login = ({ theme, setTheme }) => {
   }
 
   return (
-    <div>
+    <div className='flex justify-center'>
       <NaviBar theme={theme} setTheme={setTheme} />
-      <form className='login-form' onSubmit={handleLoginSubmit} >
-        <h1 className='login-header'>Login</h1>
-        <label htmlFor="Username"> Username: </label>
-        <input type="text" id="Username" name="Username" value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username"></input>
-        <br />
+      
+      <div className=" max-w-[850px] max-h-[550px] bg-[url('/images/bgpic.png')] mt-[120px] bg-cover bg-contain flex justify-center rounded-2xl shadow-2xl overflow-hidden">
+       
+        <div className="grid grid-cols-2 lg:grid-cols-2 min-h-[400px] ">
+          {/* Left Column - Image */}
+          <div className="flex items-center m-3 w-[500px] rounded-3xl justify-center p-8 bg-white bg-opacity-10 shadow-white shadow-5xl">
+            <div className="w-full max-w-md space-y-6">
+              <div className="text-center">
+                <h1 className="text-3xl font-bold text-gray-200 mb-2">Login</h1>
+                <p className="text-white">Enter your credentials to access your account</p>
+              </div>
 
-        <label htmlFor="pwd">Password:</label>
-        
-          <input type={show ? "text" : "password"} id="pwd" name="pwd" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password"></input>
-          <div className="password-toggle-icon">{show ?  <AiFillEyeInvisible onClick={() => toggleShow()} size={20}  /> : <AiFillEye onClick={() => toggleShow()} size={20} className="password-toggle-icon" />}
-        </div>
-        <br />
+              <div className="space-y-6">
+                {/* Username Field */}
+                <div className="space-y-2 ">
+                  <label htmlFor="Username" className="block text-sm font-medium text-white">
+                    Username
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <User className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      id="Username"
+                      name="Username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      autoComplete="username"
+                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
+                      placeholder="Enter your username"
+                      required
+                    />
+                  </div>
+                </div>
 
+                {/* Password Field */}
+                <div className="space-y-2">
+                  <label htmlFor="pwd" className="block text-sm font-medium text-white">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type={show ? "text" : "password"}
+                      id="pwd"
+                      name="pwd"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      autoComplete="current-password"
+                      className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
+                      placeholder="Enter your password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={toggleShow}
+                    >
+                      {show ? (
+                        <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                      ) : (
+                        <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                      )}
+                    </button>
+                  </div>
+                </div>
 
-        <div className='forget-pwd-container'>
-          <div className='remeber-me-check'>
-            <label >
-              <input  type="checkbox" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />Remember Me
-            </label>
+                {/* Remember Me & Forgot Password */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <input
+                      id="remember-me"
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={() => setRememberMe(!rememberMe)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors"
+                    />
+                    <label htmlFor="remember-me" className="ml-2 block text-sm text-white font-medium">
+                      Remember me
+                    </label>
+                  </div>
+                  <button
+                    type="button"
+                    className="text-sm text-blue-300 hover:text-blue-400 font-medium transition-colors"
+                    onClick={() => navigate("/forgotPassword")}
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform hover:scale-[1.02] transition-all duration-200 shadow-lg"
+                  onClick={handleLoginSubmit}
+                >
+                  Login
+                </button>
+
+                {/* Register Link */}
+                <div className="text-center">
+                  <p className="text-sm text-white font-medium">
+                    Don't have an account?{' '}
+                    <button
+                      type="button"
+                      className="text-blue-300 hover:text-blue-800 font-medium transition-colors"
+                      onClick={() => navigate("/donorReg")}
+                    >
+                      Register now
+                    </button>
+                  </p>
+                </div>
+
+              </div>
+            </div>
+            <div className="absolute top-[100px] left-0 w-40 h-40 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
+           
           </div>
-          <br />
-          
-            <p className="forgot-pw-link">
-              <Link to={"/forgotpassword"}>Forgot Password?</Link>
-            </p>
-          
-        </div>
+          <div className="relative  flex items-top justify-center p-8">
+                       {/* Decorative elements */}
+            
+            <div className="absolute top-10 left-10 w-24 h-24 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
+            <div className="absolute top-50 left-10 w-24 h-24 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
+            <div className="absolute top-40 left-35 w-24 h-24 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
+            <div className="absolute top-55 left-15 w-24 h-24 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
+           
+            
+          </div>
 
-        <input className='login-btn' type="submit" value="Login"></input>
-        <div className="register-link">
-          <p>
-            Don't have an account? <Link to="/donorReg">Register now</Link>
-          </p>
+          {/* Right Column - Form */}
+          
         </div>
-        <p>{message}</p>
-      </form>
+      </div>
     </div >
   )
 }
