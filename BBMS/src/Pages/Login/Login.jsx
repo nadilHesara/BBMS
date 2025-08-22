@@ -94,21 +94,21 @@ const Login = ({ theme, setTheme }) => {
     <div className='flex justify-center'>
       <NaviBar theme={theme} setTheme={setTheme} />
       
-      <div className=" max-w-[900px] max-h-[550px] bg-[url('/images/bgpic.png')] mt-[150px] bg-cover bg-contain flex justify-center rounded-2xl shadow-2xl overflow-hidden">
+      <div className=" max-w-[850px] max-h-[550px] bg-[url('/images/bgpic.png')] mt-[120px] bg-cover bg-contain flex justify-center rounded-2xl shadow-2xl overflow-hidden">
        
         <div className="grid grid-cols-2 lg:grid-cols-2 min-h-[400px] ">
           {/* Left Column - Image */}
-          <div className="flex items-center m-3  rounded-3xl justify-center p-8 bg-white bg-opacity-25">
+          <div className="flex items-center m-3 w-[500px] rounded-3xl justify-center p-8 bg-white bg-opacity-10 shadow-white shadow-5xl">
             <div className="w-full max-w-md space-y-6">
               <div className="text-center">
-                <h1 className="text-3xl font-bold text-gray-200 mb-2">Sign In</h1>
+                <h1 className="text-3xl font-bold text-gray-200 mb-2">Login</h1>
                 <p className="text-white">Enter your credentials to access your account</p>
               </div>
 
               <div className="space-y-6">
                 {/* Username Field */}
                 <div className="space-y-2 ">
-                  <label htmlFor="Username" className="block text-sm font-medium text-gray-300">
+                  <label htmlFor="Username" className="block text-sm font-medium text-white">
                     Username
                   </label>
                   <div className="relative">
@@ -131,7 +131,7 @@ const Login = ({ theme, setTheme }) => {
 
                 {/* Password Field */}
                 <div className="space-y-2">
-                  <label htmlFor="pwd" className="block text-sm font-medium text-gray-300">
+                  <label htmlFor="pwd" className="block text-sm font-medium text-white">
                     Password
                   </label>
                   <div className="relative">
@@ -173,7 +173,7 @@ const Login = ({ theme, setTheme }) => {
                       onChange={() => setRememberMe(!rememberMe)}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors"
                     />
-                    <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-300">
+                    <label htmlFor="remember-me" className="ml-2 block text-sm text-white font-medium">
                       Remember me
                     </label>
                   </div>
@@ -192,12 +192,12 @@ const Login = ({ theme, setTheme }) => {
                   className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform hover:scale-[1.02] transition-all duration-200 shadow-lg"
                   onClick={handleLoginSubmit}
                 >
-                  Sign In
+                  Login
                 </button>
 
                 {/* Register Link */}
                 <div className="text-center">
-                  <p className="text-sm text-gray-300">
+                  <p className="text-sm text-white font-medium">
                     Don't have an account?{' '}
                     <button
                       type="button"
@@ -211,18 +211,18 @@ const Login = ({ theme, setTheme }) => {
 
               </div>
             </div>
+            <div className="absolute top-[100px] left-0 w-40 h-40 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
+           
           </div>
           <div className="relative  flex items-top justify-center p-8">
+                       {/* Decorative elements */}
             
-            <div className="relative z-10 text-center text-black">
-              
-              
-              
-            </div>
-            {/* Decorative elements */}
-            <div className="absolute top-10 left-10 w-20 h-20 bg-white bg-opacity-25 rounded-full"></div>
-            <div className="absolute bottom-10 left-16 w-16 h-16 bg-white bg-opacity-25 rounded-full"></div>
-            <div className="absolute top-1/2 left-10 w-12 h-12 bg-white bg-opacity-25 rounded-full"></div>
+            <div className="absolute top-10 left-10 w-24 h-24 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
+            <div className="absolute top-50 left-10 w-24 h-24 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
+            <div className="absolute top-40 left-35 w-24 h-24 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
+            <div className="absolute top-55 left-15 w-24 h-24 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
+           
+            
           </div>
 
           {/* Right Column - Form */}
