@@ -94,15 +94,15 @@ const Login = ({ theme, setTheme }) => {
     <div className='flex justify-center'>
       <NaviBar theme={theme} setTheme={setTheme} />
       
-      <div className=" max-w-[850px] max-h-[550px] bg-[url('/images/bgpic.png')] mt-[120px] bg-cover bg-contain flex justify-center rounded-2xl shadow-2xl overflow-hidden">
+      <div className=" max-w-[900px] max-h-[700px] bg-[url('/images/bgpic.png')] mt-[120px] bg-cover bg-contain flex justify-center rounded-2xl shadow-2xl overflow-hidden">
        
-        <div className="grid grid-cols-2 lg:grid-cols-2 min-h-[400px] ">
+        <div className="login-form grid grid-cols-2 lg:grid-cols-2 min-h-[400px] ">
           {/* Left Column - Image */}
-          <div className="flex items-center m-3 w-[500px] rounded-3xl justify-center p-8 bg-white bg-opacity-10 shadow-white shadow-5xl">
+          <div className="flex items-center m-4 w-[500px] rounded-3xl justify-center p-8 bg-white bg-opacity-10 shadow-white shadow-5xl">
             <div className="w-full max-w-md space-y-6">
-              <div className="text-center">
-                <h1 className="text-3xl font-bold text-gray-200 mb-2">Login</h1>
-                <p className="text-white">Enter your credentials to access your account</p>
+              <div className="text-center dark:!text-black">
+                <h1 className="text-3xl font-bold text-gray-200 mb-2 dark:!text-[rgba(21,29,64,1)]">Login</h1>
+                <p className="text-white dark:!text-[rgba(21,29,64,1)]">Enter your credentials to access your account</p>
               </div>
 
               <div className="space-y-6">
@@ -122,7 +122,7 @@ const Login = ({ theme, setTheme }) => {
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       autoComplete="username"
-                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
+                      className="input-fl block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
                       placeholder="Enter your username"
                       required
                     />
@@ -145,7 +145,7 @@ const Login = ({ theme, setTheme }) => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       autoComplete="current-password"
-                      className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
+                      className="input-fl block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
                       placeholder="Enter your password"
                       required
                     />
@@ -211,16 +211,13 @@ const Login = ({ theme, setTheme }) => {
 
               </div>
             </div>
-            <div className="absolute top-[100px] left-0 w-40 h-40 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
+          
            
           </div>
           <div className="relative  flex items-top justify-center p-8">
                        {/* Decorative elements */}
             
-            <div className="absolute top-10 left-10 w-24 h-24 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
-            <div className="absolute top-50 left-10 w-24 h-24 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
-            <div className="absolute top-40 left-35 w-24 h-24 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
-            <div className="absolute top-55 left-15 w-24 h-24 bg-white bg-opacity-20 rounded-full blur-3xl"></div>
+            
            
             
           </div>

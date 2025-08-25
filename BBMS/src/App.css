@@ -37,6 +37,10 @@ body,html, #root{
   overflow-x: hidden;
 }
 
+.dark .app-container{
+  background-color: #0b172c;
+}
+
 
 
 
