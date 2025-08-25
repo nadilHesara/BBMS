@@ -3,9 +3,9 @@
   max-width: 500px;
   margin: 13vh auto;
   padding: 40px 30px;
-  background: #f2f2f2;
+  background: #cccccc;
   border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
   font-family: "Segoe UI", Tahoma, sans-serif;
   transition: all 0.3s ease;
 }
@@ -193,8 +193,8 @@
 /* Icon button in the input (slightly nudged up) */
 .location-group .map-icon-btn {
   position: absolute;
-  top: 50%;
-  right: 8px;
+  top: 30%;
+  right: 5px;
   transform: translateY(-55%);  /* nudge upward for optical centering */
   height: 28px;
   width: 28px;
@@ -203,7 +203,7 @@
   justify-content: center;
   cursor: pointer;
   font-size: 1.1rem;
-  color: #c62828;
+  background-color: #f72a0f !important;
   background: transparent;
   border: none;
   outline: none;
