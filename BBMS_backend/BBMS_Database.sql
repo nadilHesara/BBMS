@@ -1,8 +1,10 @@
--- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
+CREATE DATABASE  IF NOT EXISTS `bloodbank` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `bloodbank`;
+-- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
 --
--- Host: localhost    Database: bbms
+-- Host: localhost    Database: bloodbank
 -- ------------------------------------------------------
--- Server version	8.0.41
+-- Server version	9.3.0
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -25,6 +27,7 @@ DROP TABLE IF EXISTS `bloodstocks`;
 CREATE TABLE `bloodstocks` (
   `StockID` int NOT NULL AUTO_INCREMENT,
   `CampaignID` varchar(255) DEFAULT NULL,
+  `HospitalID` varchar(5) NOT NULL,
   `A_plus` float DEFAULT NULL,
   `B_plus` float DEFAULT NULL,
   `O_plus` float DEFAULT NULL,
@@ -36,9 +39,20 @@ CREATE TABLE `bloodstocks` (
   `note` mediumtext,
   PRIMARY KEY (`StockID`),
   KEY `bloodstocks_ibfk_1` (`CampaignID`),
-  CONSTRAINT `bloodstocks_ibfk_1` FOREIGN KEY (`CampaignID`) REFERENCES `campaign` (`CampaignID`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `bloodstocks_ibfk_2` (`HospitalID`),
+  CONSTRAINT `bloodstocks_ibfk_1` FOREIGN KEY (`CampaignID`) REFERENCES `campaign` (`CampaignID`),
+  CONSTRAINT `bloodstocks_ibfk_2` FOREIGN KEY (`HospitalID`) REFERENCES `hospital` (`HospitalID`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bloodstocks`
+--
+
+LOCK TABLES `bloodstocks` WRITE;
+/*!40000 ALTER TABLE `bloodstocks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bloodstocks` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `campaign`
@@ -63,12 +77,52 @@ CREATE TABLE `campaign` (
   `StartTime` time DEFAULT NULL,
   `EndTime` time DEFAULT NULL,
   `completed` tinyint NOT NULL DEFAULT '0',
+  `location` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`CampaignID`),
   UNIQUE KEY `CampaignID_UNIQUE` (`CampaignID`),
   KEY `fk_campaign_hospital` (`HospitalID`),
   CONSTRAINT `fk_campaign_hospital` FOREIGN KEY (`HospitalID`) REFERENCES `hospital` (`HospitalID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `campaign`
+--
+
+LOCK TABLES `campaign` WRITE;
+/*!40000 ALTER TABLE `campaign` DISABLE KEYS */;
+/*!40000 ALTER TABLE `campaign` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `consent`
+--
+
+DROP TABLE IF EXISTS `consent`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `consent` (
+  `submitID` varchar(4) DEFAULT NULL,
+  `testConsent` tinyint(1) DEFAULT NULL,
+  `instructionConsent` tinyint(1) DEFAULT NULL,
+  `notifyConsent` tinyint(1) DEFAULT NULL,
+  `frequency` varchar(50) DEFAULT NULL,
+  `DonerID` varchar(4) DEFAULT NULL,
+  KEY `fk_consent` (`submitID`),
+  KEY `fk_donor` (`DonerID`),
+  CONSTRAINT `fk_consent` FOREIGN KEY (`submitID`) REFERENCES `eligibility` (`submitID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_donor` FOREIGN KEY (`DonerID`) REFERENCES `doner` (`DonerID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `consent`
+--
+
+LOCK TABLES `consent` WRITE;
+/*!40000 ALTER TABLE `consent` DISABLE KEYS */;
+/*!40000 ALTER TABLE `consent` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `donates`
@@ -93,6 +147,43 @@ CREATE TABLE `donates` (
   CONSTRAINT `donates_ibfk_2` FOREIGN KEY (`CampaignID`) REFERENCES `campaign` (`CampaignID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `donates`
+--
+
+LOCK TABLES `donates` WRITE;
+/*!40000 ALTER TABLE `donates` DISABLE KEYS */;
+/*!40000 ALTER TABLE `donates` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `donationhistory`
+--
+
+DROP TABLE IF EXISTS `donationhistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `donationhistory` (
+  `submitID` varchar(4) NOT NULL,
+  `hadIssuesBefore` enum('Yes','No') DEFAULT NULL,
+  `issueDetails` varchar(200) DEFAULT NULL,
+  `advisedNotToDonate` enum('Yes','No') DEFAULT NULL,
+  `readInfoLeaflet` enum('Yes','No') DEFAULT NULL,
+  `medicalConditions` set('Heart Disease','Diabetes','Fits','Stroke','Asthma/Lung','Liver Disease','Kidney Disease','Blood Disorder','') DEFAULT NULL,
+  KEY `fk_history` (`submitID`),
+  CONSTRAINT `fk_history` FOREIGN KEY (`submitID`) REFERENCES `eligibility` (`submitID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `donationhistory`
+--
+
+LOCK TABLES `donationhistory` WRITE;
+/*!40000 ALTER TABLE `donationhistory` DISABLE KEYS */;
+/*!40000 ALTER TABLE `donationhistory` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `doner`
@@ -120,6 +211,47 @@ CREATE TABLE `doner` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `doner`
+--
+
+LOCK TABLES `doner` WRITE;
+/*!40000 ALTER TABLE `doner` DISABLE KEYS */;
+/*!40000 ALTER TABLE `doner` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `eligibility`
+--
+
+DROP TABLE IF EXISTS `eligibility`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `eligibility` (
+  `submitID` varchar(4) NOT NULL,
+  `foreignTravel` int DEFAULT NULL,
+  `risk` enum('Yes','No') DEFAULT NULL,
+  `DonerID` varchar(4) NOT NULL,
+  `eligible` tinyint(1) NOT NULL,
+  `CampaignID` varchar(4) DEFAULT NULL,
+  `filled` enum('Yes','No') DEFAULT NULL,
+  PRIMARY KEY (`submitID`),
+  UNIQUE KEY `one_time` (`DonerID`,`CampaignID`),
+  KEY `fk_campaign` (`CampaignID`),
+  CONSTRAINT `fk_campaign` FOREIGN KEY (`CampaignID`) REFERENCES `campaign` (`CampaignID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_eligibility` FOREIGN KEY (`DonerID`) REFERENCES `doner` (`DonerID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `eligibility`
+--
+
+LOCK TABLES `eligibility` WRITE;
+/*!40000 ALTER TABLE `eligibility` DISABLE KEYS */;
+/*!40000 ALTER TABLE `eligibility` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `hospital`
 --
 
@@ -141,6 +273,15 @@ CREATE TABLE `hospital` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `hospital`
+--
+
+LOCK TABLES `hospital` WRITE;
+/*!40000 ALTER TABLE `hospital` DISABLE KEYS */;
+/*!40000 ALTER TABLE `hospital` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `login`
 --
 
@@ -160,6 +301,53 @@ CREATE TABLE `login` (
   CONSTRAINT `login_ibfk_2` FOREIGN KEY (`HospitalID`) REFERENCES `hospital` (`HospitalID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `login`
+--
+
+LOCK TABLES `login` WRITE;
+/*!40000 ALTER TABLE `login` DISABLE KEYS */;
+INSERT INTO `login` VALUES ('Admin','df8793259c1d92e044424e08ed7abcd19f1df5b0e1cd6ab3d7709857ed73863de1df159bec17a6abf75480a601b24218',NULL,NULL,'Admin');
+/*!40000 ALTER TABLE `login` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `medicalrisk`
+--
+
+DROP TABLE IF EXISTS `medicalrisk`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `medicalrisk` (
+  `submitID` varchar(4) NOT NULL,
+  `jaundice` enum('Yes','No') DEFAULT NULL,
+  `tbTyphoid` enum('Yes','No') DEFAULT NULL,
+  `vaccinations` enum('Yes','No') DEFAULT NULL,
+  `tattoos` enum('Yes','No') DEFAULT NULL,
+  `imprisoned` enum('Yes','No') DEFAULT NULL,
+  `foreignTravel` enum('Yes','No') DEFAULT NULL,
+  `bloodTransfusion` enum('Yes','No') DEFAULT NULL,
+  `malaria` enum('Yes','No') DEFAULT NULL,
+  `dengue` enum('Yes','No') DEFAULT NULL,
+  `recentIllness` enum('Yes','No') DEFAULT NULL,
+  `dentalWork` enum('Yes','No') DEFAULT NULL,
+  `recentMeds` enum('Yes','No') DEFAULT NULL,
+  `riskyCategoriesAwareness` enum('Yes','No') DEFAULT NULL,
+  `riskSymptoms` enum('Yes','No') DEFAULT NULL,
+  KEY `fk_medicalrisk` (`submitID`),
+  CONSTRAINT `fk_medicalrisk` FOREIGN KEY (`submitID`) REFERENCES `eligibility` (`submitID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `medicalrisk`
+--
+
+LOCK TABLES `medicalrisk` WRITE;
+/*!40000 ALTER TABLE `medicalrisk` DISABLE KEYS */;
+/*!40000 ALTER TABLE `medicalrisk` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -170,4 +358,4 @@ CREATE TABLE `login` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-08-16 20:12:48
+-- Dump completed on 2025-08-19 19:01:47

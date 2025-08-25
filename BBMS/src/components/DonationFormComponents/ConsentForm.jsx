@@ -10,7 +10,7 @@ export default function ConsentForm() {
   const donor_id = sessionStorage.getItem("userId");
   const submitID = sessionStorage.getItem("submitID");
   const campaignId = sessionStorage.getItem("campaignId");
-
+  const [showError, setShowError] = useState(false);
 
   const [form, setForm] = useState({
     testConsent: false,
@@ -19,18 +19,32 @@ export default function ConsentForm() {
     frequency: '',
   });
 
+  const validateForm = () => {
+    const isValid = form.testConsent && form.instructionConsent && form.notifyConsent;
+    setShowError(!isValid);
+    return isValid;
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({
       ...form,
       [name]: type === 'checkbox' ? checked : value,
     });
+
+    if (type === 'checkbox') {
+      setShowError(false);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isSubmitting) return;
+
+    if (!validateForm()) {
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -59,7 +73,6 @@ export default function ConsentForm() {
         on {res.data?.Date}
         </>
         );
-
 
 
       } else {
@@ -182,6 +195,12 @@ export default function ConsentForm() {
             </button>
           </div>
           
+          {showError && (
+              <p className="text-xs">
+                <span className='text-red-500'>*</span> Please check all checkboxes to proceed.
+              </p>
+          )}
+
         </div>
       </div>
     </div>

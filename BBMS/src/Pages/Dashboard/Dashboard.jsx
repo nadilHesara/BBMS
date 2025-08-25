@@ -101,7 +101,7 @@ const Dashboard = ({ theme, setTheme }) => {
           {isOnDashboard &&
             <div className="dashboard-content">
               <div className="calender-container">
-                <div className="bg-gradient-to-r from-red-600 to-pink-600 rounded-2xl p-8 m-8 text-white">
+                <div className="bg-gradient-to-r from-red-600 to-pink-600 dark:!bg-gradient-to-r dark:!from-indigo-900  dark:!to-slate-800 rounded-2xl p-8 m-8 text-white">
                   <div className="flex items-center justify-between">
                     <div>
                       <h1 className="text-3xl font-bold mb-2">
@@ -111,12 +111,12 @@ const Dashboard = ({ theme, setTheme }) => {
                         Managing life-saving blood transfusions across our network
                       </p>
                       <div className="mt-4 flex items-center space-x-4 text-sm">
-                        <span className="bg-white text-black bg-opacity-20 px-3 py-3 rounded-full">📍 {userData.District} District</span>
+                        <span className="bg-white text-black dark:!bg-slate-500 dark:!text-white bg-opacity-20 px-3 py-3 rounded-full">📍 {userData.District} District</span>
 
                       </div>
                     </div>
                     <div className="text-6xl ">
-                      <div className="w-[120px] h-[120px] pt-2 pb-2 pl-2 pr-3 bg-white dark:bg-blue-400 rounded-full text-center shadow-2xl shadow-[0_10px_30px_rgba(0,0,0,0.7)] dark:shadow-[0_10px_30px_rgba(59,130,246,0.5)] mb-2 transform hover:scale-105 transition-transform duration-300">
+                      <div className="w-[120px] h-[120px] pt-2 pb-2 pl-2 pr-3 bg-white dark:!bg-zinc-500 rounded-full text-center shadow-2xl shadow-[0_10px_30px_rgba(0,0,0,0.7)] :shadow-[0_10px_30px_rgba(59,130,246,0.5)] mb-2 transform hover:scale-105 transition-transform duration-300">
                         <img
                           src="/images/Blood Bank logo 2022-03.png"
                           alt="Profile 1"
@@ -126,10 +126,20 @@ const Dashboard = ({ theme, setTheme }) => {
                     </div>
                   </div>
                 </div>
+              <div className="bg-blue-200 dark:!bg-indigo-900 border-l-8 ml-8 mr-8 border-red-500 text-gray-700 dark:border-red-900 dark:text-gray-200 p-4 rounded-xl shadow-sm font-semibold ">
+  <div className="flex-col justify-center list-disc list-inside space-y-5 text-lg leading-relaxed">
+    <p>📅 Stay up to date with upcoming blood donation campaigns.</p>
+    <p>📍 Quickly check campaign dates, locations, and details at a glance.</p>
+    <p>🩸 Use the district filter to find the nearest campaign in your area.</p>
+    <p>❤️ Plan your next donation with ease.</p>
+  </div>
+</div>
+
                 <div className="ml-5 mr-5 flex flex-col sm:flex-row items-center gap-3 mt-5">
+                  
                   <label
                     htmlFor="district"
-                    className="text-lg font-medium m text-gray-700 dark:text-gray-200"
+                    className="text-lg font-medium m text-gray-700 dark:!text-gray-200"
                   >
                     Sort the campaigns by district:
                   </label>
@@ -140,8 +150,8 @@ const Dashboard = ({ theme, setTheme }) => {
                     onChange={handleSelectedDistrict}
                     value={selectedDistrict}
                     required
-                    className="w-60 p-2 rounded-xl border border-gray-300 dark:border-gray-600 
-               bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 
+                    className="w-60 p-2 rounded-3xl border border-gray-500 dark:!border-gray-800 
+               bg-blue-200 dark:!bg-indigo-900 text-gray-800 dark:!text-indigo-200 
                shadow-sm focus:outline-none focus:ring-2 
                focus:ring-red-500 focus:border-red-500 transition duration-200"
                   >
@@ -152,6 +162,7 @@ const Dashboard = ({ theme, setTheme }) => {
                     ))}
                   </select>
                 </div>
+                
                 <div className="mr-10 grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
                   {/* Left Column - Calendar Component */}
                   <div className="space-y-6">
@@ -171,7 +182,7 @@ const Dashboard = ({ theme, setTheme }) => {
                              📸
                            </div>
                            <div className="flex-1 min-w-0">
-                             <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Blood Donation Gallery</h2>
+                             <h2 className="text-2xl font-bold text-gray-800 dark:!text-white mb-4">Blood Donation Gallery</h2>
                              <div className="grid grid-cols-2 gap-4">
                                <div className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                                  <img 
@@ -224,8 +235,8 @@ const Dashboard = ({ theme, setTheme }) => {
                              🎯
                            </div>
                                                        <div className="flex-1 min-w-0">
-                              <h2 className="text-3xl font-extrabold text-gray-800 dark:text-white mb-3 tracking-wide" style={{fontFamily: 'Georgia, serif'}}>Our Mission</h2>
-                              <p className="text-black font-bold dark:text-white text-lg leading-relaxed" style={{fontFamily: 'Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif'}}>
+                              <h2 className="text-3xl font-extrabold text-gray-800 dark:!text-white mb-3 tracking-wide" style={{fontFamily: 'Georgia, serif'}}>Our Mission</h2>
+                              <p className="text-black font-bold dark:!text-white text-lg leading-relaxed" style={{fontFamily: 'Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif'}}>
                                 To bridge the gap between blood donors and those in need, ensuring timely access to safe blood products 
                                 while fostering a culture of voluntary blood donation across our communities.
                               </p>
@@ -241,8 +252,8 @@ const Dashboard = ({ theme, setTheme }) => {
                              🔮
                            </div>
                                                        <div className="flex-1 min-w-0">
-                              <h2 className="text-3xl font-extrabold text-gray-800 dark:text-white mb-3 tracking-wide" style={{fontFamily: 'Georgia, serif'}}>Our Vision</h2>
-                              <p className="text-black font-bold dark:text-gray-300 text-lg leading-relaxed" style={{fontFamily: 'Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif'}}>
+                              <h2 className="text-3xl font-extrabold text-gray-800 dark:!text-white mb-3 tracking-wide" style={{fontFamily: 'Georgia, serif'}}>Our Vision</h2>
+                              <p className="text-black font-bold dark:!text-gray-300 text-lg leading-relaxed" style={{fontFamily: 'Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif'}}>
                                 To become the leading blood bank management system that revolutionizes healthcare delivery, 
                                 making blood donation accessible, efficient, and impactful for every community we serve.
                               </p>

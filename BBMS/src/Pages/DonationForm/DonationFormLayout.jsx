@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import useVerifyAccess from '../../SharedData/verifyFunction';
 
 export default function DonationFormLayout() {
-  useVerifyAccess("donates");
+  useVerifyAccess("DonationForm");
   return (
     
     <div className="donation-form-layout">
