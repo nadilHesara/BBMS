@@ -16,8 +16,8 @@ function Donates({ theme, setTheme }) {
     
     const navigate = useNavigate();
     const campaignid = location.state?.campaignId || Cookies.get('campaign_Id');
-    const campaigndate = location.state?.campdate || Cookies.get('cdate');
-    const campaignName = location.state?.campName|| Cookies.get('campName');
+    const campaigndate = location.state?.campdate ||Cookies.get('cdate');
+    const campaignName =  location.state?.campName || Cookies.get('campName');
     const { loading, setLoading } = useContext(LoadingContext);
     const [campaign_id, setCampaign_id] = useState(campaignid || null);
     const [campdate, setCampdate] = useState(campaigndate || null);
@@ -86,15 +86,7 @@ function Donates({ theme, setTheme }) {
                 Cookies.set('campaign_Id',campaign_id);
                 Cookies.set('cdate', campdate);
                 Cookies.set('campName',campName);
-                navigate("/dashboard/DonationInfo"
-                //     , {
-                //     state: {
-                //         campaign_Id: campaign_id,
-                //         donorId: data.user_id,
-                //         cdate: campdate
-                //     }
-                // }
-            );
+                navigate("/dashboard/DonationInfo");
 
             }
 
@@ -128,8 +120,9 @@ function Donates({ theme, setTheme }) {
                     <label className='Label' htmlFor="nic">NIC No</label>
                     <input type="text" id="nic" name="nic" value={nic} onChange={(e) => setNic(e.target.value)}></input>
                     <br />
-                    <input type="submit" value="Search" />
-
+                    {!showPopup && (
+                    <input type="submit" value="Search Donor" />
+                    )}
                 </div>
             </form>
 
@@ -137,8 +130,8 @@ function Donates({ theme, setTheme }) {
             {showPopup && (
                 <div className="popup-backdrop">
                     <div className="popup-box">
-                        <p>No registered doner. Please Check Your Username or Email</p>
-                        <button onClick={handleRegister}>Register Doner</button>
+                        <p>No registered donor. <br/> Please Check Your Username/Email or NIC</p>
+                        <button onClick={handleRegister}>Register Donor</button>
                         <button onClick={handleIgnore}>Ignore</button>
                     </div>
                 </div>

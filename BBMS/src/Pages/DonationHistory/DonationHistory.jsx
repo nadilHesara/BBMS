@@ -2,12 +2,12 @@
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { LoadingContext } from '../../context/LoadingContext';
-import verifyAccess from "../../SharedData/verifyFunction";
+import useVerifyAccess from "../../SharedData/verifyFunction";
 import { Heart, Calendar, MapPin, Award, Users, ExternalLink, User, Hospital  } from 'lucide-react';
 
 
 function DonationHistory({ theme, setTheme }) {
-    
+    useVerifyAccess("DonationForm");    
     const [donations, setDonations] = useState([]);
     const { loading, setLoading } = useContext(LoadingContext);
     const userData = JSON.parse(sessionStorage.getItem("userData"));

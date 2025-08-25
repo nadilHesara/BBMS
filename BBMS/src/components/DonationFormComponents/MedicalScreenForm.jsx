@@ -173,7 +173,7 @@ export default function MedicalScreenForm() {
 
               {/* TB/Typhoid */}
               <div>
-                <label className="block text-sm font-medium dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium dark:text-black mb-2">
                   <div className='flex flex-row'>Had TB or typhoid in the past 2 years? <span className='text-red-500'>*</span></div>
                 </label>
                 <select 
@@ -442,6 +442,8 @@ export default function MedicalScreenForm() {
             Next
           </button>
         </div>
+        <br/>
+        <p>{message}</p>
       </div>
   );
 }

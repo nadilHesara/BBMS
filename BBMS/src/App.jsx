@@ -105,7 +105,7 @@ function App() {
                 <Route path="DonationForm" element={<DonationFormLayout />}>
                   <Route index element={<EligibilityCheck />} />
                   <Route path="ProfileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
-                  <Route path="donation-history" element={<DonationHistoryForm />} />
+                  <Route path="donationhistory" element={<DonationHistoryForm />} />
                   <Route path="medical" element={<MedicalScreenForm />} />
                   <Route path="consent" element={<ConsentForm />} />
                 </Route>

@@ -63,49 +63,49 @@ export default function InfoGrid(){
       <div className="space-y-6">
         {/* Donation History Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 sm:p-8 w-full max-w-4xl">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-700 pb-3">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-700 pb-3 text-center">
             Donation History
           </h2>
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/3">
-                Had Issues Before:
+          <div className="space-y-4 flex flex-col items-center">
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-2xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2 text-center sm:text-right sm:pr-4">
+                Had Issues Before :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-1/2 text-center sm:text-left sm:pl-4">
                 {donatioInfo.hadIssuesBefore}
               </span>
             </div>
             {donatioInfo.hadIssuesBefore === 'Yes' && donatioInfo.issueDetails !== "" && (
-              <div className="flex flex-col sm:flex-row">
-                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/3">
-                  Issue Details:
+              <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-2xl text-justify">
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2 text-center sm:text-right sm:pr-4">
+                  Issue Details :
                 </span>
-                <span className="text-sm text-gray-900 dark:text-white font-medium">
+                <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-1/2 text-center sm:text-left sm:pl-4">
                   {donatioInfo.issueDetails}
                 </span>
               </div>
             )}
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/3">
-                Advised not to Donate:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-2xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2 text-center sm:text-right sm:pr-4">
+                Advised not to Donate :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-1/2 text-center sm:text-left sm:pl-4">
                 {donatioInfo.advisedNotToDonate}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/3">
-                Read Info Leaflet:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-2xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2 text-center sm:text-right sm:pr-4">
+                Read Info Leaflet :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-1/2 text-center sm:text-left sm:pl-4">
                 {donatioInfo.readInfoLeaflet}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/3">
-                Medical Conditions:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-2xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2 text-center sm:text-right sm:pr-4">
+                Medical Conditions :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-1/2 text-center sm:text-left sm:pl-4">
                 {donatioInfo.medicalConditions}
               </span>
             </div>
@@ -114,119 +114,119 @@ export default function InfoGrid(){
 
         {/* Medical & Risk Screening Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 sm:p-8 w-full max-w-4xl">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-700 pb-3">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-700 pb-3 text-center">
             Medical & Risk Screening
           </h2>
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Has donor ever had jaundice/hepatitis?:
+          <div className="space-y-4 flex flex-col items-center">
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Has donor ever had jaundice/hepatitis :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.jaundice}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Had TB or typhoid in the past 2 years?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Had TB or typhoid in the past 2 years :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.tbTyphoid}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Received vaccinations in past 12 months?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Received vaccinations in past 12 months :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.vaccinations}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Any tattoos, piercings or acupuncture in past year?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Any tattoos, piercings or acupuncture in past year :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.tattoos}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Ever imprisoned?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Ever imprisoned :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.imprisoned}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Used aspirin, antibiotics, or medications recently?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Used aspirin, antibiotics, or medications recently :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.foreignTravel}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Does donor have symptoms like unexplained fever, weight loss, or swollen lymph nodes?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Does donor have symptoms like unexplained fever, weight loss, or swollen lymph nodes :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.bloodTransfusion}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Donor or his/her partner traveled abroad in the last 3 months?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Donor or his/her partner traveled abroad in the last 3 months :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.malaria}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Donor or his/her received blood products?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Donor or his/her received blood products :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.dengue}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Had malaria or treatment for it?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Had malaria or treatment for it :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.recentIllness}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Dengue in the last 6 months?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Dengue in the last 6 months :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.dentalWork}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Fever, measles, diarrhea, or long illness in the past month?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Fever, measles, diarrhea, or long illness in the past month :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.recentMeds}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Dental extraction in the last week?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Dental extraction in the last week :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.riskyCategoriesAwareness}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-1/2">
-                Is donor aware of disqualifying categories (HIV, Hep B/C, risky behavior)?:
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
+                Is donor aware of disqualifying categories (HIV, Hep B/C, risky behavior) :
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.riskSymptoms}
               </span>
             </div>
@@ -235,15 +235,15 @@ export default function InfoGrid(){
 
         {/* Consent Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 sm:p-8 w-full max-w-4xl">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-700 pb-3">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-700 pb-3 text-center">
             Consent
           </h2>
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-2/3">
+          <div className="space-y-4 flex flex-col items-center">
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
                 Donor consent to testing my blood for HIV, Hepatitis B/C, Syphilis, Malaria:
               </span>
-              <div className="flex items-center">
+              <div className="flex items-center justify-center sm:justify-center w-full sm:w-2/5 sm:pl-4">
                 {donatioInfo.testConsent && (
                   <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
@@ -254,11 +254,11 @@ export default function InfoGrid(){
                 </span>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-2/3">
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
                 Donor agreed to follow all instructions from NBTS.:
               </span>
-              <div className="flex items-center">
+              <div className="flex items-center justify-center sm:justify-center w-full sm:w-2/5 sm:pl-4">
                 {donatioInfo.instructionConsent && (
                   <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
@@ -269,11 +269,11 @@ export default function InfoGrid(){
                 </span>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-2/3">
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
                 Donor agreed to be informed of my test results and follow guidance.:
               </span>
-              <div className="flex items-center">
+              <div className="flex items-center justify-center sm:justify-center w-full sm:w-2/5 sm:pl-4">
                 {donatioInfo.notifyConsent && (
                   <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
@@ -284,11 +284,11 @@ export default function InfoGrid(){
                 </span>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-2/3">
+            <div className="flex flex-col sm:flex-row justify-center items-center w-full max-w-3xl text-justify">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 w-full sm:w-3/5 text-center sm:text-right sm:pr-4">
                 How often donor wants to donate?:
               </span>
-              <span className="text-sm text-gray-900 dark:text-white font-medium">
+              <span className="text-sm text-gray-900 dark:text-white font-medium w-full sm:w-2/5 text-center sm:text-left sm:pl-4">
                 {donatioInfo.frequency}
               </span>
             </div>

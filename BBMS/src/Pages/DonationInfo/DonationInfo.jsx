@@ -10,8 +10,9 @@ import useVerifyAccess from '../../SharedData/verifyFunction';
 import Cookies from 'js-cookie';
 
 function DonationInfo({ theme, setTheme }) {
-    useVerifyAccess("donation-history");
+    useVerifyAccess("DonationInfo");
     const { loading, setLoading } = useContext(LoadingContext);
+    const campaignName = Cookies.get('campName');
     const campaign_Id = Cookies.get('campaign_Id');
     const donorId = Cookies.get('donorId');
     const cdate = Cookies.get('cdate');
@@ -31,7 +32,8 @@ function DonationInfo({ theme, setTheme }) {
         pressure: '',
         weight: 0,
         sugar: '',
-        blood_quantity: 0
+        blood_quantity: 0,
+        Telephone: ''
     });
 
     const parseDate = (dateString) => {
@@ -121,6 +123,7 @@ function DonationInfo({ theme, setTheme }) {
                     name: data.Name,
                     age: DAge,
                     blood_group: data.BloodGroup,
+                    Telephone: data.Telephone
                 }));
             } catch (error) {
                 console.error("Error fetching donor data:", error);
@@ -166,7 +169,7 @@ function DonationInfo({ theme, setTheme }) {
 
             if (response.ok) {
                 toast.success(result.message);
-                navigate('/dashboard/Donates', {
+                navigate('/dashboard/donates', {
                     state: {
                         campaignId: donate.campaign_id,
                         campdate: donate.camp_date
@@ -184,15 +187,11 @@ function DonationInfo({ theme, setTheme }) {
 
     return (
         <div className='donerinfoForm'>
-            <div className='donerinfoCard'>
-                <label htmlFor="campaignId" className='campID'>Campaign ID: {donate.campaign_id || 'Loading...'}</label>
+            <div className={eligible && filled ?'donerinfoCard':'donerinfoCard1'}>
+                <label htmlFor="campaignId" className='campID'>Campaign Name: {campaignName || 'Loading...'}</label>
                 <h1 className='full-width'>Donor's Information</h1>
 
                 <div className='content-wrapper'>
-                    <div className="label-value-pair">
-                        <span className='label'>Donor ID :</span>
-                        <span className='valtext'>{donate.doner_id}</span>
-                    </div>
 
                     <div className="label-value-pair">
                         <span className='label'>Name :</span>
@@ -202,6 +201,11 @@ function DonationInfo({ theme, setTheme }) {
                     <div className="label-value-pair">
                         <span className='label'>Age :</span>
                         <span className='valtext'> {donate.age}+ yrs </span>
+                    </div>
+
+                    <div className="label-value-pair">
+                        <span className='label'>Contact no. :</span>
+                        <span className='valtext'> {donate.Telephone}</span>
                     </div>
 
                     <div className="blood-group-container">
@@ -214,6 +218,7 @@ function DonationInfo({ theme, setTheme }) {
                                 </option>
                             ))}
                         </select>
+
                     </div>
 
                     {/* Status Badges Section */}
@@ -244,38 +249,60 @@ function DonationInfo({ theme, setTheme }) {
 
                         {/* Form Status - Only show if eligible */}
                         {eligible && (
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Form Status:
-                                </span>
-                                <div className="flex items-center">
-                                    {filled ? (
-                                        <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z" clipRule="evenodd" />
-                                                <path fillRule="evenodd" d="M6 10a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1z" clipRule="evenodd" />
-                                            </svg>
-                                            Completed
-                                        </div>
-                                    ) : (
-                                        <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                                            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                                            </svg>
-                                            Pending
-                                        </div>
-                                    )}
+                            <div className="flex flex-col items-start">
+                                <div className="flex items-center justify-between w-full mb-2">
+                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Form Status:
+                                    </span>
+                                    <div className="flex items-center">
+                                        {filled ? (                             
+                                            <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 dark:bg-blue-900 dark:text-blue-200">
+                                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z" clipRule="evenodd" />
+                                                    <path fillRule="evenodd" d="M6 10a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1z" clipRule="evenodd" />
+                                                </svg>
+                                                Completed
+                                            </div>
+                                        ) : (
+                                            <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-orange-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                                </svg>
+                                                Pending
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
+                                
+                                {/* Form Details Button - Only show when form is completed */}
+                                {filled && (
+                                    <div className="w-full flex justify-center">
+                                        <button 
+                                            type="button" 
+                                            className='updatebtn2' 
+                                            onClick={() => navigate("/dashboard/InfoGrid")}
+                                        >
+                                            Form Details
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         )}
 
                     </div>
                 </div>
+
+                {eligible && !filled? (
+                <div>                
+                    <button
+                    className="navigatebtn" onClick={() => navigate('/dashboard/donates')}> Fill the Form                 
+                    </button>
+                </div>
+                ):("")}
             </div>
                 
+                {eligible && filled ? (
                 <div className='donationinputsection'>
-                    {eligible && filled ? (
-                    <>
                     <div className='donationinputgrouprow'>
                         <div className='inputblock'>
                             <label htmlFor="weight">Weight:</label>
@@ -297,17 +324,15 @@ function DonationInfo({ theme, setTheme }) {
                     <label htmlFor="time">Donated Time:</label>
                     <input type="time" id="time" name="donate_time" onChange={handleChange} required />
                     <br />
+                    <br/>
+                    <div className='button-container'>
                     <button type="button" className='updatebtn' onClick={handleUpdate}>Update</button>
-                    <button type="button" className='updatebtn2' onClick={() => navigate("/dashboard/InfoGrid")}>Form Details</button>
-                    </>
-                    ):(
-                    <input
-                    className="navigatebtn"
-                    onClick={() => navigate("/dashboard/Donates")}
-                    value={"Fill the form"} readOnly>                    
-                    </input>
-                )}
+                    </div>
                 </div>
+                ):("")}
+ 
+                
+
 
         </div>
     );

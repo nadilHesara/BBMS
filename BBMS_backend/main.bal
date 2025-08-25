@@ -86,6 +86,11 @@ service / on listener9191 {
         return result;
     }
 
+    isolated resource function post update_eligibility(@http:Payload Eligible eligible) returns json|error {
+        json|error result = check update_eligibility(eligible);
+        return result;
+    }
+
     isolated resource function post donationHis(@http:Payload DonHistory donHistory) returns json|error {
         json|error result = check addHistory(donHistory);
         return result;
@@ -319,7 +324,8 @@ service /dashboard on listener9191 {
             "BYear": "",
             "BMonth": "",
             "Name": "",
-            "BloodGroup": ""
+            "BloodGroup": "",
+            "Telephone": ""
         };
 
         Doner|error doner = getDoner(donor_id);
@@ -357,7 +363,8 @@ service /dashboard on listener9191 {
                 BYear: b_yr,
                 BMonth: b_m,
                 Name: doner.name,
-                BloodGroup: doner.blood_group
+                BloodGroup: doner.blood_group,
+                Telephone: doner.tele
 
             };
 
@@ -459,9 +466,10 @@ service /dashboard on listener9191 {
             "dashboard": ["Admin", "Hospital", "Doner"],
             "donates": ["Hospital"],
             "campReg": ["Hospital"],
-            "donation-history": ["Doner"],
+            "DonationForm": ["Doner"],
             "profileInfo": ["Doner", "Hospital"],
-            "campaignHistory": ["Hospital", "Admin"]
+            "campaignHistory": ["Hospital", "Admin"],
+            "DonationInfo" : ["Hospital"]
         };
 
         // Check if page exists

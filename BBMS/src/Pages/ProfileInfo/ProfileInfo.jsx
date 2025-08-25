@@ -148,7 +148,7 @@ function ProfileInfo({ theme, setTheme }) {
             setIsChange(false);
           }
           if (from === "DonationForm") {
-            navigate('../donation-history');
+            navigate('../donationhistory');
           }
 
         })

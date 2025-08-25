@@ -1,4 +1,4 @@
-/* DonationInfo.css */
+/* Enhanced DonationInfo.css - Keeping original color palette */
 
 .donerinfoForm {
     display: flex;
@@ -6,7 +6,7 @@
     align-items: flex-start;
     gap: 30px;
     padding: 30px;
-    margin-left: 40px; /* Account for sidebar */
+    margin-left: 40px;
     max-width: auto;
     margin-right: auto;
 }
@@ -17,9 +17,33 @@
     min-width: 350px;
     padding: 25px;
     background: white;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     text-align: center;
+    border: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.donerinfoCard1{
+    flex: 1;
+    min-width: 350px;
+    padding: 25px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+    min-width: 470px;
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.donerinfoCard:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
 }
 
 .campID {
@@ -31,9 +55,20 @@
     padding-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    border-bottom: 1px solid #e8e8e8;
 }
 
 .donerinfoCard h1 {
+    color: #b22624;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #b99787;
+    display: inline-block;
+    position: relative;
+}
+
+.donerinfoCard1 h1 {
     color: #b22624;
     font-size: 1.5rem;
     margin-bottom: 20px;
@@ -53,16 +88,26 @@
 .label-value-pair {
     display: flex;
     margin-bottom: 12px;
-    min-width: 250px; /* Adjust this value as needed */
+    min-width: 250px;
+    padding: 8px 12px;
+    background: #fafafa;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    border: 1px solid #f0f0f0;
 }
 
-.label{
+.label-value-pair:hover {
+    background: #f5f5f5;
+    transform: translateX(2px);
+}
+
+.label {
     color: #555;
     font-weight: 500;
-    width: 120px; /* Fixed width for all labels */
-    text-align: space-between;
+    width: 120px;
+    text-align: left;
     padding-right: 15px;
-    flex-shrink: 0; /* Prevent shrinking */
+    flex-shrink: 0;
 }
 
 .valtext {
@@ -79,19 +124,175 @@
     margin-bottom: 12px;
     margin-top: 15px;
     min-width: 250px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #fafafa, #f5f5f5);
+    border-radius: 6px;
+    border: 1px solid #e8e8e8;
 }
 
 .donerinfoCard select {
-    width: 26%;
+    width: 30%;
     margin-top: 5px;
-    padding: 0px 6px;
+    padding: 6px 10px;
     border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #fafafa;
+    border-radius: 6px;
+    background-color: white;
     color: #3f3e3e;
     font-weight: 500;
     font-size: 14px;
     text-align: left;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.donerinfoCard select:hover {
+    border-color: #b99787;
+    background-color: #fafafa;
+}
+
+.donerinfoCard select:focus {
+    outline: none;
+    border-color: #b22624;
+    box-shadow: 0 0 0 2px rgba(178, 38, 36, 0.1);
+}
+
+/* Status Badges Styling */
+.mt-6 {
+    margin-top: 24px;
+}
+
+.space-y-3 > * + * {
+    margin-top: 12px;
+}
+
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.text-sm {
+    font-size: 14px;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+.text-gray-700 {
+    color: #555;
+}
+
+.dark\:text-gray-300 {
+    color: #797b79;
+}
+
+.inline-flex {
+    display: inline-flex;
+}
+
+.px-3 {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.py-1 {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.rounded-full {
+    border-radius: 9999px;
+}
+
+.text-xs {
+    font-size: 12px;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.bg-green-100 {
+    background-color: #f0f9f0;
+}
+
+.text-green-800 {
+    color: #2e7d2e;
+}
+
+.bg-red-100 {
+    background-color: #fdf2f2;
+}
+
+.text-red-800 {
+    color: #b22624;
+}
+
+.bg-gray-100 {
+    background-color: #e5e7eb;
+}
+
+.text-gray-800 {
+    color: #374151;
+}
+
+.bg-yellow-100 {
+    background-color: #fffbeb;
+}
+
+.text-yellow-800 {
+    color: #92400e;
+}
+
+.dark\:bg-green-900 {
+    background-color: #f0f9f0;
+}
+
+.dark\:text-green-200 {
+    color: #2e7d2e;
+}
+
+.dark\:bg-red-900 {
+    background-color: #fdf2f2;
+}
+
+.dark\:text-red-200 {
+    color: #b22624;
+}
+
+.dark\:bg-blue-900 {
+    background-color: #f0f4ff;
+}
+
+.dark\:text-blue-200 {
+    color: #1e40af;
+}
+
+.dark\:bg-yellow-900 {
+    background-color: #fffbeb;
+}
+
+.dark\:text-yellow-200 {
+    color: #92400e;
+}
+
+.w-3 {
+    width: 12px;
+}
+
+.h-3 {
+    height: 12px;
+}
+
+.mr-1 {
+    margin-right: 4px;
 }
 
 /* Donation Input Section - Right Side */
@@ -100,15 +301,27 @@
     min-width: 350px;
     padding: 25px;
     background: white;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.donationinputsection:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
 }
 
 .donationinputgrouprow {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
     margin-bottom: 20px;
+}
+
+.donationinputgrouprow .inputblock:nth-child(3),
+.donationinputgrouprow .inputblock:nth-child(4) {
+    grid-column: span 1;
 }
 
 .inputblock {
@@ -126,41 +339,141 @@
 
 .donationinputsection input {
     width: 100%;
-    padding: 8px 12px;
+    padding: 10px 14px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: #fafafa;
     font-size: 14px;
+    transition: all 0.2s ease;
+    color: #3f3e3e;
+}
+
+.donationinputsection input:hover {
+    border-color: #b99787;
+    background-color: white;
+}
+
+.donationinputsection input:focus {
+    outline: none;
+    border-color: #b22624;
+    background-color: white;
+    box-shadow: 0 0 0 2px rgba(178, 38, 36, 0.1);
+}
+
+.donationinputsection input::placeholder {
+    color: #999;
 }
 
 .donationinputsection input[type="time"] {
-    padding: 8px 12px;
+    padding: 10px 14px;
     width: auto;
+    min-width: 160px;
 }
 
-/* Update Button */
-.updatebtn {
-    display: inline-block;
+/* Button Container */
+.button-container {
+    display: flex;
+    gap: 20px;
     margin-top: 30px;
-    padding: 8px 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Enhanced Update Buttons - Made shorter and same line */
+.updatebtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
     background-color: #b22624;
     color: white;
     border: none;
     border-radius: 6px;
-    font-size: 1rem;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    width: fit-content;
+    min-width: 120px;
+    height: 40px;
 }
 
 .updatebtn:hover {
     background-color: #c62828;
-    transform: translateY(-0.5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(178, 38, 36, 0.3);
 }
 
-/* Responsive adjustments */
+.updatebtn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(178, 38, 36, 0.2);
+}
+
+.updatebtn2 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background-color: #797b79;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    height: 40px;
+
+}
+
+.updatebtn2:hover {
+    background-color: #666868;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(121, 123, 121, 0.3);
+}
+
+.updatebtn2:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(121, 123, 121, 0.2);
+}
+
+.navigatebtn {
+    padding: 10px 20px;
+    margin-top: 45px;
+    background-color: #b22624;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(178, 38, 36, 0.2);
+}
+
+.navigatebtn:hover {
+    background-color: #c62828;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(178, 38, 36, 0.3);
+}
+
+.navigatebtn:active {
+    transform: translateY(0);
+}
+
+/* Loading Animation */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.loading-skeleton {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+/* Enhanced Responsive Design */
 @media (max-width: 1024px) {
     .donerinfoForm {
         flex-direction: column;
@@ -170,16 +483,26 @@
     .donerinfoCard, .donationinputsection {
         width: 100%;
     }
+    
+    .button-container {
+        justify-content: center;
+    }
 }
 
 @media (max-width: 768px) {
     .donerinfoForm {
         margin-left: 20px;
         padding: 20px;
+        gap: 20px;
+    }
+    
+    .donerinfoCard,
+    .donationinputsection {
+        padding: 20px;
     }
     
     .donationinputgrouprow {
-        flex-direction: column;
+        grid-template-columns: 1fr;
         gap: 15px;
     }
     
@@ -187,8 +510,44 @@
         min-width: 100%;
     }
     
-    .updatebtn {
-        width: 100%;
-        float: none;
+    .button-container {
+        flex-direction: column;
+        gap: 10px;
     }
+    
+    .updatebtn,
+    .updatebtn2 {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .label-value-pair,
+    .blood-group-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .label {
+        width: 100%;
+    }
+    
+    .donerinfoCard select {
+        width: 100%;
+        margin-top: 8px;
+    }
+}
+
+/* Additional hover effects for better UX */
+.inputblock:hover label {
+    color: #b22624;
+    transition: color 0.2s ease;
+}
+
+/* Focus states for accessibility */
+.updatebtn:focus,
+.updatebtn2:focus,
+.navigatebtn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(178, 38, 36, 0.2);
 }

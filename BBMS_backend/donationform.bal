@@ -38,25 +38,65 @@ isolated function determine_eligibility(Eligible eligible) returns json|error {
 
         if ecVal is int && ecVal == 1062 {
 
-            sql:ExecutionResult|error UpdateDup = dbClient->execute(`UPDATE eligibility SET foreignTravel=${newSubmission.foreignTravel},risk=${newSubmission.risk}, eligible=${newSubmission.eligible} WHERE DonerID=${newSubmission.DonerID} AND CampaignID=${newSubmission.CampaignID}`);
-            string|error submitID = dbClient->queryRow(`SELECT submitID FROM eligibility WHERE DonerID=${newSubmission.DonerID} AND CampaignID=${newSubmission.CampaignID}`);
+            Eligible|error check_result = dbClient->queryRow(`SELECT * FROM eligibility WHERE DonerID=${newSubmission.DonerID} AND CampaignID=${newSubmission.CampaignID}`);
 
-            if UpdateDup is error {
-                return error("Eligibility Updating Failed!");
+            if check_result is Eligible {
+                return {"message": "Duplicate entry found", "SubmitID": check_result.submitID, "Eligible":check_result.eligible};
             }
-            else {
-
-                if submitID is string {
-                    return {"message": "Duplicate entry found", "SubmitID": submitID};
-                }
-            }
+            
         }
+        
         return error("Eligibility Updating Failed!");
     }
 
     else {
         return {"message": "Eligibility Updated!", "SubmitID": newSubmission.submitID};
     }
+
+}
+
+isolated function update_eligibility(Eligible eligible) returns json|error {
+
+    boolean dropped = false;
+
+    if ((eligible?.previous_eligibility ?: false) && !(eligible.eligible)){
+
+        sql:ExecutionResult|error dorpping = dbClient->execute(`DELETE FROM eligibility WHERE submitID=${eligible.submitID}`);
+
+        if dorpping is error{
+            return error("Deleting Error");
+        }
+
+        dropped = true;
+    }
+
+    if(dropped){
+
+        sql:ExecutionResult|error reAddition = dbClient->execute(`INSERT INTO eligibility(submitID, foreignTravel, risk, DonerID, eligible, CampaignID)
+            VALUES(
+                ${eligible.submitID},
+                ${eligible.foreignTravel},
+                ${eligible.risk},
+                ${eligible.DonerID},
+                ${eligible.eligible},
+                ${eligible.CampaignID}        
+            )`);
+
+            if reAddition is error{
+                return error("Eligibility Updating Failed!");
+            }
+
+            return {"message": "Eligibility Updated!","Dropped":dropped};
+
+    }
+    
+    sql:ExecutionResult|error UpdateDup = dbClient->execute(`UPDATE eligibility SET foreignTravel=${eligible.foreignTravel},risk=${eligible.risk}, eligible=${eligible.eligible} WHERE submitID=${eligible.submitID}`);
+
+    if UpdateDup is error {
+        return error("Eligibility Updating Failed!");
+    }
+
+    return {"message": "Eligibility Updated!","Dropped":dropped, "SubmitID":eligible.submitID};
 
 }
 
@@ -73,7 +113,8 @@ isolated function addHistory(DonHistory donHistory) returns json|error {
             ${newHistory.readInfoLeaflet},
             ${newHistory.medicalConditions} 
 
-        )`;
+        ) 
+        ON DUPLICATE KEY UPDATE hadIssuesBefore=${newHistory.hadIssuesBefore}, issueDetails=${newHistory.issueDetails}, advisedNotToDonate=${newHistory.advisedNotToDonate}, readInfoLeaflet=${newHistory.readInfoLeaflet}, medicalConditions=${newHistory.medicalConditions}`;
 
     sql:ExecutionResult|error result = dbClient->execute(addHistory);
 
@@ -108,7 +149,23 @@ isolated function addmedicalRisk(MedRisks medRisks) returns json|error {
             ${newmedRisk.riskyCategoriesAwareness},
             ${newmedRisk.riskSymptoms} 
 
-        )`;
+        )
+        
+        ON DUPLICATE KEY UPDATE 
+        jaundice = ${newmedRisk.jaundice}, 
+        tbTyphoid = ${newmedRisk.tbTyphoid}, 
+        vaccinations = ${newmedRisk.vaccinations}, 
+        tattoos = ${newmedRisk.tattoos}, 
+        imprisoned = ${newmedRisk.imprisoned}, 
+        foreignTravel = ${newmedRisk.foreignTravel}, 
+        bloodTransfusion = ${newmedRisk.bloodTransfusion}, 
+        malaria = ${newmedRisk.malaria}, 
+        dengue = ${newmedRisk.dengue}, 
+        recentIllness = ${newmedRisk.recentIllness}, 
+        dentalWork = ${newmedRisk.dentalWork}, 
+        recentMeds = ${newmedRisk.recentMeds}, 
+        riskyCategoriesAwareness = ${newmedRisk.riskyCategoriesAwareness}, 
+        riskSymptoms = ${newmedRisk.riskSymptoms}`;
 
     sql:ExecutionResult|error result = dbClient->execute(addRisk);
 
@@ -133,7 +190,15 @@ isolated function addConsent(Consent consent) returns json|error {
             ${newConsent.frequency},
             ${newConsent.DonerID}
 
-        )`;
+        )
+
+        ON DUPLICATE KEY UPDATE 
+
+            testConsent = ${newConsent.testConsent},
+            instructionConsent = ${newConsent.instructionConsent},
+            notifyConsent = ${newConsent.notifyConsent},
+            frequency = ${newConsent.frequency},
+            DonerID = ${newConsent.DonerID}`;
 
     sql:ExecutionResult|error result = dbClient->execute(addConsent);
 
@@ -156,17 +221,20 @@ isolated function addConsent(Consent consent) returns json|error {
         if camp is Campaign {
             string Address = "";
 
-            if camp.add_line2 != null && camp.add_line3 != null {
+            if ((camp.add_line2 != null) && (camp.add_line3 != null)) {
                 string ad2 = camp.add_line2.toString();
                 string ad3 = camp.add_line3.toString();
                 Address = camp.add_line1 + ad2 + ad3 + camp.district;
             }
-            else if camp.add_line2 != null {
+            else if (camp.add_line2 != null) {
                 string ad2 = camp.add_line2.toString();
                 Address = camp.add_line1 + ad2 + camp.district;
             }
 
-            Address = camp.add_line1 + camp.district;
+            else{
+                Address = camp.add_line1 + camp.district;
+            }
+            
             return {"message": "Consent and Eligibility successfully updated", "Address": Address, "Date": camp.date};
         }
 

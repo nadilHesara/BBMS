@@ -345,6 +345,8 @@ public type Eligible record {
 
     @sql:Column {name: "CampaignID"}
     string CampaignID;
+
+    boolean 'previous_eligibility?;
 };
 
 public type DonHistory record {
