@@ -7,6 +7,10 @@
   width: 100%;
 }
 
+.dark .footer{
+  background: linear-gradient(135deg, #2f2527 0%, #300e0e 50%, #291801 100%);
+  color: white;
+}
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;

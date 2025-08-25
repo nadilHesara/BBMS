@@ -68,7 +68,7 @@ function CalendarComponent(props) {
       if (isFutureCampaign) {
         return 'highlight-red';
       }
-      return null;
+      return 'normal';
     }
   };
 

@@ -3,6 +3,8 @@ import "./Donates.css"
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoadingContext } from "../../context/LoadingContext";
 import useVerifyAccess from '../../SharedData/verifyFunction';
+import Cookies from 'js-cookie';
+
 
 function Donates({ theme, setTheme }) {
     useVerifyAccess("donates");
@@ -13,9 +15,9 @@ function Donates({ theme, setTheme }) {
     const location = useLocation();
     
     const navigate = useNavigate();
-    const campaignid = location.state?.campaignId;
-    const campaigndate = location.state?.campdate;
-    const campaignName = location.state?.campName;
+    const campaignid = location.state?.campaignId || Cookies.get('campaign_Id');
+    const campaigndate = location.state?.campdate ||Cookies.get('cdate');
+    const campaignName =  location.state?.campName || Cookies.get('campName');
     const { loading, setLoading } = useContext(LoadingContext);
     const [campaign_id, setCampaign_id] = useState(campaignid || null);
     const [campdate, setCampdate] = useState(campaigndate || null);
@@ -80,13 +82,11 @@ function Donates({ theme, setTheme }) {
 
             else {
                 const data = await response.json();
-                navigate("/dashboard/DonationInfo", {
-                    state: {
-                        campaign_Id: campaign_id,
-                        donorId: data.user_id,
-                        cdate: campdate
-                    }
-                });
+                Cookies.set('donorId', data.user_id,);
+                Cookies.set('campaign_Id',campaign_id);
+                Cookies.set('cdate', campdate);
+                Cookies.set('campName',campName);
+                navigate("/dashboard/DonationInfo");
 
             }
 
@@ -120,8 +120,9 @@ function Donates({ theme, setTheme }) {
                     <label className='Label' htmlFor="nic">NIC No</label>
                     <input type="text" id="nic" name="nic" value={nic} onChange={(e) => setNic(e.target.value)}></input>
                     <br />
-                    <input type="submit" value="Search" />
-
+                    {!showPopup && (
+                    <input type="submit" value="Search Donor" />
+                    )}
                 </div>
             </form>
 
@@ -129,8 +130,8 @@ function Donates({ theme, setTheme }) {
             {showPopup && (
                 <div className="popup-backdrop">
                     <div className="popup-box">
-                        <p>No registered doner. Please Check Your Username or Email</p>
-                        <button onClick={handleRegister}>Register Doner</button>
+                        <p>No registered donor. <br/> Please Check Your Username/Email or NIC</p>
+                        <button onClick={handleRegister}>Register Donor</button>
                         <button onClick={handleIgnore}>Ignore</button>
                     </div>
                 </div>
