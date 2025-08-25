@@ -158,3 +158,12 @@ isolated function getCamp(string hospitalId) returns CampaignIdName|error {
     CampaignIdName|error campaignId = dbClient->queryRow(query, CampaignIdName);
     return campaignId;
 }
+
+
+isolated function updateCamp(CampaignDetails campaign) returns sql:ExecutionResult|error{
+    sql:ParameterizedQuery query = `UPDATE campaign set completed = ${campaign.completed} WHERE CampaignID = ${campaign.CampaignID} ;` ;
+
+    sql:ExecutionResult|error result = dbClient->execute(query);
+
+    return result;
+}

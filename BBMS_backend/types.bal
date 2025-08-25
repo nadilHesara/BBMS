@@ -249,7 +249,7 @@ public type HospitalDetails record {|
     string Name;
 |};
 
-public type CampaignDetails record {|
+public type CampaignDetails record {
     @sql:Column {name: "CampaignID"}
     string CampaignID;
 
@@ -297,7 +297,7 @@ public type CampaignDetails record {|
 
     @sql:Column { name: "completed" }
     string? completed;
-|};
+};
 
 public type CampaignRequest record {|
     string organizerName;
