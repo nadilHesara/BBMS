@@ -384,6 +384,15 @@ service /dashboard on listener9191 {
         return campaigns;
     }
 
+    resource function post CampaignHistory(@http:Payload CampaignDetails campaign) returns json|error {
+        sql:ExecutionResult|error result = updateCamp(campaign);
+        
+        if result is error{
+            return result;
+        }
+        return {"message" : "Sucsess"};
+    }
+
     resource function post ChangePassword(@http:Payload passwordData passwordData) returns json|error {
         json|error result = check changePassword(passwordData.userType, passwordData.userName, passwordData.newPassword, passwordData.currentPassword);
         return result;

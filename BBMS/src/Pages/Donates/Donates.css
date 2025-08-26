@@ -1,3 +1,25 @@
+
+.donates-notice{ 
+    margin-left: 150px;
+    margin-top:30px;
+  display: inline-block;
+  background-color: #fef3c762;
+  color: #92400E;
+  border-left: 4px solid #F59E0B;
+  padding: 1.5rem 1rem;
+  font-weight: 600;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  margin-bottom: 0;
+
+}
+
+.dark .donates-notice{
+  background-color: #ffffff14;
+  color:white;
+  border-left: 5px solid #29057c;
+}
+
 .search_container input[type="text"] {
   width: 100%;
   padding: 10px 12px;
@@ -10,7 +32,7 @@
 }
 
 .search_container {
-    margin-top: 100px;
+    margin-top: 50px;
     align-self: center;
     margin-left: 300px;
     width: auto;

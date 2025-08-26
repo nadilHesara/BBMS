@@ -1,5 +1,4 @@
 import ballerina/sql;
-import ballerina/io;
 
 isolated function addCamp(Campaign campaign) returns json|error {
 
@@ -124,14 +123,13 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
             campaigns.push(campaign);
         };
     check resultStream.close();
-    io:println(campaigns);
     return campaigns;
 }
 
 isolated function getCampaignHospital(string hospitalID) returns CampaignIdName[]|error {
     CampaignIdName[] campaigns = [];
     string curruntDate = getCurrentDate();
-    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND DateofCampaign <= ${curruntDate} ORDER BY DateofCampaign DESC`;
+    sql:ParameterizedQuery query = `SELECT CampaignID, CampaignName FROM campaign WHERE HospitalID = ${hospitalID} AND DateofCampaign <= ${curruntDate} AND completed = "1" ORDER BY DateofCampaign DESC`;
 
     stream<CampaignIdName, error?> resultStream = dbClient->query(query);
 
@@ -157,4 +155,12 @@ isolated function getCamp(string hospitalId) returns CampaignIdName|error {
 
     CampaignIdName|error campaignId = dbClient->queryRow(query, CampaignIdName);
     return campaignId;
+}
+
+isolated function updateCamp(CampaignDetails campaign) returns sql:ExecutionResult|error{
+    sql:ParameterizedQuery query = `UPDATE campaign set completed = ${campaign.completed} WHERE CampaignID = ${campaign.CampaignID} ;` ;
+
+    sql:ExecutionResult|error result = dbClient->execute(query);
+
+    return result;
 }
