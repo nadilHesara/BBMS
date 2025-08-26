@@ -15,7 +15,7 @@ export default function GlobalLoading() {
       setLoading(false);
       navigate("/login"); 
       
-    }, 3000);
+    }, 5000);
 
     return () => clearTimeout(timer); // cleanup if unmounted
   }, [loading, navigate]);
