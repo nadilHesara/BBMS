@@ -1,9 +1,9 @@
 /* ------------------- General Form ------------------- */
 .campaign-form {
   max-width: 500px;
-  margin: 13vh auto;
+  margin: 20vh auto;
   padding: 40px 30px;
-  background: #cccccc;
+  background: #fdf3f3;
   border-radius: 16px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
   font-family: "Segoe UI", Tahoma, sans-serif;

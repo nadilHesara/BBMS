@@ -16,6 +16,14 @@
   width: 80px;
 }
 
+.active-link {
+  background-color: rgb(175, 172, 172) !important; 
+  color: white;             
+}
+
+.active-link span {
+  font-weight: bold;
+}
 
 .sidebar-toggle-btn {
   background: rgb(113, 113, 113);
@@ -81,8 +89,8 @@
   font-size: 16px;
 }
 
-.slide-bar-nav-links.dark a:hover {
-  background: rgba(255, 255, 255, 0.1);
+.dark .slide-bar-nav-links a:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
 }
 
 .slide-bar-nav-links a:hover {
