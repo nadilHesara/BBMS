@@ -2,7 +2,7 @@ import ballerina/io;
 import ballerina/sql;
 
 public isolated function addDoner(Doner doner) returns json|error {
-
+    io:println(doner);
     // Generate new DonerID
     DonerID|error d = dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
     string newDonerId;

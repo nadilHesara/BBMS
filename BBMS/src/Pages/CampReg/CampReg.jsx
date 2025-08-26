@@ -49,37 +49,41 @@ function CampReg({ theme, setTheme }) {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage("");
-    console.log(campaign);
-    try {
-      setLoading(true);
-      const response = await fetch("http://localhost:9191/dashboard/campReg", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(campaign),
-      });
-  
-      const result = await response.json();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-      if (response.ok) {
-        toast.success(`Successfully registered by ${campaign.org_name}`);
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      } else {
-        console.log("error:", campaign);
-        setMessage("Error : " + JSON.stringify(result));
-      }
-    } catch (error) {
-      setMessage("Registration failed. Check server and data.");
-    } finally {
-      setLoading(false);
+  try {
+    const response = await fetch("http://localhost:9191/dashboard/campReg", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(campaign),
+    });
+
+    let result;
+    try {
+      result = await response.json(); // try parsing JSON
+    } catch {
+      result = null; // backend did not return JSON
     }
-  };
+
+    if (response.ok) {
+      toast.success(`Campaign "${campaign.CampaignName}" registered successfully!`);
+      setTimeout(() => window.location.reload(), 2000); // optional reload
+    } else if (response.status >= 400 && response.status < 500) {
+      // Validation/client error
+      toast.error(result?.message || "Please check your input. Some fields might be missing or invalid.");
+    } else {
+      // Server error
+      toast.error("Server error occurred. Please try again later.");
+    }
+  } catch (networkError) {
+    toast.error("Network error. Please check your internet connection.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <>

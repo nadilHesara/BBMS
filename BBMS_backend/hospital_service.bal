@@ -2,12 +2,11 @@ import ballerina/io;
 import ballerina/sql;
 
 isolated function addHospital(Hospital hospital) returns json|error {
-    io:println(hospital);
+    io:println("Hospital request: ", hospital);
 
-    // Generate a new HOSPITAL ID
+    // 1. Generate HospitalID
     HospitalID|error h = dbClient->queryRow(`SELECT HospitalID FROM Hospital ORDER BY HospitalID DESC LIMIT 1`);
     string newHospitalId = "H001";
-
     if h is HospitalID {
         string? lastId = h.HospitalID;
         if lastId is string {
@@ -15,15 +14,16 @@ isolated function addHospital(Hospital hospital) returns json|error {
         }
     }
 
-    // Create a new Hospital record with the new Hospital Id
+    // 2. Prepare hospital record
     Hospital newHospital = hospital.clone();
     newHospital.hospital_id = newHospitalId;
-    string password = check generatePassword(12);
-    newHospital.password = check hashPassword(password);
-    // Insert into Hospital table (now includes password)
+    string plainPassword = check generatePassword(12);
+    newHospital.password = check hashPassword(plainPassword);
+
+    // 3. Insert hospital
     sql:ParameterizedQuery addHospital = `INSERT INTO hospital(
-        HospitalID, Name, District, Contact, AddressLine1, AddressLine2, AddressLine3, Username, Email)
-         VALUES(
+        HospitalID, Name, District, Contact, AddressLine1, AddressLine2, AddressLine3, Username, Email
+    ) VALUES (
         ${newHospital.hospital_id},
         ${newHospital.name},
         ${newHospital.District},
@@ -33,58 +33,23 @@ isolated function addHospital(Hospital hospital) returns json|error {
         ${newHospital.address_line3},
         ${newHospital.username},
         ${newHospital.email}
-
     )`;
 
-    // Insert into login table
-    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, HospitalID, UserType) 
-        VALUES(
-        ${newHospital.username},
-        ${newHospital.password},
-        ${newHospital.hospital_id},
-        "Hospital")`;
-
-    string htmlBody = "<html>" +
-        "<head>" +
-        "<meta charset='UTF-8'>" +
-        "<title>Password Reset</title>" +
-        "<style>" +
-        "body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }" +
-        ".container { max-width: 600px; margin: 40px auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }" +
-        "h2 { color: #333333; }" +
-        "p { color: #555555; font-size: 16px; }" +
-        ".password-box { background-color: #f0f0f0; border-radius: 5px; padding: 15px; font-size: 18px; font-weight: bold; text-align: center; margin: 20px 0; letter-spacing: 1px; }" +
-        ".footer { font-size: 12px; color: #999999; margin-top: 30px; text-align: center; }" +
-        "</style>" +
-        "</head>" +
-        "<body>" +
-        "<div class='container'>" +
-        "<h2>Password Reset Request</h2>" +
-        "<p>Dear " + newHospital.name + ",</p>" +
-        "<p>Your account password has been requested. Use the following password to log in:</p>" +
-        "<div class='password-box'> " + password + "</div>" +
-        "<p>For security reasons, we recommend changing this password after your first login.</p>" +
-        "<p>Thank you,<br>Support Team</p>" +
-        "<div class='footer'>&copy; 2025 Your Company Name. All rights reserved.</div>" +
-        "</div>" +
-        "</body>" +
-        "</html>";
-
-    error? mail = sendEmail(newHospital.email, "Welcome to BBMS - Your Account Details", htmlBody);
-
-    if mail != () {
-        return mail;
-    }
-
     sql:ExecutionResult|error result = dbClient->execute(addHospital);
-    sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
-
-    if result is error && loginResult is error {
-        return error("Hospital already exists!");
-    } else if result is error {
-        return error("Please enter valid data");
+    if result is error {
+        return error("Hospital insert failed: " + result.toString());
     }
 
+    // 4. Insert login
+    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, HospitalID, UserType)
+        VALUES(${newHospital.username}, ${newHospital.password}, ${newHospital.hospital_id}, "Hospital")`;
+
+    sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
+    if loginResult is error {
+        return error("Login insert failed: " + loginResult.toString());
+    }
+
+    // 5. Auto-create campaign if needed
     if newHospital.isCampaign == 1 {
         Campaign hospitalCamp = {
             campain_id: newHospitalId,
@@ -103,25 +68,43 @@ isolated function addHospital(Hospital hospital) returns json|error {
             hospital_id: newHospitalId,
             location: ()
         };
-        _ = check addCamp(hospitalCamp);
+        json|error camp = addCamp(hospitalCamp);
+        if camp is error {
+            return camp;
+        }
     }
-    return {"message": "Hospital added successfully!"};
+
+    // 6. Send email last
+    string htmlBody = "<html><body><h2>Welcome " + newHospital.name + "</h2>" +
+        "<p>Your account has been created successfully.</p>" +
+        "<p><b>Username:</b> " + newHospital.username + "</p>" +
+        "<p><b>Password:</b> " + plainPassword + "</p>" +
+        "<p>Please log in and change your password immediately.</p>" +
+        "</body></html>";
+
+    error? mail = sendEmail(newHospital.email, "Welcome to BBMS - Your Account Details", htmlBody);
+    if mail is error {
+        return mail;
+    }
+
+    return { "message": "Hospital added successfully!" };
 }
+
 
 isolated function getHospital(string? id = (), string? username = (), string? email = ()) returns Hospital|error {
 
     Hospital|error hospital;
 
     if id is string {
-        hospital = check dbClient->queryRow(`
+        hospital =  dbClient->queryRow(`
             SELECT * FROM Hospital WHERE HospitalID = ${id}`
             );
     } else if username is string {
-        hospital = check dbClient->queryRow(`
+        hospital =  dbClient->queryRow(`
             SELECT * FROM Hospital WHERE Username = ${username}`
             );
     } else if email is string {
-        hospital = check dbClient->queryRow(`
+        hospital =  dbClient->queryRow(`
             SELECT * FROM Hospital WHERE Email = ${email}`
             );
     } else {
