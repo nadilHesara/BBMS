@@ -205,6 +205,7 @@ function DonorReg({ theme, setTheme }) {
           </div >
         </> : <>
                         <div className="hospital-donor-layout w-full ">
+                          <p className="donor-reg-notice">Fill the following form to register a new Donor to the database</p>
             <div className={theme === "light" ? "doner-reg" : "doner-reg dark"}>
               <form className="doner-reg-form" onSubmit={handleSubmit}>
                 <h1>Donor Registration</h1>

@@ -83,7 +83,9 @@ function CampReg({ theme, setTheme }) {
 
   return (
     <>
+    <p className="hospital-reg-notice">Fill out the following form to register a new campaign under your hospital.</p>
       <div className="campreg-container">
+        
         <form className="doner-reg-form" onSubmit={handleSubmit}>
           <h1>Campaign Registration</h1>
           <label htmlFor="org_name"> Organizer Name: </label>

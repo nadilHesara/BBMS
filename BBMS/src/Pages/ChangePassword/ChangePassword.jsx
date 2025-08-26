@@ -90,6 +90,8 @@ function ChangePassword() {
   }
 
   return (
+    <>
+    <p className="hospital-reg-notice">For your security, please update your password regularly.</p>
     <form
       className="doner-reg-form max-w-md mx-auto mt-5  bg-white dark:!bg-gray-900 p-6 rounded-2xl shadow-lg space-y-6"
       onSubmit={handleSubmit}
@@ -209,6 +211,7 @@ function ChangePassword() {
         </button>
       </div>
     </form>
+    </>
   );
 }
 

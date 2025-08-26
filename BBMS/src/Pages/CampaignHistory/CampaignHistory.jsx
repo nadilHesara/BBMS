@@ -12,6 +12,7 @@ import Checkbox from "@mui/material/Checkbox"; // ✅ Import Checkbox
 import { visuallyHidden } from "@mui/utils";
 import { LoadingContext } from "../../context/LoadingContext";
 import useVerifyAccess from "../../SharedData/verifyFunction";
+import "./CampaignHistory.css";
 
 function descendingComparator(a, b, orderBy) {
   if (orderBy === "Date") {
@@ -109,69 +110,72 @@ export default function CampaignHistory() {
   };
 
   return (
-    <Paper sx={{ width: "100%", mb: 2 }}>
-      <TableContainer>
-        <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size="medium">
-          <TableHead>
-            <TableRow>
-              {headCells.map((headCell) => (
-                <TableCell
-                  key={headCell.id}
-                  sortDirection={orderBy === headCell.id ? order : false}
-                >
-                  <TableSortLabel
-                    active={orderBy === headCell.id}
-                    direction={orderBy === headCell.id ? order : "asc"}
-                    onClick={(e) => handleRequestSort(e, headCell.id)}
+    <div className="campaign-history">
+      <p className="page-head-campHistory">History of all the campaigns </p>
+      <Paper sx={{ width: "100%", mb: 2 }}>
+        <TableContainer>
+          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size="medium">
+            <TableHead>
+              <TableRow>
+                {headCells.map((headCell) => (
+                  <TableCell
+                    key={headCell.id}
+                    sortDirection={orderBy === headCell.id ? order : false}
                   >
-                    {headCell.label}
-                    {orderBy === headCell.id ? (
-                      <span style={visuallyHidden}>
-                        {order === "desc" ? "sorted descending" : "sorted ascending"}
-                      </span>
-                    ) : null}
-                  </TableSortLabel>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows
-              .slice()
-              .sort(getComparator(order, orderBy))
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
-                <TableRow hover key={row.id}>
-                  {headCells.map((cell) => (
-                    <TableCell key={cell.id}>
-                      {cell.id === "complete" ? (
-                        <Checkbox
-                          checked={row.complete}
-                          onChange={() => handleCheckboxChange(row.id)}
-                          color="primary"
-                        />
-                      ) : (
-                        row[cell.id] ?? "-"
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={(e, newPage) => setPage(newPage)}
-        onRowsPerPageChange={(e) => {
-          setRowsPerPage(parseInt(e.target.value, 10));
-          setPage(0);
-        }}
-      />
-    </Paper>
+                    <TableSortLabel
+                      active={orderBy === headCell.id}
+                      direction={orderBy === headCell.id ? order : "asc"}
+                      onClick={(e) => handleRequestSort(e, headCell.id)}
+                    >
+                      {headCell.label}
+                      {orderBy === headCell.id ? (
+                        <span style={visuallyHidden}>
+                          {order === "desc" ? "sorted descending" : "sorted ascending"}
+                        </span>
+                      ) : null}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows
+                .slice()
+                .sort(getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => (
+                  <TableRow hover key={row.id}>
+                    {headCells.map((cell) => (
+                      <TableCell key={cell.id}>
+                        {cell.id === "complete" ? (
+                          <Checkbox
+                            checked={row.complete}
+                            onChange={() => handleCheckboxChange(row.id)}
+                            color="primary"
+                          />
+                        ) : (
+                          row[cell.id] ?? "-"
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={(e, newPage) => setPage(newPage)}
+          onRowsPerPageChange={(e) => {
+            setRowsPerPage(parseInt(e.target.value, 10));
+            setPage(0);
+          }}
+        />
+      </Paper>
+    </div>
   );
 }
