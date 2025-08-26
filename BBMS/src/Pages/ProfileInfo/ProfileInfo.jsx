@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from 'react';
-{/*import NaviBar from '../../components/Navibar/NaviBar';*/ }
 import districts from '../../SharedData/districts';
 import { useLocation, useNavigate } from 'react-router-dom';
 import "./ProfileInfo.css"
@@ -149,7 +148,7 @@ function ProfileInfo({ theme, setTheme }) {
             setIsChange(false);
           }
           if (from === "DonationForm") {
-            navigate('../donation-history');
+            navigate('../donationhistory');
           }
 
         })

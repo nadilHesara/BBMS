@@ -5,12 +5,14 @@ import { toast } from 'react-toastify';
 
 
 export default function EligibilityCheck() {
-
   const donor_id = sessionStorage.getItem("userId");
+  const [response, setResponse] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [autoSubmitCases, setAutoSubmitCases] = useState(false);
   const [isalready,setIsalready] = useState(false);
+  const [updateEntry,setUpdateEntry] = useState(false);
+
 
   const [form, setForm] = useState({
     submitID: "S001",
@@ -19,7 +21,8 @@ export default function EligibilityCheck() {
     lastDonation: '',
     foreignTravel: '',
     risk: '',
-    eligible: '',    
+    eligible: '',  
+    previous_eligibility: '',  
   });
 
   const navigate = useNavigate();
@@ -30,7 +33,9 @@ export default function EligibilityCheck() {
 
 
   const parseDate = (dateString) => {
+
     if (!dateString) return null;
+    
     try{
       const dateParts = dateString.split('-');
       if (dateParts.length !== 3) return null;
@@ -40,6 +45,7 @@ export default function EligibilityCheck() {
         month: parseInt(monthStr, 10),
         day: parseInt(dayStr, 10)
       };
+
     }catch (error) {
       console.error("Error parsing date:", error);
       return null;
@@ -79,7 +85,10 @@ export default function EligibilityCheck() {
 
   useEffect(() => {
 
-    const fetchdonorData = async () => {
+    const fetchDonorData = async () => {
+      
+      if (!donor_id) return;
+
       try {
         const response = await axios.get(`http://localhost:9191/dashboard/donor?donor_id=${donor_id}`);
 
@@ -95,9 +104,9 @@ export default function EligibilityCheck() {
             const currentYear = campdate.year;
             const currentMonth = campdate.month;
 
-        const b_yr = data.BYear;
-        const b_m = data.BMonth;
-        const DAge = ageCalculator(b_m, b_yr, currentMonth, currentYear);
+            const b_yr = data.BYear;
+            const b_m = data.BMonth;
+            const DAge = ageCalculator(b_m, b_yr, currentMonth, currentYear);
 
             const lastDonation_yr = data.LastDonationYR;
             const lastDonation_m = data.LastDonationMonth;
@@ -118,15 +127,17 @@ export default function EligibilityCheck() {
 
         } catch (error) {
             console.error("Error fetching Donor data:", error);
+            setMessages(prev => [...prev, "Error loading donor data. Please try again."]);
+
         }
 
     };
 
-    if (donor_id) {
-        fetchdonorData();
+    if (donor_id && campDate ) {
+        fetchDonorData();
   }  
 
-}, [donor_id]);
+}, [donor_id, campDate]);
 
 
   useEffect (()=> {
@@ -138,7 +149,7 @@ export default function EligibilityCheck() {
         if (form.age < 18){
           isEligible = false;
           isAutoSubmitCase = true;
-          newMessages.push("You are too yong to donate blood. Redirecting to dashboard");
+          newMessages.push("You are too young to donate blood. Redirecting to dashboard");
 
         }else if (form.age > 60){
           isEligible = false;
@@ -147,7 +158,7 @@ export default function EligibilityCheck() {
         }
       }
 
-      if (form.lastDonation && form.lastDonation !== "No Previous Donations" && form.lastDonation < 4 || form.lastDonation === 0){
+      if (form.lastDonation && form.lastDonation !== "No Previous Donations" && (form.lastDonation < 4 || form.lastDonation === 0)){
           isEligible = false;
           isAutoSubmitCase = true;
           newMessages.push("You are temporarily ineligible due to recent donations. Thank you for your support! Redirecting to dashboard");
@@ -155,15 +166,15 @@ export default function EligibilityCheck() {
 
       if (form.risk && form.risk === "yes"){
         isEligible = false;
-        newMessages.push("You’re temporarily ineligible to donate due to risky behavior");
+        newMessages.push("You are temporarily ineligible to donate due to risky behavior");
       }
 
       if (form.weight && form.weight < 50) {
         isEligible = false;
-        newMessages.push("Your weight is below the minimum requirement for donation");
+        newMessages.push("Your weight is below the minimum requirement for donation. Weight must be at least 50kg");
       }
 
-      if (form.foreignTravel && form.foreignTravel < 3) {
+      if (form.foreignTravel && (form.foreignTravel < 3 || form.foreignTravel===0)) {
         isEligible = false;
         newMessages.push("Foreign travels within the last 3 months makes you temporarily ineligible to donate");
       }
@@ -176,10 +187,12 @@ export default function EligibilityCheck() {
 
   
 
-  useEffect (() => {
-    if (form.eligible === false && autoSubmitCases && campaignId){
+  useEffect (() => { 
 
         const autoSubmit = async () => {
+
+        if (!autoSubmitCases || !campaignId) return;
+
         setIsSubmitting(true);
 
         try { 
@@ -204,6 +217,7 @@ export default function EligibilityCheck() {
           
 
         }catch(error){
+          console.error("Auto-submit error:", error);
           setMessages(prev => [...prev, "Failed to submit. Please try again."]);
 
         }finally{
@@ -211,15 +225,17 @@ export default function EligibilityCheck() {
         }
       };
 
+    if (form.eligible === false && autoSubmitCases && campaignId){
       autoSubmit();
     }
-  }, [form.eligible, autoSubmitCases, campaignId]);
+
+  }, [form.eligible, autoSubmitCases, campaignId, donor_id, form.submitID, navigate]);
 
   const validateForm = () => {
     const errors = [];
     
-    if (!form.weight || form.weight < 50) {
-      errors.push("Weight must be at least 50kg");
+    if (!form.weight) {
+      errors.push("Please enter your weight");
     }
     
     if (!form.risk) {
@@ -230,92 +246,161 @@ export default function EligibilityCheck() {
 };
 
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
 
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleNext = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
 
     if (isSubmitting) return;
 
-    if(form.eligible === true){
+    const validationErrors = validateForm();
 
-      const validationErrors = validateForm();
-        if (validationErrors.length > 0) {
-          setMessages(validationErrors);
-          return;
-        }
-
-      setIsSubmitting(true);
-      try {
-        const response = await axios.post("http://localhost:9191/eligibility", {
-          submitID: form.submitID,
-          ...(Number.isInteger(parseInt(form.foreignTravel))
-              ? { foreignTravel: parseInt(form.foreignTravel) }
-              : {}),
-          risk: form.risk,
-          DonerID: donor_id,
-          eligible: true,
-          CampaignID: campaignId
-        });
-
-        if (response.status === 201 && response.data?.message !== "Duplicate entry found") {
-          setMessages(["You are eligible to donate. Redirecting..."]);
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          sessionStorage.setItem("submitID", response.data?.SubmitID)
-          sessionStorage.setItem("campaignId", campaignId);
-          navigate("profileInfo", {state:{from:"DonationForm"}});
-
-        }else if(response.data?.message==="Duplicate entry found"){
-          setIsalready(true);
-          sessionStorage.setItem("submitID", response.data?.SubmitID)
-          sessionStorage.setItem("campaignId", campaignId);
-
-        }
-        else {
-          setMessages([response.data?.message || "Eligibility check failed"]); 
-        }
-
-      }catch(error){
-        setMessages(["Error submitting form. Please try again."]);
-        console.error("Error submitting form:", error.message);
-
-      }finally{
-        setIsSubmitting(false);
+      if (validationErrors.length > 0) {
+        setMessages(validationErrors);
+        return;
       }
 
-  }else if(form.eligible === false && campaignId){
+    // if(form.eligible === true){
+
 
       setIsSubmitting(true);
-      try { 
-      const response = await axios.post("http://localhost:9191/eligibility", {
-        submitID: form.submitID,
+
+  //     try {
+  //       let first_response;
+  //       let update_response;
+
+  //       if (updateEntry){
+  //         update_response = await axios.post("http://localhost:9191/update_eligibility",{
+  //           submitID: sessionStorage.getItem('submitID'),
+  //           ...(Number.isInteger(parseInt(form.foreignTravel))
+  //               ? { foreignTravel: parseInt(form.foreignTravel) }
+  //               : {}),
+  //           risk: form.risk,
+  //           DonerID: donor_id,
+  //           eligible: true,
+  //           CampaignID: campaignId,
+  //           previous_eligibility: response.data?.Eligible
+  //         });
+
+
+  //       }else{
+  //         first_response = await axios.post("http://localhost:9191/eligibility",{
+  //           submitID: form.submitID,
+  //           ...(Number.isInteger(parseInt(form.foreignTravel))
+  //               ? { foreignTravel: parseInt(form.foreignTravel) }
+  //               : {}),
+  //           risk: form.risk,
+  //           DonerID: donor_id,
+  //           eligible: true,
+  //           CampaignID: campaignId
+  //       });
+
+
+  //       }
+
+  //       const response = updateEntry ? update_response : first_response;
+  //       setResponse(response);
+  //       console.log("Response;", response);
+
+
+  //       if (response?.status === 201 && response.data?.message !== "Duplicate entry found") {
+  //         setMessages(["You are eligible to donate. Redirecting..."]);
+  //         await new Promise(resolve => setTimeout(resolve, 2000));
+  //         sessionStorage.setItem("submitID", response.data?.SubmitID)
+  //         sessionStorage.setItem("campaignId", campaignId);
+  //         if (updateEntry){
+  //           setUpdateEntry(false);
+  //         }
+  //         navigate("profileInfo", {state:{from:"DonationForm"}});
+
+  //       }else if(response.data?.message==="Duplicate entry found"){
+  //         setIsalready(true);
+  //         sessionStorage.setItem("submitID", response.data?.SubmitID)
+  //         sessionStorage.setItem("campaignId", campaignId);
+
+  //       }
+  //       else {
+  //         setMessages([response.data?.message || "Eligibility check failed"]); 
+  //       }
+
+  //     }catch(error){
+  //       setMessages(["Error submitting form. Please try again."]);
+  //       console.error("Error submitting form:", error.message);
+
+  //     }finally{
+  //       setIsSubmitting(false);
+  //     }
+
+  // }else if(form.eligible === false && campaignId){
+
+  //     setIsSubmitting(true);
+
+      try {
+
+      let apiResponse;
+
+      const requestData = {
+        ...(updateEntry ? { submitID: response.data?.SubmitID } : { submitID: form.submitID }),
+        ...(Number.isInteger(parseInt(form.foreignTravel)) ? 
+            { foreignTravel: parseInt(form.foreignTravel) } : {}),
+        risk: form.risk,
         DonerID: donor_id,
         eligible: form.eligible,
-        CampaignID: campaignId
-      });
+        CampaignID: campaignId,
+        ...(updateEntry ? { previous_eligibility: response?.data?.Eligible } : {})
+      };
 
-      if(response.status === 201 && response.data?.message !== "Duplicate entry found"){
-        setMessages(["You are not eligible to donate. Redirecting to dashboard"]);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        toast.error("Ineligible Donor for this campaign");
-        navigate('/dashboard');
-
-      }else if(response.data?.message==="Duplicate entry found"){
-        setIsalready(true);
-        sessionStorage.setItem("submitID", response.data?.SubmitID)
-        sessionStorage.setItem("campaignId", campaignId);
+      if (updateEntry) {
+        setIsalready(false);
+        apiResponse = await axios.post("http://localhost:9191/update_eligibility", requestData);
+      } else {
+        apiResponse = await axios.post("http://localhost:9191/eligibility", requestData);
       }
-      
 
-    }catch(error){
+      setResponse(apiResponse);
+      console.log("Response:", apiResponse);
+
+      if (apiResponse?.status === 201 && apiResponse.data?.message !== "Duplicate entry found") {
+
+        if (form.eligible) {
+          setMessages(["You are eligible to donate. Redirecting..."]);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          sessionStorage.setItem("submitID", apiResponse.data?.SubmitID || form.submitID);
+          sessionStorage.setItem("campaignId", campaignId);
+          setUpdateEntry(false);
+          navigate("profileInfo", {state: {from: "DonationForm"}});
+
+        } else if (!form.eligible){
+          setMessages(["You are not eligible to donate. Redirecting to dashboard"]);
+          setUpdateEntry(false);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          toast.error("Ineligible Donor for this campaign");
+          navigate('/dashboard');
+        }
+
+      } else if (apiResponse.data?.message === "Duplicate entry found" && !updateEntry) {
+        setIsalready(true);
+        setUpdateEntry(true);
+
+      } else {
+        setMessages([apiResponse.data?.message || "Eligibility updating failed"]); 
+      }
+    } 
+
+    catch(error){
       setMessages(prev => [...prev, "Failed to submit. Please try again."]);
+
     }finally{
       setIsSubmitting(false);
     }
-  }  
-};
+    
+  };
 
 useEffect (() => {
     if (form.age !== '' && form.lastDonation !== '' && form.weight !== '' && form.foreignTravel !== '' && form.risk !== '') {
@@ -425,7 +510,7 @@ return (
               <div className="pt-6">
                 <button
                   type="button"
-                  disabled={form.eligible === '' || (form.eligible === false && autoSubmitCases)}
+                  disabled={isSubmitting || (form.eligible === false && autoSubmitCases)}
                   onClick={handleNext}
                   className="w-full px-6 py-4 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50 transform hover:scale-[1.02] active:scale-[0.98]"
                 >
@@ -440,41 +525,55 @@ return (
                 </button>
               </div>
               
-              {messages.length > 0 && (
-                <div className="space-y-3 pt-4">
-                  {messages.map((msg, index) => (
-                    <div 
-                      key={index} 
-                      className={`p-4 rounded-lg border-l-4 ${
-                        msg.includes("eligible to donate") || msg.includes("Redirecting")
-                          ? "bg-green-50 dark:bg-green-900/20 border-green-400 text-green-700 dark:text-green-400"
-                          : msg.includes("Error") || msg.includes("Failed") || msg.includes("ineligible")
-                          ? "bg-red-50 dark:bg-red-900/20 border-red-400 text-red-700 dark:text-red-400"
-                          : "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-400 text-yellow-700 dark:text-yellow-400"
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 mt-0.5">
-                          {msg.includes("eligible to donate") || msg.includes("Redirecting") ? (
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
-                          ) : msg.includes("Error") || msg.includes("Failed") || msg.includes("ineligible") ? (
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                            </svg>
-                          ) : (
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                            </svg>
-                          )}
-                        </div>
-                        <p className="text-sm font-medium">{msg}</p>
+          {messages.length > 0 && (
+            <div className="space-y-3 pt-4">
+              {messages.map((msg, index) => {
+                const isSuccess = msg.includes("You are eligible to donate") || 
+                                (msg.includes("Redirecting...") && msg.includes("eligible"));
+                
+                const isError = msg.includes("Error") || 
+                              msg.includes("Failed") || 
+                              msg.includes("You are not eligible to donate. Redirecting to dashboard") ||
+                              msg.includes("ineligible") ||
+                              msg.includes("too young") ||
+                              msg.includes("beyond the eligible limit") ||
+                              msg.includes("temporarily ineligible") ||
+                              msg.includes("below the minimum requirement");
+
+                return (
+                  <div 
+                    key={index} 
+                    className={`p-4 rounded-lg border-l-4 ${
+                      isSuccess
+                        ? "bg-green-50 dark:bg-green-900/20 border-green-400 text-green-700 dark:text-green-400"
+                        : isError
+                        ? "bg-red-50 dark:bg-red-900/20 border-red-400 text-red-700 dark:text-red-400"
+                        : "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-400 text-yellow-700 dark:text-yellow-400"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 mt-0.5">
+                        {isSuccess ? (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        ) : isError ? (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                          </svg>
+                        )}
                       </div>
+                      <p className="text-sm font-medium">{msg}</p>
                     </div>
-                  ))}
-                </div>
-              )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
             </form>
           </div>
         </div>
@@ -484,9 +583,9 @@ return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
       <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-        {!form.eligible? ("Already Registered ineligible donor"):(
+        {response?.data?.Eligible === false ? "Already Registered ineligible donor":
           "Already Registered eligible donor"
-        )} 
+        } 
         
       </h3>
 
@@ -495,6 +594,7 @@ return (
         <button
           onClick={() => {
             setIsalready(false);
+            setUpdateEntry(false);
             sessionStorage.removeItem("submitID");
             sessionStorage.removeItem("campaignId");
             navigate('/dashboard');
@@ -504,14 +604,12 @@ return (
           Return to Dashboard
         </button>
         <button
-          onClick={() => {
-            setIsalready(false);
-            navigate("profileInfo", {state:{from:"DonationForm"}});
-          }}
+          onClick={handleNext}
           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
         >
           Proceed
         </button>
+
       </div>
     </div>
   </div>
