@@ -18,7 +18,7 @@ function validatePassword(pwd) {
   if (!/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) return "Password must contain at least one special character.";
   return true;
 };
- 
+
 
 function DonorReg({ theme, setTheme }) {
   const navigate = useNavigate();
@@ -116,75 +116,75 @@ function DonorReg({ theme, setTheme }) {
   return (
     <div>
       <NaviBar theme={theme} setTheme={setTheme} />
-      
-      <div className={theme === "light" ? "doner-reg" : "doner-reg dark"}>
-        <form className="doner-reg-form" onSubmit={handleSubmit}>
-          <h1>Donor Registration</h1>
-          <label htmlFor="name">Donor Name:</label>
-          <input type="text" name="name" onChange={handleChange} required />
-          <label>Gender:</label>
+      {["Doner", null].includes(userType) ?
+        <>
+          <div className={theme === "light" ? "doner-reg" : "doner-reg dark"}>
+            <form className="doner-reg-form" onSubmit={handleSubmit}>
+              <h1>Donor Registration</h1>
+              <label htmlFor="name">Donor Name:</label>
+              <input type="text" name="name" onChange={handleChange} required />
+              <label>Gender:</label>
 
 
-          <div className="doner-reg-radio">
-            <div className="flex flex-row gap-2"><input type="radio" name="gender" value="Male" onChange={handleChange} required /> Male</div>
-            <div className="flex flex-row gap-2"><input type="radio" name="gender" value="Female" onChange={handleChange} />Female</div>
-          </div>
-          <br />
+              <div className="doner-reg-radio">
+                <div className="flex flex-row gap-2"><input type="radio" name="gender" value="Male" onChange={handleChange} required /> Male</div>
+                <div className="flex flex-row gap-2"><input type="radio" name="gender" value="Female" onChange={handleChange} />Female</div>
+              </div>
+              <br />
 
-          <label htmlFor="username">Username: </label>
-          <input type="text" name="username" onChange={handleChange} required />
-          <br />
+              <label htmlFor="username">Username: </label>
+              <input type="text" name="username" onChange={handleChange} required />
+              <br />
 
-          <label htmlFor="email">Email: </label>
-          <input type="email" name="email" onChange={handleChange} required />
-          <br />
+              <label htmlFor="email">Email: </label>
+              <input type="email" name="email" onChange={handleChange} required />
+              <br />
 
-          <label>Blood Group:</label>
-          <select name="blood_group" onChange={handleChange}>
-            <option value="">--Select--</option>
-            {bloodgrp.map((b, i) => (
-              <option key={i} value={b}>
-                {b}
-              </option>
-            ))}
-          </select>
+              <label>Blood Group:</label>
+              <select name="blood_group" onChange={handleChange}>
+                <option value="">--Select--</option>
+                {bloodgrp.map((b, i) => (
+                  <option key={i} value={b}>
+                    {b}
+                  </option>
+                ))}
+              </select>
 
-          <label htmlFor="nic_no">NIC Number:</label>
-          <input type="text" name="nic_no" onChange={handleChange} required />
+              <label htmlFor="nic_no">NIC Number:</label>
+              <input type="text" name="nic_no" onChange={handleChange} required />
 
-          <label htmlFor="dob">Date of Birth:</label>
-          <input type="date" name="dob" onChange={handleChange} required />
+              <label htmlFor="dob">Date of Birth:</label>
+              <input type="date" name="dob" onChange={handleChange} required />
 
-          <label htmlFor="tele">Telephone:</label>
-          <input type="text" name="tele" onChange={handleChange} required />
+              <label htmlFor="tele">Telephone:</label>
+              <input type="text" name="tele" onChange={handleChange} required />
 
-          <label>Address:</label>
-          <input type="text" name="address_line1" placeholder="Line 1" onChange={handleChange} required />
-          <div className="address-lines">
-            <input type="text" name="address_line2" placeholder="Line 2" onChange={handleChange} />
-            <input type="text" name="address_line3" placeholder="Line 3" onChange={handleChange} />
-          </div>
-          <br />
+              <label>Address:</label>
+              <input type="text" name="address_line1" placeholder="Line 1" onChange={handleChange} required />
+              <div className="address-lines">
+                <input type="text" name="address_line2" placeholder="Line 2" onChange={handleChange} />
+                <input type="text" name="address_line3" placeholder="Line 3" onChange={handleChange} />
+              </div>
+              <br />
 
-          <label>District:</label>
-          <select name="District" onChange={handleChange} required>
-            <option value="">-- Select --</option>
-            {districts.map((d, i) => (
-              <option key={i} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
+              <label>District:</label>
+              <select name="District" onChange={handleChange} required>
+                <option value="">-- Select --</option>
+                {districts.map((d, i) => (
+                  <option key={i} value={d}>
+                    {d}
+                  </option>
+                ))}
+              </select>
 
-          <br />
+              <br />
 
-          { ["Doner", null].includes(userType) &&
-            <>
+
               <div className="pwd-field">
                 <label htmlFor="pwd">Password: </label>
 
                 <input type={show[0] ? "text" : "password"} id="pwd" name="pwd" onChange={(e) => setPassword(e.target.value)}></input>
-                <div className="dpassword-toggle-icon">{show ? <AiFillEyeInvisible onClick={() => toggleShow()} size={20} /> : <AiFillEye onClick={() => toggleShow()} size={20} />}
+                <div className="dpassword-toggle-icon">{show[0] ? <AiFillEyeInvisible onClick={() => toggleShow()} size={20} /> : <AiFillEye onClick={() => toggleShow()} size={20} />}
                 </div>
               </div>
               <br />
@@ -196,13 +196,85 @@ function DonorReg({ theme, setTheme }) {
                 </div><br />
               </div>
 
-            </>}
 
-          <input type="submit" value="Register" />
 
-        </form>
+              <input type="submit" value="Register" />
 
-      </div >
+            </form>
+
+          </div >
+        </> : <>
+          <div className="main-layout">
+            <LeftSlideBar theme={theme} userType={userType} username={userData.userName} />
+            <div className="w-full">
+            <div className={theme === "light" ? "doner-reg" : "doner-reg dark"}>
+              <form className="doner-reg-form" onSubmit={handleSubmit}>
+                <h1>Donor Registration</h1>
+                <label htmlFor="name">Donor Name:</label>
+                <input type="text" name="name" onChange={handleChange} required />
+                <label>Gender:</label>
+
+
+                <div className="doner-reg-radio">
+                  <div className="flex flex-row gap-2"><input type="radio" name="gender" value="Male" onChange={handleChange} required /> Male</div>
+                  <div className="flex flex-row gap-2"><input type="radio" name="gender" value="Female" onChange={handleChange} />Female</div>
+                </div>
+                <br />
+
+                <label htmlFor="username">Username: </label>
+                <input type="text" name="username" onChange={handleChange} required />
+                <br />
+
+                <label htmlFor="email">Email: </label>
+                <input type="email" name="email" onChange={handleChange} required />
+                <br />
+
+                <label>Blood Group:</label>
+                <select name="blood_group" onChange={handleChange}>
+                  <option value="">--Select--</option>
+                  {bloodgrp.map((b, i) => (
+                    <option key={i} value={b}>
+                      {b}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor="nic_no">NIC Number:</label>
+                <input type="text" name="nic_no" onChange={handleChange} required />
+
+                <label htmlFor="dob">Date of Birth:</label>
+                <input type="date" name="dob" onChange={handleChange} required />
+
+                <label htmlFor="tele">Telephone:</label>
+                <input type="text" name="tele" onChange={handleChange} required />
+
+                <label>Address:</label>
+                <input type="text" name="address_line1" placeholder="Line 1" onChange={handleChange} required />
+                <div className="address-lines">
+                  <input type="text" name="address_line2" placeholder="Line 2" onChange={handleChange} />
+                  <input type="text" name="address_line3" placeholder="Line 3" onChange={handleChange} />
+                </div>
+                <br />
+
+                <label>District:</label>
+                <select name="District" onChange={handleChange} required>
+                  <option value="">-- Select --</option>
+                  {districts.map((d, i) => (
+                    <option key={i} value={d}>
+                      {d}
+                    </option>
+                  ))}
+                </select>
+
+                <br />
+
+                <input type="submit" value="Register" />
+
+              </form>
+
+            </div ></div>
+          </div>
+        </>}
     </div >
   );
 }
