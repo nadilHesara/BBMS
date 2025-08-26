@@ -204,9 +204,7 @@ function DonorReg({ theme, setTheme }) {
 
           </div >
         </> : <>
-          <div className="main-layout">
-            <LeftSlideBar theme={theme} userType={userType} username={userData.userName} />
-            <div className="w-full">
+                        <div className="hospital-donor-layout w-full ">
             <div className={theme === "light" ? "doner-reg" : "doner-reg dark"}>
               <form className="doner-reg-form" onSubmit={handleSubmit}>
                 <h1>Donor Registration</h1>
@@ -273,7 +271,7 @@ function DonorReg({ theme, setTheme }) {
               </form>
 
             </div ></div>
-          </div>
+       
         </>}
     </div >
   );

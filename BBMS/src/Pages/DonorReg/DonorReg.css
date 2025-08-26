@@ -21,6 +21,11 @@
   animation: slideIn 0.5s ease;
 }
 
+.dark .hospital-donor-layout {
+  background: linear-gradient(135deg, #1f252f 0%, #092143 100%);
+  
+}
+
 /* Heading */
 .doner-reg-form h1 {
   text-align: center;
