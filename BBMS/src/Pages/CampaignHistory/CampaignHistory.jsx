@@ -8,7 +8,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox";
+// import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import { visuallyHidden } from "@mui/utils";
 import { toast } from "react-toastify";
@@ -44,7 +44,7 @@ const headCells = [
   { id: "B_minus", label: "B-" },
   { id: "O_minus", label: "O-" },
   { id: "AB_minus", label: "AB-" },
-  { id: "completed", label: "Complete" } // ✅ renamed
+  { id: "completed", label: "Completed" }
 ];
 
 export default function CampaignHistory() {
@@ -68,7 +68,8 @@ export default function CampaignHistory() {
 
         setRows(
           data.map((campaign, index) => ({
-            id: index,
+            id: index, // use real campaignId if available
+            CampaignID: campaign.CampaignID ,  // keep campaignId separately
             District: campaign.District,
             Date: campaign.Date,
             orgName: campaign.orgName,
@@ -83,9 +84,10 @@ export default function CampaignHistory() {
             B_minus: campaign.B_minus,
             O_minus: campaign.O_minus,
             AB_minus: campaign.AB_minus,
-            completed: campaign.completed === 1
+            completed: campaign.completed
           }))
         );
+
       } catch (err) {
         console.error("Error fetching campaign history:", err);
       } finally {
@@ -102,21 +104,24 @@ export default function CampaignHistory() {
     setOrderBy(property);
   };
 
-  const handleCheckboxChange = async (id) => {
+  const handleCompleteButton = async (id) => {
     const updatedRows = rows.map((row) =>
-      row.id === id ? { ...row, completed: !row.completed } : row
+      row.id === id ? { ...row, completed: row.completed === "1" ? "0" : "1" } : row
     );
 
     setRows(updatedRows);
 
     const selectedRow = updatedRows.find((row) => row.id === id);
 
-    await handleCheckbox(selectedRow);
+    await handleButton(selectedRow);
   };
 
-  const handleCheckbox = async (campaign) => {
+  const handleButton = async (campaign) => {
     try {
-      const payload = { ...campaign, completed: campaign.completed ? "1" : "0" };
+    const payload = {
+      ...campaign, 
+      CampaignID: campaign.CampaignID, 
+    };
 
       const res = await fetch("http://localhost:9191/dashboard/CampaignHistory", {
         method: "POST",
@@ -138,6 +143,7 @@ export default function CampaignHistory() {
       setLoading(false);
     }
   };
+
 
   return (
     <Paper sx={{ width: "100%", mb: 2 }}>
@@ -176,10 +182,18 @@ export default function CampaignHistory() {
                   {headCells.map((cell) => (
                     <TableCell key={cell.id}>
                       {cell.id === "completed" ? (
-                        <Button variant="contained">Contained</Button>
+                        <Button
+                          size="small"
+                          color={row.completed === "1" ? "success" : "error"}
+                          variant="contained"
+                          onClick={() => handleCompleteButton(row.id)}
+                        >
+                          {row.completed === "1" ? "Yes" : "No"}
+                        </Button>
                       ) : (
                         row[cell.id] ?? "-"
                       )}
+
                     </TableCell>
                   ))}
                 </TableRow>
