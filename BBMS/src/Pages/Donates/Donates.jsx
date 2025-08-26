@@ -110,7 +110,10 @@ function Donates({ theme, setTheme }) {
 
 
     return (
+        <>
+        <p className="donates-notice">Provide the details of the donor to access the current campaign.</p>
         <div className="search_container">
+            
             <form className="doner-reg-form" onSubmit={handleSearchSubmit}>
                 <h1>Campaign :- <span><i>{campName}</i></span></h1>
                 <div className="field_container">
@@ -138,6 +141,7 @@ function Donates({ theme, setTheme }) {
             )}
 
         </div>
+        </>
 
     );
 }

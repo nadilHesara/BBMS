@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,10 +8,13 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox"; // ✅ Import Checkbox
+// import Checkbox from "@mui/material/Checkbox";
+import Button from "@mui/material/Button";
 import { visuallyHidden } from "@mui/utils";
+import { toast } from "react-toastify";
 import { LoadingContext } from "../../context/LoadingContext";
 import useVerifyAccess from "../../SharedData/verifyFunction";
+import "./CampaignHistory.css";
 
 function descendingComparator(a, b, orderBy) {
   if (orderBy === "Date") {
@@ -28,7 +31,6 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// ✅ Added "Complete" column
 const headCells = [
   { id: "orgName", label: "Organizer Name" },
   { id: "orgTele", label: "Organizer Telephone" },
@@ -43,54 +45,58 @@ const headCells = [
   { id: "B_minus", label: "B-" },
   { id: "O_minus", label: "O-" },
   { id: "AB_minus", label: "AB-" },
-  { id: "complete", label: "Complete" } // ✅ Checkbox column
+  { id: "completed", label: "Completed" }
 ];
 
 export default function CampaignHistory() {
   useVerifyAccess("campaignHistory");
-  const [rows, setRows] = React.useState([]);
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("Date");
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rows, setRows] = useState([]);
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("Date");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const { setLoading } = useContext(LoadingContext);
 
-  React.useEffect(() => {
-    try {
-      const userId = localStorage.getItem("userId");
-      fetch(`http://localhost:9191/dashboard/CampaignHistory?user_id=${userId}`)
-        .then((res) => {
-          if (!res.ok) throw new Error("Server Error!");
-          return res.json();
-        })
-        .then((data) => {
-          setRows(
-            data.map((campaign, index) => ({
-              id: index,
-              District: campaign.District,
-              Date: campaign.Date,
-              orgName: campaign.orgName,
-              orgTele: campaign.orgTele,
-              orgEmail: campaign.orgEmail,
-              DonerCount: campaign.DonerCount,
-              A_plus: campaign.A_plus,
-              B_plus: campaign.B_plus,
-              O_plus: campaign.O_plus,
-              AB_plus: campaign.AB_plus,
-              A_minus: campaign.A_minus,
-              B_minus: campaign.B_minus,
-              O_minus: campaign.O_minus,
-              AB_minus: campaign.AB_minus,
-              complete: false 
-            }))
-          );
-        })
-        .catch((err) => console.error("Error fetching campaign history:", err));
-    } catch (error) {
-      console.error("Error in CampaignHistory component:", error);
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userId = localStorage.getItem("userId");
+        const res = await fetch(
+          `http://localhost:9191/dashboard/CampaignHistory?user_id=${userId}`
+        );
+        if (!res.ok) throw new Error("Server Error!");
+        const data = await res.json();
+
+        setRows(
+          data.map((campaign, index) => ({
+            id: index, // use real campaignId if available
+            CampaignID: campaign.CampaignID ,  // keep campaignId separately
+            District: campaign.District,
+            Date: campaign.Date,
+            orgName: campaign.orgName,
+            orgTele: campaign.orgTele,
+            orgEmail: campaign.orgEmail,
+            DonerCount: campaign.DonerCount,
+            A_plus: campaign.A_plus,
+            B_plus: campaign.B_plus,
+            O_plus: campaign.O_plus,
+            AB_plus: campaign.AB_plus,
+            A_minus: campaign.A_minus,
+            B_minus: campaign.B_minus,
+            O_minus: campaign.O_minus,
+            AB_minus: campaign.AB_minus,
+            completed: campaign.completed
+          }))
+        );
+
+      } catch (err) {
+        console.error("Error fetching campaign history:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [setLoading]);
 
   const handleRequestSort = (event, property) => {
@@ -99,16 +105,50 @@ export default function CampaignHistory() {
     setOrderBy(property);
   };
 
-  // ✅ Toggle checkbox value
-  const handleCheckboxChange = (id) => {
-    setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === id ? { ...row, complete: !row.complete } : row
-      )
+  const handleCompleteButton = async (id) => {
+    const updatedRows = rows.map((row) =>
+      row.id === id ? { ...row, completed: row.completed === "1" ? "0" : "1" } : row
     );
+
+    setRows(updatedRows);
+
+    const selectedRow = updatedRows.find((row) => row.id === id);
+
+    await handleButton(selectedRow);
   };
 
+  const handleButton = async (campaign) => {
+    try {
+    const payload = {
+      ...campaign, 
+      CampaignID: campaign.CampaignID, 
+    };
+
+      const res = await fetch("http://localhost:9191/dashboard/CampaignHistory", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        toast.success(`Successfully updated campaign: ${campaign.orgName}`);
+      } else {
+        toast.error("Update failed: " + JSON.stringify(result));
+      }
+    } catch (error) {
+      toast.error("Update failed. Check server and data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
+    <div className="campaign-history">
+      <p className="page-head-campHistory">History of all the campaigns </p>
     <Paper sx={{ width: "100%", mb: 2 }}>
       <TableContainer>
         <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size="medium">
@@ -144,15 +184,19 @@ export default function CampaignHistory() {
                 <TableRow hover key={row.id}>
                   {headCells.map((cell) => (
                     <TableCell key={cell.id}>
-                      {cell.id === "complete" ? (
-                        <Checkbox
-                          checked={row.complete}
-                          onChange={() => handleCheckboxChange(row.id)}
-                          color="primary"
-                        />
+                      {cell.id === "completed" ? (
+                        <Button
+                          size="small"
+                          color={row.completed === "1" ? "success" : "error"}
+                          variant="contained"
+                          onClick={() => handleCompleteButton(row.id)}
+                        >
+                          {row.completed === "1" ? "Yes" : "No"}
+                        </Button>
                       ) : (
                         row[cell.id] ?? "-"
                       )}
+
                     </TableCell>
                   ))}
                 </TableRow>
@@ -173,5 +217,6 @@ export default function CampaignHistory() {
         }}
       />
     </Paper>
+    </div>
   );
 }
