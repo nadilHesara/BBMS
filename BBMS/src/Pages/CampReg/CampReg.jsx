@@ -62,7 +62,7 @@ function CampReg({ theme, setTheme }) {
         },
         body: JSON.stringify(campaign),
       });
-      console.log("campaign: ", campaign);
+  
       const result = await response.json();
 
       if (response.ok) {
