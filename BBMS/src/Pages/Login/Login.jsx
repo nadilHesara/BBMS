@@ -1,4 +1,4 @@
-import React, { useState, useEffect ,useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import './Login.css';
 import NaviBar from '../../components/Navibar/NaviBar';
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
@@ -37,9 +37,9 @@ const Login = ({ theme, setTheme }) => {
   }, [login]);
 
 
-  function toggleShow() {
-    setShow(!show)
-  }
+  const toggleShow = () => {
+    setShow(!show);
+  };
 
   const [message, setMessage] = useState("");
 
@@ -50,7 +50,7 @@ const Login = ({ theme, setTheme }) => {
     try {
       const response = await fetch("http://localhost:9191/login", {
         method: "POST",
-        credentials : "include",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json"
         },
@@ -93,9 +93,9 @@ const Login = ({ theme, setTheme }) => {
   return (
     <div className='flex justify-center'>
       <NaviBar theme={theme} setTheme={setTheme} />
-      
+
       <div className=" max-w-[900px] max-h-[700px] bg-[url('/images/bgpic.png')] mt-[120px] bg-cover bg-contain flex justify-center rounded-2xl shadow-2xl overflow-hidden">
-       
+
         <div className="login-form grid grid-cols-2 lg:grid-cols-2 min-h-[400px] ">
           {/* Left Column - Image */}
           <div className="flex items-center m-4 w-[500px] rounded-3xl justify-center p-8 bg-white bg-opacity-10 shadow-white shadow-5xl">
@@ -122,7 +122,7 @@ const Login = ({ theme, setTheme }) => {
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       autoComplete="username"
-                      className="input-fl block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
+                      className="input-fl block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50"
                       placeholder="Enter your username"
                       required
                     />
@@ -145,21 +145,14 @@ const Login = ({ theme, setTheme }) => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       autoComplete="current-password"
-                      className="input-fl block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50 focus:bg-white"
+                      className="input-fl block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50 "
                       placeholder="Enter your password"
                       required
                     />
-                    <button
-                      type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                      onClick={toggleShow}
-                    >
-                      {show ? (
-                        <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
-                      ) : (
-                        <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
-                      )}
-                    </button>
+                    <div className="absolute inset-y-5 right-0 pr-3 transition-colors z-10">
+                      {show ? <AiFillEyeInvisible className='text-gray-400' onClick={() => toggleShow()} size={20} /> 
+                      : <AiFillEye className='text-gray-400'  onClick={() => toggleShow()} size={20} />}
+                    </div>
                   </div>
                 </div>
 
@@ -211,19 +204,19 @@ const Login = ({ theme, setTheme }) => {
 
               </div>
             </div>
-          
-           
+
+
           </div>
           <div className="relative  flex items-top justify-center p-8">
-                       {/* Decorative elements */}
-            
-            
-           
-            
+            {/* Decorative elements */}
+
+
+
+
           </div>
 
           {/* Right Column - Form */}
-          
+
         </div>
       </div>
     </div >

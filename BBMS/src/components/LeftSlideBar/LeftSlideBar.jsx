@@ -10,17 +10,23 @@ import { IoBagAddSharp } from "react-icons/io5";
 import { CgPassword } from "react-icons/cg";
 import { GrStorage } from "react-icons/gr";
 import { MdAppRegistration } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation} from "react-router-dom";
 import "./LeftSlideBar.css";
 
 const LeftSlideBar = ({ theme, userType }) => {
   const navigate = useNavigate();
-  const [currentPos,setCurrentPos] = useState(true);
+  const [pos,setPos] = useState(localStorage.getItem("pos"));
+  const [currentPos,setCurrentPos] = useState(pos=="open" ? true: false);
   const [isOpen, setIsOpen] = useState(currentPos);
   const userData = JSON.parse(sessionStorage.getItem("userData"));
 
+
+
   useEffect(() => {
     setCurrentPos(isOpen);
+    setPos(!isOpen ? "open": "closed");
+    console.log(pos);
+    localStorage.setItem("pos",pos);
   }, [isOpen]);
 
   const LoggingOut = () => {
@@ -36,6 +42,7 @@ const LeftSlideBar = ({ theme, userType }) => {
     navigate("/login");
   };
 
+
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   function SelectUser(userType , theme) {
@@ -44,7 +51,8 @@ const LeftSlideBar = ({ theme, userType }) => {
         <>
           <div className={theme === 'dark' ? "slide-bar-nav-links dark" :"slide-bar-nav-links"}>
             <Link to="profileInfo"
-            state={{from:"LeftSideBar"}}>
+            state={{from:"LeftSideBar"}}
+            >
               <FaUserCircle size={30} color={theme === 'dark' ? 'white' : 'black'} />
               {isOpen && <span>Profile Info</span>}
             </Link>
@@ -103,7 +111,7 @@ const LeftSlideBar = ({ theme, userType }) => {
               {isOpen && <span>Campaign History</span>}
             </Link>
 
-            {userType == "Hospital" && <Link to="/donorReg">
+            {userType == "Hospital" && <Link to="donorReg">
               <MdAppRegistration size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Donor Register</span>}
             </Link>}

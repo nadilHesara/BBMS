@@ -14,6 +14,7 @@ import { visuallyHidden } from "@mui/utils";
 import { toast } from "react-toastify";
 import { LoadingContext } from "../../context/LoadingContext";
 import useVerifyAccess from "../../SharedData/verifyFunction";
+import "./CampaignHistory.css";
 
 function descendingComparator(a, b, orderBy) {
   if (orderBy === "Date") {
@@ -146,6 +147,8 @@ export default function CampaignHistory() {
 
 
   return (
+    <div className="campaign-history">
+      <p className="page-head-campHistory">History of all the campaigns </p>
     <Paper sx={{ width: "100%", mb: 2 }}>
       <TableContainer>
         <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size="medium">
@@ -214,5 +217,6 @@ export default function CampaignHistory() {
         }}
       />
     </Paper>
+    </div>
   );
 }

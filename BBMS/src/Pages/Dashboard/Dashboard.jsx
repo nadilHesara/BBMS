@@ -36,8 +36,8 @@ const Dashboard = ({ theme, setTheme }) => {
 
     try {
       setLoading(true);
-      fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}` ,{
-            method: "GET", credentials:"include" ,headers: {  
+      fetch(`http://localhost:9191/dashboard?user_id=${userId}&user_type=${userType}`, {
+        method: "GET", credentials: "include", headers: {
           "Content-Type": "application/json"
         },
       })
@@ -88,9 +88,9 @@ const Dashboard = ({ theme, setTheme }) => {
     };
   }, [navigate, userId, userType]);
 
-  if (!userId || !userType) return ;
-  if (error) return ;
-  if (!userData) return ;
+  if (!userId || !userType) return;
+  if (error) return;
+  if (!userData) return;
 
   return (
     <div className="dashboard-layout">
@@ -126,17 +126,17 @@ const Dashboard = ({ theme, setTheme }) => {
                     </div>
                   </div>
                 </div>
-              <div className="bg-blue-200 dark:!bg-indigo-900 border-l-8 ml-8 mr-8 border-red-500 text-gray-700 dark:border-red-900 dark:text-gray-200 p-4 rounded-xl shadow-sm font-semibold ">
-  <div className="flex-col justify-center list-disc list-inside space-y-5 text-lg leading-relaxed">
-    <p>📅 Stay up to date with upcoming blood donation campaigns.</p>
-    <p>📍 Quickly check campaign dates, locations, and details at a glance.</p>
-    <p>🩸 Use the district filter to find the nearest campaign in your area.</p>
-    <p>❤️ Plan your next donation with ease.</p>
-  </div>
-</div>
+                <div className="bg-blue-200 dark:!bg-indigo-900 border-l-8 ml-8 mr-8 border-red-500 text-gray-700 dark:border-red-900 dark:text-gray-200 p-4 rounded-xl shadow-sm font-semibold ">
+                  <div className="flex-col justify-center list-disc list-inside space-y-5 text-lg leading-relaxed">
+                    <p>📅 Stay up to date with upcoming blood donation campaigns.</p>
+                    <p>📍 Quickly check campaign dates, locations, and details at a glance.</p>
+                    <p>🩸 Use the district filter to find the nearest campaign in your area.</p>
+                    <p>❤️ Plan your next donation with ease.</p>
+                  </div>
+                </div>
 
                 <div className="ml-5 mr-5 flex flex-col sm:flex-row items-center gap-3 mt-5">
-                  
+
                   <label
                     htmlFor="district"
                     className="text-lg font-medium m text-gray-700 dark:!text-gray-200"
@@ -162,108 +162,108 @@ const Dashboard = ({ theme, setTheme }) => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div className="mr-10 grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
                   {/* Left Column - Calendar Component */}
                   <div className="space-y-6">
                     <MyCalender selectedDistrict={selectedDistrict} />
                   </div>
 
-                  
+
                   {/* Right Column - Mission & Vision */}
-                   <div className="relative">
-                     {/* Timeline Layout */}
-                     <div className="space-y-0">
+                  <div className="relative">
+                    {/* Timeline Layout */}
+                    <div className="space-y-0">
                       {/* Photo Gallery Section */}
-                       <div className="relative pb-8">
-                         <div className="absolute left-8 top-0 w-0.5 h-full bg-gradient-to-b from-purple-400 to-transparent"></div>
-                         <div className="relative flex items-start space-x-6">
-                           <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg">
-                             📸
-                           </div>
-                           <div className="flex-1 min-w-0">
-                             <h2 className="text-2xl font-bold text-gray-800 dark:!text-white mb-4">Blood Donation Gallery</h2>
-                             <div className="grid grid-cols-2 gap-4">
-                               <div className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                                 <img 
-                                   src="/images/IMG_6602.jpg" 
-                                   alt="Blood Donation Infographic"
-                                   className="w-full h-32 object-cover"
-                                 />
-                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                 
-                               </div>
-                               
-                               <div className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                                 <img 
-                                   src="/images/Batticaloa_Blood_Donor_03.jpg" 
-                                   alt="Blood Donation"
-                                   className="w-full h-32 object-cover"
-                                 />
-                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                               
-                               </div>
-                               
-                               <div className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                                 <img 
-                                   src="/images/ph_68160_265108.jpg" 
-                                   alt="Blood Facts"
-                                   className="w-full h-32 object-cover"
-                                 />
-                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            
-                               </div>
-                               
-                               <div className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                                 <img 
-                                   src="/images/3.jpg" 
-                                   alt="Blood Myths"
-                                   className="w-full h-32 object-cover"
-                                 />
-                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                 
-                               </div>
-                             </div>
-                           </div>
-                         </div>
-                       </div>
-                       {/* Mission Section */}
-                       <div className="relative pb-8">
-                         <div className="absolute left-8 top-0 w-0.5 h-full bg-gradient-to-b from-blue-400 to-transparent"></div>
-                         <div className="relative flex items-start space-x-6">
-                           <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg">
-                             🎯
-                           </div>
-                                                       <div className="flex-1 min-w-0">
-                              <h2 className="text-3xl font-extrabold text-gray-800 dark:!text-white mb-3 tracking-wide" style={{fontFamily: 'Georgia, serif'}}>Our Mission</h2>
-                              <p className="text-black font-bold dark:!text-white text-lg leading-relaxed" style={{fontFamily: 'Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif'}}>
-                                To bridge the gap between blood donors and those in need, ensuring timely access to safe blood products 
-                                while fostering a culture of voluntary blood donation across our communities.
-                              </p>
-                            </div>
-                         </div>
-                       </div>
+                      <div className="relative pb-8">
+                        <div className="absolute left-8 top-0 w-0.5 h-full bg-gradient-to-b from-purple-400 to-transparent"></div>
+                        <div className="relative flex items-start space-x-6">
+                          <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg">
+                            📸
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h2 className="text-2xl font-bold text-gray-800 dark:!text-white mb-4">Blood Donation Gallery</h2>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                                <img
+                                  src="/images/IMG_6602.jpg"
+                                  alt="Blood Donation Infographic"
+                                  className="w-full h-32 object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                       {/* Vision Section */}
-                       <div className="relative pb-8">
-                         <div className="absolute left-8 top-0 w-0.5 h-full bg-gradient-to-b from-green-400 to-transparent"></div>
-                         <div className="relative flex items-start space-x-6">
-                           <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg">
-                             🔮
-                           </div>
-                                                       <div className="flex-1 min-w-0">
-                              <h2 className="text-3xl font-extrabold text-gray-800 dark:!text-white mb-3 tracking-wide" style={{fontFamily: 'Georgia, serif'}}>Our Vision</h2>
-                              <p className="text-black font-bold dark:!text-gray-300 text-lg leading-relaxed" style={{fontFamily: 'Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif'}}>
-                                To become the leading blood bank management system that revolutionizes healthcare delivery, 
-                                making blood donation accessible, efficient, and impactful for every community we serve.
-                              </p>
-                            </div>
-                         </div>
-                       </div>
+                              </div>
 
-                       
-                     </div>
-                   </div>
+                              <div className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                                <img
+                                  src="/images/Batticaloa_Blood_Donor_03.jpg"
+                                  alt="Blood Donation"
+                                  className="w-full h-32 object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                              </div>
+
+                              <div className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                                <img
+                                  src="/images/ph_68160_265108.jpg"
+                                  alt="Blood Facts"
+                                  className="w-full h-32 object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                              </div>
+
+                              <div className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                                <img
+                                  src="/images/3.jpg"
+                                  alt="Blood Myths"
+                                  className="w-full h-32 object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Mission Section */}
+                      <div className="relative pb-8">
+                        <div className="absolute left-8 top-0 w-0.5 h-full bg-gradient-to-b from-blue-400 to-transparent"></div>
+                        <div className="relative flex items-start space-x-6">
+                          <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg">
+                            🎯
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h2 className="text-3xl font-extrabold text-gray-800 dark:!text-white mb-3 tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>Our Mission</h2>
+                            <p className="text-black font-bold dark:!text-white text-lg leading-relaxed" style={{ fontFamily: 'Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif' }}>
+                              To bridge the gap between blood donors and those in need, ensuring timely access to safe blood products
+                              while fostering a culture of voluntary blood donation across our communities.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Vision Section */}
+                      <div className="relative pb-8">
+                        <div className="absolute left-8 top-0 w-0.5 h-full bg-gradient-to-b from-green-400 to-transparent"></div>
+                        <div className="relative flex items-start space-x-6">
+                          <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg">
+                            🔮
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h2 className="text-3xl font-extrabold text-gray-800 dark:!text-white mb-3 tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>Our Vision</h2>
+                            <p className="text-black font-bold dark:!text-gray-300 text-lg leading-relaxed" style={{ fontFamily: 'Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif' }}>
+                              To become the leading blood bank management system that revolutionizes healthcare delivery,
+                              making blood donation accessible, efficient, and impactful for every community we serve.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

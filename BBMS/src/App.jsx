@@ -84,12 +84,13 @@ function App() {
           <div className="content">
             <Routes>
               <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
-              <Route path="/donorReg" element={<DonorReg theme={theme} setTheme={setTheme} />} />
+              <Route path="donorReg" element={<DonorReg theme={theme} setTheme={setTheme} />} />
               <Route path="/login" element={<Login theme={theme} setTheme={setTheme} />} />
               <Route path="/forgotpassword" element={<ForgotPassword theme={theme} setTheme={setTheme} />} />
               <Route path="/campaignRequest" element={<CampaignRequest theme={theme} setTheme={setTheme} />} />
               <Route path="/dashboard" element={<Dashboard theme={theme} setTheme={setTheme} />}>
                 <Route index element={<h1>Welcome to Dashboard Page</h1>} />
+                <Route path="donorReg" element={<DonorReg theme={theme} setTheme={setTheme} />} />
                 <Route path="ProfileInfo" element={<ProfileInfo theme={theme} setTheme={setTheme} />} />
                 <Route path="AvailableBloodStocks" element={<AvailableBloodStocks theme={theme} setTheme={setTheme} />} />
                 <Route path="CampaignHistory" element={<CampaignHistory theme={theme} setTheme={setTheme} />} />

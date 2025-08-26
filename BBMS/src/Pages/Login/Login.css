@@ -1,4 +1,7 @@
 .dark .input-fl{
-  background-color: rgb(21, 29, 64);
+  background-color: rgb(21, 29, 64) !important;
+  color:white !important;
 }
+
+
 
