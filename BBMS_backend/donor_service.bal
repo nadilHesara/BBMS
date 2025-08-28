@@ -2,7 +2,7 @@ import ballerina/io;
 import ballerina/sql;
 
 public isolated function addDoner(Doner doner) returns json|error {
-
+    io:println(doner);
     // Generate new DonerID
     DonerID|error d = dbClient->queryRow(`SELECT DonerID FROM Doner ORDER BY DonerID DESC LIMIT 1`);
     string newDonerId;
@@ -93,12 +93,14 @@ public isolated function addDoner(Doner doner) returns json|error {
         )`;
 
     // Insert login details
-    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, DonerID, UserType) 
+    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, DonerID, Email, UserType) 
             VALUES(
             ${newDoner.username},
             ${encryptedPassword},
             ${newDoner.doner_id},
-            "Doner")`;
+            ${newDoner.email},
+            "Doner"
+            )`;
 
     sql:ExecutionResult|error result = dbClient->execute(addDoner);
     sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
