@@ -2,10 +2,9 @@ import ballerina/sql;
 
 isolated function addHospital(Hospital hospital) returns json|error {
 
-    // Generate a new HOSPITAL ID
+    // 1. Generate HospitalID
     HospitalID|error h = dbClient->queryRow(`SELECT HospitalID FROM Hospital ORDER BY HospitalID DESC LIMIT 1`);
     string newHospitalId = "H001";
-
     if h is HospitalID {
         string? lastId = h.HospitalID;
         if lastId is string {
@@ -13,15 +12,16 @@ isolated function addHospital(Hospital hospital) returns json|error {
         }
     }
 
-    // Create a new Hospital record with the new Hospital Id
+    // 2. Prepare hospital record
     Hospital newHospital = hospital.clone();
     newHospital.hospital_id = newHospitalId;
-    string password = check generatePassword(12);
-    newHospital.password = check hashPassword(password);
-    // Insert into Hospital table (now includes password)
+    string plainPassword = check generatePassword(12);
+    newHospital.password = check hashPassword(plainPassword);
+
+    // 3. Insert hospital
     sql:ParameterizedQuery addHospital = `INSERT INTO hospital(
-        HospitalID, Name, District, Contact, AddressLine1, AddressLine2, AddressLine3, Username, Email)
-         VALUES(
+        HospitalID, Name, District, Contact, AddressLine1, AddressLine2, AddressLine3, Username, Email
+    ) VALUES (
         ${newHospital.hospital_id},
         ${newHospital.name},
         ${newHospital.District},
@@ -31,16 +31,17 @@ isolated function addHospital(Hospital hospital) returns json|error {
         ${newHospital.address_line3},
         ${newHospital.username},
         ${newHospital.email}
-
     )`;
 
     // Insert into login table
-    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, HospitalID, UserType) 
+    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, HospitalID, UserType, Email) 
         VALUES(
         ${newHospital.username},
         ${newHospital.password},
         ${newHospital.hospital_id},
-        "Hospital")`;
+        "Hospital",
+        ${newHospital.email}
+        )`;
 
     string htmlBody = "<html>" +
         "<head>" +
@@ -60,7 +61,7 @@ isolated function addHospital(Hospital hospital) returns json|error {
         "<h2>Password Reset Request</h2>" +
         "<p>Dear " + newHospital.name + ",</p>" +
         "<p>Your account password has been requested. Use the following password to login:</p>" +
-        "<div class='password-box'> " + password + "</div>" +
+        "<div class='password-box'> " + plainPassword + "</div>" +
         "<p>For security reasons, we recommend changing this password after your first login.</p>" +
         "<p>Thank you,<br>Support Team</p>" +
         "<div class='footer'>&copy; 2025 Your Company Name. All rights reserved.</div>" +
@@ -68,21 +69,18 @@ isolated function addHospital(Hospital hospital) returns json|error {
         "</body>" +
         "</html>";
 
-    error? mail = sendEmail(newHospital.email, "Welcome to BBMS - Your Account Details", htmlBody);
-
-    if mail != () {
-        return mail;
-    }
 
     sql:ExecutionResult|error result = dbClient->execute(addHospital);
-    sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
-
-    if result is error && loginResult is error {
-        return error("Hospital already exists!");
-    } else if result is error {
-        return error("Please enter valid data");
+    if result is error {
+        return error("Hospital insert failed: " + result.toString());
     }
 
+    sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
+    if loginResult is error {
+        return error("Login insert failed: " + loginResult.toString());
+    }
+
+    // 5. Auto-create campaign if needed
     if newHospital.isCampaign == 1 {
         Campaign hospitalCamp = {
             campain_id: newHospitalId,
@@ -101,25 +99,35 @@ isolated function addHospital(Hospital hospital) returns json|error {
             hospital_id: newHospitalId,
             location: ()
         };
-        _ = check addCamp(hospitalCamp);
+        json|error camp = addCamp(hospitalCamp);
+        if camp is error {
+            return camp;
+        }
     }
-    return {"message": "Hospital added successfully!"};
+
+    error? mail = sendEmail(newHospital.email, "Welcome to BBMS - Your Account Details", htmlBody);
+    if mail is error {
+        return mail;
+    }
+
+    return { "message": "Hospital added successfully!" };
 }
+
 
 isolated function getHospital(string? id = (), string? username = (), string? email = ()) returns Hospital|error {
 
     Hospital|error hospital;
 
     if id is string {
-        hospital = check dbClient->queryRow(`
+        hospital =  dbClient->queryRow(`
             SELECT * FROM Hospital WHERE HospitalID = ${id}`
             );
     } else if username is string {
-        hospital = check dbClient->queryRow(`
+        hospital =  dbClient->queryRow(`
             SELECT * FROM Hospital WHERE Username = ${username}`
             );
     } else if email is string {
-        hospital = check dbClient->queryRow(`
+        hospital =  dbClient->queryRow(`
             SELECT * FROM Hospital WHERE Email = ${email}`
             );
     } else {

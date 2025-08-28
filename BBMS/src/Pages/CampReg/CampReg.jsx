@@ -13,7 +13,8 @@ function CampReg({ theme, setTheme }) {
   const { loading, setLoading } = useContext(LoadingContext);
   const userId = sessionStorage.getItem("userId");
   const [pickerOpen, setPickerOpen] = useState(false);
-
+  const today_plain = new Date();
+  const today = today_plain.toISOString().split('T')[0];
   const [campaign, setCampaign] = useState({
     campain_id: "C001",
     CampaignName: "",
@@ -51,6 +52,10 @@ function CampReg({ theme, setTheme }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    if (campaign.date < today){
+      toast.error("Please enter an upcoming date");
+      return;
+    }
     try {
       setLoading(true);
       const response = await fetch("http://localhost:9191/dashboard/campReg", {
@@ -63,21 +68,25 @@ function CampReg({ theme, setTheme }) {
   
       const result = await response.json();
 
-      if (response.ok) {
-        toast.success(`${campaign.CampaignName} Successfully registered`);
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      } else {
-        setMessage("Error : " + JSON.stringify(result));
-        console.error(message);
-      }
-    } catch (error) {
-      setMessage("Registration failed. Check server and data.");
-    } finally {
-      setLoading(false);
+    if (response.ok) {
+      toast.success(`Campaign "${campaign.CampaignName}" registered successfully!`);
+      setTimeout(() => window.location.reload(), 2000); // optional reload
+    }else if (result.message.includes("Duplicate entry")) { 
+      toast.error("A campaign already exists at the same date, time, and address.");
+    } else if (response.status >= 400 && response.status < 500) {
+      // Validation/client error
+      toast.error(result?.message || "Please check your input. Some fields might be missing or invalid.");
+    } else {
+      // Server error
+      toast.error("Server error occurred. Please try again later.");
     }
-  };
+  } catch (networkError) {
+    toast.error("Network error. Please check your internet connection.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <>

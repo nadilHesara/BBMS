@@ -1,6 +1,7 @@
 import ballerina/http;
 import ballerina/jwt;
 import ballerina/sql;
+import ballerina/io;
 
 listener http:Listener listener9191 = new (9191);
 
@@ -15,12 +16,13 @@ listener http:Listener listener9191 = new (9191);
 service / on listener9191 {
     // POST /doners
     isolated resource function post donorReg(@http:Payload Doner doner) returns json|error {
-        json|error result = check addDoner(doner);
+        io:println(doner);
+        json|error result =  addDoner(doner);
         return result;
     }
 
     isolated resource function post hospitalReg(@http:Payload Hospital hospital) returns json|error {
-        json|error result = check addHospital(hospital);
+        json|error result =  addHospital(hospital);
         return result;
     }
 
@@ -47,12 +49,12 @@ service / on listener9191 {
     }
 
     isolated resource function post donates(@http:Payload SearchRequest searchReq) returns json|error {
-        json|error result = check search_Doner(searchReq.username_email, searchReq.nic);
+        json|error result =  search_Doner(searchReq.username_email, searchReq.nic);
         return result;
     }
 
     isolated resource function post donations(@http:Payload Donates donates) returns json|error {
-        json|error result = check addDonation(donates);
+        json|error result =  addDonation(donates);
         return result;
     }
 
@@ -94,27 +96,27 @@ service / on listener9191 {
 
     //POST donation eligibility
     isolated resource function post eligibility(@http:Payload Eligible eligible) returns json|error {
-        json|error result = check determine_eligibility(eligible);
+        json|error result =  determine_eligibility(eligible);
         return result;
     }
 
     isolated resource function post update_eligibility(@http:Payload Eligible eligible) returns json|error {
-        json|error result = check update_eligibility(eligible);
+        json|error result =  update_eligibility(eligible);
         return result;
     }
 
     isolated resource function post donationHis(@http:Payload DonHistory donHistory) returns json|error {
-        json|error result = check addHistory(donHistory);
+        json|error result =  addHistory(donHistory);
         return result;
     }
 
     isolated resource function post medicalRisk(@http:Payload MedRisks medRisks) returns json|error {
-        json|error result = check addmedicalRisk(medRisks);
+        json|error result =  addmedicalRisk(medRisks);
         return result;
     }
 
     isolated resource function post consent(@http:Payload Consent consent) returns json|error {
-        json|error result = check addConsent(consent);
+        json|error result =  addConsent(consent);
         return result;
     }
 
@@ -262,8 +264,10 @@ service /dashboard on listener9191 {
         }
 
         // Authorized, proceed with adding hospital
-        json result = check addHospital(hospital);
-
+        json|error result =  addHospital(hospital);
+        if result is error {
+            return  result;
+        }
         // Respond with success
         http:Response res = new;
         res.statusCode = 200;
@@ -295,7 +299,7 @@ service /dashboard on listener9191 {
     }
 
     isolated resource function post campReg(@http:Payload Campaign campaign) returns json|error {
-        json|error result = check addCamp(campaign);
+        json|error result =  addCamp(campaign);
         return result;
     }
 
@@ -406,7 +410,7 @@ service /dashboard on listener9191 {
     }
 
     resource function post ChangePassword(@http:Payload passwordData passwordData) returns json|error {
-        json|error result = check changePassword(passwordData.userType, passwordData.userName, passwordData.newPassword, passwordData.currentPassword);
+        json|error result =  changePassword(passwordData.userType, passwordData.userName, passwordData.newPassword, passwordData.currentPassword);
         return result;
     }
 
@@ -421,26 +425,29 @@ service /dashboard on listener9191 {
 
     resource function post addBlood(@http:Payload BloodData bloodData) returns json|error {
 
-        json|error result = check addBloodStock(bloodData);
+        json|error result =  addBloodStock(bloodData);
         return result;
 
     }
 
     resource function get eligibility(@http:Query string donor_id, @http:Query string campaign_Id) returns json|error {
-        json|error result = check checkEligibility(donor_id,campaign_Id);
+        json|error result =  checkEligibility(donor_id,campaign_Id);
         return result;
         
     }
 
     resource function get donatioInfo(@http:Query string donorId, @http:Query string campaignId) returns json|error {
-        json|error result = check FormDeatils(donorId,campaignId);
+        json|error result =  FormDeatils(donorId,campaignId);
         return result;
         
     }
 
     resource function get donatesCamp(@http:Query string hospitalId, http:Caller caller) returns error? {
         // Call your logic to get campaigns
-        json result = check getCamp(hospitalId);
+        json|error result =  getCamp(hospitalId);
+        if result is error{
+            return result;
+        }
 
         // Send response
         http:Response res = new;

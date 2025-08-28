@@ -16,9 +16,14 @@ function DonationInfo({ theme, setTheme }) {
     const campaign_Id = Cookies.get('campaign_Id');
     const donorId = Cookies.get('donorId');
     const cdate = Cookies.get('cdate');
+    const userData = JSON.parse(sessionStorage.getItem('userData'));
+    const Hosname = userData?.Name; 
     const navigate = useNavigate();
     const [eligible, setEligible] = useState();
     const [filled, setFilled] = useState();
+    console.log("HosNmae",Hosname);
+    
+    
 
     const [donate, setDonate] = useState({
         donate_id: "M001",
@@ -65,6 +70,7 @@ function DonationInfo({ theme, setTheme }) {
         return ageYears;
     };
 
+
     useEffect(() => {
 
         setDonate(prev => ({
@@ -80,12 +86,19 @@ function DonationInfo({ theme, setTheme }) {
             try {
                 const response2 = await axios.get(`http://localhost:9191/dashboard/eligibility?donor_id=${donate.doner_id}&campaign_Id=${donate.campaign_id}`);
                 const data = response2.data;
-                setEligible(data.eligible);
-                if(data.filled==="Yes"){
+                if (campaignName === Hosname){
+                    setEligible(true);
                     setFilled(true);
+                    
                 }else{
-                    setFilled(false);
-                }
+                    setEligible(data.eligible);
+                    if(data.filled==="Yes"){
+                        setFilled(true);
+                    }else{
+                        setFilled(false);
+                    }
+                }   
+
               
                 
             } catch (error) {
@@ -260,7 +273,7 @@ function DonationInfo({ theme, setTheme }) {
                         </div>
 
                         {/* Form Status - Only show if eligible */}
-                        {eligible && (
+                        {eligible && (campaignName !== Hosname)  && (
                             <div className="flex flex-col items-start">
                                 <div className="flex items-center justify-between w-full mb-2">
                                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
