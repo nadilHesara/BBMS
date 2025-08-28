@@ -24,13 +24,13 @@ function HospitalReg({ theme, setTheme }) {
         address_line3: "",
         District: "",
         contact_no: "",
-        password:"",
+        password: "",
         isCampaign: 0
     });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        
+
         setHospital(prev => ({
             ...prev,
             [name]: name === "isCampaign" ? parseInt(value, 10) : value
@@ -40,7 +40,7 @@ function HospitalReg({ theme, setTheme }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
             setLoading(true);
             const response = await fetch("http://localhost:9191/hospitalReg", {
@@ -50,16 +50,27 @@ function HospitalReg({ theme, setTheme }) {
                 },
                 body: JSON.stringify(hospital)
             });
-            
+
             const result = await response.json();
             if (response.ok) {
-                toast.success("Hospital Registration Successful! \n Your new password has been sent to your email!");
+                toast.success("Hospital Registration Successful! \n Your password was sent to your email!");
                 navigate("/dashboard");
-
             } else {
-                toast.error((result.message || JSON.stringify(result)));
+                if (result.message?.includes("Duplicate entry")) {
+                    toast.warning("Usernam or Email already registered.");
+                } else if (response.status === 400) {
+                    // Likely validation / required field missing
+                    toast.error("Missing or invalid hospital details. Please check the form.");
+                } else if (response.status === 500) {
+                    // Server error
+                    toast.error("Server error occurred. Please try again later.");
+                } else {
+                    // Fallback
+                    toast.error("Hospital registration failed. Try again.");
+                }
                 console.error("Error response:", result);
             }
+
         } catch (error) {
             console.error("Error submitting form:", error.message);
             toast.error("Submission failed. Check server and data.");
@@ -115,7 +126,7 @@ function HospitalReg({ theme, setTheme }) {
 
                     <br />
 
-                    <lable htmlFor="isCampaign">Is there a campaign already registered in this hospital</lable>
+                    <label htmlFor="isCampaign">Campaign in this hospital</label>
                     <select name="isCampaign" onChange={handleChange} required>
                         <option>-- select -- </option>
                         <option value={1}> Yes </option>
