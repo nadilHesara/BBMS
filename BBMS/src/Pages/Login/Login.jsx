@@ -78,7 +78,7 @@ const Login = ({ theme, setTheme }) => {
 
       } else {
         setMessage("Error: " + (result.message || JSON.stringify(result)));
-        toast.error("Enter all required information");
+        toast.error("Login Failed. Check the username and password.");
         console.error("Error response:", result);
       }
     } catch (error) {

@@ -13,7 +13,7 @@ function HospitalReg({ theme, setTheme }) {
     useVerifyAccess("hospitalReg");
     const { loading, setLoading } = useContext(LoadingContext);
     const navigate = useNavigate();
-
+    
     const [hospital, setHospital] = useState({
         hospital_id: "H001",
         name: "",
@@ -53,7 +53,7 @@ function HospitalReg({ theme, setTheme }) {
             
             const result = await response.json();
             if (response.ok) {
-                toast.success("Hospital Registration Successful! \n Your password was send to your email!");
+                toast.success("Hospital Registration Successful! \n Your new password has been sent to your email!");
                 navigate("/dashboard");
 
             } else {
