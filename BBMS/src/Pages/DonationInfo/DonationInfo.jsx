@@ -66,9 +66,7 @@ function DonationInfo({ theme, setTheme }) {
     };
 
     useEffect(() => {
-        console.log("Donor_ID:",donorId);
-        console.log("Camp_ID",campaign_Id);
-        console.log(cdate);
+
         setDonate(prev => ({
             ...prev,
             campaign_id: campaign_Id,
@@ -88,7 +86,7 @@ function DonationInfo({ theme, setTheme }) {
                 }else{
                     setFilled(false);
                 }
-                 
+              
                 
             } catch (error) {
                 console.error("Error fetching eligibility data:", error);
@@ -152,7 +150,6 @@ function DonationInfo({ theme, setTheme }) {
     };
 
     const handleUpdate = async (e) => {
-        console.log(donate);
         try {
             const response = await fetch("http://localhost:9191/donations", {
                 method: "POST",
@@ -175,9 +172,16 @@ function DonationInfo({ theme, setTheme }) {
                         campdate: donate.camp_date
                     }
                 });
-            } else {
+
+            } else if (result.message.match(/Duplicate entry '.*?'/)) {
+                const errorMsg = "Donation is already added.";
+                toast.warning(errorMsg);
+            
+            
+            }else {
                 toast.error("Update failed. Check server and data.");
                 console.error("Error:", result);
+                
             }
         } catch (error) {
             console.error("Error:", error);
@@ -229,20 +233,28 @@ function DonationInfo({ theme, setTheme }) {
                                 Eligibility Status:
                             </span>
                             <div className="flex items-center">
-                                {eligible ? (
+                                {eligible===true ? (
                                     <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                                         <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                         </svg>
                                         Eligible
                                     </div>
-                                ) : (
+                                ) : eligible === "Eligilbity Not Found" ?(
+                                    <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                    <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                    </svg>
+                                            Eligilbity Not Found
+                                    </div>
+                                ):(
                                     <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                                        <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                        </svg>
+                                    <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                    </svg>
                                         Not Eligible
                                     </div>
+
                                 )}
                             </div>
                         </div>

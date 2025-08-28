@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './DonationForm.css'
 import { HiArrowCircleLeft } from "react-icons/hi";
@@ -7,6 +7,7 @@ import { HiArrowCircleLeft } from "react-icons/hi";
 
 export default function MedicalScreenForm() {
   const navigate = useNavigate();
+  const location = useLocation();
   const submitID = sessionStorage.getItem("submitID");
   const [message, setMessage] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -105,11 +106,14 @@ export default function MedicalScreenForm() {
 
       if (response.status === 201){
         setMessage("Redirecting...");
-        navigate('../consent');      
+        navigate('../consent', {state: {from:'/medical'}});      
+        
+      
 
       }else {
-          console.log(response);
           setMessage([response.data?.message || "Medical Risk updating failed"]); 
+          console.error(message);
+
         }
 
     }catch(error){
@@ -124,7 +128,8 @@ export default function MedicalScreenForm() {
 
   const handleBack = (e) => {
     e.preventDefault();
-    navigate("../donation-history");
+    const from = location.state?.from || '../donationhistory';
+    navigate("/dashboard/DonationForm/donationhistory");
   }
 
   return (

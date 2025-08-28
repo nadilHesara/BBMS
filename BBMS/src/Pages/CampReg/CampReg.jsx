@@ -13,8 +13,8 @@ function CampReg({ theme, setTheme }) {
   const { loading, setLoading } = useContext(LoadingContext);
   const userId = sessionStorage.getItem("userId");
   const [pickerOpen, setPickerOpen] = useState(false);
-  console.log("userId: ", userId);
-
+  const today_plain = new Date();
+  const today = today_plain.toISOString().split('T')[0];
   const [campaign, setCampaign] = useState({
     campain_id: "C001",
     CampaignName: "",
@@ -49,23 +49,24 @@ function CampReg({ theme, setTheme }) {
     });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-
-  try {
-    const response = await fetch("http://localhost:9191/dashboard/campReg", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(campaign),
-    });
-
-    let result;
-    try {
-      result = await response.json(); // try parsing JSON
-    } catch {
-      result = null; // backend did not return JSON
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    if (campaign.date < today){
+      toast.error("Please enter an upcoming date");
+      return;
     }
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:9191/dashboard/campReg", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(campaign),
+      });
+  
+      const result = await response.json();
 
     if (response.ok) {
       toast.success(`Campaign "${campaign.CampaignName}" registered successfully!`);

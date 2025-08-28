@@ -52,7 +52,7 @@ public isolated function addDoner(Doner doner) returns json|error {
                 "<div class='container'>" +
                 "<h2>Password Reset Request</h2>" +
                 "<p>Dear " + newDoner.name + ",</p>" +
-                "<p>Your account password has been requested. Use the following password to log in:</p>" +
+                "<p>Your account password has been requested. Use the following password to login:</p>" +
                 "<div class='password-box'> " + defaultPassword + "</div>" +
                 "<p>For security reasons, we recommend changing this password after your first login.</p>" +
                 "<p>Thank you,<br>Support Team</p>" +
@@ -93,12 +93,14 @@ public isolated function addDoner(Doner doner) returns json|error {
         )`;
 
     // Insert login details
-    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, DonerID, UserType) 
+    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, DonerID, Email, UserType) 
             VALUES(
             ${newDoner.username},
             ${encryptedPassword},
             ${newDoner.doner_id},
-            "Doner")`;
+            ${newDoner.email},
+            "Doner"
+            )`;
 
     sql:ExecutionResult|error result = dbClient->execute(addDoner);
     sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
@@ -205,7 +207,6 @@ public isolated function get_DonationHistory(string userID) returns DonateRecord
 
         };
     check resultStream.close();
-    io:println(donations);
     return donations;
 }
 

@@ -12,6 +12,16 @@ import { GrStorage } from "react-icons/gr";
 import { MdAppRegistration } from "react-icons/md";
 import { Link, useNavigate, useLocation} from "react-router-dom";
 import "./LeftSlideBar.css";
+import Cookies from 'js-cookie';
+
+function handleCampaign(){
+  const campaignId = Cookies.get('campaign_Id')
+  if (campaignId) {
+    Cookies.remove('campaign_Id')
+    campaignId = NULL
+  }
+}
+
 
 const LeftSlideBar = ({ theme, userType }) => {
   const navigate = useNavigate();
@@ -22,10 +32,11 @@ const LeftSlideBar = ({ theme, userType }) => {
 
 
 
+
+
   useEffect(() => {
     setCurrentPos(isOpen);
     setPos(!isOpen ? "open": "closed");
-    console.log(pos);
     localStorage.setItem("pos",pos);
   }, [isOpen]);
 
@@ -100,7 +111,7 @@ const LeftSlideBar = ({ theme, userType }) => {
               {isOpen && <span>Add Campaign</span>}
             </Link>
 
-            <Link to="donates">
+            <Link onClick={() => handleCampaign()} to="donates">
               <FaClinicMedical  size={30} color={theme === 'dark' ? 'white' : 'black'}/>
               {isOpen && <span>Campaign On Hospital</span>}
             </Link>
@@ -142,7 +153,7 @@ const LeftSlideBar = ({ theme, userType }) => {
       navigate("/login");
     }
   }
-  console.log();
+ 
   
   return (
    

@@ -13,7 +13,7 @@ function HospitalReg({ theme, setTheme }) {
     useVerifyAccess("hospitalReg");
     const { loading, setLoading } = useContext(LoadingContext);
     const navigate = useNavigate();
-
+    
     const [hospital, setHospital] = useState({
         hospital_id: "H001",
         name: "",

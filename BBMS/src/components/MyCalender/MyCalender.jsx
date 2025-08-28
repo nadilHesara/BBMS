@@ -18,6 +18,7 @@ function CalendarComponent(props) {
   const [selectedDateDetails, setSelectedDateDetails] = useState([]);
   const [expandedCampaign, setExpandedCampaign] = useState(null);
   const navigate = useNavigate();
+   const user_type = sessionStorage.getItem("userType");
 
 
   // Helper function to format date in local timezone (YYYY-MM-DD)
@@ -41,7 +42,6 @@ function CalendarComponent(props) {
     if (!selectedDistrict) return;
     const year = activeStartDate.getFullYear();
     const month = String(activeStartDate.getMonth() + 1).padStart(2, '0');
-    // console.log(month);
     axios.get(`http://localhost:9191/dashboard/campaigns?date=${year}-${month}&district=${selectedDistrict}`)
       .then(res => {
         const allCampaigns = res.data;
@@ -87,7 +87,6 @@ function CalendarComponent(props) {
 
   // Show details on date click
   const onDateClick = (date) => {
-    console.log(formatDateLocal(date));
     const dateStr = formatDateLocal(date);
     const selected = campaigns.filter(c => c.date === dateStr);
     setSelectedDateDetails(selected);
@@ -96,7 +95,6 @@ function CalendarComponent(props) {
 
   // Handle expand/collapse campaign details
   const toggleExpandedView = (campaign) => {
-    console.log("expand : ", expandedCampaign);
     if (expandedCampaign && expandedCampaign.campain_id === campaign.campain_id) {
       setExpandedCampaign(null);
     } else {
@@ -107,15 +105,13 @@ function CalendarComponent(props) {
   // Handle donation request
   const handleDonationRequest = (campaign) => {
     const userID = sessionStorage.getItem("userId");
-    const user_type = sessionStorage.getItem("userType")
+   
     if (!userID) {
       alert("Please login to request a donation");
       return;
     }
 
     // You can implement the donation request logic here
-    console.log("Requesting donation for campaign:", campaign);
-    // alert(`Donation request sent for ${campaign.org_name} campaign!`);
     if (user_type === "Doner") {
       navigate("/dashboard/DonationForm", { state: { campaignId: campaign.campain_id, campdate: campaign.date, campName: campaign.CampaignName } });
     } else if (user_type === "Hospital") {
@@ -137,7 +133,6 @@ function CalendarComponent(props) {
     }
     return null;
   }
-  console.log(campaigns);
 
   return (
     <div>
@@ -217,7 +212,7 @@ function CalendarComponent(props) {
                           <button
                             className="donation-request-btn"
                             onClick={() => handleDonationRequest(campaign)}
-                          >Update Donation
+                          >{user_type === "Doner" ? 'Register for the campaign':'Enter the Campaign'}
                           </button>
                         </div>
                       </div>
@@ -230,17 +225,6 @@ function CalendarComponent(props) {
               (
                 <>
 
-                  {/* <div key={campaign.campaign_id || index} className="campaign-details">
-                <div className="campaign-basic-info">
-                  <strong className="org-name">{campaign.CampaignName}</strong>
-                  <div className="location-info">
-                    {campaign.add_line1} {campaign.add_line2} {campaign.add_line3}
-                  </div>
-                  <div className="time-info">Starts at {formatTime(campaign.start_time)}</div>
-                </div>
-
-                
-              </div> */}
                   <div key={campaign.campaign_id || index} className="campaign-details past-campaign">
                     <div className="campaign-basic-info">
                       <strong className="org-name">{campaign.CampaignName}</strong>

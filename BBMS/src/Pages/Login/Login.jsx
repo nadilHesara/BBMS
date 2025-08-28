@@ -69,7 +69,7 @@ const Login = ({ theme, setTheme }) => {
 
       const result = await response.json();
       if (response.ok) {
-        toast.success("Login successful to " + result.user_type + " !");
+        toast.success("Login successful to " + (result.user_type === "Doner" ? "Donor" : result.user_type) + " !");
         setUserType(result.user_type);
         sessionStorage.setItem("username", result.username);
         sessionStorage.setItem("userId", result.user_id);
@@ -78,13 +78,15 @@ const Login = ({ theme, setTheme }) => {
 
       } else {
         setMessage("Error: " + (result.message || JSON.stringify(result)));
-        toast.error("Enter all required information");
+        toast.error("Login Failed. Check the username and password.");
         console.error("Error response:", result);
       }
+
     } catch (error) {
       console.error("Error login form :", error.message);
       toast.error("Login failed. Check server and data.");
       setMessage("Login failed. Check server and data.");
+      
     } finally {
       setLoading(false);
     }

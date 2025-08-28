@@ -47,10 +47,10 @@ isolated function addDonation(Donates donates) returns json|error {
     sql:ExecutionResult|error result = dbClient->execute(addDonation);
 
     if result is error {
-        return error("Donation Updating Failed!");
+        return error("Failed to add donation: " + result.message());
     }
     else {
-        return {"message": "Donation adedd sucsessfully!"};
+        return {"message": "Donation added successfully!"};
     }
 
 }
@@ -60,8 +60,15 @@ isolated function checkEligibility(string donor_id, string campaign_Id) returns 
         record {| boolean eligible; string filled; |}|error result = dbClient->queryRow(`SELECT eligible, filled FROM eligibility e WHERE e.DonerID = ${donor_id}  AND e.CampaignID = ${campaign_Id}`);
 
         if result is error{
-            return error("Failed to fetch data");
+ 
+            json db_error = {
+                "eligible":"Eligilbity Not Found"
+            };
+
+            return db_error;
+
         }
+
         
         json data = {
             "eligible": result.eligible,
