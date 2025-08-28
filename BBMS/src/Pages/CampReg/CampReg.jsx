@@ -13,7 +13,8 @@ function CampReg({ theme, setTheme }) {
   const { loading, setLoading } = useContext(LoadingContext);
   const userId = sessionStorage.getItem("userId");
   const [pickerOpen, setPickerOpen] = useState(false);
-
+  const today_plain = new Date();
+  const today = today_plain.toISOString().split('T')[0];
   const [campaign, setCampaign] = useState({
     campain_id: "C001",
     CampaignName: "",
@@ -51,6 +52,10 @@ function CampReg({ theme, setTheme }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    if (campaign.date < today){
+      toast.error("Please enter an upcoming date");
+      return;
+    }
     try {
       setLoading(true);
       const response = await fetch("http://localhost:9191/dashboard/campReg", {
