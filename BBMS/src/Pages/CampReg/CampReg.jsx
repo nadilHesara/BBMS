@@ -70,6 +70,8 @@ const handleSubmit = async (e) => {
     if (response.ok) {
       toast.success(`Campaign "${campaign.CampaignName}" registered successfully!`);
       setTimeout(() => window.location.reload(), 2000); // optional reload
+    }else if (result.message.includes("Duplicate entry")) { 
+      toast.error("A campaign already exists at the same date, time, and address.");
     } else if (response.status >= 400 && response.status < 500) {
       // Validation/client error
       toast.error(result?.message || "Please check your input. Some fields might be missing or invalid.");
