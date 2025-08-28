@@ -68,7 +68,7 @@ function AvailableBloodStocks({ theme }) {
   const [hospital, setHospital] = useState("All");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const userId = sessionStorage.getItem("userId");
+  const userId = sessionStorage.getItem("userId") ;
   const [newBlood, setNewBlood] = useState({
     bloodType: "A+",
     units: 0,
@@ -78,7 +78,7 @@ function AvailableBloodStocks({ theme }) {
   });
   const [Campaigns, setCampaigns] = useState([]);
 
-
+  
   useEffect(() => {
     setIsDarkMode(theme === "dark");
   }, [theme]);
@@ -201,7 +201,7 @@ function AvailableBloodStocks({ theme }) {
       <div className={`blood-stock-container ${isDarkMode ? 'dark-mode' : ''}`}>
         <div className="page-header-row">
           <h2 className={`page-header ${isDarkMode ? 'dark-title' : ''}`}>Available Blood Stocks</h2>
-          <button className="add-blood-btn" onClick={openAddModal}>Add or Remove Blood</button>
+          {userId === "Admin"  || <button className="add-blood-btn" onClick={openAddModal}>Add or Remove Blood</button>}
         </div>
 
         <div className="header-controls">

@@ -61,7 +61,7 @@ isolated function addHospital(Hospital hospital) returns json|error {
         "<h2>Password Reset Request</h2>" +
         "<p>Dear " + newHospital.name + ",</p>" +
         "<p>Your account password has been requested. Use the following password to login:</p>" +
-        "<div class='password-box'> " + password + "</div>" +
+        "<div class='password-box'> " + plainPassword + "</div>" +
         "<p>For security reasons, we recommend changing this password after your first login.</p>" +
         "<p>Thank you,<br>Support Team</p>" +
         "<div class='footer'>&copy; 2025 Your Company Name. All rights reserved.</div>" +
@@ -69,20 +69,11 @@ isolated function addHospital(Hospital hospital) returns json|error {
         "</body>" +
         "</html>";
 
-    error? mail = sendEmail(newHospital.email, "Welcome to BBMS - Your Account Details", htmlBody);
-
-    if mail != () {
-        return mail;
-    }
 
     sql:ExecutionResult|error result = dbClient->execute(addHospital);
     if result is error {
         return error("Hospital insert failed: " + result.toString());
     }
-
-    // 4. Insert login
-    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, HospitalID, UserType)
-        VALUES(${newHospital.username}, ${newHospital.password}, ${newHospital.hospital_id}, "Hospital")`;
 
     sql:ExecutionResult|error loginResult = dbClient->execute(addLoginDetails);
     if loginResult is error {
@@ -113,14 +104,6 @@ isolated function addHospital(Hospital hospital) returns json|error {
             return camp;
         }
     }
-
-    // 6. Send email last
-    string htmlBody = "<html><body><h2>Welcome " + newHospital.name + "</h2>" +
-        "<p>Your account has been created successfully.</p>" +
-        "<p><b>Username:</b> " + newHospital.username + "</p>" +
-        "<p><b>Password:</b> " + plainPassword + "</p>" +
-        "<p>Please log in and change your password immediately.</p>" +
-        "</body></html>";
 
     error? mail = sendEmail(newHospital.email, "Welcome to BBMS - Your Account Details", htmlBody);
     if mail is error {
