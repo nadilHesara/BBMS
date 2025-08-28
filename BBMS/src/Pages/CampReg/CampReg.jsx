@@ -13,7 +13,6 @@ function CampReg({ theme, setTheme }) {
   const { loading, setLoading } = useContext(LoadingContext);
   const userId = sessionStorage.getItem("userId");
   const [pickerOpen, setPickerOpen] = useState(false);
-  console.log("userId: ", userId);
 
   const [campaign, setCampaign] = useState({
     campain_id: "C001",
@@ -70,8 +69,8 @@ function CampReg({ theme, setTheme }) {
           window.location.reload();
         }, 2000);
       } else {
-        console.log("error:", campaign);
         setMessage("Error : " + JSON.stringify(result));
+        console.error(message);
       }
     } catch (error) {
       setMessage("Registration failed. Check server and data.");

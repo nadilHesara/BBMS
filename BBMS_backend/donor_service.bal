@@ -205,7 +205,6 @@ public isolated function get_DonationHistory(string userID) returns DonateRecord
 
         };
     check resultStream.close();
-    io:println(donations);
     return donations;
 }
 

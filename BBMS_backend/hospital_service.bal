@@ -1,8 +1,6 @@
-import ballerina/io;
 import ballerina/sql;
 
 isolated function addHospital(Hospital hospital) returns json|error {
-    io:println(hospital);
 
     // Generate a new HOSPITAL ID
     HospitalID|error h = dbClient->queryRow(`SELECT HospitalID FROM Hospital ORDER BY HospitalID DESC LIMIT 1`);
