@@ -77,8 +77,9 @@ const Login = ({ theme, setTheme }) => {
         navigate("/dashboard");
 
       } else {
-        toast.error(result.error);
-        setMessage("Error: " + (result.message || JSON.stringify(result)));        
+        setMessage("Error: " + (result.message || JSON.stringify(result)));
+        toast.error("Login Failed. Check the username and password.");
+        console.error("Error response:", result);
       }
 
     } catch (error) {
