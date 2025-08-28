@@ -50,7 +50,7 @@ isolated function addDonation(Donates donates) returns json|error {
         return error("Donation Updating Failed!");
     }
     else {
-        return {"message": "Donation adedd sucsessfully!"};
+        return {"message": "Donation added successfully!"};
     }
 
 }
