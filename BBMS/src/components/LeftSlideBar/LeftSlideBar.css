@@ -9,6 +9,7 @@
   max-width: 300px;
   flex-shrink: 0;
   padding-bottom: 5rem;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.5);
 
 }
 
@@ -115,8 +116,9 @@
 }
 
 /* Dark mode support */
-.left-slide-bar.dark {
-  background-color: #1a1a1a;
+.dark .left-slide-bar {
+  background-color: #24283633;
+  box-shadow: 0 10px 15px rgba(255, 255, 255, 0.5);
 }
 
 .left-slide-bar.dark .slide-bar-nav-links span {

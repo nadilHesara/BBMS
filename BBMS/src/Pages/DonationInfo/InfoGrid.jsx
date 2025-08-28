@@ -19,7 +19,7 @@ export default function InfoGrid(){
         setDonationInfo(response.data);
 
       }catch(error){
-        console.log("Error : ", error);
+        console.error("Error : ", error);
       }
     };
 

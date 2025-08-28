@@ -26,7 +26,19 @@ service / on listener9191 {
 
 
     isolated resource function post login(@http:Payload LoginRequest loginReq) returns http:Response|error {
-        http:Response|error result = check loginUser(loginReq.username, loginReq.password);
+        http:Response|error result = loginUser(loginReq.username, loginReq.password);
+
+        if result is error{
+            http:Response response = new;
+            response.statusCode = 404;
+            json errorBody = {
+                "error": "Invalid Username"
+            };
+            response.setJsonPayload(errorBody);
+            result = response;
+
+        }
+        
         return result;
     }
 

@@ -65,7 +65,7 @@ function DonorReg({ theme, setTheme }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password != conformPassword) {
-      toast.error("Password is miss match!")
+      toast.error("Passwords do not match!")
       return;
     } else {
       if (userType != "Hospital" || userType != "Admin") {
@@ -98,7 +98,7 @@ function DonorReg({ theme, setTheme }) {
         navigate("/login");
 
       } else if (result.message.match(/Duplicate entry '.*?'/)) {
-        const errorMsg = "Username already registered.";
+        const errorMsg = "Username is already registered.";
         toast.warning(errorMsg);
 
 
