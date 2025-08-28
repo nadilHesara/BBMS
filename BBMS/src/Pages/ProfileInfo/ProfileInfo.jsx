@@ -164,7 +164,7 @@ function ProfileInfo({ theme, setTheme }) {
   return (
     <>
     {from === "LeftSideBar" ? (
-                <p className='hospital-reg-notice'>You can make changes to your contact information.<i>Please note that your username, NIC, Blood type and Date of Birth cannot be changed</i> </p>
+                <p className='hospital-reg-notice'>You can make changes to your contact information. <br /><i className='text-sm text-red-600 dark:!text-gray-300'>Please note that your username, NIC, Blood type and Date of Birth cannot be changed.</i> </p>
               ) : from === "DonationForm" ? (
                 <p  className='hospital-reg-notice'>Please review your profile information, update it if necessary, and proceed to the next step.</p>
               ) : null}

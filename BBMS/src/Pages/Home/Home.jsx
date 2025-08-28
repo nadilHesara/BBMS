@@ -43,6 +43,11 @@ const Home = ({ theme, setTheme }) => {
             >
               Organize Campaign
             </Link>
+            <Link to="/leaflet"
+              className="px-8 py-4 border-2 border-white text-white rounded-full font-semibold text-lg hover:bg-red-600 hover:text-white transition-all duration-300"
+            >
+              Read the Leaflet
+            </Link>
           </div>
         </div>
       </section>

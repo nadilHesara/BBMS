@@ -30,6 +30,7 @@ import Footer from "./components/Footer/Footer";
 import { LoadingProvider } from "./context/LoadingContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import BloodDonationGuide from "./Pages/Leaflet/guide";
 
 
 function App() {
@@ -85,6 +86,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home theme={theme} setTheme={setTheme} />} />
               <Route path="donorReg" element={<DonorReg theme={theme} setTheme={setTheme} />} />
+              <Route path="leaflet" element={<BloodDonationGuide theme={theme} setTheme={setTheme} />} />
               <Route path="/login" element={<Login theme={theme} setTheme={setTheme} />} />
               <Route path="/forgotpassword" element={<ForgotPassword theme={theme} setTheme={setTheme} />} />
               <Route path="/campaignRequest" element={<CampaignRequest theme={theme} setTheme={setTheme} />} />
