@@ -1,0 +1,12 @@
+.page-head-campHistory{
+ color:rgb(8, 14, 83);
+  padding-left:2rem;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 40px;
+  margin-bottom: 3rem;
+  margin-top:1.5rem;
+}
+
+.dark .page-head-campHistory{
+    color:aliceblue;
+}

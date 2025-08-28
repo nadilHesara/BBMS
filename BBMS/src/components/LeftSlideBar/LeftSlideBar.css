@@ -9,6 +9,7 @@
   max-width: 300px;
   flex-shrink: 0;
   padding-bottom: 5rem;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.5);
 
 }
 
@@ -16,6 +17,14 @@
   width: 80px;
 }
 
+.active-link {
+  background-color: rgb(175, 172, 172) !important; 
+  color: white;             
+}
+
+.active-link span {
+  font-weight: bold;
+}
 
 .sidebar-toggle-btn {
   background: rgb(113, 113, 113);
@@ -81,8 +90,8 @@
   font-size: 16px;
 }
 
-.slide-bar-nav-links.dark a:hover {
-  background: rgba(255, 255, 255, 0.1);
+.dark .slide-bar-nav-links a:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
 }
 
 .slide-bar-nav-links a:hover {
@@ -107,8 +116,9 @@
 }
 
 /* Dark mode support */
-.left-slide-bar.dark {
-  background-color: #1a1a1a;
+.dark .left-slide-bar {
+  background-color: #24283633;
+  box-shadow: 0 10px 15px rgba(255, 255, 255, 0.5);
 }
 
 .left-slide-bar.dark .slide-bar-nav-links span {

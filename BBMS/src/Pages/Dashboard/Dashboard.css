@@ -10,7 +10,7 @@
 .main-layout{
   display:flex;
   flex:1;
-  background-color: rgb(243, 243, 243);
+  background-color: #eceffa;
   margin-top:80px;
 
 }
@@ -24,7 +24,7 @@
 }
 
 .main-layout.dark{
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: linear-gradient(135deg, #1f252f 0%, #092143 100%);
 }
 
 .content-area.content-area.dark .calender-component{
