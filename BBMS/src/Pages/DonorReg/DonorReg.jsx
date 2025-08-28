@@ -98,10 +98,8 @@ function DonorReg({ theme, setTheme }) {
         navigate("/login");
 
       } else if (result.message.match(/Duplicate entry '.*?'/)) {
-        const errorMsg = "Username is already registered.";
+        const errorMsg = "Already registered.";
         toast.warning(errorMsg);
-
-
       }
 
     } catch (error) {

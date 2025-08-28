@@ -35,12 +35,14 @@ isolated function addHospital(Hospital hospital) returns json|error {
     )`;
 
     // Insert into login table
-    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, HospitalID, UserType) 
+    sql:ParameterizedQuery addLoginDetails = `INSERT INTO login(UserName, Password, HospitalID, UserType, Email) 
         VALUES(
         ${newHospital.username},
         ${newHospital.password},
         ${newHospital.hospital_id},
-        "Hospital")`;
+        "Hospital",
+        ${newHospital.email}
+        )`;
 
     string htmlBody = "<html>" +
         "<head>" +
