@@ -1,4 +1,5 @@
 import ballerina/sql;
+import ballerina/io;
 
 isolated function addCamp(Campaign campaign) returns json|error {
 
@@ -119,9 +120,9 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
                     b.AB_minus,
                     c.completed
                 FROM campaign AS c
-                INNER JOIN bloodstocks AS b 
+                LEFT OUTER JOIN bloodstocks AS b 
                     ON c.CampaignID = b.CampaignID
-                where c.HospitalID = ${hospital_id} AND c.DateofCampaign <= ${curruntDate} `;
+                where c.HospitalID = ${hospital_id} and c.DateofCampaign >= ${curruntDate}  `;
     } else {
         string date = month + "-01";
         query = `SELECT 
@@ -142,16 +143,19 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
                     b.AB_minus,
                     c.completed
                 FROM campaign AS c
-                INNER JOIN bloodstocks AS b 
+                LEFT OUTER JOIN bloodstocks AS b 
                     ON c.CampaignID = b.CampaignID
                 where c.HospitalID = ${hospital_id} and c.DateofCampaign >= ${date}`;
     }
+
+    io:println(query);
     stream<CampaignDetails, error?> resultStream = dbClient->query(query);
     check from CampaignDetails campaign in resultStream
         do {
             campaigns.push(campaign);
         };
     check resultStream.close();
+    io:println(campaigns);
     return campaigns;
 }
 

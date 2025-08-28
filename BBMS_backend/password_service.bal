@@ -2,13 +2,16 @@ import ballerina/sql;
 import ballerina/http;
 
 isolated function getUserByUsername(string username) returns Login|error {
-    sql:ParameterizedQuery query = `SELECT * FROM login WHERE UserName=${username};`;
+    sql:ParameterizedQuery query = `SELECT * FROM login WHERE UserName=${username} OR Email = ${username};`;
     Login|error result = dbClient->queryRow(query);
     return result;
 }
 
 isolated function loginUser(string username, string password) returns http:Response|error {
-    Login user = check getUserByUsername(username);
+    Login|error user =  getUserByUsername(username);
+    if user is error{
+        return user;
+    }
     boolean isValidPassword = check verifyPassword(password, user.password);
     
     if !isValidPassword {

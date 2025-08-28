@@ -268,7 +268,7 @@ public type CampaignDetails record {
     string orgEmail;
 
     @sql:Column {name: "DonerCount"}
-    int? DonerCount;
+    int? DonerCount?;
 
     @sql:Column {name: "A_plus"}
     string? A_plus;
