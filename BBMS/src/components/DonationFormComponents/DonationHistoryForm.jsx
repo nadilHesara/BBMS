@@ -100,7 +100,7 @@ export default function DonationHistoryForm() {
 
       if (response.status === 201){
         setMessage("Redirecting...");
-        navigate('../medical');
+        navigate('../medical',{state : {from:'/donationhistory'}});
       }
 
       else {

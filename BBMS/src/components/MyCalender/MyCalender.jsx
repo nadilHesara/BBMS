@@ -18,6 +18,7 @@ function CalendarComponent(props) {
   const [selectedDateDetails, setSelectedDateDetails] = useState([]);
   const [expandedCampaign, setExpandedCampaign] = useState(null);
   const navigate = useNavigate();
+   const user_type = sessionStorage.getItem("userType");
 
 
   // Helper function to format date in local timezone (YYYY-MM-DD)
@@ -107,7 +108,7 @@ function CalendarComponent(props) {
   // Handle donation request
   const handleDonationRequest = (campaign) => {
     const userID = sessionStorage.getItem("userId");
-    const user_type = sessionStorage.getItem("userType")
+   
     if (!userID) {
       alert("Please login to request a donation");
       return;
@@ -217,7 +218,7 @@ function CalendarComponent(props) {
                           <button
                             className="donation-request-btn"
                             onClick={() => handleDonationRequest(campaign)}
-                          >Update Donation
+                          >{user_type === "Doner" ? 'Register for the campaign':'Enter the Campaign'}
                           </button>
                         </div>
                       </div>
@@ -230,17 +231,6 @@ function CalendarComponent(props) {
               (
                 <>
 
-                  {/* <div key={campaign.campaign_id || index} className="campaign-details">
-                <div className="campaign-basic-info">
-                  <strong className="org-name">{campaign.CampaignName}</strong>
-                  <div className="location-info">
-                    {campaign.add_line1} {campaign.add_line2} {campaign.add_line3}
-                  </div>
-                  <div className="time-info">Starts at {formatTime(campaign.start_time)}</div>
-                </div>
-
-                
-              </div> */}
                   <div key={campaign.campaign_id || index} className="campaign-details past-campaign">
                     <div className="campaign-basic-info">
                       <strong className="org-name">{campaign.CampaignName}</strong>

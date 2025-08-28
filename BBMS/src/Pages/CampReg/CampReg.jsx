@@ -66,7 +66,7 @@ function CampReg({ theme, setTheme }) {
       const result = await response.json();
 
       if (response.ok) {
-        toast.success(`Successfully registered by ${campaign.org_name}`);
+        toast.success(`${campaign.CampaignName} Successfully registered`);
         setTimeout(() => {
           window.location.reload();
         }, 2000);
