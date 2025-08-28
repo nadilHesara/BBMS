@@ -1,5 +1,4 @@
 import ballerina/sql;
-import ballerina/io;
 
 isolated function addCamp(Campaign campaign) returns json|error {
 
@@ -148,14 +147,12 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
                 where c.HospitalID = ${hospital_id} and c.DateofCampaign >= ${date}`;
     }
 
-    io:println(query);
     stream<CampaignDetails, error?> resultStream = dbClient->query(query);
     check from CampaignDetails campaign in resultStream
         do {
             campaigns.push(campaign);
         };
     check resultStream.close();
-    io:println(campaigns);
     return campaigns;
 }
 
