@@ -13,12 +13,12 @@ isolated function getUserByUsername(string username) returns Login|error {
 isolated function loginUser(string username, string password) returns http:Response|error {
     Login user = check getUserByUsername(username);
     boolean isValidPassword = check verifyPassword(password, user.password);
-
+    
     if !isValidPassword {
         http:Response response = new;
         response.statusCode = 401;
         json errorBody = {
-            "error": "Invalid username or password"
+            "error": "Password is incorrect"
         };
         response.setJsonPayload(errorBody);
         return response;

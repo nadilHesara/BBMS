@@ -52,26 +52,25 @@ export default function EligibilityCheck() {
     }
   };
 
-    const durationCalculator = (last_m, last_yr, currentMonth, currentYear) => {
-      let duration_yr = currentYear - last_yr;
-      let duration_m = currentMonth - last_m;
+  const durationCalculator = (last_m, last_yr, currentMonth, currentYear) => {
+    let duration_yr = currentYear - last_yr;
+    let duration_m = currentMonth - last_m;
 
-      if (duration_m < 0) {
-          duration_yr--;
-          duration_m += 12;
-      }
-      return duration_yr * 12 + duration_m;
-    };
+    if (duration_m < 0) {
+        duration_yr--;
+        duration_m += 12;
+    }
+    return duration_yr * 12 + duration_m;
+  };
 
-    const ageCalculator = (b_m,b_yr, currentMonth, currentYear) => {
-      let ageYears = currentYear - b_yr;
-      if (currentMonth < b_m) {
-          ageYears--;
-      }
+  const ageCalculator = (b_m,b_yr, currentMonth, currentYear) => {
+    let ageYears = currentYear - b_yr;
+    if (currentMonth < b_m) {
+        ageYears--;
+    }
 
-      return ageYears;
-    };
-
+    return ageYears;
+  };
 
 
   useEffect(() => {
@@ -133,14 +132,17 @@ export default function EligibilityCheck() {
 
     };
 
+    
     if (donor_id && campDate ) {
         fetchDonorData();
   }  
+
 
 }, [donor_id, campDate]);
 
 
   useEffect (()=> {
+      
        const newMessages = [];
        let isEligible = true;
        let isAutoSubmitCase = false;
@@ -157,8 +159,7 @@ export default function EligibilityCheck() {
           newMessages.push("Thank you great citizen. You are now beyond the eligible limit for blood donation. Redirecting to dashboard");               
         }
       }
-
-      if (form.lastDonation && form.lastDonation !== "No Previous Donations" && (form.lastDonation < 4 || form.lastDonation === 0)){
+      if (form.lastDonation && form.lastDonation !== "No Previous Donations" && form.lastDonation < 4 || form.lastDonation === 0){
           isEligible = false;
           isAutoSubmitCase = true;
           newMessages.push("You are temporarily ineligible due to recent donations. Thank you for your support! Redirecting to dashboard");
@@ -179,19 +180,16 @@ export default function EligibilityCheck() {
         newMessages.push("Foreign travels within the last 3 months makes you temporarily ineligible to donate");
       }
       
-      setForm(prev => ({...prev, eligible: isEligible}));
-      setAutoSubmitCases(isAutoSubmitCase);
-      setMessages(newMessages)
+     setForm(prev => ({...prev, eligible: isEligible}));
+     setAutoSubmitCases(isAutoSubmitCase);
+     setMessages(newMessages)
 
   }, [form.age, form.lastDonation, form.risk, form.weight, form.foreignTravel]);
 
-  
 
   useEffect (() => { 
 
         const autoSubmit = async () => {
-
-        if (!autoSubmitCases || !campaignId) return;
 
         setIsSubmitting(true);
 
@@ -217,7 +215,6 @@ export default function EligibilityCheck() {
           
 
         }catch(error){
-          console.error("Auto-submit error:", error);
           setMessages(prev => [...prev, "Failed to submit. Please try again."]);
 
         }finally{
@@ -225,11 +222,13 @@ export default function EligibilityCheck() {
         }
       };
 
-    if (form.eligible === false && autoSubmitCases && campaignId){
+    if (form.eligible === false && autoSubmitCases){
       autoSubmit();
     }
 
-  }, [form.eligible, autoSubmitCases, campaignId, donor_id, form.submitID, navigate]);
+  }, [form.eligible, autoSubmitCases]);
+
+
 
   const validateForm = () => {
     const errors = [];
@@ -266,80 +265,10 @@ export default function EligibilityCheck() {
         return;
       }
 
-    // if(form.eligible === true){
-
 
       setIsSubmitting(true);
 
-  //     try {
-  //       let first_response;
-  //       let update_response;
 
-  //       if (updateEntry){
-  //         update_response = await axios.post("http://localhost:9191/update_eligibility",{
-  //           submitID: sessionStorage.getItem('submitID'),
-  //           ...(Number.isInteger(parseInt(form.foreignTravel))
-  //               ? { foreignTravel: parseInt(form.foreignTravel) }
-  //               : {}),
-  //           risk: form.risk,
-  //           DonerID: donor_id,
-  //           eligible: true,
-  //           CampaignID: campaignId,
-  //           previous_eligibility: response.data?.Eligible
-  //         });
-
-
-  //       }else{
-  //         first_response = await axios.post("http://localhost:9191/eligibility",{
-  //           submitID: form.submitID,
-  //           ...(Number.isInteger(parseInt(form.foreignTravel))
-  //               ? { foreignTravel: parseInt(form.foreignTravel) }
-  //               : {}),
-  //           risk: form.risk,
-  //           DonerID: donor_id,
-  //           eligible: true,
-  //           CampaignID: campaignId
-  //       });
-
-
-  //       }
-
-  //       const response = updateEntry ? update_response : first_response;
-  //       setResponse(response);
-  //       console.log("Response;", response);
-
-
-  //       if (response?.status === 201 && response.data?.message !== "Duplicate entry found") {
-  //         setMessages(["You are eligible to donate. Redirecting..."]);
-  //         await new Promise(resolve => setTimeout(resolve, 2000));
-  //         sessionStorage.setItem("submitID", response.data?.SubmitID)
-  //         sessionStorage.setItem("campaignId", campaignId);
-  //         if (updateEntry){
-  //           setUpdateEntry(false);
-  //         }
-  //         navigate("profileInfo", {state:{from:"DonationForm"}});
-
-  //       }else if(response.data?.message==="Duplicate entry found"){
-  //         setIsalready(true);
-  //         sessionStorage.setItem("submitID", response.data?.SubmitID)
-  //         sessionStorage.setItem("campaignId", campaignId);
-
-  //       }
-  //       else {
-  //         setMessages([response.data?.message || "Eligibility check failed"]); 
-  //       }
-
-  //     }catch(error){
-  //       setMessages(["Error submitting form. Please try again."]);
-  //       console.error("Error submitting form:", error.message);
-
-  //     }finally{
-  //       setIsSubmitting(false);
-  //     }
-
-  // }else if(form.eligible === false && campaignId){
-
-  //     setIsSubmitting(true);
 
       try {
 
@@ -364,7 +293,6 @@ export default function EligibilityCheck() {
       }
 
       setResponse(apiResponse);
-      console.log("Response:", apiResponse);
 
       if (apiResponse?.status === 201 && apiResponse.data?.message !== "Duplicate entry found") {
 
@@ -403,6 +331,7 @@ export default function EligibilityCheck() {
   };
 
 useEffect (() => {
+  
     if (form.age !== '' && form.lastDonation !== '' && form.weight !== '' && form.foreignTravel !== '' && form.risk !== '') {
     const isEligible = (
         form.age >= 18 &&

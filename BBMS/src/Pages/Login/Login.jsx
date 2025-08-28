@@ -77,14 +77,15 @@ const Login = ({ theme, setTheme }) => {
         navigate("/dashboard");
 
       } else {
-        setMessage("Error: " + (result.message || JSON.stringify(result)));
-        toast.error("Enter all required information");
-        console.error("Error response:", result);
+        toast.error(result.error);
+        setMessage("Error: " + (result.message || JSON.stringify(result)));        
       }
+
     } catch (error) {
       console.error("Error login form :", error.message);
       toast.error("Login failed. Check server and data.");
       setMessage("Login failed. Check server and data.");
+      
     } finally {
       setLoading(false);
     }
