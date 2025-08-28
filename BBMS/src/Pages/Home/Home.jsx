@@ -20,10 +20,10 @@ const Home = ({ theme, setTheme }) => {
           <div className="mb-3">
             <div className="w-[120px] h-[120px] inline-block pt-2 pb-2 pl-2 pr-3 bg-zinc-400 dark:!bg-blue-400 rounded-full text-center shadow-2xl shadow-[0_10px_30px_rgba(0,0,0,0.7)] dark:!shadow-[0_10px_30px_rgba(59,130,246,0.5)] mb-2 transform hover:scale-105 transition-transform duration-300">
               <img
-                    src="/images/Blood Bank logo 2022-03.png"
-                    alt="Profile 1"
-                    className="object-cover object-bottom"
-                  />
+                src="/images/Blood Bank logo 2022-03.png"
+                alt="Profile 1"
+                className="object-cover object-bottom"
+              />
             </div>
           </div>
           <h1 className="text-5xl mt-[5vh] md:text-7xl font-bold text-zinc-400 dark:!text-blue-300 bg-clip-text text-transparent mb-10">
@@ -43,6 +43,14 @@ const Home = ({ theme, setTheme }) => {
             >
               Organize Campaign
             </Link>
+            <a href="/leaflet"
+
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-4 border-2 border-white text-white rounded-full font-semibold text-lg hover:bg-red-600 hover:text-white transition-all duration-300"
+            >
+              Read the Leaflet
+            </a>
           </div>
         </div>
       </section>
@@ -91,18 +99,18 @@ const Home = ({ theme, setTheme }) => {
               </div>
             </div>
             <div className="flex justify-center pl-10">
-                {/* Image 1 */}
-                <div className="flex-1">
-                                     <img
-                     src="/images/interesting-facts-of-blood-mob.jpg"
-                     alt="Profile 1"
-                     className="w-100 h-[490px] object-cover object-bottom rounded"
-                   />
-                </div>
+              {/* Image 1 */}
+              <div className="flex-1">
+                <img
+                  src="/images/interesting-facts-of-blood-mob.jpg"
+                  alt="Profile 1"
+                  className="w-100 h-[490px] object-cover object-bottom rounded"
+                />
+              </div>
 
-                
-                
-              
+
+
+
             </div>
           </div>
         </div>
@@ -228,8 +236,8 @@ const Home = ({ theme, setTheme }) => {
             <div className="flex justify-center mb-8">
               <div className="relative">
                 <div className="w-[350px] rounded-full flex items-center justify-center">
-                                     <img src="/images/360_F_309786159_KFi1qWYvgsiqN100CLQaf8pw0vLOHSJR.jpg" className='w-full object-cover rounded-full shadow-[0_10px_50px_rgba(0,0,0,0.7)] dark:!shadow-[0_10px_50px_rgba(59,130,246,0.5)]'></img>
-                </div> 
+                  <img src="/images/360_F_309786159_KFi1qWYvgsiqN100CLQaf8pw0vLOHSJR.jpg" className='w-full object-cover rounded-full shadow-[0_10px_50px_rgba(0,0,0,0.7)] dark:!shadow-[0_10px_50px_rgba(59,130,246,0.5)]'></img>
+                </div>
               </div>
             </div>
           </div>
@@ -248,12 +256,12 @@ const Home = ({ theme, setTheme }) => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <div className="bg-gradient-to-br from-pink-950 to-rose-300 dark:!from-blue-900 dark:!to-blue-600 rounded-3xl p-8 shadow-xl">
-                  <div className="text-center">
-                    <div className="w-[300px] h-full rounded-3xl mx-auto mb-4 flex items-center justify-center">
-                                             <img src="/images/d4CbziPfy4qWaBHSnt2sXP.jpg" className='w-full h-full object-cover rounded-xl shadow-[0_10px_50px_rgba(0,0,0,0.7)] dark:!shadow-[0_10px_50px_rgba(59,130,246,0.5)]'></img>
-                    </div>
+                <div className="text-center">
+                  <div className="w-[300px] h-full rounded-3xl mx-auto mb-4 flex items-center justify-center">
+                    <img src="/images/d4CbziPfy4qWaBHSnt2sXP.jpg" className='w-full h-full object-cover rounded-xl shadow-[0_10px_50px_rgba(0,0,0,0.7)] dark:!shadow-[0_10px_50px_rgba(59,130,246,0.5)]'></img>
                   </div>
-                
+                </div>
+
                 <div className="text-center">
                   <h3 className="text-xl font-semibold text-white mb-3">
                     Safe & Professional Care
@@ -417,7 +425,7 @@ const Home = ({ theme, setTheme }) => {
           </p>
         </div>
       </section>
-      
+
     </div>
   );
 };

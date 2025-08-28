@@ -137,6 +137,16 @@
   font-size: 20px;
 }
 
+.new-dpassword-toggle-icon {
+  position: absolute;
+  right: 12px;
+  top: 30%;
+  cursor: pointer;
+  color: #666;
+  font-size: 20px;
+}
+
+
 /* Submit Button */
 .doner-reg-form input[type="submit"] {
   background: #861f1f;
@@ -149,6 +159,11 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dark .doner-reg-form input[type="submit"]{
+  background: #870202;
+  color: #fff;
 }
 
 .doner-reg-form input[type="submit"]:hover {

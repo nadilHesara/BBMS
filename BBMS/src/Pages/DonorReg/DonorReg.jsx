@@ -184,10 +184,19 @@ function DonorReg({ theme, setTheme }) {
                 <label htmlFor="pwd">Password: </label>
 
                 <input type={show[0] ? "text" : "password"} id="pwd" name="pwd" onChange={(e) => setPassword(e.target.value)}></input>
-                <div className="dpassword-toggle-icon">{show[0] ? <AiFillEyeInvisible onClick={() => toggleShow()} size={20} /> : <AiFillEye onClick={() => toggleShow()} size={20} />}
+                <div className="new-dpassword-toggle-icon">{show[0] ? <AiFillEyeInvisible onClick={() => toggleShow()} size={20} /> : <AiFillEye onClick={() => toggleShow()} size={20} />}
                 </div>
+                <p className="mt-2 text-sm text-gray-700 dark:!text-gray-200">
+                  The password must be containing at least <span className="font-semibold">8 characters</span>, including
+                  <span className="font-semibold"> uppercases</span>,
+                  <span className="font-semibold"> lowercases</span>,
+                  <span className="font-semibold"> numbers</span>, and
+                  <span className="font-semibold"> special characters</span>.
+                </p>
               </div>
+
               <br />
+
 
               <div className="pwd-field">
                 <label htmlFor="pwdconfirm">Confirm Password: </label>
@@ -204,8 +213,8 @@ function DonorReg({ theme, setTheme }) {
 
           </div >
         </> : <>
-                        <div className="hospital-donor-layout w-full ">
-                          <p className="donor-reg-notice">Fill the following form to register a new Donor to the database</p>
+          <div className="hospital-donor-layout w-full ">
+            <p className="donor-reg-notice">Fill the following form to register a new Donor to the database</p>
             <div className={theme === "light" ? "doner-reg" : "doner-reg dark"}>
               <form className="doner-reg-form" onSubmit={handleSubmit}>
                 <h1>Donor Registration</h1>
@@ -272,7 +281,7 @@ function DonorReg({ theme, setTheme }) {
               </form>
 
             </div ></div>
-       
+
         </>}
     </div >
   );
