@@ -42,7 +42,6 @@ function CalendarComponent(props) {
     if (!selectedDistrict) return;
     const year = activeStartDate.getFullYear();
     const month = String(activeStartDate.getMonth() + 1).padStart(2, '0');
-    // console.log(month);
     axios.get(`http://localhost:9191/dashboard/campaigns?date=${year}-${month}&district=${selectedDistrict}`)
       .then(res => {
         const allCampaigns = res.data;
@@ -88,7 +87,6 @@ function CalendarComponent(props) {
 
   // Show details on date click
   const onDateClick = (date) => {
-    console.log(formatDateLocal(date));
     const dateStr = formatDateLocal(date);
     const selected = campaigns.filter(c => c.date === dateStr);
     setSelectedDateDetails(selected);
@@ -97,7 +95,6 @@ function CalendarComponent(props) {
 
   // Handle expand/collapse campaign details
   const toggleExpandedView = (campaign) => {
-    console.log("expand : ", expandedCampaign);
     if (expandedCampaign && expandedCampaign.campain_id === campaign.campain_id) {
       setExpandedCampaign(null);
     } else {
@@ -115,8 +112,6 @@ function CalendarComponent(props) {
     }
 
     // You can implement the donation request logic here
-    console.log("Requesting donation for campaign:", campaign);
-    // alert(`Donation request sent for ${campaign.org_name} campaign!`);
     if (user_type === "Doner") {
       navigate("/dashboard/DonationForm", { state: { campaignId: campaign.campain_id, campdate: campaign.date, campName: campaign.CampaignName } });
     } else if (user_type === "Hospital") {
@@ -138,7 +133,6 @@ function CalendarComponent(props) {
     }
     return null;
   }
-  console.log(campaigns);
 
   return (
     <div>

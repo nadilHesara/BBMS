@@ -5,7 +5,6 @@ import "./ProfileInfo.css"
 import { LoadingContext } from '../../context/LoadingContext';
 import useVerifyAccess from '../../SharedData/verifyFunction';
 import { toast } from 'react-toastify';
-{/*import { use } from 'react';*/ }
 
 function ProfileInfo({ theme, setTheme }) {
   useVerifyAccess("profileInfo")
@@ -14,8 +13,7 @@ function ProfileInfo({ theme, setTheme }) {
   const navigate = useNavigate();
   const from = location.state?.from;
   const [isChanged, setIsChange] = useState(false);
-  console.log("from-", from);
-  console.log("isChanged-", isChanged);
+
 
   const [doner, setDoner] = useState({
     doner_id: '',
@@ -47,7 +45,6 @@ function ProfileInfo({ theme, setTheme }) {
   });
 
   const [userType, setUserType] = useState("");
-  {/*const fileInputRef = useRef(null);*/ }
 
   useEffect(() => {
     const userData = JSON.parse(sessionStorage.getItem("userData"));
@@ -174,17 +171,16 @@ function ProfileInfo({ theme, setTheme }) {
 
           <form className="space-y-4 " onSubmit={handleSubmit} >
             <div className='w-full h-[100px] flex items-center justify-center shadow-xl rounded-t-3xl'>
-              <h1 className="text-[40px] font-bold text-black dark:!text-white ">{userType} Profile Information</h1>
+              <h1 className="text-[40px] font-bold text-black dark:!text-white ">{userType === "Doner" ? "Donor" : userType} Profile Information</h1>
             </div>
 
             <div className="p-5 grid grid-cols-1- md:grid-cols-2 gap-5">
-              {/* Basic Information Section */}
               {/* Basic Information Section */}
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold">Basic Information</h2>
 
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium mb-1">{userType} Name:</label>
+                  <label htmlFor="name" className="block text-sm font-medium mb-1">{userType === "Doner" ? "Donor" : userType} Name:</label>
                   <input
                     type="text"
                     name="name"

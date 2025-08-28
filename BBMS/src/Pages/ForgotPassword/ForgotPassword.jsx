@@ -29,7 +29,7 @@ function ForgotPassword() {
       const result = await response.json();
       if (response.ok) {
         navigate("/login")
-        toast.success("Successfully Reset Your Password!");
+        toast.success("Password Reset Successfully!");
 
       } else {
         toast.error("Please check your details and try again.");

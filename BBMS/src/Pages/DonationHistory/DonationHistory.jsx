@@ -21,8 +21,6 @@ function DonationHistory({ theme, setTheme }) {
                 axios.get(`http://localhost:9191/dashboard/donations?user_id=${userID}`)
                     .then(res => {
                         setDonations(res.data);
-                        console.log(donations);
-                        console.log(res.data);
                     })
                     .catch(err => console.error(err));
             }

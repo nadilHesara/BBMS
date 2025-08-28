@@ -206,7 +206,7 @@ export default function EligibilityCheck() {
           if(response.status==201 || response.data?.message === "Duplicate entry found" ){
             setMessages([]);
             if(response.data?.message === "Duplicate entry found"){
-              toast.error("Alreday Registered Ineligible Donor");
+              toast.error("Already Registered Ineligible Donor");
             }else{
               toast.error("Ineligible Donor for this campaign");
             }

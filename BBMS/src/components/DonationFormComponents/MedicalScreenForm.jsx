@@ -111,8 +111,9 @@ export default function MedicalScreenForm() {
       
 
       }else {
-          console.log(response);
           setMessage([response.data?.message || "Medical Risk updating failed"]); 
+          console.error(message);
+
         }
 
     }catch(error){

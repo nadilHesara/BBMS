@@ -75,7 +75,7 @@ function ChangePassword() {
       const result = await response.json();
 
       if (response.ok) {
-        toast.success("Password Changed successfully!")
+        toast.success("Password Changed Successfully!")
         navigate("/dashboard")
       }
       if (result.message === "User type is different!") {

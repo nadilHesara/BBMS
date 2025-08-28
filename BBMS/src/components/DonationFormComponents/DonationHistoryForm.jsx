@@ -104,9 +104,9 @@ export default function DonationHistoryForm() {
       }
 
       else {
-        console.log(response);
-        setMessage([response.data?.message || "History updating failed"]);
-      }
+          setMessage([response.data?.message || "History updating failed"]); 
+          console.error(message);
+        }
 
     } catch (error) {
       setMessage(["Error submitting form. Please try again."]);
