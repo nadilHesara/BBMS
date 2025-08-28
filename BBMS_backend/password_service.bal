@@ -1,9 +1,6 @@
 import ballerina/sql;
 import ballerina/http;
 
-
-
-
 isolated function getUserByUsername(string username) returns Login|error {
     sql:ParameterizedQuery query = `SELECT * FROM login WHERE UserName=${username};`;
     Login|error result = dbClient->queryRow(query);
@@ -88,21 +85,28 @@ isolated function changePassword(string userType, string username, string newPas
 }
 
 
-isolated function resetPassword(string userType, string userInfo) returns json|error {
+isolated function resetPassword( string userInfo) returns json|error {
     string newPassword = check generatePassword(12);
+
+    Login|error loginResult = dbClient-> queryRow(`SELECT * from login where (UserName = ${userInfo} OR Email = ${userInfo})` , Login);
+
+    if loginResult is error{
+        return {message : loginResult.message()};
+    }
+    string userType = loginResult.user_type;
     Doner|Hospital|error result;
     if userType == "Doner" {
-        result = dbClient->queryRow(`SELECT * from Doner where ( Username = ${userInfo} OR Email =${userInfo} OR NICNo = ${userInfo} OR Telephone = ${userInfo});`);
+        result = dbClient->queryRow(`SELECT * from Doner where Username = ${userInfo};`);
 
     } else if userType == "Hospital" {
-        result = dbClient->queryRow(`SELECT * from Hospital where (Username = ${userInfo} OR Email =${userInfo} OR Contact = ${userInfo});`);
+        result = dbClient->queryRow(`SELECT * from Hospital where Username = ${userInfo} ;`);
 
     } else {
         result = error("Incorrect type");
     }
 
     if result is error {
-        return result;
+        return {message : result.message()};
     }
     string? username = result.username;
     string? name = result.name;
