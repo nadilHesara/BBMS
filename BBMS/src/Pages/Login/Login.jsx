@@ -76,10 +76,9 @@ const Login = ({ theme, setTheme }) => {
         sessionStorage.setItem("userType", result.user_type);
         navigate("/dashboard");
 
-      } else {
-        setMessage("Error: " + (result.message || JSON.stringify(result)));
-        toast.error("Login Failed. Check the username and password.");
-        console.error("Error response:", result);
+      }else {
+        toast.error(result.error);
+
       }
 
     } catch (error) {
