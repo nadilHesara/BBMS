@@ -18,6 +18,7 @@ function handleCampaign(){
   const campaignId = Cookies.get('campaign_Id')
   if (campaignId) {
     Cookies.remove('campaign_Id')
+    campaignId = NULL
   }
 }
 

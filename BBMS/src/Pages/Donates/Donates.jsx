@@ -15,7 +15,7 @@ function Donates({ theme, setTheme }) {
     const location = useLocation();
     
     const navigate = useNavigate();
-    const campaignid = location.state?.campaignId || Cookies.get();
+    const campaignid = location.state?.campaignId || Cookies.get('campaign_Id');
     const campaigndate = location.state?.campdate ||Cookies.get('cdate');
     const campaignName =  location.state?.campName || Cookies.get('campName');
     const { loading, setLoading } = useContext(LoadingContext);
