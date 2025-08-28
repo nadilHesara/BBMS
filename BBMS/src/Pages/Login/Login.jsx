@@ -81,10 +81,12 @@ const Login = ({ theme, setTheme }) => {
         toast.error("Login Failed. Check the username and password.");
         console.error("Error response:", result);
       }
+
     } catch (error) {
       console.error("Error login form :", error.message);
       toast.error("Login failed. Check server and data.");
       setMessage("Login failed. Check server and data.");
+      
     } finally {
       setLoading(false);
     }
