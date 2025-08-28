@@ -168,7 +168,7 @@ function ProfileInfo({ theme, setTheme }) {
 
           <form className="space-y-4 " onSubmit={handleSubmit} >
             <div className='w-full h-[100px] flex items-center justify-center shadow-xl rounded-t-3xl'>
-              <h1 className="text-[40px] font-bold text-black dark:!text-white ">{userType} Profile Information</h1>
+              <h1 className="text-[40px] font-bold text-black dark:!text-white ">{userType === "Doner" ? "Donor" : userType} Profile Information</h1>
             </div>
 
             <div className="p-5 grid grid-cols-1- md:grid-cols-2 gap-5">
@@ -178,7 +178,7 @@ function ProfileInfo({ theme, setTheme }) {
                 <h2 className="text-xl font-semibold">Basic Information</h2>
 
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium mb-1">{userType} Name:</label>
+                  <label htmlFor="name" className="block text-sm font-medium mb-1">{userType === "Doner" ? "Donor" : userType} Name:</label>
                   <input
                     type="text"
                     name="name"
