@@ -391,10 +391,10 @@ return (
                 </div>
                 <div className="space-y-2">
                   <label className="flex flex-col text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Months since last donation:
+                    Months since last donation (months) :
                     <input
                       name="lastDonation"
-                      value={`${form.lastDonation}  months`}
+                      value={`${form.lastDonation}  `}
                       readOnly
                       className="mt-1 px-4 py-3 border dark:!bg-gray-700 border-gray-300 dark:border-gray-600 dark:!bg-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors cursor-not-allowed"
                     />
