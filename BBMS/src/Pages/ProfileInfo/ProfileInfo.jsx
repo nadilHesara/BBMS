@@ -173,6 +173,7 @@ function ProfileInfo({ theme, setTheme }) {
 
             <div className="p-5 grid grid-cols-1- md:grid-cols-2 gap-5">
               {/* Basic Information Section */}
+              {/* Basic Information Section */}
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold">Basic Information</h2>
 
