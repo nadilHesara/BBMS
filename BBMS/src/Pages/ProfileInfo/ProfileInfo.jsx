@@ -5,7 +5,6 @@ import "./ProfileInfo.css"
 import { LoadingContext } from '../../context/LoadingContext';
 import useVerifyAccess from '../../SharedData/verifyFunction';
 import { toast } from 'react-toastify';
-{/*import { use } from 'react';*/ }
 
 function ProfileInfo({ theme, setTheme }) {
   useVerifyAccess("profileInfo")
@@ -14,8 +13,7 @@ function ProfileInfo({ theme, setTheme }) {
   const navigate = useNavigate();
   const from = location.state?.from;
   const [isChanged, setIsChange] = useState(false);
-  console.log("from-", from);
-  console.log("isChanged-", isChanged);
+
 
   const [doner, setDoner] = useState({
     doner_id: '',
@@ -47,7 +45,6 @@ function ProfileInfo({ theme, setTheme }) {
   });
 
   const [userType, setUserType] = useState("");
-  {/*const fileInputRef = useRef(null);*/ }
 
   useEffect(() => {
     const userData = JSON.parse(sessionStorage.getItem("userData"));
@@ -172,7 +169,6 @@ function ProfileInfo({ theme, setTheme }) {
             </div>
 
             <div className="p-5 grid grid-cols-1- md:grid-cols-2 gap-5">
-              {/* Basic Information Section */}
               {/* Basic Information Section */}
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold">Basic Information</h2>

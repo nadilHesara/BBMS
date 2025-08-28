@@ -76,7 +76,7 @@ export default function ConsentForm() {
 
 
       } else {
-        console.log(res);
+        console.error(res);
         toast.error([res.data?.message || "Submission failed. Please try again."]); 
       }
 

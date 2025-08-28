@@ -66,9 +66,7 @@ function DonationInfo({ theme, setTheme }) {
     };
 
     useEffect(() => {
-        console.log("Donor_ID:",donorId);
-        console.log("Camp_ID",campaign_Id);
-        console.log(cdate);
+
         setDonate(prev => ({
             ...prev,
             campaign_id: campaign_Id,
@@ -152,7 +150,6 @@ function DonationInfo({ theme, setTheme }) {
     };
 
     const handleUpdate = async (e) => {
-        console.log(donate);
         try {
             const response = await fetch("http://localhost:9191/donations", {
                 method: "POST",

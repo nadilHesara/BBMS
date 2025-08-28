@@ -52,7 +52,6 @@ function CampReg({ theme, setTheme }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-    console.log(campaign);
     try {
       setLoading(true);
       const response = await fetch("http://localhost:9191/dashboard/campReg", {
