@@ -1,8 +1,6 @@
-import ballerina/io;
 import ballerina/sql;
 
 isolated function addHospital(Hospital hospital) returns json|error {
-    io:println(hospital);
 
     // Generate a new HOSPITAL ID
     HospitalID|error h = dbClient->queryRow(`SELECT HospitalID FROM Hospital ORDER BY HospitalID DESC LIMIT 1`);
@@ -61,7 +59,7 @@ isolated function addHospital(Hospital hospital) returns json|error {
         "<div class='container'>" +
         "<h2>Password Reset Request</h2>" +
         "<p>Dear " + newHospital.name + ",</p>" +
-        "<p>Your account password has been requested. Use the following password to log in:</p>" +
+        "<p>Your account password has been requested. Use the following password to login:</p>" +
         "<div class='password-box'> " + password + "</div>" +
         "<p>For security reasons, we recommend changing this password after your first login.</p>" +
         "<p>Thank you,<br>Support Team</p>" +

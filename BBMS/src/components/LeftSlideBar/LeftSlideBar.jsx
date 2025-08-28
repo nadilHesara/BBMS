@@ -25,7 +25,6 @@ const LeftSlideBar = ({ theme, userType }) => {
   useEffect(() => {
     setCurrentPos(isOpen);
     setPos(!isOpen ? "open": "closed");
-    console.log(pos);
     localStorage.setItem("pos",pos);
   }, [isOpen]);
 
@@ -142,7 +141,7 @@ const LeftSlideBar = ({ theme, userType }) => {
       navigate("/login");
     }
   }
-  console.log();
+ 
   
   return (
    
