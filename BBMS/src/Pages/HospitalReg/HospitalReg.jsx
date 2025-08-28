@@ -53,7 +53,7 @@ function HospitalReg({ theme, setTheme }) {
             
             const result = await response.json();
             if (response.ok) {
-                toast.success("Hospital Registration Successful! \n Your password was send to your email!");
+                toast.success("Hospital Registration Successful! \n Your password has been sent to your email!");
                 navigate("/dashboard");
 
             } else {

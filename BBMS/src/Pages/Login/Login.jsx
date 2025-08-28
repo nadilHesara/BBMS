@@ -69,7 +69,7 @@ const Login = ({ theme, setTheme }) => {
 
       const result = await response.json();
       if (response.ok) {
-        toast.success("Login successful to " + result.user_type + " !");
+        toast.success("Login successful to " + (result.user_type === "Doner" ? "Donor" : result.user_type) + " !");
         setUserType(result.user_type);
         sessionStorage.setItem("username", result.username);
         sessionStorage.setItem("userId", result.user_id);
