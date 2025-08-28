@@ -61,6 +61,9 @@ public type Login record {
 
     @sql:Column {name: "UserType"}
     string user_type;
+
+    @sql:Column {name: "Email"}
+    string email?;
 };
 
 public type Hospital record {
@@ -231,10 +234,6 @@ public type bloodData record {
     string? AB_minus;
 };
 
-public type ForgotPasswordRequest record {|
-    string userType;
-    string userInfo;
-|};
 
 type passwordData record {|
     string currentPassword;
@@ -269,7 +268,7 @@ public type CampaignDetails record {
     string orgEmail;
 
     @sql:Column {name: "DonerCount"}
-    int? DonerCount;
+    int? DonerCount?;
 
     @sql:Column {name: "A_plus"}
     string? A_plus;
