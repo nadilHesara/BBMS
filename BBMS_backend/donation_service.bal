@@ -47,7 +47,7 @@ isolated function addDonation(Donates donates) returns json|error {
     sql:ExecutionResult|error result = dbClient->execute(addDonation);
 
     if result is error {
-        return error("Donation Updating Failed!");
+        return error("Failed to add donation: " + result.message());
     }
     else {
         return {"message": "Donation added successfully!"};
