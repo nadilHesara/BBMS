@@ -224,15 +224,15 @@ isolated function addConsent(Consent consent) returns json|error {
             if ((camp.add_line2 != null) && (camp.add_line3 != null)) {
                 string ad2 = camp.add_line2.toString();
                 string ad3 = camp.add_line3.toString();
-                Address = camp.add_line1 + ad2 + ad3 + camp.district;
+                Address = camp.add_line1 + " " + ad2 + " " + ad3 + " " + camp.district;
             }
             else if (camp.add_line2 != null) {
                 string ad2 = camp.add_line2.toString();
-                Address = camp.add_line1 + ad2 + camp.district;
+                Address = camp.add_line1 + " " + ad2 + " " + camp.district;
             }
 
             else{
-                Address = camp.add_line1 + camp.district;
+                Address = camp.add_line1 + " " + camp.district;
             }
             
             return {"message": "Consent and Eligibility successfully updated", "Address": Address, "Date": camp.date};

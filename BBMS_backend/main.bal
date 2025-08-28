@@ -27,6 +27,18 @@ service / on listener9191 {
 
     isolated resource function post login(@http:Payload LoginRequest loginReq) returns http:Response|error {
         http:Response|error result = check loginUser(loginReq.username, loginReq.password);
+
+        if result is error{
+            http:Response response = new;
+            response.statusCode = 404;
+            json errorBody = {
+                "error": "Invalid Username"
+            };
+            response.setJsonPayload(errorBody);
+            result = response;
+
+        }
+        
         return result;
     }
 
@@ -382,6 +394,15 @@ service /dashboard on listener9191 {
     resource function get CampaignHistory(@http:Query string user_id) returns CampaignDetails[]|error {
         CampaignDetails[]|error campaigns = getCampaignHistory(user_id);
         return campaigns;
+    }
+
+    resource function post CampaignHistory(@http:Payload CampaignDetails campaign) returns json|error {
+        sql:ExecutionResult|error result = updateCamp(campaign);
+        
+        if result is error{
+            return result;
+        }
+        return {"message" : "Sucsess"};
     }
 
     resource function post ChangePassword(@http:Payload passwordData passwordData) returns json|error {

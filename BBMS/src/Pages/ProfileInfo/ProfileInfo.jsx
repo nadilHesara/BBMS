@@ -164,7 +164,7 @@ function ProfileInfo({ theme, setTheme }) {
   return (
     <>
       <div className='mt-10 flex justify-center '>
-        <div className={` rounded-3xl justify-center mt-30 w-[1000px]   shadow-md ${theme === "light" ? "!bg-[rgba(255,255,255,0.5)]" : "bg-gray-800 text-white"}`}>
+        <div className="rounded-3xl justify-center mt-30 w-[1000px]  shadow-2xl bg-[rgba(255, 255, 255, 0.79)] dark:!bg-gray-500 dark:!text-white">
 
           <form className="space-y-4 " onSubmit={handleSubmit} >
             <div className='w-full h-[100px] flex items-center justify-center shadow-xl rounded-t-3xl'>
