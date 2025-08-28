@@ -201,8 +201,8 @@ We welcome contributions to improve BBMS Frontend! 🚀
 
 For support and questions, please contact the development team or create an issue in the repository.
    - Thilokya Angeesa
-   - Nadil Hrsara
-   - Sandeni Vithana
+   - Nadil Hesara
+   - Sandenie Withana
    - Hesandi Siwmini
 
 ---

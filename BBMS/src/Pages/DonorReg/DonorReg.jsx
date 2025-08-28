@@ -31,7 +31,7 @@ function DonorReg({ theme, setTheme }) {
     name: "",
     username: "",
     email: "",
-    gender: "",
+    gender: "",    
     blood_group: "",
     nic_no: "",
     dob: "",
@@ -62,55 +62,48 @@ function DonorReg({ theme, setTheme }) {
   };
 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (password != conformPassword) {
-      toast.error("Passwords do not match!")
-      return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (password !== conformPassword) {
+    toast.error("Passwords do not match!");
+    return;
+  }
+
+  const validate = validatePassword(password);
+  if (validate !== true) {
+    toast.warning(validate);
+    return;
+  }
+
+  // Set password in doner object
+  const payload = { ...doner, password:password };
+
+  try {
+    setLoading(true);
+    const response = await fetch("http://localhost:9191/donorReg", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (response.ok) {
+      toast.success("Donor Registration Successful!");
+      navigate("/login");
+    } else if (result.message?.includes("Duplicate entry")) {
+      toast.warning("Username, Email or NIC already registered.");
     } else {
-      if (userType != "Hospital" || userType != "Admin") {
-        const validate = validatePassword(password)
-        if (validate == true) {
-          setDoner({
-            ...doner.password = password
-          })
-        } else {
-          toast.warning(validate);
-          return;
-        }
-      }
+      toast.error( "Submission failed. Check server and data.");
     }
-    try {
-      setLoading(true);
-      const response = await fetch("http://localhost:9191/donorReg", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+  } catch (error) {
+    toast.error("Network error. Please check your server.");
+  } finally {
+    setLoading(false);
+  }
+};
 
-        body: JSON.stringify(doner)
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        toast.success("Donor Registration Successful!");
-        navigate("/login");
-
-      } else if (result.message.match(/Duplicate entry '.*?'/)) {
-        const errorMsg = "Username is already registered.";
-        toast.warning(errorMsg);
-
-
-      }
-
-    } catch (error) {
-      toast.error("Submission failed. Check server and data.");
-    } finally {
-      setLoading(false);
-    }
-
-  };
 
   const [show, setShow] = useState([false, false]);
   return (

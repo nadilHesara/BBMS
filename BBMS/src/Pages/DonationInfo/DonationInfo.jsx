@@ -185,9 +185,16 @@ function DonationInfo({ theme, setTheme }) {
                         campdate: donate.camp_date
                     }
                 });
-            } else {
+
+            } else if (result.message.match(/Duplicate entry '.*?'/)) {
+                const errorMsg = "Donation is already added.";
+                toast.warning(errorMsg);
+            
+            
+            }else {
                 toast.error("Update failed. Check server and data.");
                 console.error("Error:", result);
+                
             }
         } catch (error) {
             console.error("Error:", error);
