@@ -76,10 +76,9 @@ const Login = ({ theme, setTheme }) => {
         sessionStorage.setItem("userType", result.user_type);
         navigate("/dashboard");
 
-      } else {
-        setMessage("Error: " + (result.message || JSON.stringify(result)));
-        toast.error("Login Failed. Check the username and password.");
-        console.error("Error response:", result);
+      }else {
+        toast.error(result.error);
+
       }
 
     } catch (error) {
@@ -125,7 +124,7 @@ const Login = ({ theme, setTheme }) => {
                       onChange={(e) => setUsername(e.target.value)}
                       autoComplete="username"
                       className="input-fl block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50"
-                      placeholder="Enter your username"
+                      placeholder="Enter your username or email"
                       required
                     />
                   </div>
