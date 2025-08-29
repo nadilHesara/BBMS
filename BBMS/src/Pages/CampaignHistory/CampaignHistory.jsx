@@ -56,11 +56,12 @@ export default function CampaignHistory() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { setLoading } = useContext(LoadingContext);
+  const userId = sessionStorage.getItem("userId");        
+
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const userId = localStorage.getItem("userId");
+      try {        
         const res = await fetch(
           `http://localhost:9191/dashboard/CampaignHistory?user_id=${userId}`
         );
@@ -162,6 +163,7 @@ export default function CampaignHistory() {
                   <TableSortLabel
                     active={orderBy === headCell.id}
                     direction={orderBy === headCell.id ? order : "asc"}
+                    disabled = {true}
                     onClick={(e) => handleRequestSort(e, headCell.id)}
                   >
                     {headCell.label}
@@ -190,6 +192,7 @@ export default function CampaignHistory() {
                           color={row.completed === "1" ? "success" : "error"}
                           variant="contained"
                           onClick={() => handleCompleteButton(row.id)}
+                          disabled={userId === "Admin"}
                         >
                           {row.completed === "1" ? "Yes" : "No"}
                         </Button>
