@@ -207,14 +207,14 @@ function CalendarComponent(props) {
                             <span className="detail-label">Description:</span>
                             <span className="detail-value">{campaign.description}</span>
                           </div>
-                        )}
+                        )}{user_type == ("Doner" || "Hospital") && 
                         <div className="action-buttons">
                           <button
                             className="donation-request-btn"
                             onClick={() => handleDonationRequest(campaign)}
                           >{user_type === "Doner" ? 'Register for the campaign':'Enter the Campaign'}
                           </button>
-                        </div>
+                        </div>}
                       </div>
 
 
