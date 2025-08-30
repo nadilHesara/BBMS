@@ -1,0 +1,6 @@
+HOST = "localhost"
+PORT = 3306
+USER = "your_db_user"
+PASSWORD = "your_db_password"
+DATABASE = "bbms_database"
+JWT_SECRET = "your_super_secret_jwt_key_here"
