@@ -92,7 +92,7 @@ BBMS_backend/
    ├── donation_service.bal    # Donation transaction handling
    ├── donationform.bal        # Donation eligibility and consent forms
    ├── password_service.bal    # Authentication and password management
-   └── Config.toml            # Configuration file (not included in repo)
+   └── Config.toml            # Configuration file
    ```
 
 ---
