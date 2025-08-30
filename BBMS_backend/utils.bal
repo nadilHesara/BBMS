@@ -91,8 +91,8 @@ public isolated function sendEmail(string toEmail, string subject, string body) 
     email:SmtpClient smtpClient = check new (
         host = "smtp.gmail.com",
         port = 465,
-        username = "thilokyabusness@gmail.com",
-        password = "xbcq ajjd gsvr pgag"
+        username = "thilokyabusness@gmail.com",        //  Add to you email
+        password = "xbcq ajjd gsvr pgag"        // add app paasword
 
     );
 
@@ -207,7 +207,7 @@ const JWT_AUDIENCE = "bbms-app";
 isolated function issueToken(string username, string userId, string role) returns string|error {
     jwt:IssuerConfig cfg = {
         issuer: JWT_ISSUER,
-        username: username, // 🔑 should be "subject"
+        username: username,
         audience: JWT_AUDIENCE,
         expTime: 3600, // seconds
         customClaims: {
