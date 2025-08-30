@@ -57,7 +57,7 @@ function HospitalReg({ theme, setTheme }) {
                 navigate("/dashboard");
             } else {
                 if (result.message?.includes("Duplicate entry")) {
-                    toast.warning("Usernam or Email already registered.");
+                    toast.warning("Username or Email already registered.");
                 } else if (response.status === 400) {
                     // Likely validation / required field missing
                     toast.error("Missing or invalid hospital details. Please check the form.");

@@ -1,7 +1,6 @@
 import ballerina/http;
 import ballerina/jwt;
 import ballerina/sql;
-import ballerina/io;
 
 listener http:Listener listener9191 = new (9191);
 
@@ -16,7 +15,6 @@ listener http:Listener listener9191 = new (9191);
 service / on listener9191 {
     // POST /doners
     isolated resource function post donorReg(@http:Payload Doner doner) returns json|error {
-        io:println(doner);
         json|error result =  addDoner(doner);
         return result;
     }
