@@ -46,8 +46,8 @@ function AvailableBloodStocks({ theme }) {
   }
 
   const getStatus = (units) => {
-    if (units < 10) return "Critical";
-    if (units < 30) return "Low";
+    if (units < 50) return "Critical";
+    if (units < 200) return "Low";
     return "Sufficient";
   };
 

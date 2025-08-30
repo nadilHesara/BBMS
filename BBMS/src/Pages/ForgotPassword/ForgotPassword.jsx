@@ -5,9 +5,8 @@ import { toast } from "react-toastify";
 import "./ForgotPassword.css";
 import NaviBar from "../../components/Navibar/NaviBar";
 
-function ForgotPassword() {
+function ForgotPassword({ theme, setTheme }) {
   const { loading, setLoading } = useContext(LoadingContext);
-  const [userType, setUserType] = useState("Donor");
   const [identifier, setIdentifier] = useState("");
 
   const navigate = useNavigate();
@@ -21,10 +20,7 @@ function ForgotPassword() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          userType: userType,
-          userInfo: identifier
-        })
+        body: JSON.stringify(identifier )
       })
       const result = await response.json();
       if (response.ok) {
@@ -32,7 +28,7 @@ function ForgotPassword() {
         toast.success("Password Reset Successfully!");
 
       } else {
-        toast.error("Please check your details and try again.");
+        toast.error("User does not exist.");
       }
     } catch (error) {
       toast.error("Registration failed. Check server and data.");
@@ -42,11 +38,13 @@ function ForgotPassword() {
   };
 
   return (
-    <div className="forgot-password-container">
-
-      <h2>Forgot Password</h2>
+    <>
+    <NaviBar theme={theme} setTheme={setTheme} />
+    <div className={`forgot-password-container ${theme}`}>
+      
+      <h2 className={`forget-password ${theme}`}>Forgot Password</h2>
       <form onSubmit={handleSubmit} className="forgot-password-form">
-        <div className="radio-group">
+        {/* <div className="radio-group">
           <label>
             <input
               type="radio"
@@ -67,10 +65,10 @@ function ForgotPassword() {
             />
             Hospital
           </label>
-        </div>
+        </div> */}
 
         <div className="form-group">
-          <label htmlFor="identifier">Enter your Username/Email/Password:</label>
+          <label htmlFor="identifier">Enter your Username/Email:</label>
           <input
             type="text"
             id="identifier"
@@ -83,6 +81,7 @@ function ForgotPassword() {
         <button type="submit" className="request-btn">Request</button>
       </form>
     </div>
+    </>
   );
 }
 

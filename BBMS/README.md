@@ -6,16 +6,15 @@ The **Blood Bank Management System (BBMS) Frontend** is a modern, responsive web
 
 ## 📖 Table of Contents
 
-1. [Project Overview](#project-overview)  
-2. [Key Features](#key-features)  
-3. [Technology Stack](#technology-stack)  
-4. [Folder Structure](#folder-structure)  
-5. [How It Works](#how-it-works)  
-6. [Setup & Installation](#setup--installation)  
-7. [Available Scripts](#available-scripts)  
-8. [Contribution Guidelines](#contribution-guidelines)  
-9. [Future Enhancements](#future-enhancements)  
-10. [License](#license)
+1. [Project Overview](#-project-overview)  
+2. [Key Features](#-key-features)  
+3. [Technology Stack](#-technology-stack)  
+4. [Folder Structure](#-folder-structure)  
+5. [How It Works](#-how-it-works)  
+6. [Setup & Installation](#-setup--installation)  
+7. [Available Scripts](#-available-scripts)  
+8. [Contribution Guidelines](#-contribution-guidelines)  
+9. [Future Enhancements](#-future-enhancements)  
 
 ---
 

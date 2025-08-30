@@ -97,10 +97,9 @@ isolated function getCampaignEvent(string year_month, string district) returns C
 
 isolated function getCampaignHistory(string hospital_id, string? month = ()) returns CampaignDetails[]|error {
     CampaignDetails[] campaigns = [];
-
     sql:ParameterizedQuery query;
     string curruntDate = getCurrentDate();
-    if month is () {
+    if hospital_id == "Admin" {
         query = `SELECT 
                     c.CampaignID, 
                     c.District, 
@@ -119,11 +118,10 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
                     b.AB_minus,
                     c.completed
                 FROM campaign AS c
-                INNER JOIN bloodstocks AS b 
+                LEFT OUTER JOIN bloodstocks AS b 
                     ON c.CampaignID = b.CampaignID
-                where c.HospitalID = ${hospital_id} AND c.DateofCampaign <= ${curruntDate} `;
+                where  c.DateofCampaign <= ${curruntDate}  `;
     } else {
-        string date = month + "-01";
         query = `SELECT 
                     c.CampaignID, 
                     c.District, 
@@ -142,10 +140,11 @@ isolated function getCampaignHistory(string hospital_id, string? month = ()) ret
                     b.AB_minus,
                     c.completed
                 FROM campaign AS c
-                INNER JOIN bloodstocks AS b 
+                LEFT OUTER JOIN bloodstocks AS b 
                     ON c.CampaignID = b.CampaignID
-                where c.HospitalID = ${hospital_id} and c.DateofCampaign >= ${date}`;
+                where c.HospitalID = ${hospital_id} and c.DateofCampaign <= ${curruntDate} `;
     }
+
     stream<CampaignDetails, error?> resultStream = dbClient->query(query);
     check from CampaignDetails campaign in resultStream
         do {

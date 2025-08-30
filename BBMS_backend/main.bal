@@ -44,8 +44,8 @@ service / on listener9191 {
         return result;
     }
 
-    isolated resource function post forgotpassword(@http:Payload ForgotPasswordRequest request) returns json|error {
-        return resetPassword(request.userType, request.userInfo);
+    isolated resource function post forgotpassword(@http:Payload string userInfo) returns json|error {
+        return resetPassword(userInfo);
     }
 
     isolated resource function post donates(@http:Payload SearchRequest searchReq) returns json|error {
