@@ -207,7 +207,7 @@ function CalendarComponent(props) {
                             <span className="detail-label">Description:</span>
                             <span className="detail-value">{campaign.description}</span>
                           </div>
-                        )}{user_type == ("Doner" || "Hospital") && 
+                        )}{["Doner" , "Hospital"].includes(user_type) && 
                         <div className="action-buttons">
                           <button
                             className="donation-request-btn"
