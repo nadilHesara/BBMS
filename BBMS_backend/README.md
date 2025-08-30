@@ -113,7 +113,7 @@ BBMS_backend/
    ```
 
 2. **Configure the database**
-   Create a `Config.toml` file in the root directory:
+   Update a `Config.toml` file in the root directory:
    ```toml
    HOST = "localhost"
    PORT = 3306
