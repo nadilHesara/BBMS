@@ -91,8 +91,8 @@ public isolated function sendEmail(string toEmail, string subject, string body) 
     email:SmtpClient smtpClient = check new (
         host = "smtp.gmail.com",
         port = 465,
-        username = "thilokyabusness@gmail.com",        //  Add to you email
-        password = "xbcq ajjd gsvr pgag"        // add app paasword
+        username = "example@email.com",        //  Add to you email
+        password = "example password 123 abc"        // add app paasword
 
     );
 
