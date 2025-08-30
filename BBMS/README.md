@@ -1,4 +1,4 @@
-# 🩸 BBMS Frontend
+# 🩸 Blood Bank Management System Frontend
 
 The **Blood Bank Management System (BBMS) Frontend** is a modern, responsive web application built with **React** and **Tailwind CSS**. It provides a seamless interface for **donors, hospitals, and administrators** to manage blood donation campaigns, monitor blood stock, and maintain user profiles — making the blood donation process more efficient and transparent.
 
@@ -7,11 +7,11 @@ The **Blood Bank Management System (BBMS) Frontend** is a modern, responsive web
 ## 📖 Table of Contents
 
 1. [Project Overview](#-project-overview)  
-2. [Key Features](#-key-features)  
-3. [Technology Stack](#-technology-stack)  
+2. [Key Features](#%EF%B8%8F-key-features)  
+3. [Technology Stack](#%EF%B8%8F-technology-stack) 
 4. [Folder Structure](#-folder-structure)  
 5. [How It Works](#-how-it-works)  
-6. [Setup & Installation](#-setup--installation)  
+6. [Setup & Installation](#%EF%B8%8F-setup--installation)  
 7. [Available Scripts](#-available-scripts)  
 8. [Contribution Guidelines](#-contribution-guidelines)  
 9. [Future Enhancements](#-future-enhancements)  
@@ -20,9 +20,9 @@ The **Blood Bank Management System (BBMS) Frontend** is a modern, responsive web
 
 ## 🚀 Project Overview
 
-The BBMS platform is designed to connect **donors, hospitals, and administrators** on a single digital ecosystem.  
-The **frontend** plays a vital role in:
+The BBMS platform is designed to connect **donors, hospitals, and administrators** on a single digital ecosystem.
 
+The **frontend** plays a vital role in:
 - Presenting real-time information in a clean UI.  
 - Handling user authentication and authorization.  
 - Managing interactions like **registration, campaigns, stock viewing, and history tracking**.  
@@ -36,7 +36,7 @@ This ensures that **blood donation campaigns are well-organized, transparent, an
 
 - **User Authentication & Authorization**  
   - Secure login and registration for donors, hospitals, and administrators.  
-  - JWT token–based authentication.  
+  - Frontend stores and sends JWT tokens received from the backend to authenticate users. 
   - Role-based dashboards with tailored access.  
 
 - **Donor Management**  
@@ -55,7 +55,7 @@ This ensures that **blood donation campaigns are well-organized, transparent, an
   - Past campaign data for hospitals and admins.  
 
 - **Blood Stock Monitoring**  
-  - Real-time display of blood stock availability.  
+  - UI components fetch and display blood stock data from backend API in real-time.  
   - Filter by **blood type** and **location**.  
 
 - **Responsive Design**  
@@ -66,7 +66,6 @@ This ensures that **blood donation campaigns are well-organized, transparent, an
 
 - **Notifications & Feedback**  
   - Toasts for important updates, errors, and confirmations.  
-  - Emails for notifying the user on important updates.
 
 ---
 
@@ -135,8 +134,8 @@ src/
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/bbms-frontend.git
-   cd bbms-frontend
+   git clone https://github.com/nadilHesara/iwb25-203-code-drift.git
+   cd iwb25-203-code-drift/BBMS
    ```
 
 2. Install dependencies:
@@ -168,7 +167,8 @@ src/
 We welcome contributions to improve BBMS Frontend! 🚀  
 
 ### Steps to Contribute:
-1. **Fork** the repository.  
+1. **Fork** the repository. 
+
 2. Create a new **feature branch**:  
    ```bash
    git checkout -b feature/your-feature-name
@@ -194,22 +194,6 @@ We welcome contributions to improve BBMS Frontend! 🚀
 - ✅ QR code scanning for donor check-in.  
 - ✅ AI-based prediction for blood demand analysis.  
 - ✅ Offline PWA support for hospitals in low-connectivity areas.  
-
----
-## 📞 Support
-
-For support and questions, please contact the development team or create an issue in the repository.
-   - Thilokya Angeesa  - thilokyaangeesa@gmail.com 
-   - Nadil Hesara     -  nadilheasara@gmail.com  
-   - Sandenie Withana  - pisandeniwith@gmail.com
-   - Hesandi Siwmini   - hesandism@gmail.com
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License**.  
-You are free to use, modify, and distribute this project with attribution.
 
 ---
 

@@ -1,12 +1,32 @@
-# Blood Bank Management System (BBMS) Backend
+# 🩸 Blood Bank Management System Backend
 
-A comprehensive Blood Bank Management System backend built with Ballerina, providing secure and efficient management of blood donations, inventory, and user operations.
+A comprehensive **Blood Bank Management System (BBMS) Backend** built with **Ballerina**, providing secure and efficient management of blood donations, inventory, and user operations.
 
-## 🩸 Project Overview
+---
+
+## 📖 Table of Contents
+
+1. [Project Overview](#-project-overview)
+2. [Key Features](#%EF%B8%8F-key-features)
+3. [Technology Stack](#%EF%B8%8F-technology-stack)
+4. [Folder Structure](#-folder-structure)
+5. [Getting Started](#%EF%B8%8F-getting-started)
+6. [API Endpoints](#-api-endpoints)
+7. [Security Features](#-security-features)
+8. [Email Configuration](#-email-configuration)
+9. [Database Schema](#%EF%B8%8F-database-schema)
+10. [Contributing](#-contributing)
+11. [Version History](#-version-history)
+
+---
+
+## 🚀 Project Overview
 
 The BBMS Backend is a robust REST API service that manages the complete lifecycle of blood bank operations including donor registration, hospital management, blood donation campaigns, inventory tracking, and secure user authentication. The system is designed to streamline blood bank operations and ensure efficient blood supply management.
 
-## ✨ Key Features
+---
+
+## 🛠️ Key Features
 
 ### 🔐 Authentication & Security
 - **JWT-based Authentication**: Secure token-based authentication system
@@ -40,11 +60,13 @@ The BBMS Backend is a robust REST API service that manages the complete lifecycl
 - **Donation Recording**: Complete donation transaction logging
 
 ### 📧 Communication
-- **Email Notifications**: Automated email system for account creation, password resets
+- **Email Notifications**: Automated email system for account creation, password resets, and campaign confirmations
 - **Campaign Requests**: Email-based campaign request system
 - **HTML Email Templates**: Professional email formatting
 
-## 🛠️ Technology Stack
+---
+
+## ⚙️ Technology Stack
 
 - **Framework**: Ballerina Swan Lake
 - **Database**: MySQL
@@ -53,25 +75,29 @@ The BBMS Backend is a robust REST API service that manages the complete lifecycl
 - **Security**: SHA-256 password hashing with salt
 - **Architecture**: RESTful API with CORS support
 
-## 📁 Project Structure
+---
+
+## 📁 Folder Structure
 
 ```
 BBMS_backend/
-├── main.bal                 # Main service endpoints and HTTP listeners
-├── database.bal            # Database configuration and connection
-├── types.bal               # Type definitions and data models
-├── utils.bal               # Utility functions (JWT, encryption, email)
-├── donor_service.bal       # Donor management operations
-├── hospital_service.bal    # Hospital management operations
-├── campaign_service.bal    # Campaign management operations
-├── bloodStock_service.bal  # Blood inventory management
-├── donation_service.bal    # Donation transaction handling
-├── donationform.bal        # Donation eligibility and consent forms
-├── password_service.bal    # Authentication and password management
-└── Config.toml            # Configuration file (not included in repo)
-```
+   ├── main.bal                 # Main service endpoints and HTTP listeners
+   ├── database.bal            # Database configuration and connection
+   ├── types.bal               # Type definitions and data models
+   ├── utils.bal               # Utility functions (JWT, encryption, email)
+   ├── donor_service.bal       # Donor management operations
+   ├── hospital_service.bal    # Hospital management operations
+   ├── campaign_service.bal    # Campaign management operations
+   ├── bloodStock_service.bal  # Blood inventory management
+   ├── donation_service.bal    # Donation transaction handling
+   ├── donationform.bal        # Donation eligibility and consent forms
+   ├── password_service.bal    # Authentication and password management
+   └── Config.toml            # Configuration file (not included in repo)
+   ```
 
-## 🚀 Getting Started
+---
+
+## 🖥️ Getting Started
 
 ### Prerequisites
 - Ballerina Swan Lake (latest version)
@@ -82,8 +108,8 @@ BBMS_backend/
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd BBMS_backend
+   git clone https://github.com/nadilHesara/iwb25-203-code-drift.git
+   cd iwb25-203-code-drift/BBMS_backend
    ```
 
 2. **Configure the database**
@@ -112,6 +138,8 @@ BBMS_backend/
    ```
 
 The server will start on `http://localhost:9191`
+
+---
 
 ## 📚 API Endpoints
 
@@ -148,6 +176,8 @@ The server will start on `http://localhost:9191`
 - `GET /dashboard/donations?user_id={id}` - Get donation history
 - `GET /dashboard/donor?donor_id={id}` - Get donor details
 
+---
+
 ## 🔒 Security Features
 
 - **JWT Authentication**: All protected endpoints require valid JWT tokens
@@ -168,6 +198,7 @@ email:SmtpClient smtpClient = check new (
     password = "your_app_password"
 );
 ```
+---
 
 ## 🗄️ Database Schema
 
@@ -183,6 +214,8 @@ The system uses the following main tables:
 - `medicalrisk` - Risk assessments
 - `consent` - Consent records
 
+---
+
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -191,17 +224,7 @@ The system uses the following main tables:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 📞 Support
-
-For support and questions, please contact the development team or create an issue in the repository.
-   - Thilokya Angeesa
-   - Nadil Hrsara
-   - Sandeni Vithana
-   - Hesandi Siwmini
+---
 
 ## 🔄 Version History
 
@@ -215,4 +238,4 @@ For support and questions, please contact the development team or create an issu
 
 ---
 
-**Built with ❤️ using Ballerina Swan Lake**
+💖 **BBMS Backend** built with using **Ballerina Swan Lake**
