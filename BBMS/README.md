@@ -53,21 +53,21 @@ This ensures that **blood donation campaigns are well-organized, transparent, an
 - **Campaign Management**  
   - Create, update, and view donation campaigns.  
   - Donors can explore and register for upcoming campaigns.  
-  - Historical campaign data for hospitals and admins.  
+  - Past campaign data for hospitals and admins.  
 
 - **Blood Stock Monitoring**  
   - Real-time display of blood stock availability.  
   - Filter by **blood type** and **location**.  
 
 - **Responsive Design**  
-  - Works seamlessly on **desktops, tablets, and mobile devices**.  
-  - Built using **Tailwind CSS + Bootstrap** for maximum flexibility.  
+  - Built using **Tailwind CSS + Bootstrap + Regular CSS** for maximum flexibility.  
 
 - **Dark/Light Theme Support**  
   - Toggle between themes for a comfortable user experience.  
 
 - **Notifications & Feedback**  
-  - Toasts and modals for important updates, errors, and confirmations.  
+  - Toasts for important updates, errors, and confirmations.  
+  - Emails for notifying the user on important updates.
 
 ---
 
@@ -77,7 +77,7 @@ This ensures that **blood donation campaigns are well-organized, transparent, an
 - **Routing**: [React Router](https://reactrouter.com/)  
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) + [Bootstrap](https://getbootstrap.com/)  
 - **State Management**: React Context API  
-- **Icons**: [React Icons](https://react-icons.github.io/react-icons/)  
+- **Icons**: [React Icons](https://react-icons.github.io/react-icons/)  [Lucide Icons](https://lucide.dev/icons/)
 - **HTTP Requests**: [Axios](https://axios-http.com/) or Fetch API  
 - **Build Tool**: [Vite](https://vitejs.dev/)  
 
@@ -117,7 +117,7 @@ src/
 
 4. **Blood Stock Monitoring**  
    - Displays **real-time blood stock availability**.  
-   - Helps hospitals manage supply and donors see urgent needs.  
+   - Helps hospitals to manage supply and donors to see urgent needs.  
 
 5. **Profiles**  
    - Donors/Hospitals can update info, change passwords, and view activity history.  
@@ -200,10 +200,10 @@ We welcome contributions to improve BBMS Frontend! 🚀
 ## 📞 Support
 
 For support and questions, please contact the development team or create an issue in the repository.
-   - Thilokya Angeesa
-   - Nadil Hesara
-   - Sandenie Withana
-   - Hesandi Siwmini
+   - Thilokya Angeesa  - thilokyaangeesa@gmail.com 
+   - Nadil Hesara     -  nadilheasara@gmail.com  
+   - Sandenie Withana  - pisandeniwith@gmail.com
+   - Hesandi Siwmini   - hesandism@gmail.com
 
 ---
 
